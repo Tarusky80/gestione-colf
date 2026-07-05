@@ -18,7 +18,7 @@ def _carica_comuni_map():
         return _COMUNI_MAP_CACHE
     path = Path(__file__).resolve().parent.parent / 'data' / 'comuni_full.json'
     if path.exists():
-        with open(str(path), 'r', encoding='utf-8') as f:
+        with open(str(path), encoding='utf-8') as f:
             _COMUNI_MAP_CACHE = json.load(f)
     else:
         _COMUNI_MAP_CACHE = {}

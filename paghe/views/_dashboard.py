@@ -738,7 +738,7 @@ def ajax_beneficiari_mappa(request):
 
     try:
         cache = json.loads(cache_path.read_text(encoding='utf-8'))
-    except (json.JSONDecodeError, IOError):
+    except (OSError, json.JSONDecodeError):
         return JsonResponse([], safe=False)
 
     filtro_comune = request.GET.get('comune', '').strip()

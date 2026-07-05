@@ -996,7 +996,7 @@ def _estrai_pdf_da_nuova_scheda(nuova_pagina, timeout=10):
             if '.pdf' in src.lower():
                 logger.info(f'[PAGOPA] PDF da iframe: {src}')
                 return src
-            if 'application/pdf' in (iframe.evaluate('document.contentType') if iframe.name or True else ''):
+            if 'application/pdf' in (iframe.evaluate('document.contentType') if True else ''):
                 pass
     except Exception:
         logger.warning("[PAGOPA] Ricerca PDF in iframe fallita")

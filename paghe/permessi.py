@@ -94,7 +94,7 @@ def ha_permesso(user, permesso):
 
 def filtro_visibilita(queryset, user, field_name='visibile_a'):
     """Filtra un queryset in base alla visibilità dell'utente.
-    
+
     Se l'utente ha 'anagrafiche.vedi_tutti' restituisce tutto.
     Altrimenti filtra per visibile_a=user o visibile_a__isnull=True.
     """

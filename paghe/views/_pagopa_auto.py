@@ -6,6 +6,7 @@ from calendar import monthcalendar, SATURDAY
 from paghe.views._helpers import _get_cartella_documenti, _registra_font_pdf
 from paghe.views._inps import _log_inps
 from paghe.views._constants import _pagopa_drivers, _pagopa_screenshots
+import contextlib
 
 logger = logging.getLogger(__name__)
 
@@ -478,10 +479,8 @@ def ajax_carica_dati_pagopa(request):
 
     ore_override = None
     if ore_override_raw:
-        try:
+        with contextlib.suppress(ValueError, TypeError):
             ore_override = int(ore_override_raw)
-        except (ValueError, TypeError):
-            pass
     ore_auto = ore_auto_raw != '0'
 
     contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
@@ -905,10 +904,8 @@ def ajax_elimina_pagopa_doc(request):
     from paghe.models import DocumentoArchiviato
     doc = get_object_or_404(DocumentoArchiviato, pk=doc_pk)
     if doc.file_path and os.path.exists(doc.file_path):
-        try:
+        with contextlib.suppress(OSError):
             os.remove(doc.file_path)
-        except OSError:
-            pass
     titolo = doc.titolo
     doc.delete()
     return JsonResponse({'success': True, 'messaggio': f'Documento "{titolo}" eliminato.'})

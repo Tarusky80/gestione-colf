@@ -22,9 +22,7 @@ def _etichetta_giorni(gg):
         return 'SCADE OGGI!'
     elif gg == 1:
         return 'domani!'
-    elif gg <= 7:
-        return f'tra {gg} giorni'
-    elif gg <= 14:
+    elif gg <= 7 or gg <= 14:
         return f'tra {gg} giorni'
     else:
         return f'tra {gg} giorni'

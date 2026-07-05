@@ -378,7 +378,7 @@ def _genera_documento_stampe(contratto, tipo_documento, mese=None, anno=None, te
 
         doc = DocumentoArchiviato.objects.create(
             tipo='CONTRATTO',
-            titolo=f"Contratto – {contratto.lavoratore}" if not oggetto_risolto else oggetto_risolto,
+            titolo=oggetto_risolto if oggetto_risolto else f"Contratto – {contratto.lavoratore}",
             file_path=full_path, file_size=os.path.getsize(full_path), file_name=nome_file,
             contratto=contratto, datore=contratto.datore, lavoratore=contratto.lavoratore,
             creato_da=user,

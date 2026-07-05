@@ -551,9 +551,8 @@ def ajax_genera_lul(request):
         return JsonResponse({'errore': 'Seleziona un datore di lavoro.'}, status=400)
 
     datore = get_object_or_404(DatoreLavoro, pk=datore_id)
-    if not ha_permesso(request.user, 'anagrafiche.vedi_tutti'):
-        if request.user not in datore.visibile_a.all():
-            return JsonResponse({'errore': 'Permesso negato'}, status=403)
+    if not ha_permesso(request.user, 'anagrafiche.vedi_tutti') and request.user not in datore.visibile_a.all():
+        return JsonResponse({'errore': 'Permesso negato'}, status=403)
 
     if not (1 <= mese <= 12):
         return JsonResponse({'errore': 'Mese non valido'}, status=400)

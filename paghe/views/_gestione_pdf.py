@@ -72,9 +72,8 @@ def _scarica_font_emoji():
             with zipfile.ZipFile(io.BytesIO(data)) as zf:
                 for name in zf.namelist():
                     if name.lower().endswith(('.ttf', '.otf')):
-                        with zf.open(name) as f:
-                            with open(target_path, 'wb') as out:
-                                out.write(f.read())
+                        with zf.open(name) as f, open(target_path, 'wb') as out:
+                            out.write(f.read())
                         return target_path
         else:
             with open(target_path, 'wb') as f:

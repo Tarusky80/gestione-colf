@@ -7,8 +7,8 @@ from paghe import views
 
 urlpatterns = [
     # Reindirizzamento iniziale dritto alla dashboard
-    path('', RedirectView.as_view(url='/dashboard/', permanent=True)), 
-    
+    path('', RedirectView.as_view(url='/dashboard/', permanent=True)),
+
     path('admin/', admin.site.urls),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('report/mensile/', views.report_mensile_pdf, name='report_mensile'),
@@ -17,7 +17,7 @@ urlpatterns = [
     path('report/annuale/<int:anno>/<int:datore_id>/', views.report_annuale_pdf, name='report_annuale_datore'),
     path('about/', views.about_page, name='about_page'),
     path('scorciatoie/', views.scorciatoie_view, name='scorciatoie'),
-    
+
     # SIDEBAR LISTS
     path('datori/', views.datori_list, name='datori_list'),
     path('lavoratori/', views.lavoratori_list, name='lavoratori_list'),
@@ -30,7 +30,7 @@ urlpatterns = [
     path('backup/scarica-json/<int:pk>/', views.scarica_backup_json, name='scarica_backup_json'),
     path('backup/scarica-db/<int:pk>/', views.scarica_backup_db, name='scarica_backup_db'),
     path('impostazioni/', views.impostazioni_page, name='impostazioni_page'),
-    
+
     # --- IL TUO MOTORE AJAX ---
     path('ajax/search/', views.global_search_view, name='global_search'),
 

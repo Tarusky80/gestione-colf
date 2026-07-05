@@ -28,17 +28,17 @@ def _risolvi_percorso(percorso):
 
 def avvia_driver(chromedriver_exe=None, headless=False, window_size=None, download_dir=None):
     """Avvia Chrome in modalità visibile (default) con chromedriver specificato.
-    
+
     Args:
         chromedriver_exe: path al chromedriver.exe (relativo o assoluto).
                           Se None, usa il default 'drivers/chromedriver.exe'.
         headless: se True, avvia senza finestra grafica.
         window_size: tuple (larghezza, altezza). Se None, usa --start-maximized.
         download_dir: path per download automatici. Se None, nessuna preferenza.
-    
+
     Returns:
         webdriver.Chrome: istanza del driver pronta all'uso.
-    
+
     Raises:
         FileNotFoundError: se chromedriver.exe non esiste.
         WebDriverException: se Chrome non viene avviato correttamente.
@@ -105,7 +105,7 @@ def avvia_driver(chromedriver_exe=None, headless=False, window_size=None, downlo
 
 def chiudi_driver(driver, timeout=3):
     """Chiude il driver Chrome in modo sicuro.
-    
+
     Args:
         driver: webdriver.Chrome da chiudere.
         timeout: secondi di attesa massima prima di forzare chiusura.
@@ -123,16 +123,16 @@ def chiudi_driver(driver, timeout=3):
 
 def attendi_elemento(driver, by, valore, timeout=10):
     """Attende che un elemento sia presente e visibile nel DOM.
-    
+
     Args:
         driver: webdriver.Chrome.
         by: selenium.webdriver.common.by.By (es. By.ID, By.CSS_SELECTOR).
         valore: valore del selettore.
         timeout: secondi massimi di attesa.
-    
+
     Returns:
         WebElement trovato.
-    
+
     Raises:
         TimeoutException: se l'elemento non compare entro timeout.
     """
@@ -143,7 +143,7 @@ def attendi_elemento(driver, by, valore, timeout=10):
 
 def attendi_e_click(driver, by, valore, timeout=10):
     """Attende un elemento e ci clicca sopra.
-    
+
     Returns:
         WebElement cliccato.
     """
@@ -156,7 +156,7 @@ def attendi_e_click(driver, by, valore, timeout=10):
 
 def attendi_e_scrivi(driver, by, valore, testo, timeout=10):
     """Attende un elemento, lo pulisce e scrive il testo.
-    
+
     Returns:
         WebElement modificato.
     """
@@ -265,10 +265,10 @@ def salva_debug_step(driver, step_name='', cartella=None):
 
 def pagopa_login(driver, url, cf_datore, cod_rapporto, timeout=10, delay=0.5):
     """Step 1: Naviga al sito INPS PagoPA e compila CF + Codice Rapporto.
-    
+
     Si ferma dopo aver compilato i campi, in attesa che l'utente
     risolva il CAPTCHA manualmente nella finestra di Chrome.
-    
+
     Args:
         driver: webdriver.Chrome avviato.
         url: URL completo della pagina INPS PagoPA.
@@ -293,7 +293,7 @@ def pagopa_login(driver, url, cf_datore, cod_rapporto, timeout=10, delay=0.5):
 def pagopa_prosegui_dopo_captcha(driver, timeout=120, delay=0.5):
     """Step 2: Inietta listener Ctrl+Invio nella pagina Chrome e attende
     che l'utente prema la combinazione per sottomettere il CAPTCHA.
-    
+
     Returns:
         True se il submit è stato rilevato, False altrimenti.
     """
@@ -560,7 +560,7 @@ def pagopa_compila_bollettino(driver, ore_trim, paga_oraria, codice_associazione
 
     Returns:
         float or None: importo totale estratto dalla pagina INPS dopo il submit.
-    
+
     Args:
         driver: webdriver.Chrome.
         ore_trim: ore trimestrali (int).
@@ -649,7 +649,7 @@ def pagopa_compila_bollettino(driver, ore_trim, paga_oraria, codice_associazione
 
 def pagopa_avanti(driver, timeout=10, delay=0.5):
     """Step 5: Clicca 'Avanti' e attende 'Conferma modifica'.
-    
+
     Se il form è già stato inviato (da pagopa_compila_bollettino con form.submit()),
     salta il click e attende direttamente 'Conferma modifica'.
     """
@@ -905,7 +905,7 @@ def _scarica_pdf_da_url(driver, url, referer=None):
 
 def pagopa_switch_finestra_e_salva(driver, nome_file, timeout=10, download_dir=None):
     """Step 8: Dopo 'Stampa Avviso', cattura il PDF.
-    
+
     Strategia:
     1. Verifica window.open interceptor per URL catturato
     2. Controlla se l'URL corrente è cambiato (PDF diretto)
@@ -914,13 +914,13 @@ def pagopa_switch_finestra_e_salva(driver, nome_file, timeout=10, download_dir=N
     5. Page.printToPDF sulla nuova finestra
     6. Fallback: iframe #frameStampa
     7. Fallback finale: Page.printToPDF sulla finestra originale
-    
+
     Args:
         driver: webdriver.Chrome.
         nome_file: nome desiderato per il file PDF.
         timeout: timeout attesa elementi.
         download_dir: cartella dove salvare il PDF.
-    
+
     Returns:
         str: nome finale del file.
     """

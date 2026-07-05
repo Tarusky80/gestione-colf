@@ -58,7 +58,7 @@ def _crea_busta_paga_da_ctx(ctx, contratto, mese, anno, tipo_calcolo, documento)
 
 def _build_busta_extra_vars(ctx, html_busta):
     """Costruisce extra_vars per template BUSTA_PAGA.
-    
+
     Aggiunge TUTTI i campi utili dal dict ctx (calcolo live) come variabili
     singole, più blocchi HTML pre-renderizzati per liste dinamiche.
     """
@@ -396,11 +396,11 @@ def download_busta_malattia_pdf(request, pk):
         return HttpResponse('Ore mensili pari a zero', status=400)
     anzianita_mesi = (date(anno, mese, 1) - contratto.data_assunzione).days // 30
     if anzianita_mesi < 6:
-        max_giorni = 8; 
+        max_giorni = 8
     elif anzianita_mesi < 24:
-        max_giorni = 12; 
+        max_giorni = 12
     else:
-        max_giorni = 15; 
+        max_giorni = 15
     giorni_pagati = min(giorni_malattia, max_giorni)
     if sostituzione:
         retr_sost = float(p.retribuzione_sostituzione) if p.retribuzione_sostituzione else None

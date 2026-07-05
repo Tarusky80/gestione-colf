@@ -143,7 +143,7 @@ def esporta_backup_excel(request, pk):
     if not os.path.isfile(backup.file_json) or os.path.getsize(backup.file_json) == 0:
         return HttpResponse('Il file backup è vuoto o non trovato. Impossibile esportare.', status=400)
     try:
-        with open(backup.file_json, 'r', encoding='utf-8') as f:
+        with open(backup.file_json, encoding='utf-8') as f:
             data = json_lib.load(f)
     except (FileNotFoundError, json_lib.JSONDecodeError):
         return HttpResponse('File backup non trovato o danneggiato.', status=404)

@@ -180,7 +180,7 @@ class TabellaMalattiaAdmin(admin.ModelAdmin):
 
 class ContrattoBaseAdmin(admin.ModelAdmin):
     readonly_fields = (
-        'stima_netto_mensile', 'prospetto_ore_mensili', 'costo_mensile_effettivo', 
+        'stima_netto_mensile', 'prospetto_ore_mensili', 'costo_mensile_effettivo',
         'differenza_budget', 'verifica_soglia_contributi', 'dettaglio_indennita',
         'alert_fine_prova', 'alert_scatti_anzianita'
     )
@@ -320,7 +320,7 @@ class BackupAdmin(admin.ModelAdmin):
             url = reverse('scarica_backup_json', args=[obj.pk])
             return mark_safe(f'<a href="{url}" class="button" style="background-color: #27272a; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">📥 Scarica JSON</a>')
         return "File non ancora generato"
-    
+
     link_download.short_description = "DOWNLOAD"
 
     def has_view_permission(self, request, obj=None):

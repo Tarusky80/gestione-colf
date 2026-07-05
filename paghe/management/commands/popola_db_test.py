@@ -16,6 +16,7 @@ from paghe.models import (
     TipoProgettoRegionale, ProgettoRegionale,
     Appuntamento, AttivitaMensile, Beneficiario,
 )
+import contextlib
 
 # ──────────────────────────── DATI REALISTICI ────────────────────────────
 
@@ -162,14 +163,10 @@ class Command(BaseCommand):
         Django 6.0 usa asgiref.local.Local (thread-local) come storage,
         non più un dict semplice. Usiamo hasattr/delattr pubblici."""
         if hasattr(connections._connections, 'default'):
-            try:
+            with contextlib.suppress(Exception):
                 connections['default'].close()
-            except Exception:
-                pass
-            try:
+            with contextlib.suppress(Exception):
                 del connections['default']
-            except Exception:
-                pass
 
     def _popola(self):
         """Esegue tutte le fasi di popolazione."""

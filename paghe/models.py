@@ -1370,7 +1370,7 @@ class CUAnnuale(models.Model):
     contratto = models.ForeignKey(ContrattoLavoro, on_delete=models.CASCADE, related_name='cu_annuali', verbose_name="CONTRATTO")
     anno = models.IntegerField(verbose_name="ANNO")
     modalita = models.CharField(max_length=20, choices=MODALITA_SCELTE, default='AUTOMATICA', verbose_name="MODALITÀ")
-    
+
     # Dati annuali aggregati (per modalità Manuale e riepilogo Semi-Automatica)
     reddito_lordo = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="REDDITO LORDO")
     contributi_inps_lav = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="CONTRIBUTI INPS LAV.")
@@ -1380,10 +1380,10 @@ class CUAnnuale(models.Model):
     tfr_accantonato = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="TFR ACCANTONATO")
     indennita_convivenza = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="INDENNITÀ CONVIVENZA")
     imponibile_fiscale = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="IMPONIBILE FISCALE")
-    
+
     # Dettaglio 13 mensilità (JSON) - solo per Semi-Automatica
     dettaglio_mensile = models.JSONField(default=dict, blank=True, verbose_name="DETTAGLIO MENSILE (13 mensilità)")
-    
+
     creato_il = models.DateTimeField(auto_now_add=True, verbose_name="CREATO IL")
     aggiornato_il = models.DateTimeField(auto_now=True, verbose_name="AGGIORNATO IL")
     creato_da = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="CREATO DA", related_name='cu_annuali_create')

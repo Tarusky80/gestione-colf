@@ -40,6 +40,7 @@ from paghe.views._file_utils import (
     _nome_cartella_contratto,
     _get_cartella_documenti,
 )
+import contextlib
 
 
 # --- _dati_eliminato ---
@@ -271,10 +272,8 @@ def _parse_convivenza_items(request):
     if incl_alloggio is not None:
         conv['alloggio'] = incl_alloggio == '1'
     if giorni is not None:
-        try:
+        with contextlib.suppress(ValueError, TypeError):
             conv['giorni'] = int(giorni)
-        except (ValueError, TypeError):
-            pass
     return conv
 
 

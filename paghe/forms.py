@@ -17,7 +17,7 @@ class BaseLinearForm(forms.ModelForm):
                     'padding: 10px 12px; '
                     'border-radius: 8px;'
                 )
-            
+
             # Styling specifico per checkbox
             elif isinstance(field.widget, forms.CheckboxInput):
                 field.widget.attrs['class'] = 'form-check-input'
@@ -59,7 +59,7 @@ class ContrattoForm(BaseLinearForm):
             'data_fine': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
             'modalita_tfr': forms.HiddenInput,
         }
-    
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit:

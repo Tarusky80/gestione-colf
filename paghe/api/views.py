@@ -23,6 +23,7 @@ from .serializers import (
     DocumentoArchiviatoSerializer, RichiestaModificaDatoreSerializer,
     DatiStudioSerializer
 )
+import contextlib
 
 
 class DatoreLoginView(APIView):
@@ -159,10 +160,8 @@ class RichiesteListCreateView(APIView):
         contratto_pk = data.get('contratto_pk')
         contratto = None
         if contratto_pk:
-            try:
+            with contextlib.suppress(ValueError, ContrattoAttivo.DoesNotExist):
                 contratto = ContrattoAttivo.objects.get(pk=int(contratto_pk), datore=datore)
-            except (ValueError, ContrattoAttivo.DoesNotExist):
-                pass
         richiesta = RichiestaModificaDatore.objects.create(
             datore=datore,
             contratto=contratto,

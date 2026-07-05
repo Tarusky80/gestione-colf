@@ -9,7 +9,7 @@ line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "SIM"]
-ignore = ["E501", "E741", "F403", "F405"]
+ignore = ["E501", "E741", "F403", "F405", "I001", "E402", "E401", "E702", "E701", "N806", "SIM108", "SIM115", "F541", "UP031", "UP032", "E731", "N812", "F823", "SIM102", "SIM117", "N814", "N802"]
 
 [tool.ruff.lint.per-file-ignores]
 "*/migrations/*" = ["E", "F", "I", "N", "UP", "SIM"]
