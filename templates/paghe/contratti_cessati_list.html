@@ -56,7 +56,7 @@
         </thead>
         <tbody>
             {% for c in contratti %}
-            <tr class="clickable-row" data-type="contratto_cessato" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} → {{ c.lavoratore.nome_cognome }}" data-sub="{{ c.get_tipo_contratto_display }} · {{ c.get_stato_display }}">
+            <tr class="clickable-row" data-type="contratto_cessato" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} → {{ c.lavoratore.nome_cognome }}" data-sub="{{ c.get_tipo_contratto_display }} · {{ c.get_stato_display }}" data-stato="{{ c.stato }}" data-tipo-contratto="{{ c.get_tipo_contratto_display }}" data-data-assunzione="{{ c.data_assunzione|date:'d/m/Y' }}" data-data-fine="{{ c.data_fine|date:'d/m/Y'|default:'-' }}" data-livello="{{ c.parametri_minimi.livello.codice }}">
                 <td><div class="fw-bold">{{ c.datore.nome_cognome }}</div></td>
                 <td><div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div></td>
                 <td>{{ c.data_assunzione|date:"d/m/Y" }}</td>

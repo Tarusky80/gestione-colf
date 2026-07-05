@@ -188,8 +188,8 @@ def _risolvi_globali(testo):
         _pct = m.group(2)
         if _name in _logo_keys and _logo_data.get(_name) and _pct is not None:
             _ratio = int(_pct) / 100.0
-            _nw = int(_logo_data[_name]['w'] * _ratio)
-            _nh = int(_logo_data[_name]['h'] * _ratio)
+            _nw = round(_logo_data[_name]['w'] * _ratio)
+            _nh = round(_logo_data[_name]['h'] * _ratio)
             return f'<img src="{_logo_data[_name]["uri"]}" width="{_nw}" height="{_nh}" style="max-width:{_nw}px;height:auto;">'
         return lookup.get(_name, m.group(0))
 

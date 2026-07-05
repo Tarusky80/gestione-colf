@@ -55,7 +55,7 @@
         </thead>
         <tbody>
             {% for lavoratore in lavoratori %}
-            <tr class="clickable-row" data-type="lavoratore" data-pk="{{ lavoratore.pk }}" data-title="{{ lavoratore.nome_cognome }}" data-sub="{{ lavoratore.codice_fiscale }}" data-comune="{{ lavoratore.comune|default:'' }}">
+            <tr class="clickable-row" data-type="lavoratore" data-pk="{{ lavoratore.pk }}" data-title="{{ lavoratore.nome_cognome }}" data-sub="{{ lavoratore.codice_fiscale }}" data-comune="{{ lavoratore.comune|default:'' }}" data-email="{{ lavoratore.email|default:'' }}" data-telefono="{{ lavoratore.telefono|default:'' }}">
                 <td><div class="fw-bold">{{ lavoratore.nome_cognome }}</div></td>
                 <td><div class="text-secondary">{{ lavoratore.codice_fiscale }}</div></td>
                 <td>{{ lavoratore.indirizzo|default:"-" }}</td>

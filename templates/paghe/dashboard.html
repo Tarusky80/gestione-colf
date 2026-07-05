@@ -960,7 +960,7 @@ setInterval(updateClock, 1000);
     var el = document.getElementById('lastLoginText');
     if (!el) return;
     {% if request.user.last_login %}
-    var lastLogin = new Date('{{ request.user.last_login|date:"Y-m-d H:i:s"|safe }}'.replace(' ', 'T') + 'Z');
+    var lastLogin = new Date('{{ request.user.last_login|date:"c" }}');
     var now = new Date();
     var diffMs = now - lastLogin;
     var diffMin = Math.floor(diffMs / 60000);

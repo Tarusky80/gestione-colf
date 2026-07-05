@@ -387,15 +387,24 @@
 
     <!-- Confirmation modal for delete -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
             <div class="modal-content" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-                <div class="modal-body text-center" style="padding: 32px 24px;">
-                    <div style="font-size: 24px; margin-bottom: 12px; color: #f87171;"><i class="bi bi-exclamation-triangle-fill"></i></div>
-                    <div style="font-size: 14px; font-weight: 600; color: #EDEDED; margin-bottom: 8px;">Confermi l&apos;eliminazione?</div>
-                    <div style="font-size: 12px; color: #8A8F98; margin-bottom: 24px;">L&apos;operazione non può essere annullata.</div>
-                    <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <div class="modal-body" style="padding: 24px;">
+                    <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;">
+                        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:rgba(248,113,113,0.12);display:flex;align-items:center;justify-content:center;font-size:20px;color:#f87171;"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#EDEDED;margin-bottom:2px;">Conferma eliminazione</div>
+                            <div style="font-size:11px;color:#8A8F98;">L'operazione non può essere annullata.</div>
+                        </div>
+                    </div>
+                    <div style="padding:10px 12px;background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:16px;">
+                        <div style="font-size:10px;color:#5C5F66;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px;" id="deleteEntityType">Tipo</div>
+                        <div style="font-size:13px;font-weight:600;color:#EDEDED;margin-bottom:6px;" id="deleteEntityName">Nome elemento</div>
+                        <div style="font-size:11px;color:#f87171;padding-top:6px;border-top:1px solid rgba(248,113,113,0.1);" id="deleteImpact">Impatto</div>
+                    </div>
+                    <div class="d-flex gap-2" style="justify-content:flex-end;">
+                        <button type="button" class="btn" data-bs-dismiss="modal" style="color: #8A8F98; background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 20px; font-size: 12px; font-weight: 500;">Annulla</button>
                         <button type="button" class="btn" id="confirmDeleteBtn" data-delete-pk="" style="background: #f87171; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-size: 12px; font-weight: 600;"><i class="bi bi-trash3 me-1"></i> Elimina</button>
-                        <button type="button" class="btn" data-bs-dismiss="modal" style="color: #8A8F98; background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 20px; font-size: 12px;">Annulla</button>
                     </div>
                 </div>
             </div>
@@ -437,30 +446,137 @@
         document.getElementById('actionPanelOverlay').style.display = 'none';
         document.getElementById('actionPanel').style.display = 'none';
     };
-    window.openActionPanel = function(title, subtitle, actions) {
+    window._renderActionBtn = function(a, defaultStyle) {
+        var style = a.style || defaultStyle;
+        var icon = a.icon ? '<i class="bi ' + a.icon + '" style="font-size:14px;"></i> ' : '';
+        if (a.type === 'link') {
+            return '<a href="' + a.url + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
+        } else if (a.type === 'link_blank') {
+            return '<a href="' + a.url + '" target="_blank" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
+        } else if (a.type === 'js') {
+            return '<a href="#" onclick="event.preventDefault();closeActionPanel();' + a.code + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
+        } else if (a.type === 'delete') {
+            var _url = (a.url || '').replace(/'/g, '&#39;');
+            var _tp = (a.deleteTipo || '').replace(/'/g, '&#39;');
+            var _nm = (a.deleteNome || '').replace(/'/g, '&#39;');
+            var _im = (a.deleteImpatto || '').replace(/'/g, '&#39;');
+            return '<a href="#" data-delete-btn="1" data-delete-url="' + _url + '" data-delete-tipo="' + _tp + '" data-delete-nome="' + _nm + '" data-delete-impatto="' + _im + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
+        } else if (a.type === 'duplica') {
+            return '<a href="#" onclick="event.preventDefault();closeActionPanel();loadAjaxForm(\'' + a.url + '\', \'Duplica ' + (a.titolo || '') + '\');" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;color:#34d399;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
+        } else if (a.type === 'custom') {
+            return a.html;
+        }
+        return '';
+    };
+
+    window.openActionPanel = function(title, subtitle, actions, meta) {
         document.getElementById('actionPanelTitle').textContent = (title || '').replace(/\s*\|\s*/g, '\n');
         document.getElementById('actionPanelSubtitle').textContent = subtitle || '';
         var body = document.getElementById('actionPanelBody');
-        var html = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;">';
-        for (var i = 0; i < actions.length; i++) {
-            var a = actions[i];
-            var style = a.style || 'background:rgba(94,106,210,0.08);border:1px solid rgba(94,106,210,0.15);';
-            var icon = a.icon ? '<i class="bi ' + a.icon + '" style="font-size:15px;"></i> ' : '';
-            if (a.type === 'link') {
-                html += '<a href="' + a.url + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;color:#EDEDED;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-            } else if (a.type === 'link_blank') {
-                html += '<a href="' + a.url + '" target="_blank" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;color:#EDEDED;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-            } else if (a.type === 'js') {
-                html += '<a href="#" onclick="event.preventDefault();closeActionPanel();' + a.code + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;color:#EDEDED;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-            } else if (a.type === 'delete') {
-                html += '<a href="#" onclick="event.preventDefault();closeActionPanel();deleteUrl=\'' + a.url + '\';new bootstrap.Modal(document.getElementById(\'confirmDeleteModal\')).show();" style="display:flex;align-items:center;gap:8px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;color:#f87171;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-            } else if (a.type === 'duplica') {
-                html += '<a href="#" onclick="event.preventDefault();closeActionPanel();loadAjaxForm(\'' + a.url + '\', \'Duplica ' + (a.titolo || '') + '\');" style="display:flex;align-items:center;gap:8px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;color:#34d399;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-            } else if (a.type === 'custom') {
-                html += a.html;
+        var html = '';
+
+        // Metadati informativi
+        if (meta) {
+            html += '<div style="margin-bottom:10px;padding:10px 12px;background:#0E0F11;border:1px solid #27282D;border-radius:8px;font-size:11px;">';
+
+            // Badge stato
+            if (meta.stato) {
+                var sc = '#8A8F98';
+                if (meta.stato === 'Attivo' || meta.stato === 'attivo' || meta.stato === 'ATTIVO') sc = '#34d399';
+                else if (meta.stato === 'Cessato' || meta.stato === 'cessato' || meta.stato === 'CESSATO') sc = '#f87171';
+                else if (meta.stato === 'Indeterminato') sc = '#60a5fa';
+                else if (meta.stato === 'Determinato') sc = '#fbbf24';
+                html += '<div style="margin-bottom:6px;"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + sc + '20;color:' + sc + ';border:1px solid ' + sc + '40;"><span style="width:6px;height:6px;border-radius:50%;background:' + sc + ';"></span> ' + meta.stato + '</span></div>';
+            }
+
+            // Griglia info
+            if (meta.info && meta.info.length > 0) {
+                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;">';
+                for (var i = 0; i < meta.info.length; i++) {
+                    var inf = meta.info[i];
+                    if (inf.v && inf.v !== '-' && inf.v !== '') {
+                        html += '<div><span style="color:#5C5F66;">' + inf.l + ':</span> <span style="color:#ccc;">' + inf.v + '</span></div>';
+                    }
+                }
+                html += '</div>';
+            }
+
+            // Date
+            if (meta.creatoIl || meta.modificatoIl) {
+                html += '<div style="margin-top:6px;padding-top:6px;border-top:1px solid #27282D;display:flex;gap:12px;font-size:10px;color:#5C5F66;">';
+                if (meta.creatoIl) html += '<span><i class="bi bi-plus-circle me-1"></i>' + meta.creatoIl + '</span>';
+                if (meta.modificatoIl) html += '<span><i class="bi bi-pencil me-1"></i>' + meta.modificatoIl + '</span>';
+                html += '</div>';
+            }
+
+            html += '</div>';
+        }
+
+        // Raggruppa azioni per riga (se presente campo row) o per categoria (fallback)
+        var hasRow = false;
+        for (var _i = 0; _i < actions.length; _i++) {
+            if (actions[_i] && actions[_i].row !== undefined) { hasRow = true; break; }
+        }
+
+        if (hasRow) {
+            var rows = {};
+            for (var _i = 0; _i < actions.length; _i++) {
+                var a = actions[_i];
+                if (!a) continue;
+                var r = a.row || 0;
+                if (!rows[r]) rows[r] = [];
+                rows[r].push(a);
+            }
+            var rowKeys = Object.keys(rows).sort(function(x,y) { return parseInt(x)-parseInt(y); });
+            for (var _ri = 0; _ri < rowKeys.length; _ri++) {
+                var items = rows[rowKeys[_ri]];
+                var cols = items.length;
+                var hasDanger = false;
+                for (var _j = 0; _j < items.length; _j++) {
+                    if (items[_j].cat === 'danger') { hasDanger = true; break; }
+                }
+                html += '<div style="display:grid;grid-template-columns:repeat(' + cols + ',1fr);gap:6px;margin-bottom:6px;' + (hasDanger ? 'border-top:1px solid rgba(248,113,113,0.15);padding-top:6px;' : '') + '">';
+                for (var _j = 0; _j < items.length; _j++) {
+                    var it = items[_j];
+                    var ds;
+                    if (it.cat === 'primary') ds = 'background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);';
+                    else if (it.cat === 'danger') ds = 'background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);color:#f87171;';
+                    else ds = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);';
+                    html += _renderActionBtn(it, ds);
+                }
+                html += '</div>';
+            }
+        } else {
+            var primary = [], secondary = [], danger = [];
+            for (var i = 0; i < actions.length; i++) {
+                var a = actions[i];
+                if (a.cat === 'primary') primary.push(a);
+                else if (a.cat === 'danger') danger.push(a);
+                else secondary.push(a);
+            }
+            if (primary.length > 0) {
+                html += '<div style="display:grid;grid-template-columns:repeat(' + Math.min(primary.length, 2) + ',1fr);gap:6px;margin-bottom:6px;">';
+                for (var i = 0; i < primary.length; i++) {
+                    html += _renderActionBtn(primary[i], 'background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);');
+                }
+                html += '</div>';
+            }
+            if (secondary.length > 0) {
+                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">';
+                for (var i = 0; i < secondary.length; i++) {
+                    html += _renderActionBtn(secondary[i], 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);');
+                }
+                html += '</div>';
+            }
+            if (danger.length > 0) {
+                html += '<div style="border-top:1px solid rgba(248,113,113,0.15);margin-top:6px;padding-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
+                for (var i = 0; i < danger.length; i++) {
+                    html += _renderActionBtn(danger[i], 'background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);color:#f87171;');
+                }
+                html += '</div>';
             }
         }
-        html += '</div>';
+
         body.innerHTML = html;
         document.getElementById('actionPanelOverlay').style.display = 'block';
         document.getElementById('actionPanel').style.display = 'block';
@@ -490,15 +606,30 @@
         var tr = e.target.closest('.clickable-row');
         if (tr && !e.target.closest('a, button, input, select, textarea, .btn, .dropdown-toggle, .toggle-switch, .toggle-slider, .btn-close, .badge, .progetto-checkbox, td a')) {
             var data = getActionsForRow(tr);
-            if (data) openActionPanel(data.title, data.subtitle, data.actions);
+            if (data) openActionPanel(data.title, data.subtitle, data.actions, data.meta || null);
         }
     });
+    window._buildInfoMeta = function(tr, extra) {
+        var info = [];
+        var email = tr.getAttribute('data-email');
+        var tel = tr.getAttribute('data-telefono');
+        var comune = tr.getAttribute('data-comune');
+        if (email) info.push({l:'Email', v:email});
+        if (tel) info.push({l:'Tel', v:tel});
+        if (comune) info.push({l:'Comune', v:comune});
+        if (extra) { for (var _i = 0; _i < extra.length; _i++) info.push(extra[_i]); }
+        var meta = {};
+        if (info.length > 0) meta.info = info;
+        return meta;
+    };
+
     window.getActionsForRow = function(tr) {
         var type = tr.getAttribute('data-type');
         var pk = tr.getAttribute('data-pk');
         var title = tr.getAttribute('data-title') || '';
         var sub = tr.getAttribute('data-sub') || '';
         if (!type || !pk) return null;
+
         if (type === 'datore' || type === 'lavoratore' || type === 'beneficiario') {
             var entity = type;
             var entityLabel = type.charAt(0).toUpperCase() + type.slice(1);
@@ -507,33 +638,36 @@
             var dupUrl = '/ajax/duplica-anagrafica/' + entity + '/' + pk + '/';
             var delUrl = '/ajax/elimina-anagrafica/' + entity + '/' + pk + '/';
             return {
-                title: title,
-                subtitle: sub,
+                title: title, subtitle: sub,
+                meta: _buildInfoMeta(tr),
                 actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', code:"loadAjaxForm('" + modUrl + "','Modifica " + entityLabel + "')"},
+                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', code:"loadAjaxForm('" + modUrl + "','Modifica " + entityLabel + "')"},
                     {icon:'bi-files', label:'Duplica', type:'duplica', url:dupUrl, titolo:entityLabel},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', url:delUrl},
-                    {icon:'bi-file-earmark', label:'Documenti', type:'link', url:docUrl, style:'background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.3);'}
+                    {icon:'bi-file-earmark', label:'Documenti', type:'link', url:docUrl, style:'background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.3);'},
+                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl, deleteTipo:entityLabel, deleteNome:title, deleteImpatto:'Il record viene spostato nella pagina Eliminati (ripristinabile).'},
                 ]
             };
         }
+
         if (type === 'contratto_cessato') {
             var docUrl2 = '/documenti/?contratto_pk=' + pk;
             var modUrl2 = '/ajax/modifica-contratto/' + pk + '/';
             var dupUrlCess = '/ajax/duplica-anagrafica/contratto/' + pk + '/';
             var delUrl2 = '/ajax/elimina-contratto/' + pk + '/';
+            var metaCess = _buildInfoMeta(tr, [{l:'Stato', v:'Cessato'}]);
             return {
-                title: title,
-                subtitle: sub,
+                title: title, subtitle: sub,
+                meta: metaCess,
                 actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', code:"loadAjaxForm('" + modUrl2 + "','Modifica Contratto')"},
+                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', code:"loadAjaxForm('" + modUrl2 + "','Modifica Contratto')"},
                     {icon:'bi-files', label:'Duplica', type:'duplica', url:dupUrlCess, titolo:'Contratto'},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', url:delUrl2},
                     {icon:'bi-file-earmark', label:'Documenti', type:'link', url:docUrl2},
-                    {icon:'bi-arrow-repeat', label:'Riattiva', type:'js', code:"riattivaContratto(" + pk + ", null)"},
+                    {icon:'bi-arrow-repeat', label:'Riattiva', type:'js', code:"riattivaContratto(" + pk + ", null)", style:'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399;'},
+                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl2, deleteTipo:'Contratto cessato', deleteNome:title, deleteImpatto:'Eliminazione definitiva del contratto.'},
                 ]
             };
         }
+
         if (type === 'contratto') {
             var table = tr.closest('table');
             var mp = table ? table.getAttribute('data-mp') : '';
@@ -546,28 +680,36 @@
             var docUrl3 = '/documenti/?contratto_pk=' + pk;
             var dupUrl3 = '/ajax/duplica-anagrafica/contratto/' + pk + '/';
             var delUrl3 = '/ajax/elimina-anagrafica/contratto/' + pk + '/';
+            var metaCont = _buildInfoMeta(tr, [
+                {l:'Tipo', v:tr.getAttribute('data-tipo-contratto')||'-'},
+                {l:'Livello', v:tr.getAttribute('data-livello')||'-'},
+                {l:'Assunzione', v:tr.getAttribute('data-data-assunzione')||'-'},
+                {l:'Fine', v:tr.getAttribute('data-data-fine')||'-'},
+            ]);
+            metaCont.stato = tr.getAttribute('data-stato') || 'Attivo';
             return {
-                title: title,
-                subtitle: sub,
+                title: title, subtitle: sub,
+                meta: metaCont,
                 actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', code:"loadAjaxForm('" + modUrl3 + "','Modifica Contratto')", style:'background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);'},
-                    {icon:'bi-files', label:'Duplica', type:'duplica', url:dupUrl3, titolo:'Contratto'},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', url:delUrl3},
-                    mp ? {icon:'bi-calculator', label:'Busta < ' + mp, type:'link', url:'/calcoli/?contratto=' + pk + '&mese=' + mp + '&anno=' + ap} : null,
-                    mc ? {icon:'bi-calculator', label:'Busta ' + mc, type:'link', url:'/calcoli/?contratto=' + pk + '&mese=' + mc + '&anno=' + ac, style:'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);'} : null,
-                    ms ? {icon:'bi-calculator', label:'Busta > ' + ms, type:'link', url:'/calcoli/?contratto=' + pk + '&mese=' + ms + '&anno=' + as_} : null,
-                    {icon:'bi-folder2-open', label:'Documenti archivio', type:'link', url:docUrl3},
-                    {icon:'bi-file-pdf', label:'Genera documento', type:'js', code:"apriGeneraDocumento(" + pk + ")", style:'background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.3);'},
+                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', row:1, code:"loadAjaxForm('" + modUrl3 + "','Modifica Contratto')"},
+                    mp ? {icon:'bi-calculator', label:'Busta < ' + mp, type:'link', row:2, url:'/calcoli/?contratto=' + pk + '&mese=' + mp + '&anno=' + ap} : null,
+                    mc ? {icon:'bi-calculator', label:'Busta ' + mc, type:'link', row:2, url:'/calcoli/?contratto=' + pk + '&mese=' + mc + '&anno=' + ac, style:'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);'} : null,
+                    ms ? {icon:'bi-calculator', label:'Busta > ' + ms, type:'link', row:2, url:'/calcoli/?contratto=' + pk + '&mese=' + ms + '&anno=' + as_} : null,
+                    {icon:'bi-files', label:'Duplica', type:'duplica', row:3, url:dupUrl3, titolo:'Contratto'},
+                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', row:3, url:delUrl3, deleteTipo:'Contratto', deleteNome:title, deleteImpatto:'Il contratto viene spostato in Contratti Cessati.'},
+                    {icon:'bi-folder2-open', label:'Documenti arch.', type:'link', row:4, url:docUrl3},
+                    {icon:'bi-file-pdf', label:'Genera documento', type:'js', row:4, code:"apriGeneraDocumento(" + pk + ")", style:'background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.3);'},
                 ].filter(function(x) { return x !== null; })
             };
         }
+
         if (type === 'documento') {
             var seeUrl = '/ajax/vedi-documento/' + pk + '/';
             var cartellaUrl = '/apri-cartella-documento/' + pk + '/';
             var delUrl4 = '/ajax/elimina-documento/' + pk + '/';
             var hasContratto = tr.getAttribute('data-has-contratto') === '1';
             var actions = [
-                {icon:'bi-eye', label:'Vedi', type:'js', code:"apriNelPannello('" + seeUrl + "', " + pk + ")"},
+                {icon:'bi-eye', label:'Vedi', type:'js', cat:'primary', code:"apriNelPannello('" + seeUrl + "', " + pk + ")"},
                 {icon:'bi-download', label:'Scarica', type:'link', url:seeUrl},
                 {icon:'bi-printer', label:'Stampa', type:'js', code:"stampaDocumento(" + pk + ", null)"},
                 {icon:'bi-folder2-open', label:'Apri cartella', type:'link', url:cartellaUrl}
@@ -576,9 +718,18 @@
                 actions.push({icon:'bi-link-45deg', label:'Collega contratto', type:'js', code:"apriCollegaContratto(" + pk + ")"});
             }
             actions.push({icon:'bi-envelope', label:'Invia Email', type:'js', code:"apriInvioDocumento(" + pk + ")"});
-            actions.push({icon:'bi-trash3', label:'Elimina', type:'delete', url:delUrl4});
-            return {title: title, subtitle: sub, actions: actions};
+            actions.push({icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl4, deleteTipo:'Documento', deleteNome:title, deleteImpatto:'Il documento viene eliminato definitivamente.'});
+            var metaDoc = {};
+            var creato = tr.getAttribute('data-creato');
+            var fileSize = tr.getAttribute('data-file-size');
+            if (creato || fileSize) {
+                metaDoc.info = [];
+                if (creato) metaDoc.info.push({l:'Creato', v:creato});
+                if (fileSize) metaDoc.info.push({l:'Dimensione', v:fileSize});
+            }
+            return {title: title, subtitle: sub, meta: metaDoc, actions: actions};
         }
+
         if (type === 'tabella') {
             var table = tr.closest('table');
             var tipo = table ? table.getAttribute('data-tipo') : '';
@@ -587,33 +738,32 @@
             var dupUrl = '/ajax/duplica-tabella/' + tipo + '/' + pk + '/';
             var delUrl = '/ajax/elimina-tabella/' + tipo + '/' + pk + '/';
             return {
-                title: title,
-                subtitle: sub,
+                title: title, subtitle: sub,
                 actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', code:"loadAjaxForm('" + modUrl + "','Modifica')"},
+                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', code:"loadAjaxForm('" + modUrl + "','Modifica')"},
                     {icon:'bi-files', label:'Duplica', type:'duplica', url:dupUrl, titolo:''},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', url:delUrl}
+                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl, deleteTipo:'Record', deleteNome:title, deleteImpatto:'Eliminazione definitiva.'},
                 ]
             };
         }
+
         if (type === 'backup') {
             return {
-                title: title,
-                subtitle: sub,
+                title: title, subtitle: sub,
                 actions: [
-                    {icon:'bi-arrow-counterclockwise', label:'Ripristina', type:'js', code:"ripristinaBackup(" + pk + ", null)"},
-                    {icon:'bi-trash3', label:'Elimina', type:'js', code:"eliminaBackup(" + pk + ")"}
+                    {icon:'bi-arrow-counterclockwise', label:'Ripristina', type:'js', cat:'primary', code:"ripristinaBackup(" + pk + ", null)"},
+                    {icon:'bi-trash3', label:'Elimina', type:'js', cat:'danger', code:"eliminaBackup(" + pk + ")"}
                 ]
             };
         }
+
         if (type === 'eliminato') {
             return {
-                title: title,
-                subtitle: sub,
+                title: title, subtitle: sub,
                 actions: [
-                    {icon:'bi-eye', label:'Vedi', type:'js', code:"apriVediEliminato(" + pk + ")"},
-                    {icon:'bi-arrow-repeat', label:'Ripristina', type:'js', code:"confermaRipristino(" + pk + ", null)"},
-                    {icon:'bi-trash3-fill', label:'Elimina definitivamente', type:'js', code:"eliminaDefinitivamente(" + pk + ", null)"}
+                    {icon:'bi-eye', label:'Vedi', type:'js', cat:'primary', code:"apriVediEliminato(" + pk + ")"},
+                    {icon:'bi-arrow-repeat', label:'Ripristina', type:'js', code:"confermaRipristino(" + pk + ", null)", style:'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399;'},
+                    {icon:'bi-trash3-fill', label:'Elimina definitivamente', type:'js', cat:'danger', code:"eliminaDefinitivamente(" + pk + ", null)"}
                 ]
             };
         }
@@ -653,6 +803,18 @@
             if (confirmModal) confirmModal.hide();
             var offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('panelNuovo'));
             if (offcanvas) offcanvas.hide();
+        } else if (target.closest && target.closest('[data-delete-btn]')) {
+            var delBtn = target.closest('[data-delete-btn]');
+            e.preventDefault();
+            closeActionPanel();
+            window.deleteUrl = delBtn.getAttribute('data-delete-url') || '';
+            var dm = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            document.getElementById('deleteEntityType').textContent = delBtn.getAttribute('data-delete-tipo') || '';
+            document.getElementById('deleteEntityName').textContent = delBtn.getAttribute('data-delete-nome') || '';
+            document.getElementById('deleteImpact').textContent = delBtn.getAttribute('data-delete-impatto') || '';
+            window.deleteUrl = window.deleteUrl || '';
+            dm.show();
+            return;
         } else if (target.id === 'confirmDeleteBtn') {
             var pk = target.getAttribute('data-delete-pk');
             var url = pk ? '/ajax/elimina-contratto/' + pk + '/' : (window.deleteUrl || '');
@@ -3694,7 +3856,7 @@
       fetch('/ajax/prospetto-tfr/' + pk + '/')
         .then(function(r) { return r.json(); })
         .then(function(d) {
-          if (d.errore) { content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;">' + d.errore + '</div>'; return; }
+          if (d.errore) { content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;"></div>'; content.firstChild.textContent = d.errore; return; }
           if (!d.prospetto || d.prospetto.length === 0) {
             content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#545;">Nessun dato TFR (contratto INCLUSO o senza data inizio TFR).</div>';
             return;
@@ -4355,7 +4517,7 @@
             .then(function(d) {
                 loading.style.display = 'none';
                 if (d.errore) {
-                    content.innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
+                    content.innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i><span></span></div>'; content.querySelector('span').textContent = d.errore;
                     if (pdfBtn) pdfBtn.style.display = 'none';
                     return;
                 }

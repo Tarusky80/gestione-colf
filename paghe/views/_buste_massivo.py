@@ -249,16 +249,20 @@ def ajax_genera_buste_massivo(request):
 @require_http_methods(['POST'])
 def ajax_genera_busta_per_email(request, contratto_pk):
     """Genera busta paga per un singolo contratto e restituisce il pk del documento."""
-    import json as json_lib
-    from datetime import date
-    data = json_lib.loads(request.body)
-    mese = int(data.get('mese', date.today().month))
-    anno = int(data.get('anno', date.today().year))
-    contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
-    doc, pdf = _genera_busta_massivo_pdf(contratto, mese, anno, request.user)
-    if doc is None:
-        return JsonResponse({'error': pdf}, status=400)
-    return JsonResponse({'ok': True, 'doc_pk': doc.pk})
+    try:
+        import json as json_lib
+        from datetime import date
+        data = json_lib.loads(request.body)
+        mese = int(data.get('mese', date.today().month))
+        anno = int(data.get('anno', date.today().year))
+        contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
+        doc, pdf = _genera_busta_massivo_pdf(contratto, mese, anno, request.user)
+        if doc is None:
+            return JsonResponse({'error': pdf}, status=400)
+        return JsonResponse({'ok': True, 'doc_pk': doc.pk})
+    except Exception as e:
+        logger.error('Errore generazione busta per email: %s', str(e))
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 # --- ajax_invia_buste_massivo ---

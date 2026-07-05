@@ -57,7 +57,7 @@
         </thead>
         <tbody>
             {% for datore in datori %}
-            <tr class="clickable-row" data-type="datore" data-pk="{{ datore.pk }}" data-title="{{ datore.nome_cognome }}" data-sub="{{ datore.codice_fiscale }}" data-comune="{{ datore.comune|default:'' }}">
+            <tr class="clickable-row" data-type="datore" data-pk="{{ datore.pk }}" data-title="{{ datore.nome_cognome }}" data-sub="{{ datore.codice_fiscale }}" data-comune="{{ datore.comune|default:'' }}" data-email="{{ datore.email|default:'' }}" data-telefono="{{ datore.telefono|default:'' }}">
                 <td><div class="fw-bold">{{ datore.nome_cognome }}</div></td>
                 <td><div class="text-secondary">{{ datore.codice_fiscale }}</div></td>
                 <td>{{ datore.indirizzo|default:"-" }}</td>

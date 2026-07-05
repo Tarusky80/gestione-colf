@@ -172,7 +172,7 @@
         <tbody>
             {% for c in contratti %}
             {% with progetti=c.progetto.all %}
-            <tr class="clickable-row" data-type="contratto" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} - {{ c.lavoratore.nome_cognome }}{% for p in progetti %}{% if forloop.first %} - {% endif %}{{ p.beneficiario.nome_cognome }} [{{ p.tipo.nome }}]{% if not forloop.last %} | {% endif %}{% endfor %}" data-sub="Liv. {{ c.parametri_minimi.livello.codice }} · {{ c.get_stato_display }}" data-comune="{% if progetti %}{{ progetti.0.beneficiario.comune|default:'' }}{% endif %}" data-budget_annuale="{{ c.budget_annuale_totale }}">
+            <tr class="clickable-row" data-type="contratto" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} - {{ c.lavoratore.nome_cognome }}{% for p in progetti %}{% if forloop.first %} - {% endif %}{{ p.beneficiario.nome_cognome }} [{{ p.tipo.nome }}]{% if not forloop.last %} | {% endif %}{% endfor %}" data-sub="Liv. {{ c.parametri_minimi.livello.codice }} · {{ c.get_stato_display }}" data-comune="{% if progetti %}{{ progetti.0.beneficiario.comune|default:'' }}{% endif %}" data-budget_annuale="{{ c.budget_annuale_totale }}" data-stato="{{ c.stato }}" data-tipo-contratto="{{ c.get_tipo_contratto_display }}" data-data-assunzione="{{ c.data_assunzione|date:'d/m/Y' }}" data-data-fine="{{ c.data_fine|date:'d/m/Y'|default:'-' }}" data-livello="{{ c.parametri_minimi.livello.codice }}">
                 <td><div class="fw-bold">{{ c.datore.nome_cognome }}</div></td>
                 <td><div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div></td>
                 <td>

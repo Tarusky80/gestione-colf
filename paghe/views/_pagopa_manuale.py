@@ -1,5 +1,6 @@
 """Modulo _pagopa_manuale - generato automaticamente da views.py"""
 
+import contextlib
 from paghe.views._common_imports import *
 
 from paghe.views._helpers import _get_cartella_documenti
@@ -31,7 +32,8 @@ def crea_pagopa_manuale(request):
 
     contratto_pk = request.GET.get('contratto_pk')
     if contratto_pk:
-        _log_inps('APERTURA_PAGOPA_MANUALE', ContrattoAttivo.objects.get(pk=contratto_pk), request)
+        with contextlib.suppress(ContrattoAttivo.DoesNotExist):
+            _log_inps('APERTURA_PAGOPA_MANUALE', ContrattoAttivo.objects.get(pk=contratto_pk), request)
 
     download_folder = os.path.join(os.path.expanduser('~'), 'Downloads')
 
@@ -111,7 +113,7 @@ def ajax_carica_pdf_pagopa_manuale(request):
         file_size=len(pdf_bytes),
         file_name=nome_file,
         contratto=contratto,
-        datore=contratto.datore,
+        datore=contratto.datore if contratto.datore_id else None,
         lavoratore=contratto.lavoratore,
         creato_da=request.user if request.user.is_authenticated else None,
     )

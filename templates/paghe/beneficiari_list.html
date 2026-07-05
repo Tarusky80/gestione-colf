@@ -61,7 +61,7 @@
         </thead>
         <tbody>
             {% for beneficiario in beneficiari %}
-            <tr class="clickable-row" data-type="beneficiario" data-pk="{{ beneficiario.pk }}" data-title="{{ beneficiario.nome_cognome }}" data-sub="{{ beneficiario.codice_fiscale }}" data-comune="{{ beneficiario.comune|default:'' }}">
+            <tr class="clickable-row" data-type="beneficiario" data-pk="{{ beneficiario.pk }}" data-title="{{ beneficiario.nome_cognome }}" data-sub="{{ beneficiario.codice_fiscale }}" data-comune="{{ beneficiario.comune|default:'' }}" data-email="{{ beneficiario.email|default:'' }}" data-telefono="{{ beneficiario.telefono|default:'' }}">
                 <td><div class="fw-bold">{{ beneficiario.nome_cognome }}</div></td>
                 <td><div class="text-secondary">{{ beneficiario.codice_fiscale }}</div></td>
                 <td>{{ beneficiario.indirizzo|default:"-" }}</td>
