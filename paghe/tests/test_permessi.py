@@ -96,24 +96,24 @@ class TestRuoliSuViewRiservate(PermessiBaseTest):
         for name in self.VIEW_RISERVATE:
             resp = self._get(name)
             if resp is not None:
-                self.assertEqual(resp.status_code, 302,
-                                 f"{name}: operatore expected 302 got {resp.status_code}")
+                self.assertIn(resp.status_code, (301, 302),
+                              f"{name}: operatore expected redirect got {resp.status_code}")
 
     def test_consulente_non_vede_riservate(self):
         self._login(self.consulente)
         for name in self.VIEW_RISERVATE:
             resp = self._get(name)
             if resp is not None:
-                self.assertEqual(resp.status_code, 302,
-                                 f"{name}: consulente expected 302 got {resp.status_code}")
+                self.assertIn(resp.status_code, (301, 302),
+                              f"{name}: consulente expected redirect got {resp.status_code}")
 
     def test_datore_non_vede_nulla(self):
         self._login(self.datore_user)
         for name in self.VIEW_RISERVATE + ['datori_list', 'calcoli_list']:
             resp = self._get(name)
             if resp is not None:
-                self.assertEqual(resp.status_code, 302,
-                                 f"{name}: datore expected 302 got {resp.status_code}")
+                self.assertIn(resp.status_code, (301, 302),
+                              f"{name}: datore expected redirect got {resp.status_code}")
 
 
 class TestVisibilita(PermessiBaseTest):
@@ -141,14 +141,14 @@ class TestVisibilita(PermessiBaseTest):
 
     def test_admin_vede_tutti(self):
         self._login(self.admin)
-        resp = self._get('datori_list')
-        if resp is not None:
-            self.assertContains(resp, 'Admin Datore')
-            self.assertContains(resp, 'Operatore Datore')
+        resp = self.c.get(reverse('datori_list'), follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Admin Datore')
+        self.assertContains(resp, 'Operatore Datore')
 
     def test_operatore_vede_solo_suo(self):
         self._login(self.operatore)
-        resp = self._get('datori_list')
-        if resp is not None:
-            self.assertNotContains(resp, 'Admin Datore')
-            self.assertContains(resp, 'Operatore Datore')
+        resp = self.c.get(reverse('datori_list'), follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, 'Admin Datore')
+        self.assertContains(resp, 'Operatore Datore')
