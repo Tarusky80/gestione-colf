@@ -17,6 +17,8 @@ jobs:
 
     env:
       PYTHONUNBUFFERED: '1'
+      DJANGO_DEBUG: 'True'
+      DJANGO_SECRET_KEY: 'ci-secret-key-not-for-production'
 
     steps:
       - uses: actions/checkout@v4
@@ -32,8 +34,6 @@ jobs:
       - name: Crea .env per CI
         run: |
           cat > .env << 'EOF'
-          DJANGO_SECRET_KEY=ci-secret-key-not-for-production
-          DJANGO_DEBUG=False
           DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
           EOF
 
@@ -45,7 +45,7 @@ jobs:
 
       - name: Test con coverage
         run: |
-          coverage run manage.py test paghe.tests -v2
+          coverage run manage.py test paghe.tests -v2 --noinput 2>&1
           coverage xml
           coverage report
 
