@@ -45,9 +45,12 @@ jobs:
 
       - name: Test con coverage
         run: |
-          coverage run manage.py test paghe.tests -v2 --noinput 2>&1
-          coverage xml
-          coverage report
+          set +e
+          python -m coverage run manage.py test paghe.tests -v2 --noinput
+          status=$?
+          python -m coverage xml
+          python -m coverage report
+          exit $status
 
       - name: Posta commento coverage su PR
         if: github.event_name == 'pull_request' && (success() || failure())
