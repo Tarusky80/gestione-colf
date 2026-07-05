@@ -1,0 +1,39 @@
+<style>
+.tpl-group { margin-bottom: 20px; }
+.tpl-group-title { font-size:13px; font-weight:600; color:#EDEDED; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #27282D; }
+.tpl-item { display:block; width:100%; text-align:left; padding:8px 12px; margin-bottom:4px; background:rgba(255,255,255,0.03); border:1px solid #27282D; border-radius:8px; cursor:pointer; transition:all 0.15s; font-size:11px; color:#8A8F98; }
+.tpl-item:hover { background:rgba(94,106,210,0.08); border-color:rgba(94,106,210,0.25); color:#EDEDED; }
+.tpl-item .codice { font-weight:600; color:#5E6AD2; font-size:10px; display:block; margin-bottom:2px; }
+.tpl-item .oggetto { display:block; }
+.tpl-item .anteprima { display:block; font-size:11px; color:#6B6F78; margin-top:4px; line-height:1.4; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+.tpl-search { width:100%; padding:8px 12px; background:#0E0F11; border:1px solid #27282D; border-radius:8px; color:#EDEDED; font-size:12px; outline:none; margin-bottom:12px; box-sizing:border-box; }
+.tpl-search:focus { border-color:#5E6AD2; }
+.tpl-hidden { display:none !important; }
+.tpl-group-empty { display:none; }
+</style>
+<div style="padding:20px 24px;display:flex;flex-direction:column;height:100%;box-sizing:border-box;">
+    <div style="font-size:14px;font-weight:700;color:#EDEDED;margin-bottom:4px;">Genera documento da template</div>
+    <div style="font-size:11px;color:#8A8F98;margin-bottom:12px;">
+        Contratto: <strong style="color:#EDEDED;">{{ contratto.datore.nome_cognome }} - {{ contratto.lavoratore.nome_cognome }}{% for p in contratto.progetto.all %}<br> - {{ p.beneficiario.nome_cognome }} [{{ p.tipo.nome }}]{% endfor %}</strong>
+    </div>
+    <div style="margin-bottom:8px;">
+        <a href="{% url 'documentale_list' 'contratto' %}" target="_blank" style="color:#9ca3ff;font-size:11px;text-decoration:none;">
+            <i class="bi bi-file-earmark-code"></i> Gestione Documentale
+        </a>
+    </div>
+    <input type="text" class="tpl-search" id="tplSearch" placeholder="Cerca per codice o oggetto..." oninput="filtraTemplate(this.value)">
+    <div id="tplList" style="flex:1;overflow-y:auto;padding-right:4px;min-height:0;">
+        {% for tipo_nome, templates in grouped.items %}
+        <div class="tpl-group" data-tipo="{{ tipo_nome }}">
+            <div class="tpl-group-title">{{ tipo_nome }}</div>
+            {% for t in templates %}
+            <div class="tpl-item" data-search="{{ t.codice|lower }} {{ t.titolo|lower }} {{ t.corpo_testo|striptags|truncatechars:150|lower }}" onclick="selezionaTemplate({{ contratto.pk }}, {{ t.pk }})">
+                <span class="codice">{{ t.codice }}</span>
+                <span class="oggetto">{{ t.titolo }}</span>
+                <span class="anteprima">{{ t.corpo_testo|striptags|truncatechars:150 }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>

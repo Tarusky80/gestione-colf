@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+{% load tabelle_tags %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'tabella_list' 'parametri-ccnl' %}">Tabelle</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ titolo }}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">{{ titolo|upper }}
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">Gestione {{ verbose_name|default:titolo|lower }}.</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if tipo_url == 'progetti-regionali' %}
+        <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#9ca3ff;border:1px solid rgba(94,106,210,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-download me-1"></i> Export XLSX</a>
+        <button class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-upload me-1"></i> Importa</button>
+        {% endif %}
+        <button class="btn btn-sm" onclick="loadAjaxForm('/ajax/nuovo-tabella/{{ tipo_url }}/', 'Nuovo {{ titolo }}')" style="background: #5E6AD2; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-size: 12px; font-weight: 600;">
+            <i class="bi bi-plus-lg me-1"></i> Nuovo
+        </button>
+        {% if tipo_url == 'parametri-ccnl' %}
+        <a href="{% url 'verifica_ccnl' %}" class="btn btn-sm" style="background:rgba(139,92,246,0.1);color:#a78bfa;border:1px solid rgba(139,92,246,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-search me-1"></i> Verifica con CCNL</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-{% if years %}5{% else %}8{% endif %}">
+            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+            <div style="position: relative;">
+                <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
+                <input type="text" id="fTesto" class="form-control" placeholder="Cerca in tutte le colonne..." oninput="filteraTabella()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
+            </div>
+        </div>
+        {% if years %}
+        <div class="col-md-3">
+            <label class="mb-1 fw-bold" class="c-10-up">Filtra anno</label>
+            <select id="fAnno" class="form-select" onchange="filteraTabella()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; border-radius:8px;">
+                <option value="">Tutti gli anni</option>
+                {% for y in years %}
+                <option value="{{ y.anno }}">{{ y.anno }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+        <div class="col-md-{% if years %}4{% else %}4{% endif %} d-flex align-items-end justify-content-end">
+            <span id="fCount" style="font-size:11px; color:#5C5F66;"></span>
+        </div>
+    </div>
+</div>
+
+<div class="custom-table-container" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; overflow: hidden;">
+    <div style="overflow-x: auto;">
+        <table class="table custom-table sortable" id="tabellaTable" data-tipo="{{ tipo_url }}">
+            <thead>
+                <tr>
+                    {% for f in fields %}
+                        {% if not keep_fields or f.name in keep_fields %}
+                        <th onclick="ordinaTabella(this, {{ forloop.counter0 }})" style="cursor:pointer; user-select:none;">{{ f.verbose_name }} <i class="bi bi-arrow-down-up" style="font-size:9px; opacity:0.4; margin-left:4px;"></i></th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objects %}
+                <tr class="clickable-row" data-type="tabella" data-pk="{{ obj.pk }}" data-title="{{ obj }}">
+                    {% for f in fields %}
+                        {% if not keep_fields or f.name in keep_fields %}
+                        {% with val=obj|field_value:f.name %}
+                        <td>
+                            {% if f.name == 'livello' and val.type != 'none' %}
+                                {% with codice=val.value.codice|default:val.value %}
+                                {% with colore=colori_livelli|get_item:codice|default:'#5E6AD2' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
+                                {% endwith %}
+                            {% elif f.name == 'codice' and tipo_url == 'livelli' and val.type != 'none' %}
+                                {% with colore=obj.colore|default:'#5E6AD2' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
+                            {% elif f.name == 'anno' and val.value %}{{ val.value|floatformat:0 }}
+                            {% elif f.name == 'nome' and tipo_url == 'tipi-progetto' and val.type != 'none' %}
+                                {% with colore=obj.colore|default:'#10b981' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
+                            {% elif val.type == 'bool' and val.value %}<i class="bi bi-check-circle-fill text-success"></i>
+                            {% elif val.type == 'bool' and not val.value %}<i class="bi bi-x-circle-fill text-secondary"></i>
+                            {% elif val.type == 'none' %}<span class="text-secondary small">—</span>
+                            {% elif val.type == 'date' %}{{ val.value|date:"d/m/Y" }}
+                            {% elif val.type == 'number' %}€ {{ val.value|floatformat:2 }}
+                            {% else %}
+                                {% if f.name == 'corpo_testo' %}
+                                    {{ val.value|striptags|tronca_caratteri:150 }}
+                                {% elif f.name in truncate_fields %}
+                                    {{ val.value|tronca_parole:10|safe }}
+                                {% else %}
+                                    {{ val.value }}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% empty %}
+                <tr><td colspan="99" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun dato presente</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// === ORDINAMENTO COLONNE ===
+var _sortDir = {};
+function ordinaTabella(th, idx) {
+    var table = document.getElementById('tabellaTable');
+    var tbody = table.querySelector('tbody');
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+    if (rows.length === 0 || (rows.length === 1 && rows[0].querySelectorAll('td').length > 5 && !rows[0].querySelector('td[colspan]'))) return;
+    var dir = _sortDir[idx] === 'asc' ? 'desc' : 'asc';
+    _sortDir[idx] = dir;
+    rows.sort(function(a, b) {
+        var va = (a.cells[idx] ? a.cells[idx].textContent.trim() : '');
+        var vb = (b.cells[idx] ? b.cells[idx].textContent.trim() : '');
+        if (va === '—') va = '';
+        if (vb === '—') vb = '';
+        var na = parseFloat(va.replace(/[€.\s]/g, '').replace(',', '.'));
+        var nb = parseFloat(vb.replace(/[€.\s]/g, '').replace(',', '.'));
+        if (!isNaN(na) && !isNaN(nb)) return dir === 'asc' ? na - nb : nb - na;
+        return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+    rows.forEach(function(r) { tbody.appendChild(r); });
+    // Aggiorna icone
+    table.querySelectorAll('th i.bi').forEach(function(ic) { ic.className = 'bi bi-arrow-down-up'; ic.style.opacity = '0.4'; });
+    var icon = th.querySelector('i.bi');
+    if (icon) { icon.className = dir === 'asc' ? 'bi bi-sort-up' : 'bi bi-sort-down'; icon.style.opacity = '0.9'; }
+}
+
+// === FILTRO TESTO + ANNO ===
+function filteraTabella() {
+    var testo = (document.getElementById('fTesto').value || '').toUpperCase();
+    var annoSel = document.getElementById('fAnno');
+    var anno = annoSel ? annoSel.value : '';
+    var table = document.getElementById('tabellaTable');
+    var rows = table.getElementsByTagName('tr');
+    var visibili = 0;
+    for (var i = 1; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName('td');
+        if (!cells || cells.length < 2) continue;
+        var mostra = true;
+        // Filtro testo
+        if (testo) {
+            mostra = false;
+            for (var j = 0; j < cells.length; j++) {
+                var txt = (cells[j].textContent || '').toUpperCase();
+                if (txt.indexOf(testo) !== -1) { mostra = true; break; }
+            }
+        }
+        // Filtro anno (cerca nella cella dell'anno — di solito indice 2)
+        if (mostra && anno) {
+            var foundAnno = false;
+            for (var j = 0; j < cells.length; j++) {
+                var txt2 = (cells[j].textContent || '').trim();
+                if (txt2 === anno) { foundAnno = true; break; }
+            }
+            if (!foundAnno) mostra = false;
+        }
+        rows[i].style.display = mostra ? '' : 'none';
+        if (mostra) visibili++;
+    }
+    var counter = document.getElementById('fCount');
+    if (counter) counter.textContent = visibili + ' di ' + (rows.length - 1);
+}
+document.addEventListener('DOMContentLoaded', filteraTabella);
+</script>
+{% include 'paghe/_import_xlsx_modal.html' with tipo='progetti-regionali' modal_suffix='progetti' %}
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — {{ titolo|default:"Tabella" }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Pagina di gestione della tabella <b>{{ titolo|default:"generica" }}</b>. Da qui puoi visualizzare, cercare, aggiungere, modificare e duplicare gli elementi.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare l'elenco in tempo reale.<br>
+        <b>2.</b> Se presente, usa il menu a tendina <b>Anno</b> per filtrare per anno.<br>
+        <b>3.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina.<br>
+        <b>4.</b> <b>Nuovo</b> — aggiunge un nuovo elemento tramite pannello laterale.<br>
+        <b>5.</b> <b>Export XLSX</b> (se disponibile) — scarica l'elenco in Excel.<br>
+        <b>6.</b> <b>Importa</b> (se disponibile) — carica dati da file XLSX.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Ordinamento</b><br>
+        Clicca sulle intestazioni delle colonne per ordinare la tabella in ordine crescente o decrescente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

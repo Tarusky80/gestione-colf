@@ -1,0 +1,69 @@
+<div class="modal fade" id="invioModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:500px;">
+    <div class="modal-content" style="background:#1C1C1F; border:1px solid #27282D; border-radius:16px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D; padding:20px 24px;">
+        <h5 class="modal-title" style="color:#EDEDED; font-weight:600;">
+          <i class="bi bi-envelope" style="color:#10b981; margin-right:8px;"></i> Invia Contributi INPS
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="formInvioContributi" onsubmit="return inviaContributiEmail(event)">
+        {% csrf_token %}
+        <div class="modal-body" style="padding:24px;">
+          <p style="color:#8A8F98; font-size:14px; margin-bottom:16px;">Seleziona i datori a cui inviare il PDF:</p>
+          <div style="max-height:300px; overflow-y:auto;">
+            {% for d in datori %}
+            <label class="d-flex align-items-center gap-3" style="padding:8px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s;" onmouseenter="this.style.background='#27282D'" onmouseleave="this.style.background='transparent'">
+              <input type="checkbox" name="destinatari" value="{{ d.pk }}" style="accent-color:#5E6AD2; width:16px; height:16px;">
+              <div>
+                <div style="color:#EDEDED; font-size:14px; font-weight:500;">{{ d.nome_cognome }}</div>
+                <div style="color:#8A8F98; font-size:11px;">{{ d.email|default:'—' }} · {{ d.codice_fiscale }}</div>
+              </div>
+            </label>
+            {% empty %}
+            <div style="color:#545; text-align:center; padding:30px 0;">
+              <i class="bi bi-people" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+              <div style="font-size:13px;">Nessun datore con email valida</div>
+            </div>
+            {% endfor %}
+          </div>
+          <div id="esitoContributi" class="mt-2 small" style="color:#8A8F98;"></div>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid #27282D; padding:16px 24px; gap:8px;">
+          <button type="button" class="btn" data-bs-dismiss="modal" style="background:#27282D; color:#8A8F98; border:none; border-radius:10px; padding:8px 20px; font-size:13px;">Annulla</button>
+          <button type="submit" class="btn" id="btnInvioContributi" style="background:#10b981; color:white; border:none; border-radius:10px; padding:8px 20px; font-size:13px; font-weight:600;">
+            <i class="bi bi-send"></i> Invia
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function inviaContributiEmail(e) {
+  e.preventDefault();
+  var btn = document.getElementById('btnInvioContributi');
+  var esito = document.getElementById('esitoContributi');
+  var csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  var checkboxes = document.querySelectorAll('#formInvioContributi input[name=destinatari]:checked');
+  var destinatari = Array.from(checkboxes).map(function(cb) { return cb.value; });
+  if (destinatari.length === 0) { esito.innerHTML = '<span style="color:#fbbf24;">Seleziona almeno un destinatario.</span>'; return false; }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Invio...';
+  fetch('{% url "ajax_contributi_ccnl_invia_email" %}', {
+    method: 'POST', headers: {'X-CSRFToken': csrf, 'Content-Type': 'application/json'},
+    body: JSON.stringify({destinatari: destinatari})
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.ok) {
+      var ok = data.risultati.filter(function(r) { return r.ok; }).length;
+      var ko = data.risultati.filter(function(r) { return !r.ok; }).length;
+      esito.innerHTML = '<span style="color:#10b981;">Invio completato: ' + ok + ' OK' + (ko ? ', ' + ko + ' falliti' : '') + '.</span>';
+    } else { esito.innerHTML = '<span style="color:#ff6b6b;">Errore: ' + (data.errore || 'sconosciuto') + '</span>'; }
+  }).catch(function(err) {
+    esito.innerHTML = '<span style="color:#ff6b6b;">Errore di rete: ' + err.message + '</span>';
+  }).finally(function() {
+    btn.disabled = false; btn.innerHTML = '<i class="bi bi-send"></i> Invia';
+  });
+  return false;
+}
+</script>

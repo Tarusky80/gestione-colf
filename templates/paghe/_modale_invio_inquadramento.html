@@ -1,0 +1,101 @@
+{% load static %}
+<div class="modal fade" id="modalInvioInquadramento" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:500px;">
+    <div class="modal-content" style="background:#1C1C1F; border:1px solid #27282D; border-radius:16px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D; padding:20px 24px;">
+        <h5 class="modal-title" style="color:#EDEDED; font-weight:600;">
+          <i class="bi bi-envelope" style="color:#10b981; margin-right:8px;"></i> Invia Inquadramento via Email
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px;">
+        <p style="color:#8A8F98; font-size:14px; margin-bottom:16px;">Seleziona i datori a cui inviare il PDF:</p>
+        <div style="margin-bottom:12px;">
+          <input type="text" id="inqFiltraDatori" class="form-control" placeholder="Filtra datori..." style="background:#0E0F11; border:1px solid #27282D; color:#EDEDED; border-radius:8px; font-size:13px;">
+        </div>
+        <div id="inqListaDatori" style="max-height:300px; overflow-y:auto;">
+          {% for d in datori %}
+          <label class="d-flex align-items-center gap-3" style="padding:8px 12px; border-radius:8px; cursor:pointer; transition:background 0.15s; display:flex;" onmouseenter="this.style.background='#27282D'" onmouseleave="this.style.background='transparent'">
+            <input type="checkbox" class="inq-datore-cb" value="{{ d.pk }}" style="accent-color:#5E6AD2; width:16px; height:16px;">
+            <div>
+              <div style="color:#EDEDED; font-size:14px; font-weight:500;">{{ d.nome_cognome }}</div>
+              <div style="color:#8A8F98; font-size:11px;">{{ d.email|default:'—' }} · {{ d.citta|default:'' }}</div>
+            </div>
+          </label>
+          {% empty %}
+          <div style="color:#545; text-align:center; padding:30px 0;">
+            <i class="bi bi-people" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+            <div style="font-size:13px;">Nessun datore presente</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D; padding:16px 24px; gap:8px;">
+        <button type="button" class="btn" data-bs-dismiss="modal" style="background:#27282D; color:#8A8F98; border:none; border-radius:10px; padding:8px 20px; font-size:13px;">Annulla</button>
+        <button type="button" id="inqBtnInvia" class="btn" style="background:#10b981; color:white; border:none; border-radius:10px; padding:8px 20px; font-size:13px; font-weight:600;" onclick="inviaInquadramentoEmail()">
+          <i class="bi bi-send"></i> Invia
+        </button>
+      </div>
+      <div id="inqStatoInvio" style="display:none; padding:16px 24px; border-top:1px solid #27282D; color:#8A8F98; font-size:13px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function inviaInquadramentoEmail() {
+    var cbs = document.querySelectorAll('.inq-datore-cb:checked');
+    var ids = Array.from(cbs).map(function(cb) { return cb.value; });
+    if (ids.length === 0) { alert('Seleziona almeno un datore.'); return; }
+
+    var btn = document.getElementById('inqBtnInvia');
+    var stato = document.getElementById('inqStatoInvio');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Invio...';
+    stato.style.display = 'block';
+    stato.innerHTML = 'Invio in corso...';
+    stato.style.color = '#8A8F98';
+
+    fetch('/inquadramento/invia-email/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN,
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ destinatari: ids }),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-send"></i> Invia';
+        if (data.ok) {
+            stato.style.color = '#10b981';
+            var inviati = (data.risultati || []).filter(function(r) { return r.ok; }).length;
+            var errori = (data.risultati || []).filter(function(r) { return !r.ok; }).length;
+            stato.innerHTML = '<i class="bi bi-check-circle"></i> Inviati: ' + inviati + ', Errori: ' + errori;
+        } else {
+            stato.style.color = '#ff6b6b';
+            stato.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + (data.errore || 'Errore');
+        }
+    })
+    .catch(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-send"></i> Invia';
+        stato.style.color = '#ff6b6b';
+        stato.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Errore di rete';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var filtro = document.getElementById('inqFiltraDatori');
+    if (filtro) {
+        filtro.addEventListener('input', function() {
+            var q = this.value.toLowerCase().trim();
+            document.querySelectorAll('#inqListaDatori label').forEach(function(label) {
+                var text = label.textContent.toLowerCase();
+                label.style.display = (!q || text.indexOf(q) !== -1) ? 'flex' : 'none';
+            });
+        });
+    }
+});
+</script>

@@ -1,0 +1,13 @@
+{% if modifiche %}
+{% for m in modifiche %}
+<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:11px;">
+  <div style="min-width:120px;color:#8A8F98;">{{ m.data_modifica|date:'d/m/Y H:i' }}</div>
+  <div style="min-width:100px;color:#5E6AD2;font-weight:600;">{{ m.campo }}</div>
+  <div style="flex:1;color:#f87171;word-break:break-word;">{{ m.valore_precedente|default:'<span style="color:#666;">vuoto</span>' }}</div>
+  <div style="flex:1;color:#34d399;word-break:break-word;">{{ m.valore_nuovo|default:'<span style="color:#666;">vuoto</span>' }}</div>
+  <div style="min-width:80px;text-align:right;color:#8A8F98;">{{ m.utente }}</div>
+</div>
+{% endfor %}
+{% else %}
+<div style="color:#666;font-size:11px;padding:8px;">Nessuna modifica registrata.</div>
+{% endif %}

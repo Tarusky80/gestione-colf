@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datori di Lavoro - {{ opzioni.nome_programma|default:"GESTIONE PAGHE" }}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-base: #0E0F11;
+            --bg-surface: #17181C;
+            --bg-hover: #1C1C1F;
+            --border-subtle: #27282D;
+            --text-primary: #EDEDED;
+            --text-secondary: #8A8F98;
+            --accent-color: #5E6AD2;
+        }
+
+        body { background-color: var(--bg-base); color: var(--text-primary); font-family: 'Inter', sans-serif; }
+        .sidebar { background: var(--bg-base); border-right: 1px solid var(--border-subtle); height: 100vh; width: 260px; position: fixed; padding: 15px 12px; display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; }
+        .sidebar-brand { margin-bottom: 25px; }
+        .sidebar-brand img { width: 100%; max-height: 220px; object-fit: contain; display: block; }
+        .nav-group-label { color: #505050; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; margin: 20px 0 8px 10px; }
+        .nav-link-custom { color: var(--text-secondary); text-decoration: none; font-size: 14px; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-link-custom:hover, .nav-link-custom.active { color: white; background-color: var(--bg-surface); }
+        .nav-link-custom i { margin-right: 12px; font-size: 17px; }
+        .sidebar-footer { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border-subtle); }
+        .main-content { margin-left: 260px; padding: 40px; }
+        .header-section { margin-bottom: 40px; }
+        .header-section h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .header-section p { color: var(--text-secondary); font-size: 14px; }
+        .btn-new { background: var(--accent-color); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 500; font-size: 14px; transition: all 0.3s; }
+        .btn-new:hover { background: #7B8BF5; color: white; box-shadow: 0 8px 20px rgba(94, 106, 210, 0.5); }
+        .table-container { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 0; overflow: hidden; }
+        .table { margin: 0; }
+        .table thead { background: var(--bg-base); border-bottom: 1px solid var(--border-subtle); }
+        .table thead th { color: var(--text-secondary); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px; border: none; }
+        .table tbody td { padding: 16px; border: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .table tbody tr:last-child td { border-bottom: none; }
+        .table tbody tr:hover { background: var(--bg-hover); }
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-state-icon { font-size: 48px; color: var(--text-secondary); margin-bottom: 16px; opacity: 0.5; }
+        .empty-state-text { color: var(--text-secondary); font-size: 16px; margin-bottom: 20px; }
+        .breadcrumb-custom { background: transparent; padding: 0 0 20px 0; margin: 0; }
+        .breadcrumb-custom .breadcrumb-item { color: var(--text-secondary); font-size: 13px; }
+        .breadcrumb-custom .breadcrumb-item a { color: var(--accent-color); text-decoration: none; }
+        .breadcrumb-custom .breadcrumb-item.active { color: var(--text-primary); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            {% if opzioni.logo %}
+                <img src="{{ opzioni.logo.url }}" alt="Logo">
+            {% else %}
+                <div class="p-3 rounded-3 mb-2 text-center" style="background-color: var(--accent-color);"><i class="bi bi-cpu-fill text-white fs-1"></i></div>
+            {% endif %}
+        </div>
+
+        <nav class="flex-grow-1 overflow-auto">
+            <div class="nav-group-label">Menu</div>
+            <a href="{% url 'dashboard' %}" class="nav-link-custom"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            
+            <div class="nav-group-label">Anagrafiche</div>
+            <a href="{% url 'datori_list' %}" class="nav-link-custom active"><i class="bi bi-person-vcard"></i> Datori di Lavoro</a>
+            <a href="{% url 'lavoratori_list' %}" class="nav-link-custom"><i class="bi bi-people"></i> Lavoratori</a>
+            <a href="{% url 'beneficiari_list' %}" class="nav-link-custom"><i class="bi bi-person-heart"></i> Beneficiario</a>
+            
+            <div class="nav-group-label">Operazioni</div>
+            <a href="{% url 'contratti_list' %}" class="nav-link-custom"><i class="bi bi-file-earmark-plus"></i> Nuova Pratica</a>
+            <a href="/admin/" class="nav-link-custom"><i class="bi bi-calculator"></i> Calcolo Buste</a>
+
+            <div class="nav-group-label">Sistema</div>
+            <a href="/admin/paghe/gestorebackup/" class="nav-link-custom"><i class="bi bi-database"></i> Backup</a>
+            <a href="/admin/" class="nav-link-custom"><i class="bi bi-gear"></i> Impostazioni</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div style="font-weight: 600; text-white; font-size: 11px; letter-spacing: -0.2px; line-height: 1.3; margin-bottom: 4px;">{{ opzioni.nome_programma|upper|default:"GESTIONE PAGHE" }}</div>
+            <div style="font-size: 9px; opacity: 0.75; display: flex; align-items: center; gap: 4px;"><i class="bi bi-info-circle" style="font-size: 8px;"></i> v{{ opzioni.versione_programma|default:"1.1" }}</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <nav aria-label="breadcrumb" class="breadcrumb-custom">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}"><i class="bi bi-house"></i> Home</a></li>
+                <li class="breadcrumb-item active">Datori di Lavoro</li>
+            </ol>
+        </nav>
+
+        <div class="header-section d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="bi bi-person-vcard"></i> Datori di Lavoro</h1>
+                <p>Gestione anagrafe datori di lavoro - {{ count }} record</p>
+            </div>
+            <a href="{% url 'dashboard' %}" class="btn-new" onclick="event.preventDefault(); loadNewDatore(); return false;">
+                <i class="bi bi-plus-lg"></i> Nuovo Datore
+            </a>
+        </div>
+
+        {% if datori %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nome / Ragione Sociale</th>
+                            <th>Codice Fiscale</th>
+                            <th>Partita IVA</th>
+                            <th>Telefono</th>
+                            <th>Email</th>
+                            <th style="text-align: center;">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for datore in datori %}
+                        <tr>
+                            <td><strong>{{ datore.nome_cognome }}</strong></td>
+                            <td><code style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 11px;">{{ datore.codice_fiscale }}</code></td>
+                            <td><code style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; font-size: 11px;">{{ datore.partita_iva|default:"-" }}</code></td>
+                            <td>{{ datore.telefono|default:"-" }}</td>
+                            <td style="font-size: 12px; color: var(--text-secondary);">{{ datore.email|default:"-" }}</td>
+                            <td style="text-align: center;">
+                                <a href="/admin/paghe/datorelavoro/{{ datore.pk }}/change/" class="btn btn-sm" style="color: var(--accent-color); background: transparent; border: 1px solid var(--border-subtle); padding: 4px 8px; font-size: 11px; border-radius: 6px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+                <div class="empty-state-text">Nessun datore di lavoro trovato</div>
+                <a href="{% url 'dashboard' %}" class="btn-new" onclick="event.preventDefault(); loadNewDatore(); return false;">
+                    <i class="bi bi-plus-lg"></i> Crea il Primo Datore
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadNewDatore() {
+            // Redirect alla dashboard per usare il menu
+            window.location.href = '{% url "dashboard" %}';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+[run]
+source = paghe,core
+omit =
+    */migrations/*
+    */tests/*
+    paghe/api/*
+    paghe/automation*.py
+
+[report]
+show_missing = true
+skip_covered = false
+skip_empty = true
+fail_under = 30
+precision = 1
+
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if __name__ == .__main__.
+    raise NotImplementedError
+    if settings\.DEBUG
+    logger\.
+    logger\.(debug|info|warning|error|exception)

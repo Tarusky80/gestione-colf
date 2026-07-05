@@ -1,0 +1,213 @@
+<style>
+    #id_beneficiario { color: #ffffff !important; }
+    #id_beneficiario option, #id_beneficiario optgroup { background: #09090B; color: #ffffff; }
+</style>
+<form id="dynamicForm" method="POST">
+    {% csrf_token %}
+    {% if progetti_pks %}
+    {{ progetti_pks|json_script:"nav-data-progetto" }}
+    {{ progetti_nav_data|json_script:"nav-data-progetto-nav" }}
+    {{ progetto_pk_attuale|json_script:"nav-data-progetto-curr" }}
+    {% endif %}
+    <div style="max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 8px;">
+
+        {# --- NAVIGAZIONE (box separato) --- #}
+        {% if progetti_pks %}
+        <div class="mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 14px 28px;">
+            <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;">
+                <span style="font-size:10px;color:#8A8F98;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;flex-shrink:0;">NAVIGAZIONE:</span>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                <button type="button" class="btn btn-sm" onclick="navEntity(-1, 'progetto')" id="btnPrevProgetto" title="Precedente" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;padding:6px 12px;color:#EDEDED;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-left"></i></button>
+                <button type="button" class="btn btn-sm" onclick="navEntity(1, 'progetto')" id="btnNextProgetto" title="Successivo" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;padding:6px 12px;color:#EDEDED;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-right"></i></button>
+                <select id="navProgettoSelect" onchange="navEntityTo(this.value, 'progetto')" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;color:#facc15;font-size:13px;font-weight:700;padding:4px 10px;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;"><option value="" style="color:#8A8F98;font-weight:400;">—</option></select>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# --- RIEPILOGO --- #}
+        <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px 28px;">
+            <div class="fw-bold d-flex align-items-center" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98; margin-bottom: 18px;">
+                <span><i class="bi bi-info-circle" style="margin-right: 6px; color: #5E6AD2;"></i>Riepilogo</span>
+            </div>
+            <div class="row g-3 align-items-center">
+                <div class="col-md-12 col-12">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Beneficiario</div>
+                    <div id="r_beneficiario" style="font-size: 17px; font-weight: 700; color: #EDEDED;">—</div>
+                </div>
+            </div>
+            <div class="row g-3 align-items-center mt-2">
+                <div class="col-md-4 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Data Inizio</div>
+                    <div id="r_data_inizio" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Data Fine</div>
+                    <div id="r_data_fine" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Durata</div>
+                    <div id="r_durata" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+            </div>
+            <div class="row g-3 align-items-center mt-2">
+                <div class="col-md-4 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Budget Annuale</div>
+                    <div id="r_budget_annuale" style="font-size: 15px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Mesi</div>
+                    <div id="r_mesi" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Budget Mensile</div>
+                    <div id="r_budget_mensile" style="font-size: 15px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+            </div>
+            <div class="row g-3 align-items-center mt-2">
+                <div class="col-md-6 col-12">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Tipo</div>
+                    <div id="r_tipo" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Contratti collegati</div>
+                    <div id="r_contratti_count" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+            </div>
+        </div>
+
+        {# --- BENEFICIARIO --- #}
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.beneficiario.label }}</label>
+            <select name="beneficiario" class="form-control" id="id_beneficiario" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff !important; font-size:14px; padding:10px 12px; border-radius:8px; -webkit-appearance:none; appearance:none;">
+                <option value="">---------</option>
+                {% for ben in form.fields.beneficiario.queryset %}
+                <option value="{{ ben.pk }}" {% if form.beneficiario.value|stringformat:"s" == ben.pk|stringformat:"s" %}selected{% endif %}
+                    style="background:#09090B;color:#ffffff"
+                    data-cf="{{ ben.codice_fiscale|default:'' }}"
+                    data-nome="{{ ben.nome_cognome|default:'' }}"
+                    data-indirizzo="{{ ben.indirizzo|default:'' }}"
+                    data-comune="{{ ben.comune|default:'' }}"
+                    data-provincia="{{ ben.provincia|default:'' }}"
+                    data-cap="{{ ben.cap|default:'' }}">{{ ben.nome_cognome }}</option>
+                {% endfor %}
+            </select>
+            {% for error in form.beneficiario.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+        </div>
+
+        {# --- SCHEDA BENEFICIARIO --- #}
+        <div id="beneficiarioCard" class="mb-3" style="display:none; background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 16px 20px;">
+            <div class="fw-bold mb-2" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98;">
+                <i class="bi bi-person-badge" style="margin-right: 6px; color: #5E6AD2;"></i>Dettagli beneficiario
+            </div>
+            <div class="row g-2">
+                <div class="col-3"><div style="font-size:9px; color:#8A8F98;">CF</div><div id="ben_cf" style="font-size:12px; font-weight:600; color:#EDEDED; font-family:monospace;">—</div></div>
+                <div class="col-3"><div style="font-size:9px; color:#8A8F98;">Indirizzo</div><div id="ben_indirizzo" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-3"><div style="font-size:9px; color:#8A8F98;">Comune</div><div id="ben_comune" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-1"><div style="font-size:9px; color:#8A8F98;">Prov.</div><div id="ben_provincia" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-2"><div style="font-size:9px; color:#8A8F98;">CAP</div><div id="ben_cap" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+            </div>
+        </div>
+
+        {# --- DATA INIZIO + FINE --- #}
+        <div class="row g-3 mb-3">
+            <div class="col-md-6 col-12">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.data_inizio.label }}</label>
+                <div class="d-flex align-items-center gap-2">
+                    <div style="flex:1;">{{ form.data_inizio }}</div>
+                    <button type="button" id="copiaDataBtn" style="background:rgba(94,106,210,0.1); color:#9ca3ff; border:1px solid rgba(94,106,210,0.15); border-radius:6px; padding:6px; font-size:13px; line-height:1; cursor:pointer; transition:all 0.15s; flex-shrink:0; display:flex; align-items:center; justify-content:center; width:32px; height:32px;" title="Copia data dal primo contratto">
+                        <i class="bi bi-copy"></i>
+                    </button>
+                </div>
+                {% for error in form.data_inizio.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="col-md-6 col-12">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.data_fine.label }}</label>
+                <div class="d-flex align-items-center gap-2">
+                    <div style="flex:1;">{{ form.data_fine }}</div>
+                    <button type="button" id="fineAnnoBtn" style="background:rgba(94,106,210,0.1); color:#9ca3ff; border:1px solid rgba(94,106,210,0.15); border-radius:6px; padding:6px; font-size:13px; line-height:1; cursor:pointer; transition:all 0.15s; flex-shrink:0; display:flex; align-items:center; justify-content:center; width:32px; height:32px;" title="Imposta a fine anno">
+                        <i class="bi bi-calendar-check"></i>
+                    </button>
+                    <button type="button" onclick="copiaDataFineAiContratti()" style="white-space:nowrap;background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:4px;">
+                        <i class="bi bi-arrow-right-circle"></i> Ai contratti
+                    </button>
+                </div>
+                <div id="dataFineWarningProgetto" style="display:none;font-size:11px;color:#f87171;margin-top:2px;">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> <span id="dataFineWarningProgettoTesto"></span>
+                </div>
+                {% for error in form.data_fine.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            </div>
+        </div>
+
+        {# --- BUDGET ANNUALE + MESI + MENSILE --- #}
+        <div class="row g-3 mb-3">
+            <div class="col-md-4 col-12">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.budget_annuale.label }}</label>
+                {{ form.budget_annuale }}
+            </div>
+            <div class="col-md-2 col-12">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.mesi.label }}</label>
+                {{ form.mesi }}
+            </div>
+            <div class="col-md-4 col-12">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.budget_mensile.label }}</label>
+                {{ form.budget_mensile }}
+            </div>
+            <div class="col-md-2 col-12 d-flex align-items-end pb-1">
+                <div style="font-size: 9px; color: #8A8F98;">Aggiornamento automatico</div>
+            </div>
+        </div>
+
+        {# --- TIPO --- #}
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.tipo.label }}</label>
+            <select name="tipo" class="form-control" id="id_tipo" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff !important; font-size:14px; padding:10px 12px; border-radius:8px;">
+                <option value="">---------</option>
+                {% for t in form.fields.tipo.queryset %}
+                <option value="{{ t.pk }}" {% if form.tipo.value|stringformat:"s" == t.pk|stringformat:"s" %}selected{% endif %}
+                    style="background:#09090B;color:#ffffff"
+                    data-desc="{{ t.descrizione|default:'' }}">{{ t.nome }}</option>
+                {% endfor %}
+            </select>
+            <div id="tipoDesc" class="mt-1 text-secondary" style="font-size: 10px; display:none;"></div>
+            {% for error in form.tipo.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+        </div>
+
+        {# --- CONTRATTI COLLEGATI (CLICCABILI) --- #}
+        {% if contratti_collegati %}
+        <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px 24px;">
+            <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
+                <i class="bi bi-file-earmark-text" style="margin-right: 6px; color: #5E6AD2;"></i>Contratti collegati
+            </div>
+            {% for c in contratti_collegati %}
+            <a href="#" class="contratto-link text-decoration-none" data-data-inizio="{{ c.data_assunzione|date:'Y-m-d' }}" data-data-fine="{{ c.data_fine|date:'Y-m-d'|default:'' }}" onclick="event.preventDefault(); loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
+                <div class="d-flex align-items-center justify-content-between" style="padding: 6px 8px; margin: 0 -8px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background 0.15s; border-radius: 6px;">
+                    <div>
+                        <div style="font-size: 13px; font-weight: 600; color: #EDEDED;">{{ c.datore }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
+                        <div style="font-size: 11px; color: #8A8F98;">Ass. {{ c.data_assunzione|date:"d/m/Y" }} &middot; {{ c.get_stato_display }}</div>
+                    </div>
+                    <div style="color: #5E6AD2; font-size: 13px;">
+                        <i class="bi bi-pencil-fill"></i>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
+    <div class="mt-4 d-flex justify-content-end gap-2" style="border-top: 1px solid #27282D; padding-top: 20px;">
+        <button type="button" class="btn" data-bs-dismiss="offcanvas" style="color: #8A8F98; background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500;">Annulla</button>
+        {% if instance.pk %}
+        <button type="button" onclick="apriDuplicaTabella('{{ tipo }}', {{ instance.pk }})" style="display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;color:#34d399;cursor:pointer;">
+            <i class="bi bi-copy"></i> Copia
+        </button>
+        <button type="button" onclick="confermaEliminaTabella('{{ tipo }}', {{ instance.pk }})" style="display:inline-flex;align-items:center;gap:6px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;color:#f87171;cursor:pointer;">
+            <i class="bi bi-trash3"></i> Elimina
+        </button>
+        {% endif %}
+        <button type="submit" class="btn-linear px-4 py-2" id="btnSalvaForm" style="font-size: 13px; background: #5E6AD2; color: white; border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+            <i class="bi bi-check2"></i> Salva
+        </button>
+    </div>
+</form>

@@ -1,0 +1,1197 @@
+{% extends 'base.html' %}
+{% load tabelle_tags %}
+{% block title %}Stampe e Invii{% endblock %}
+{% block extra_css %}
+{% include 'paghe/partials/_stampe_styles.html' %}
+{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Stampe e Invii</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="h3 fw-bold mb-1">STAMPE E INVII
+            <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">Genera, stampa e invia documenti per i contratti selezionati.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="location.href='{% url 'riepilogo_invio_list' %}'"><i class="bi bi-clock-history me-1"></i> Storico invii</button>
+    </div>
+</div>
+
+<!-- Filtri contratti -->
+<div class="p-3 mb-3 card-simple">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="mb-1 fw-bold c-10-up">Ricerca</label>
+            <div style="position:relative">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="fTesto" class="form-control bg-input" placeholder="Datore, lavoratore, beneficiario..." oninput="filteraContratti()" style="padding-left:34px;">
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" onclick="toggleAvanzati()" id="btnAvanzati" class="btn btn-xlsx" style="cursor:pointer;transition:all 0.15s;">
+                <i class="bi bi-sliders me-1"></i> Filtri avanzati
+            </button>
+        </div>
+    </div>
+
+    <div id="filtriAvanzati" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid #27282D;">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold c-10-up">Livello</label>
+                <select id="fLivello" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    {% for l in livelli %}
+                    <option value="{{ l.codice|upper }}">{{ l.codice }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold c-10-up">Comune</label>
+                <select id="fComune" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    {% for c in comuni %}
+                    <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold c-10-up">Progetto Regionale</label>
+                <select id="fProgetto" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    {% for tp in tipi_progetto %}
+                    <option value="{{ tp.nome|upper }}">{{ tp.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold c-10-up">Stato</label>
+                <select id="fStato" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    <option value="ATTIVO">Attivo</option>
+                    <option value="CESSATO">Cessato</option>
+                    <option value="RISOLTO">Risolto</option>
+                </select>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold c-10-up">Data Assunzione dal</label>
+                <input type="date" id="fAssDa" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold c-10-up">Data Assunzione al</label>
+                <input type="date" id="fAssA" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold c-10-up">Data Fine dal</label>
+                <input type="date" id="fFineDa" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <label class="mb-1 fw-bold" class="c-10-up">Budget Annuale (&euro;)</label>
+                <div class="d-flex align-items-center gap-3">
+                    <span id="bAnDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
+                    <div style="flex:1; position:relative; height:40px;">
+                        <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
+                        <div id="bAnProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
+                        <input type="range" id="fBAnDa" min="0" max="50000" step="500" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
+                        <input type="range" id="fBAnA" min="0" max="50000" step="500" value="50000" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
+                    </div>
+                    <span id="bAnAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">50k</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="mb-1 fw-bold" class="c-10-up">Budget Mensile (&euro;)</label>
+                <div class="d-flex align-items-center gap-3">
+                    <span id="bMenDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
+                    <div style="flex:1; position:relative; height:40px;">
+                        <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
+                        <div id="bMenProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
+                        <input type="range" id="fBMenDa" min="0" max="2500" step="25" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
+                        <input type="range" id="fBMenA" min="0" max="2500" step="25" value="2500" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
+                    </div>
+                    <span id="bMenAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">2.5k</span>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">ORE da</label>
+                <input type="number" id="fOreDa" class="form-control" oninput="filteraContratti()" class="bg-input">
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">ORE a</label>
+                <input type="number" id="fOreA" class="form-control" oninput="filteraContratti()" class="bg-input">
+            </div>
+            <div class="col-md-6 d-flex align-items-end justify-content-end">
+                <button type="button" onclick="svuotaFiltri()" style="background:rgba(255,255,255,0.05); color:#8A8F98; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:6px 14px; font-size:11px; cursor:pointer; transition:all 0.15s;">
+                    <i class="bi bi-x-lg me-1"></i> Azzera filtri
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabella contratti -->
+<div class="custom-table-container" style="background: #17181C; padding: 20px; border-radius: 8px; margin-bottom:16px;">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="d-flex align-items-center gap-2">
+            <input type="checkbox" id="selTutti" onchange="toggleTutti(this)" style="accent-color:#5E6AD2;width:16px;height:16px;">
+            <label class="fw-bold small" style="color:#8A8F98;text-transform:uppercase;letter-spacing:0.04em;font-size:10px;">Seleziona tutti</label>
+        </div>
+        <span id="selCount" class="small text-secondary">0 selezionati</span>
+    </div>
+    <div style="max-height:530px;overflow-y:auto;">
+    <table class="table custom-table sortable" id="contrTable">
+        <thead>
+            <tr>
+                <th style="width:32px;position:sticky;top:0;z-index:1;background:#17181C;"></th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Datore</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Lavoratore</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Beneficiario</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Progetto Regionale</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Paese Ben.</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Liv.</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Data Ass.</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Data Fine</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Budg. Ann. &euro;</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Budg. Mes. &euro;</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">TFR accum. &euro;</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">ORE</th>
+                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Stato</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in contratti %}
+            {% with progetti=c.progetto.all %}
+            <tr data-pk="{{ c.pk }}" 
+                data-datore="{{ c.datore.nome_cognome|lower }}" 
+                data-lavoratore="{{ c.lavoratore.nome_cognome|lower }}" 
+                data-beneficiario="{% for p in progetti %}{{ p.beneficiario.nome_cognome|lower }} {% endfor %}" 
+                data-progetto="{% for p in progetti %}{{ p.tipo.nome|default:''|lower }} {% endfor %}" 
+                data-paese="{% for p in progetti %}{{ p.beneficiario.comune|default:''|lower }} {% endfor %}" 
+                data-comune="{% if progetti %}{{ progetti.0.beneficiario.comune|default:'' }}{% endif %}"
+                data-livello="{{ c.parametri_minimi.livello.codice|lower }}"
+                data-stato="{{ c.stato|lower }}"
+                data-assunzione="{{ c.data_assunzione|date:'Y-m-d' }}"
+                data-fine="{% if progetti %}{{ progetti.0.data_fine|date:'Y-m-d' }}{% endif %}"
+                data-budget_annuale="{{ c.budget_annuale_totale }}"
+                data-budget_mensile="{{ c.budget_di_partenza }}"
+                data-ore="{{ c.ore_calcolate|floatformat:0 }}">
+                <td><input type="checkbox" class="selContratto" value="{{ c.pk }}" style="accent-color:#5E6AD2;width:16px;height:16px;"></td>
+                <td><div class="fw-bold">{{ c.datore.nome_cognome }}</div></td>
+                <td><div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div></td>
+                <td>
+                    {% if progetti %}
+                        {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.beneficiario.nome_cognome }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                </td>
+                <td>
+                    {% if progetti %}
+                        {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.tipo.nome|default:"N/D" }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                </td>
+                <td>{% if progetti %}{{ progetti.0.beneficiario.comune|default:"—" }}{% else %}—{% endif %}</td>
+                <td>{% with colore=c.parametri_minimi.livello.colore|default:'#5E6AD2' %}<span style="background:rgba({{ colore|hex_to_rgb }},0.15); color:{{ colore }}; padding:2px 8px; border-radius:6px; font-size:12px; font-weight:600; white-space:nowrap;">{{ c.parametri_minimi.livello.codice }}</span>{% endwith %}</td>
+                <td>{{ c.data_assunzione|date:"d/m/y" }}</td>
+                <td>{% if progetti %}{{ progetti.0.data_fine|date:"d/m/y"|default:"—" }}{% else %}—{% endif %}</td>
+                <td>&euro; {{ c.budget_annuale_totale|floatformat:2 }}</td>
+                <td>&euro; {{ c.budget_di_partenza|floatformat:0 }}</td>
+                <td>{% if c.modalita_tfr != 'INCLUSO' %}&euro; {{ c.totale_tfr_accantonato_cumulativo|floatformat:2 }}{% else %}<span class="text-secondary small">&mdash;</span>{% endif %}</td>
+                <td><span style="color:#10b981; font-weight:700;">{{ c.ore_calcolate|floatformat:0 }}</span></td>
+                <td>{% if c.stato == 'ATTIVO' %}<span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1 rounded-3">Attivo</span>{% elif c.stato == 'CESSATO' or c.stato == 'RISOLTO' %}<span class="badge bg-secondary bg-opacity-25 px-2 py-1 rounded-3">{{ c.stato }}</span>{% else %}<span class="badge bg-secondary bg-opacity-25 px-2 py-1 rounded-3">{{ c.stato }}</span>{% endif %}</td>
+            </tr>
+            {% endwith %}
+            {% empty %}
+            <tr><td colspan="14" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun contratto attivo</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<!-- Tipo Documento -->
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;">
+    <label class="mb-2 fw-bold" class="c-10-up">TIPO DOCUMENTO</label>
+    <div class="row g-2">
+        {% for cat in categorie_documenti %}
+        <div class="col-md-6">
+            <div class="p-2" style="background:#1E1F24;border-radius:8px;border:1px solid #27282D;border-left:3px solid {{ cat.colore }};--cat-color:{{ cat.colore }};">
+                <div class="small fw-bold mb-1" style="color:#8A8F98;text-transform:uppercase;font-size:10px;letter-spacing:0.04em;padding-left:4px;">{{ cat.nome }}</div>
+                <div class="d-flex flex-wrap gap-1">
+                    {% for tipo in cat.tipi %}
+                    <label class="doc-type-label" data-categoria="{{ cat.id }}" data-tipo="{{ tipo.id }}" data-usa-periodo="{{ tipo.usa_periodo|lower }}" data-usa-template="{{ tipo.usa_template|lower }}" title="{{ tipo.descrizione }}" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;border:1px solid #333;cursor:pointer;font-size:12px;color:#ccc;transition:all .15s;background:transparent;">
+                        <input type="radio" name="tipoDocumento" value="{{ tipo.id }}" data-categoria="{{ cat.id }}" style="display:none;" onchange="onTipoDocChange(this)">
+                        <i class="bi {{ tipo.icona }} doc-type-icon" style="font-size:13px;color:#666;flex-shrink:0;transition:color .15s;"></i>
+                        <span>{{ tipo.nome }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- CATEGORIA COMPOSIZIONE -->
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;border-left:3px solid #5E6AD2;--cat-color:#5E6AD2;">
+    <label class="mb-2 fw-bold" class="c-10-up">COMPOSIZIONE MULTIPLA</label>
+    <div class="d-flex flex-wrap gap-1">
+        <label class="doc-type-label" data-categoria="COMPOSIZIONE" data-tipo="COMPOSIZIONE" data-usa-periodo="false" data-usa-template="false" title="Composizione personalizzata di più tipi documento" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;border:1px solid #5E6AD2;cursor:pointer;font-size:12px;color:#9ca3ff;transition:all .15s;background:rgba(94,106,210,0.08);">
+            <input type="radio" name="tipoDocumento" value="COMPOSIZIONE" data-categoria="COMPOSIZIONE" style="display:none;" onchange="onTipoDocChange(this)">
+            <i class="bi bi-layers doc-type-icon" style="font-size:13px;color:#7b7fff;flex-shrink:0;transition:color .15s;"></i>
+            <span>Documento Personalizzato</span>
+        </label>
+    </div>
+</div>
+
+<!-- COMPOSITORE (hidden) -->
+<div id="compositorePanel" class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;display:none;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label class="fw-bold" class="c-10-up">COMPONI DOCUMENTO</label>
+        <div class="d-flex gap-2">
+            <select id="selCaricaComposizione" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:12px;padding:4px 10px;border-radius:6px;width:220px;" onchange="onCaricaComposizione(this)">
+                <option value="">&mdash; Nuova composizione &mdash;</option>
+            </select>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="eliminaComposizione()" title="Elimina composizione" style="display:none;" id="btnEliminaComp"><i class="bi bi-trash3"></i></button>
+        </div>
+    </div>
+
+    <div class="row g-2 mb-3 align-items-end">
+        <div class="col-md-4">
+            <label class="mb-1 fw-bold" style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Aggiungi elemento</label>
+            <select id="selAggiungiTipo" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:12px;padding:6px 10px;border-radius:6px;">
+                <option value="">&mdash; Seleziona tipo &mdash;</option>
+                {% for cat in categorie_documenti %}
+                <optgroup label="{{ cat.nome }}">
+                    {% for tipo in cat.tipi %}
+                    <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                    {% endfor %}
+                </optgroup>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-1 align-items-end">
+            <button type="button" class="btn btn-sm btn-primary" onclick="aggiungiElementoDaSelect()" style="padding:6px 14px;font-size:11px;"><i class="bi bi-plus-lg me-1"></i> Aggiungi</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="aggiungiPaginaBianca()" title="Aggiungi pagina bianca" style="padding:6px 10px;font-size:11px;"><i class="bi bi-file-earmark"></i> Pagina Bianca</button>
+        </div>
+    </div>
+
+    <div id="composizioneLista" class="d-flex flex-column gap-1" style="min-height:60px;background:#09090B;border:1px solid #27282D;border-radius:8px;padding:8px;">
+        <div class="text-center text-secondary py-4" style="font-size:11px;color:#5C5F66;" id="composizioneEmpty">
+            <i class="bi bi-plus-square fs-3 d-block mb-2"></i>
+            Aggiungi tipi documento con i pulsanti sopra
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <span id="compCount" class="small text-secondary">0 elementi</span>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="mostraModaleSalva()" id="btnSalvaComp" disabled style="font-size:11px;"><i class="bi bi-save me-1"></i> Salva come modello</button>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Template selector (hidden per default) -->
+<div id="templateSelector" class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;display:none;">
+    <label class="mb-2 fw-bold" class="c-10-up">Template</label>
+    <select id="selTemplate" class="form-control" class="bg-input" style="max-width:400px;">
+        <option value="">&mdash; Template predefinito &mdash;</option>
+    </select>
+</div>
+
+<!-- Periodo -->
+<div id="periodoSelector" class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;display:none;">
+    <label class="mb-2 fw-bold" class="c-10-up">PERIODO</label>
+    <div class="mb-2 d-flex gap-1">
+        <button type="button" class="btn btn-sm periodo-tab active" data-periodo="singolo" onclick="setPeriodo('singolo')" style="border-radius:6px;font-size:11px;padding:4px 12px;">Mese singolo</button>
+        <button type="button" class="btn btn-sm periodo-tab" data-periodo="range" onclick="setPeriodo('range')" style="border-radius:6px;font-size:11px;padding:4px 12px;">Range</button>
+        <button type="button" class="btn btn-sm periodo-tab" data-periodo="trimestre" onclick="setPeriodo('trimestre')" style="border-radius:6px;font-size:11px;padding:4px 12px;">Trimestre</button>
+        <button type="button" class="btn btn-sm periodo-tab" data-periodo="anno" onclick="setPeriodo('anno')" style="border-radius:6px;font-size:11px;padding:4px 12px;display:none;">Anno</button>
+    </div>
+    <div class="row g-2 align-items-center">
+        <div class="col-auto periodo-fields" id="periodoSingolo">
+            <select id="perMese" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:140px;">
+                {% for num, nome in mesi %}
+                <option value="{{ num }}" {% if num == mese_corrente %}selected{% endif %}>{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <select id="perAnno" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:100px;">
+                {% for a in anni %}
+                <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto periodo-fields" id="periodoRange" style="display:none;">
+            <span class="text-secondary small me-1">Da</span>
+            <select id="perMeseDa" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;display:inline-block;">
+                {% for num, nome in mesi %}
+                <option value="{{ num }}" {% if num == 1 %}selected{% endif %}>{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <select id="perAnnoDa" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:90px;display:inline-block;">
+                {% for a in anni %}
+                <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+            <span class="text-secondary small mx-1">&rarr;</span>
+            <span class="text-secondary small me-1">A</span>
+            <select id="perMeseA" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;display:inline-block;">
+                {% for num, nome in mesi %}
+                <option value="{{ num }}" {% if num == mese_corrente %}selected{% endif %}>{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <select id="perAnnoA" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:90px;display:inline-block;">
+                {% for a in anni %}
+                <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto periodo-fields" id="periodoTrimestre" style="display:none;">
+            <select id="perTrimestre" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;">
+                <option value="1">1&deg; Trimestre</option>
+                <option value="2">2&deg; Trimestre</option>
+                <option value="3">3&deg; Trimestre</option>
+                <option value="4">4&deg; Trimestre</option>
+            </select>
+            <select id="perAnnoT" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:100px;">
+                {% for a in anni %}
+                <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto periodo-fields" id="periodoAnno" style="display:none;">
+            <select id="perAnnoSolo" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:100px;">
+                {% for a in anni %}
+                <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Modello Email -->
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;">
+    <div class="row g-2 align-items-center">
+        <div class="col-md-3">
+            <label class="mb-1 fw-bold" class="c-10-up">Modello Email</label>
+            <select id="selModelloEmail" class="form-control" class="bg-input">
+                <option value="">&mdash; Nessuno &mdash;</option>
+                {% for m in modelli_email %}
+                <option value="{{ m.pk }}">{{ m.codice }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-9" id="previewModelloEmailContainer">
+            {% for m in modelli_email %}
+            <div id="preview-{{ m.pk }}" class="preview-modello-email" style="display:none; background:#0a0a0c; border:1px solid #27282D; border-radius:8px; padding:12px 16px;">
+                <div style="font-size:10px; color:#8A8F98; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px;">Anteprima</div>
+                <div style="font-size:12px; font-weight:600; color:#facc15; margin-bottom:6px;">{{ m.oggetto_titolo }}</div>
+                <div style="font-size:12px; color:#c0c0c0;">{{ m.corpo_testo|truncatechars_html:100|safe }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Pulsanti azione -->
+<div class="d-flex gap-2 mb-4 flex-wrap">
+    <button type="button" class="btn btn-primary" onclick="avviaAzione('pdf')" id="btnGeneraPdf"><i class="bi bi-file-pdf me-1"></i> Genera PDF</button>
+    <button type="button" class="btn btn-success" onclick="avviaAzione('zip')" id="btnGeneraZip"><i class="bi bi-archive me-1"></i> Genera ZIP</button>
+    <button type="button" class="btn btn-warning" onclick="avviaAzione('stampa')" id="btnGeneraStampa"><i class="bi bi-printer me-1"></i> Genera e Stampa</button>
+    <button type="button" class="btn btn-success" onclick="avviaAzione('stampa_auto')" id="btnStampaAuto"><i class="bi bi-printer-fill me-1"></i> Stampa Automatica</button>
+    <button type="button" class="btn btn-info" onclick="avviaAzione('email')" id="btnGeneraInvia"><i class="bi bi-envelope me-1"></i> Genera e Invia</button>
+</div>
+
+{% include 'paghe/partials/_stampe_modali.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var templatesPerTipo = {{ templates_json|safe }};
+var composizioniList = {{ composizioni_json|safe }};
+var composizioneAttuale = [];
+var composizionePkCaricata = null;
+var composizioneNomeCaricato = '';
+var pdfUnicoUrl = null;
+
+// === COMPOSIZIONE FUNCTIONS ===
+
+function getTipoLabel(tipo) {
+    var map = {
+        'STANDARD': 'Busta Paga Standard', 'NON_CONVIVENTE': 'Busta Non Convivente',
+        'CONVIVENTI_CCNL': 'Busta Conviventi CCNL', 'INVERSO': 'Calcolo Inverso',
+        'NOTTURNO': 'Busta Notturno', 'MALATTIA': 'Busta Malattia',
+        'TFR_LIQUIDAZIONE': 'Liquidazione TFR',
+        'CONTRATTO': 'Contratto',
+        'RICHIESTA_CUD': 'Richiesta CUD',
+        'LETTERA_ASSUNZIONE': 'Lettera Assunzione', 'LETTERA_LICENZIAMENTO': 'Lettera Licenziamento',
+        'LETTERA_DIMISSIONI': 'Lettera Dimissioni', 'LETTERA_LIBERA': 'Lettera Libera',
+        'DEROGA_TFR': 'Deroga TFR',
+        'CARTELLINA': 'Cartellina', 'RICEVUTA': 'Ricevuta',
+        'RIEPILOGO_RAPPORTO': 'Riepilogo Rapporto',
+        'PDF_INIZIO': 'Inizio Rapporto', 'PDF_FINE': 'Fine Rapporto',
+        'PDF_RISCONTRO': 'Riscontro Comune',
+        'GUIDA_ASSUNZIONE': "Guida all'Assunzione",
+        'GUIDA_DECALOGO': 'Decalogo del Colloquio',
+        'GUIDA_CESSAZIONE': "Guida alla Cessazione",
+        'CCNL': 'CCNL Lavoro Domestico',
+        'PAGINA_BIANCA': 'Pagina Bianca'
+    };
+    return map[tipo] || tipo;
+}
+
+function getTipoClasse(tipo) {
+    if (tipo === 'PAGINA_BIANCA') return 'comp-tag-bianca';
+    if (['STANDARD','NON_CONVIVENTE','CONVIVENTI_CCNL','INVERSO','NOTTURNO','MALATTIA','TFR_LIQUIDAZIONE'].indexOf(tipo) !== -1) return 'comp-tag-busta';
+    if (tipo === 'CONTRATTO') return 'comp-tag-contratto';
+    if (['RICHIESTA_CUD'].indexOf(tipo) !== -1) return 'comp-tag-cud';
+    if (['LETTERA_ASSUNZIONE','LETTERA_LICENZIAMENTO','LETTERA_DIMISSIONI','LETTERA_LIBERA','DEROGA_TFR'].indexOf(tipo) !== -1) return 'comp-tag-lettera';
+    if (['GUIDA_ASSUNZIONE','GUIDA_DECALOGO','GUIDA_CESSAZIONE','CCNL'].indexOf(tipo) !== -1) return 'comp-tag-guida';
+    return 'comp-tag-altro';
+}
+
+function richiedePeriodo(tipo) {
+    return ['STANDARD','NON_CONVIVENTE','CONVIVENTI_CCNL','INVERSO','NOTTURNO','MALATTIA','RICHIESTA_CUD'].indexOf(tipo) !== -1;
+}
+
+function richiedeTemplate(tipo) {
+    return ['CONTRATTO','RICHIESTA_CUD','LETTERA_ASSUNZIONE','LETTERA_LICENZIAMENTO','LETTERA_DIMISSIONI','LETTERA_LIBERA','DEROGA_TFR','CARTELLINA','RICEVUTA','RIEPILOGO_RAPPORTO','PDF_INIZIO','PDF_FINE','PDF_RISCONTRO'].indexOf(tipo) !== -1;
+}
+
+function aggiungiElemento(tipo) {
+    if (!tipo) return;
+    var elem = { tipo: tipo, label: getTipoLabel(tipo), template_pk: null, periodo: {} };
+    if (tipo === 'PAGINA_BIANCA') {
+        elem.label = 'Pagina Bianca';
+    }
+    composizioneAttuale.push(elem);
+    renderComposizione();
+}
+
+function aggiungiElementoDaSelect() {
+    var sel = document.getElementById('selAggiungiTipo');
+    var tipo = sel.value;
+    if (!tipo) { mostraToast('Seleziona un tipo documento da aggiungere.', false); return; }
+    aggiungiElemento(tipo);
+    sel.value = '';
+}
+
+function aggiungiPaginaBianca() {
+    aggiungiElemento('PAGINA_BIANCA');
+}
+
+function rimuoviElemento(idx) {
+    composizioneAttuale.splice(idx, 1);
+    renderComposizione();
+}
+
+function renderComposizione() {
+    var container = document.getElementById('composizioneLista');
+    var empty = document.getElementById('composizioneEmpty');
+    var count = document.getElementById('compCount');
+    var btnSalva = document.getElementById('btnSalvaComp');
+
+    if (composizioneAttuale.length === 0) {
+        container.innerHTML = '<div class="text-center text-secondary py-4" style="font-size:11px;color:#5C5F66;" id="composizioneEmpty"><i class="bi bi-plus-square fs-3 d-block mb-2"></i>Aggiungi tipi documento con i pulsanti sopra</div>';
+        count.textContent = '0 elementi';
+        btnSalva.disabled = true;
+        return;
+    }
+
+    cnt = composizioneAttuale.length;
+    count.textContent = cnt + ' elemento' + (cnt !== 1 ? 'i' : '');
+    btnSalva.disabled = false;
+
+    var html = '';
+    composizioneAttuale.forEach(function(elem, idx) {
+        var classe = getTipoClasse(elem.tipo);
+        var label = elem.label || getTipoLabel(elem.tipo);
+        var icon = elem.tipo === 'PAGINA_BIANCA' ? '<i class="bi bi-file-earmark"></i>' : '<i class="bi bi-file-pdf"></i>';
+
+        html += '<div class="comp-item" data-index="' + idx + '" style="background:rgba(255,255,255,0.03);border:1px solid #27282D;border-radius:8px;padding:8px 10px;">';
+        html += '<div class="d-flex align-items-center gap-2">';
+        html += '<span class="drag-handle">⠿</span>';
+        html += '<span class="badge ' + classe + '" style="font-size:10px;padding:4px 8px;border-radius:4px;min-width:140px;text-align:left;font-weight:500;">' + icon + ' ' + label + '</span>';
+
+        // Template selector per tipi che lo richiedono
+        if (richiedeTemplate(elem.tipo) && elem.tipo !== 'PAGINA_BIANCA') {
+            var opts = templatesPerTipo[elem.tipo] || [];
+            html += '<select onchange="composizioneAttuale[' + idx + '].template_pk = this.value || null" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;max-width:150px;">';
+            html += '<option value="">&mdash; default &mdash;</option>';
+            opts.forEach(function(t) {
+                var sel = (elem.template_pk && parseInt(elem.template_pk) === t.pk) ? ' selected' : '';
+                html += '<option value="' + t.pk + '"' + sel + '>' + t.codice + '</option>';
+            });
+            html += '</select>';
+        }
+
+        // Periodo per tipi che lo richiedono
+        if (richiedePeriodo(elem.tipo)) {
+            html += '<select onchange="composizioneAttuale[' + idx + '].periodo.mese = parseInt(this.value) || null" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;width:90px;">';
+            html += '<option value="">Mese</option>';
+            for (var m = 1; m <= 12; m++) {
+                var mesi = ['','Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+                var selM = (elem.periodo && elem.periodo.mese === m) ? ' selected' : '';
+                html += '<option value="' + m + '"' + selM + '>' + mesi[m] + '</option>';
+            }
+            html += '</select>';
+            html += '<select onchange="composizioneAttuale[' + idx + '].periodo.anno = parseInt(this.value) || null" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;width:80px;">';
+            html += '<option value="">Anno</option>';
+            {% for a in anni %}
+            var selA = (elem.periodo && elem.periodo.anno === {{ a }}) ? ' selected' : '';
+            html += '<option value="{{ a }}"' + selA + '>{{ a }}</option>';
+            {% endfor %}
+            html += '</select>';
+        }
+
+        html += '<button onclick="rimuoviElemento(' + idx + ')" style="background:transparent;border:none;color:#ef4444;font-size:14px;padding:2px 6px;cursor:pointer;margin-left:auto;"><i class="bi bi-x-lg"></i></button>';
+        html += '</div></div>';
+    });
+    container.innerHTML = html;
+
+    // Re-init Sortable
+    if (window.compSortable) window.compSortable.destroy();
+    if (typeof Sortable !== 'undefined') {
+        window.compSortable = new Sortable(container, {
+            handle: '.drag-handle',
+            animation: 150,
+            onEnd: function(evt) {
+                var item = composizioneAttuale.splice(evt.oldIndex, 1)[0];
+                composizioneAttuale.splice(evt.newIndex, 0, item);
+                renderComposizione();
+            }
+        });
+    }
+}
+
+function caricaComposizione(pk) {
+    var c = null;
+    for (var i = 0; i < composizioniList.length; i++) {
+        if (composizioniList[i].pk === pk) { c = composizioniList[i]; break; }
+    }
+    if (!c) return;
+    composizioneAttuale = JSON.parse(JSON.stringify(c.elementi));
+    composizionePkCaricata = pk;
+    composizioneNomeCaricato = c.nome || '';
+    document.getElementById('btnEliminaComp').style.display = '';
+    renderComposizione();
+}
+
+function onCaricaComposizione(sel) {
+    var pk = parseInt(sel.value);
+    if (!pk) {
+        if (composizioneAttuale.length > 0 && !confirm('Annullare la composizione corrente e iniziarne una nuova?')) {
+            sel.value = '';
+            return;
+        }
+        composizioneAttuale = [];
+        composizionePkCaricata = null;
+        composizioneNomeCaricato = '';
+        document.getElementById('btnEliminaComp').style.display = 'none';
+        renderComposizione();
+        return;
+    }
+    caricaComposizione(pk);
+}
+
+function mostraModaleSalva() {
+    document.getElementById('salvaCompPk').value = composizionePkCaricata || '';
+    document.getElementById('salvaCompNome').value = '';
+    document.getElementById('salvaCompNote').value = '';
+    if (composizionePkCaricata) {
+        for (var i = 0; i < composizioniList.length; i++) {
+            if (composizioniList[i].pk === composizionePkCaricata) {
+                document.getElementById('salvaCompNome').value = composizioniList[i].nome;
+                document.getElementById('salvaCompNote').value = composizioniList[i].note || '';
+                break;
+            }
+        }
+    }
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('salvaCompModal')).show();
+}
+
+function salvaComposizione() {
+    var nome = document.getElementById('salvaCompNome').value.trim();
+    if (!nome) { mostraToast('Inserisci un nome per la composizione.', false); return; }
+    var pk = document.getElementById('salvaCompPk').value;
+    var note = document.getElementById('salvaCompNote').value.trim();
+
+    var btn = document.getElementById('btnConfermaSalva');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinning"></i>';
+
+    fetch('/ajax/salva-composizione/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({
+            pk: pk ? parseInt(pk) : null,
+            nome: nome,
+            elementi: composizioneAttuale,
+            note: note
+        })
+    }).then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + r.statusText);
+        return r.json();
+    }).then(function(d) {
+        if (d.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('salvaCompModal')).hide();
+            ricaricaElencoComposizioni(d.pk, nome);
+        } else {
+            mostraToast('Errore: ' + (d.error || 'Salvataggio fallito'), false);
+        }
+    }).catch(function(e) {
+        mostraToast('Errore: ' + e.message, false);
+    });
+}
+
+function eliminaComposizione() {
+    if (!composizionePkCaricata) return;
+    if (!confirm('Eliminare la composizione "' + composizioneNomeCaricato + '"?')) return;
+    fetch('/ajax/elimina-composizione/' + composizionePkCaricata + '/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    }).then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    }).then(function(d) {
+        if (d.ok) {
+            composizioneAttuale = [];
+            composizionePkCaricata = null;
+            composizioneNomeCaricato = '';
+            document.getElementById('btnEliminaComp').style.display = 'none';
+            renderComposizione();
+            ricaricaElencoComposizioni(null);
+        }
+    }).catch(function(e) {
+        mostraToast('Errore eliminazione: ' + e.message, false);
+    });
+}
+
+function ricaricaElencoComposizioni(selezionaPk, selezionaNome) {
+    fetch('/ajax/composizioni/')
+        .then(function(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
+        .then(function(d) {
+            composizioniList = d.composizioni || [];
+            var sel = document.getElementById('selCaricaComposizione');
+            sel.innerHTML = '<option value="">&mdash; Nuova composizione &mdash;</option>';
+            composizioniList.forEach(function(c) {
+                var s = (c.pk === selezionaPk) ? ' selected' : '';
+                sel.innerHTML += '<option value="' + c.pk + '"' + s + '>' + c.nome + '</option>';
+            });
+            if (selezionaPk) {
+                caricaComposizione(selezionaPk);
+            }
+        })
+        .catch(function(e) {
+            console.warn('Errore ricarica composizioni:', e);
+        });
+}
+
+// === FINE COMPOSIZIONE ===
+
+var filtriVisibili = false;
+
+function toggleAvanzati() {
+    filtriVisibili = !filtriVisibili;
+    var el = document.getElementById('filtriAvanzati');
+    var btn = document.getElementById('btnAvanzati');
+    el.style.display = filtriVisibili ? '' : 'none';
+    btn.innerHTML = filtriVisibili
+        ? '<i class="bi bi-sliders me-1"></i> Filtri avanzati <i class="bi bi-chevron-up ms-1"></i>'
+        : '<i class="bi bi-sliders me-1"></i> Filtri avanzati';
+    if (filtriVisibili) { aggBAn(); aggBMen(); }
+}
+
+function aggBAn() {
+    var da = document.getElementById('fBAnDa');
+    var a  = document.getElementById('fBAnA');
+    var max = parseInt(a.max);
+    var vDa = parseInt(da.value) || 0;
+    var vA  = parseInt(a.value) || max;
+    if (vDa > vA) { vA = vDa; a.value = vDa; }
+    document.getElementById('bAnDaVal').textContent = vDa;
+    document.getElementById('bAnAVal').textContent  = vA > 999 ? Math.round(vA/1000) + 'k' : vA;
+    var pctDa = (vDa / max) * 100;
+    var pctA  = (vA  / max) * 100;
+    document.getElementById('bAnProgress').style.left = pctDa + '%';
+    document.getElementById('bAnProgress').style.width = (pctA - pctDa) + '%';
+    filteraContratti();
+}
+
+function aggBMen() {
+    var da = document.getElementById('fBMenDa');
+    var a  = document.getElementById('fBMenA');
+    var max = parseInt(a.max);
+    var vDa = parseInt(da.value) || 0;
+    var vA  = parseInt(a.value) || max;
+    if (vDa > vA) { vA = vDa; a.value = vDa; }
+    document.getElementById('bMenDaVal').textContent = vDa;
+    document.getElementById('bMenAVal').textContent  = vA > 999 ? Math.round(vA/1000) + 'k' : vA;
+    var pctDa = (vDa / max) * 100;
+    var pctA  = (vA  / max) * 100;
+    document.getElementById('bMenProgress').style.left = pctDa + '%';
+    document.getElementById('bMenProgress').style.width = (pctA - pctDa) + '%';
+    filteraContratti();
+}
+
+function parseDateIt(str) {
+    var parts = str.split('/');
+    if (parts.length === 3) return new Date(parts[2] + '-' + parts[1] + '-' + parts[0] + 'T00:00:00');
+    return null;
+}
+
+function filteraContratti() {
+    var testo = (document.getElementById('fTesto').value || '').toUpperCase();
+    var livFiltro = (document.getElementById('fLivello').value || '').toUpperCase();
+    var comuneFiltro = (document.getElementById('fComune').value || '').toUpperCase();
+    var progFiltro = (document.getElementById('fProgetto').value || '').toUpperCase();
+    var statoFiltro = (document.getElementById('fStato').value || '').toUpperCase();
+    var assDa = document.getElementById('fAssDa').value;
+    var assA  = document.getElementById('fAssA').value;
+    var fineDa = document.getElementById('fFineDa').value;
+    var bAnDa = parseInt(document.getElementById('fBAnDa').value) || 0;
+    var bAnA  = parseInt(document.getElementById('fBAnA').value) || 0;
+    var bMenDa = parseInt(document.getElementById('fBMenDa').value) || 0;
+    var bMenA  = parseInt(document.getElementById('fBMenA').value) || 0;
+    var oreDa = parseFloat(document.getElementById('fOreDa').value);
+    var oreA  = parseFloat(document.getElementById('fOreA').value);
+
+    var table = document.getElementById('contrTable');
+    var rows = table.getElementsByTagName('tr');
+
+    for (var i = 1; i < rows.length; i++) {
+        var tr = rows[i];
+        if (!tr.dataset.pk) continue;
+        var mostra = true;
+
+        if (testo) {
+            var txt = (tr.textContent || '').toUpperCase();
+            if (txt.indexOf(testo) === -1) mostra = false;
+        }
+
+        if (mostra && livFiltro && tr.dataset.livello.toUpperCase().indexOf(livFiltro) === -1) mostra = false;
+        if (mostra && comuneFiltro && tr.dataset.comune.toUpperCase().indexOf(comuneFiltro) === -1) mostra = false;
+        if (mostra && progFiltro && tr.dataset.progetto.toUpperCase().indexOf(progFiltro) === -1) mostra = false;
+        if (mostra && statoFiltro && tr.dataset.stato.toUpperCase().indexOf(statoFiltro) === -1) mostra = false;
+
+        if (mostra && (assDa || assA)) {
+            var raw = tr.dataset.assunzione;
+            var d = raw ? new Date(raw + 'T00:00:00') : null;
+            if (assDa && (!d || d < new Date(assDa + 'T00:00:00'))) mostra = false;
+            if (mostra && assA && (!d || d > new Date(assA + 'T23:59:59'))) mostra = false;
+        }
+
+        if (mostra && fineDa) {
+            var raw = tr.dataset.fine;
+            if (raw) {
+                var d = new Date(raw + 'T00:00:00');
+                if (fineDa && (!d || d < new Date(fineDa + 'T00:00:00'))) mostra = false;
+            }
+        }
+
+        if (mostra && (bAnDa > 0 || bAnA < 50000)) {
+            var val = parseFloat(tr.dataset.budget_annuale) || 0;
+            if (val < bAnDa || val > bAnA) mostra = false;
+        }
+
+        if (mostra && (bMenDa > 0 || bMenA < 2500)) {
+            var val = parseFloat(tr.dataset.budget_mensile) || 0;
+            if (val < bMenDa || val > bMenA) mostra = false;
+        }
+
+        if (mostra && !isNaN(oreDa) && parseFloat(tr.dataset.ore) < oreDa) mostra = false;
+        if (mostra && !isNaN(oreA) && parseFloat(tr.dataset.ore) > oreA) mostra = false;
+
+        tr.style.display = mostra ? '' : 'none';
+    }
+    aggiornaConteggio('contrTable', 'fCountVal');
+}
+
+function aggiornaConteggio(tableId, countId) {
+    var el = document.getElementById(countId);
+    if (!el) return;
+    var total = document.querySelectorAll('#' + tableId + ' tbody tr[data-pk]').length;
+    var hidden = document.querySelectorAll('#' + tableId + ' tbody tr[data-pk][style*="display: none"]').length;
+    document.getElementById(countId).textContent = (total - hidden);
+}
+
+function svuotaFiltri() {
+    document.getElementById('fTesto').value = '';
+    document.getElementById('fLivello').value = '';
+    document.getElementById('fComune').value = '';
+    document.getElementById('fProgetto').value = '';
+    document.getElementById('fStato').value = '';
+    document.getElementById('fAssDa').value = '';
+    document.getElementById('fAssA').value = '';
+    document.getElementById('fFineDa').value = '';
+    document.getElementById('fBAnDa').value = 0;
+    document.getElementById('fBAnA').value = 50000;
+    document.getElementById('fBMenDa').value = 0;
+    document.getElementById('fBMenA').value = 2500;
+    document.getElementById('fOreDa').value = '';
+    document.getElementById('fOreA').value = '';
+    aggBAn();
+    aggBMen();
+    filteraContratti();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var ranges = document.querySelectorAll('#filtriAvanzati input[type="range"]');
+    ranges.forEach(function(el) {
+        el.addEventListener('mousedown', function(e) {
+            var container = this.closest('.d-flex').querySelectorAll('input[type="range"]');
+            container.forEach(function(r) { r.style.zIndex = '3'; });
+            this.style.zIndex = '5';
+        });
+        el.addEventListener('touchstart', function(e) {
+            var container = this.closest('.d-flex').querySelectorAll('input[type="range"]');
+            container.forEach(function(r) { r.style.zIndex = '3'; });
+            this.style.zIndex = '5';
+        });
+        if (el.id === 'fBAnDa' || el.id === 'fBAnA') el.addEventListener('input', aggBAn);
+        else el.addEventListener('input', aggBMen);
+    });
+    aggiornaConteggio('contrTable', 'fCountVal');
+
+    /* Anteprima Modello Email */
+    var selModEmail = document.getElementById('selModelloEmail');
+    function aggiornaPreviewEmail() {
+        document.querySelectorAll('.preview-modello-email').forEach(function(el) { el.style.display = 'none'; });
+        var pk = selModEmail ? selModEmail.value : '';
+        if (pk) {
+            var el = document.getElementById('preview-' + pk);
+            if (el) el.style.display = '';
+        }
+    }
+    if (selModEmail) {
+        selModEmail.addEventListener('change', aggiornaPreviewEmail);
+        aggiornaPreviewEmail();
+    }
+});
+
+function toggleTutti(el) {
+    document.querySelectorAll('.selContratto').forEach(function(cb) { cb.checked = el.checked; });
+    aggiornaCount();
+}
+
+function aggiornaCount() {
+    document.getElementById('selCount').textContent = document.querySelectorAll('.selContratto:checked').length + ' selezionati';
+}
+
+document.querySelectorAll('.selContratto').forEach(function(cb) {
+    cb.addEventListener('change', aggiornaCount);
+});
+
+document.getElementById('contrTable').addEventListener('click', function(e) {
+    var tr = e.target.closest('tr[data-pk]');
+    if (tr && !e.target.closest('input, a, button, select, textarea')) {
+        var cb = tr.querySelector('.selContratto');
+        if (cb) { cb.checked = !cb.checked; aggiornaCount(); }
+    }
+});
+
+
+
+function setPeriodo(tipo) {
+    document.querySelectorAll('.periodo-tab').forEach(function(t) { t.classList.remove('active'); t.style.background='transparent'; t.style.color='#8A8F98'; });
+    document.querySelectorAll('.periodo-fields').forEach(function(el) { el.style.display = 'none'; });
+    var btn = document.querySelector('.periodo-tab[data-periodo="' + tipo + '"]');
+    if (btn) { btn.classList.add('active'); btn.style.background='#5E6AD2'; btn.style.color='#fff'; }
+    var el = document.getElementById('periodo' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
+    if (el) el.style.display = 'block';
+}
+
+setPeriodo('singolo');
+
+function onTipoDocChange(radio) {
+    var tipo = radio.value;
+    var label = radio.closest('.doc-type-label');
+    var usaPeriodo = label.dataset.usaPeriodo === 'true';
+    var usaTemplate = label.dataset.usaTemplate === 'true';
+    var categoria = label.dataset.categoria;
+
+    // Nascondi tutto
+    document.getElementById('periodoSelector').style.display = 'none';
+    document.getElementById('templateSelector').style.display = 'none';
+    document.getElementById('compositorePanel').style.display = 'none';
+
+    if (categoria === 'COMPOSIZIONE') {
+        document.getElementById('compositorePanel').style.display = 'block';
+        return;
+    }
+
+    document.getElementById('periodoSelector').style.display = usaPeriodo ? 'block' : 'none';
+    
+    // --- LOGICA DEDICATA ---
+    if (usaPeriodo) {
+        var tabs = document.querySelectorAll('.periodo-tab');
+        if (tipo === 'RICHIESTA_CUD') {
+            tabs.forEach(t => t.style.display = (t.dataset.periodo === 'anno') ? 'inline-block' : 'none');
+            setPeriodo('anno');
+        } else {
+            tabs.forEach(t => t.style.display = 'inline-block');
+            setPeriodo('singolo');
+        }
+    }
+    // -----------------------
+
+    document.getElementById('templateSelector').style.display = usaTemplate ? 'block' : 'none';
+
+    if (usaTemplate) {
+        var sel = document.getElementById('selTemplate');
+        var opts = templatesPerTipo[tipo] || [];
+        sel.innerHTML = '<option value="">&mdash; Template predefinito &mdash;</option>';
+        opts.forEach(function(t) {
+            sel.innerHTML += '<option value="' + t.pk + '">' + t.codice + '</option>';
+        });
+    }
+}
+
+function getSelezionati() {
+    var ids = [];
+    document.querySelectorAll('.selContratto:checked').forEach(function(cb) { ids.push(parseInt(cb.value)); });
+    return ids;
+}
+
+function getPeriodoData() {
+    var tipo = document.querySelector('.periodo-tab.active');
+    if (!tipo) return { periodo_tipo: 'singolo', mese_da: null, anno_da: null, mese_a: null, anno_a: null };
+    var pt = tipo.dataset.periodo;
+    if (pt === 'singolo') {
+        return { periodo_tipo: 'singolo', mese_da: parseInt(document.getElementById('perMese').value), anno_da: parseInt(document.getElementById('perAnno').value), mese_a: null, anno_a: null };
+    } else if (pt === 'range') {
+        return { periodo_tipo: 'range', mese_da: parseInt(document.getElementById('perMeseDa').value), anno_da: parseInt(document.getElementById('perAnnoDa').value), mese_a: parseInt(document.getElementById('perMeseA').value), anno_a: parseInt(document.getElementById('perAnnoA').value) };
+    } else if (pt === 'trimestre') {
+        return { periodo_tipo: 'trimestre', mese_da: parseInt(document.getElementById('perTrimestre').value), anno_da: parseInt(document.getElementById('perAnnoT').value), mese_a: null, anno_a: null };
+    } else if (pt === 'anno') {
+        return { periodo_tipo: 'anno', mese_da: null, anno_da: parseInt(document.getElementById('perAnnoSolo').value), mese_a: null, anno_a: null };
+    }
+}
+
+function mostraSpinner(label, detail) {
+    document.getElementById('progressLabel').textContent = label || 'Generazione in corso...';
+    document.getElementById('progressDetail').textContent = detail || '';
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('progressModal')).show();
+}
+
+function nascondiSpinner() {
+    var m = bootstrap.Modal.getInstance(document.getElementById('progressModal'));
+    if (m) m.hide();
+}
+
+var riepilogoPk = null;
+function mostraRisultato(titolo, html, zipUrl, pdfUrl, rpk) {
+    document.getElementById('resultTitle').textContent = titolo;
+    document.getElementById('resultBody').innerHTML = html;
+    pdfUnicoUrl = pdfUrl || null;
+    riepilogoPk = rpk || null;
+    var btnZip = document.getElementById('btnScaricaZip');
+    if (zipUrl) { btnZip.style.display = 'inline-block'; btnZip.href = zipUrl; }
+    else { btnZip.style.display = 'none'; }
+    document.getElementById('btnStampaUnico').style.display = pdfUnicoUrl ? 'inline-block' : 'none';
+    document.getElementById('btnStampaDiretta').style.display = pdfUnicoUrl ? 'inline-block' : 'none';
+    document.getElementById('btnApriCartella').style.display = rpk ? 'inline-block' : 'none';
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('resultModal')).show();
+}
+
+function apriCartella() {
+    if (!riepilogoPk) return;
+    fetch('/ajax/apri-cartella-stampe/' + riepilogoPk + '/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (!d.ok) mostraToast('Impossibile aprire la cartella: nessun file trovato.', false);
+    }).catch(function(e) {
+        mostraToast('Errore: ' + e.message, false);
+    });
+}
+
+function stampaUnico() {
+    if (pdfUnicoUrl) {
+        var w = window.open(pdfUnicoUrl + '?print=1', '_blank');
+        if (!w) mostraToast('Apri i pop-up per il browser, grazie.', false);
+    }
+}
+
+function stampaDiretta() {
+    if (!pdfUnicoUrl) { mostraToast('Nessun PDF da stampare.', false); return; }
+    var tokenMatch = pdfUnicoUrl.match(/\/stampe-invii\/print\/([^\/]+)\//);
+    if (!tokenMatch) { mostraToast('Token non valido.', false); return; }
+    var token = tokenMatch[1];
+    var btn = document.getElementById('btnStampaDiretta');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Invio...'; }
+    fetch('/ajax/stampa-unico/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({token: token})
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) { _stampaToast('PDF inviato alla stampante.', true); }
+        else { _stampaToast(d.errore || 'Errore di stampa', false); }
+    }).catch(function() {
+        _stampaToast('Errore di rete durante la stampa.', false);
+    }).finally(function() {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-printer-fill me-1"></i> Stampa diretta'; }
+    });
+}
+
+function avviaAzione(azione) {
+    var ids = getSelezionati();
+    if (ids.length === 0) { mostraToast('Seleziona almeno un contratto.', false); return; }
+
+    var tipoRadio = document.querySelector('input[name="tipoDocumento"]:checked');
+    if (!tipoRadio) { mostraToast('Seleziona un tipo documento.', false); return; }
+    var tipoDoc = tipoRadio.value;
+    var categoria = tipoRadio.dataset.categoria;
+
+    var periodoData = getPeriodoData();
+    var templatePk = document.getElementById('selTemplate').value || null;
+    var modelloEmailPk = document.getElementById('selModelloEmail').value || null;
+
+    if (azione === 'email' && !modelloEmailPk) { mostraToast('Seleziona un modello email per l\'invio.', false); return; }
+    if (azione === 'email' && !confirm('Confermi generazione e invio documenti?')) return;
+
+    // Se composizione personalizzata: controlla che ci siano elementi e che ogni elemento abbia periodo se richiesto
+    if (categoria === 'COMPOSIZIONE') {
+        if (composizioneAttuale.length === 0) {
+            mostraToast('La composizione non ha elementi. Aggiungi almeno un tipo documento.', false);
+            return;
+        }
+        for (var i = 0; i < composizioneAttuale.length; i++) {
+            var el = composizioneAttuale[i];
+            if (richiedePeriodo(el.tipo) && (!el.periodo || !el.periodo.mese || !el.periodo.anno)) {
+                mostraToast('Periodo mancante per "' + (el.label || el.tipo) + '". Seleziona mese e anno per ogni elemento che lo richiede.', false);
+                return;
+            }
+        }
+    }
+
+    var label = { 'pdf': 'Generazione PDF', 'zip': 'Generazione ZIP', 'stampa': 'Preparazione stampa', 'email': 'Generazione e invio' }[azione] || 'Generazione';
+    mostraSpinner(label + ' in corso...', ids.length + ' contratti');
+
+    var body = {
+        contratti: ids,
+        categoria: categoria,
+        tipo_documento: tipoDoc,
+        template_pk: templatePk,
+        azione: azione === 'email' ? 'pdf' : azione,
+        modello_email_pk: azione === 'email' ? modelloEmailPk : null,
+    };
+
+    if (categoria === 'COMPOSIZIONE') {
+        body.composizione = composizioneAttuale;
+    } else {
+        Object.assign(body, periodoData);
+    }
+
+    fetch('/ajax/genera-stampe-invii/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify(body)
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        nascondiSpinner();
+        if (d.error) { mostraToast('Errore: ' + d.error, false); return; }
+        elaboraRisultato(d, azione);
+    }).catch(function(e) {
+        nascondiSpinner();
+        mostraToast('Errore: ' + e.message, false);
+    });
+}
+
+function elaboraRisultato(d, azione) {
+    var html = '<div class="text-center mb-3">';
+    html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.totale_ok + '</div>';
+    html += '<div class="small text-secondary">Documenti generati</div>';
+    if (d.totale_errori > 0) {
+        html += '<div class="display-6 fw-bold mt-2" style="color:#dc2626;">' + d.totale_errori + '</div>';
+        html += '<div class="small text-secondary">Errori</div>';
+    }
+    html += '</div>';
+
+    if (d.email_inviate > 0) {
+        var msg = d.email_errori > 0 ? ' (' + d.email_errori + ' errori)' : '';
+        html += '<div class="alert alert-success py-2 mb-2 small"><i class="bi bi-envelope me-1"></i> Email elaborate per ' + d.email_inviate + ' documenti' + msg + '</div>';
+    }
+
+    if (d.dettaglio) {
+        html += '<hr><div class="small" style="max-height:250px;overflow-y:auto;">';
+        d.dettaglio.forEach(function(e) {
+            var icon = e.errore ? '<i class="bi bi-x-circle" style="color:#dc2626;"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
+            var periodo = e.periodo ? ' (' + e.periodo + ')' : '';
+            var tipoInfo = e.tipo ? ' <span class="text-secondary" style="font-size:9px;">[' + e.tipo + ']</span>' : '';
+            html += '<div class="d-flex align-items-center gap-2 py-1">' + icon + ' <span>' + e.datore + ' &rarr; ' + e.lavoratore + periodo + tipoInfo;
+            if (e.documento_pk) {
+                html += ' <a href="#" onclick="event.preventDefault();apriNelPannello(\'/ajax/vedi-documento/' + e.documento_pk + '/\')" class="ms-2" style="color:#dc2626;text-decoration:none;font-weight:600;font-size:12px;" title="Visualizza PDF"><i class="bi bi-eye" style="font-size:18px; vertical-align:middle; margin-right:5px;"></i>VISUALIZZA</a>';
+            }
+            html += '</span>';
+            if (e.errore) html += '<br><small class="text-danger">' + e.errore + '</small>';
+            html += '</div>';
+        });
+        html += '</div>';
+    }
+
+
+
+    if (d.pdf_unico_url && azione === 'stampa') {
+        html += '<div class="alert alert-warning py-2 mt-2 small"><i class="bi bi-printer me-1"></i> PDF unico pronto. Clicca "Stampa PDF unico" per aprirlo.</div>';
+    }
+
+    if (azione === 'stampa_auto') {
+        var stampati = d.stampati !== undefined ? d.stampati : (d.totale_ok || 0);
+        var errori = d.totale_errori || 0;
+        html += '<div class="alert alert-success py-2 mt-2 small"><i class="bi bi-printer-fill me-1"></i> Inviati in stampa <strong>' + stampati + '</strong> documenti';
+        if (errori > 0) html += ' (<span style="color:#dc2626;">' + errori + ' errori</span>)';
+        html += '. Controlla la coda di stampa di Foxit Reader.</div>';
+    }
+
+    var titolo = {
+        'pdf': 'Documenti generati',
+        'zip': 'Archivio ZIP creato',
+        'stampa': 'Documenti pronti per la stampa',
+        'stampa_auto': 'Stampa automatica avviata',
+        'email': 'Invio preparato'
+    }[azione] || 'Operazione completata';
+
+    mostraRisultato(titolo, html, d.zip_url, d.pdf_unico_url, d.riepilogo_pk);
+}
+
+// Init elenco composizioni
+(function() {
+    var sel = document.getElementById('selCaricaComposizione');
+    composizioniList.forEach(function(c) {
+        sel.innerHTML += '<option value="' + c.pk + '">' + c.nome + '</option>';
+    });
+})();
+
+{% if contratto_pk %}
+(function() {
+    var pk = '{{ contratto_pk }}';
+    var row = document.querySelector('tr[data-pk="' + pk + '"]');
+    if (row) {
+        var chk = row.querySelector('.selContratto');
+        if (chk) chk.checked = true;
+        row.scrollIntoView({behavior:'smooth', block:'center'});
+        row.style.transition = 'background 0.5s';
+        row.style.background = 'rgba(16,185,129,0.08)';
+        setTimeout(function() { row.style.background = ''; }, 2000);
+    }
+})();
+{% endif %}
+</script>
+{% endblock %}

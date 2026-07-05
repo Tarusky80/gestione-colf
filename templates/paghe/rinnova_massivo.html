@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load tabelle_tags %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'datori_list' %}">Anagrafiche</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Rinnova Contratti</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .custom-table td { white-space: normal; vertical-align: middle; min-width: 80px; }
+    .custom-table th { white-space: nowrap; }
+    .checkbox-col { width: 40px; text-align: center; }
+    .checkbox-col input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #5E6AD2; }
+    #selAll { width: 18px; height: 18px; cursor: pointer; accent-color: #5E6AD2; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">RINNOVA CONTRATTI
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      <div class="d-inline-block float-end">
+        <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);margin-right:6px;vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
+      </div>
+    </h1>
+    <p class="text-secondary small mb-0">Seleziona i contratti da rinnovare e imposta le nuove date.</p>
+</div>
+
+<div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+            <div style="position: relative;">
+                <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
+                <input type="text" id="fTesto" class="form-control" placeholder="Datore, lavoratore, beneficiario..." oninput="filteraRighe()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label class="mb-1 fw-bold" class="c-10-up">Livello</label>
+            <select id="fLivello" class="form-control" onchange="filteraRighe()" class="bg-input">
+                <option value="">Tutti</option>
+                {% for l in livelli %}
+                <option value="{{ l.codice|upper }}">{{ l.codice }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="mb-1 fw-bold" class="c-10-up">Comune</label>
+            <select id="fComune" class="form-control" onchange="filteraRighe()" class="bg-input">
+                <option value="">Tutti</option>
+                {% for c in comuni %}
+                <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="mb-1 fw-bold" class="c-10-up">Progetto</label>
+            <select id="fProgetto" class="form-control" onchange="filteraRighe()" class="bg-input">
+                <option value="">Tutti</option>
+                {% for tp in tipi_progetto %}
+                <option value="{{ tp.nome|upper }}">{{ tp.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="mb-1 fw-bold" class="c-10-up">Data Rinnovo</label>
+            <input type="date" id="dataRinnovo" class="form-control" value="{{ oggi|date:'Y-m-d' }}" class="bg-input">
+        </div>
+        <div class="col-md-4">
+            <label class="mb-1 fw-bold" class="c-10-up">Data Fine <span class="text-secondary" style="font-weight:400;">(vuota = indeterminato)</span></label>
+            <input type="date" id="dataFine" class="form-control" class="bg-input">
+        </div>
+        <div class="col-md-4 d-flex align-items-end gap-2">
+            <button id="btnRinnova" onclick="confermaRinnovo()" class="btn" style="background:rgba(94,106,210,0.15); color:#9ca3ff; border:1px solid rgba(94,106,210,0.25); border-radius:8px; padding:8px 20px; font-size:13px; font-weight:600;">
+                <i class="bi bi-arrow-repeat me-1"></i> Rinnova Selezionati
+            </button>
+            <button onclick="toggleSeleziona()" id="btnSel" class="btn" style="background:rgba(255,255,255,0.05); color:#8A8F98; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:8px 14px; font-size:11px;">
+                <i class="bi bi-check2-square"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="custom-table-container" style="background: #17181C; padding: 20px; border-radius: 8px;">
+    <table class="table custom-table" id="rinnovaTable">
+        <thead>
+            <tr>
+                <th class="checkbox-col"><input type="checkbox" id="selAll" onchange="toggleAll()"></th>
+                <th>Datore</th>
+                <th>Lavoratore</th>
+                <th>Beneficiario</th>
+                <th>Progetto Regionale</th>
+                <th>Liv.</th>
+                <th>Data Rinnovo</th>
+                <th>Data Fine</th>
+                <th>CCNL Attuale</th>
+                <th>Nuovo CCNL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in contratti %}
+            {% with progetti=c.progetto.all %}
+            {% with ccnl_attuale=c.parametri_minimi %}
+            {% with ccnl_nuovo=c.parametri_minimi.livello.parametri_ccnl.all|dictsortreversed:"anno"|first %}
+            <tr data-pk="{{ c.pk }}" data-level="{{ ccnl_attuale.livello.codice|upper }}" data-comune="{% if progetti %}{{ progetti.0.beneficiario.comune|default:'' }}{% endif %}" data-progetto="{% for p in progetti %}{{ p.tipo.nome|upper }}{% if not forloop.last %} {% endif %}{% endfor %}">
+                <td class="checkbox-col"><input type="checkbox" class="row-checkbox" value="{{ c.pk }}"></td>
+                <td><div class="fw-bold small">{{ c.datore.nome_cognome }}</div></td>
+                <td><div class="text-secondary small">{{ c.lavoratore.nome_cognome }}</div></td>
+                <td>
+                    {% if progetti %}
+                        {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.beneficiario.nome_cognome }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                </td>
+                <td>
+                    {% if progetti %}
+                        {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.tipo.nome|default:"N/D" }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                </td>
+                <td><span style="background:rgba(94,106,210,0.15); color:#9ca3ff; padding:2px 8px; border-radius:6px; font-size:12px; font-weight:600; white-space:nowrap;">{{ ccnl_attuale.livello.codice }}</span></td>
+                <td class="small">{{ c.data_assunzione|date:"d/m/y" }}</td>
+                <td class="small">{{ c.data_fine|date:"d/m/y"|default:"—" }}</td>
+                <td class="small">{{ ccnl_attuale.anno }}</td>
+                <td class="small" style="color:#10b981; font-weight:600;">{{ ccnl_nuovo.anno }}</td>
+            </tr>
+            {% endwith %}
+            {% endwith %}
+            {% endwith %}
+            {% empty %}
+            <tr><td colspan="10" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun contratto attivo</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Rinnova Contratti
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Permette il <b>rinnovo massivo</b> di più contratti contemporaneamente. I nuovi contratti ereditano tutti i parametri (progetti, retribuzione, ecc.) da quelli originali, aggiornando automaticamente i <b>parametri CCNL all'ultimo anno disponibile</b> per lo stesso livello.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Spunta i contratti da rinnovare (o usa <i class="bi bi-check2-square"></i> per selezionare tutti quelli visibili).<br>
+        <b>2.</b> Imposta la <b>Data Rinnovo</b> (nuova data assunzione).<br>
+        <b>3.</b> Inserisci la <b>Data Fine</b> se il nuovo contratto è a termine; se lasciata vuota sarà <b>Indeterminato</b>.<br>
+        <b>4.</b> Clicca <b>Rinnova Selezionati</b> e conferma.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;">Cosa viene copiato</b><br>
+        Tutti i parametri del contratto originale (retribuzione, ore, indennità, note), i <b>progetti collegati</b>, e il <b>CCNL più recente</b> disponibile per lo stesso livello. Il campo <i>contratto_rinnovato_da</i> memorizza il riferimento al contratto originale.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modaleConferma" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" class="card-simple">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-arrow-repeat me-2" style="color:#5E6AD2;"></i>Conferma Rinnovo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;color:#8A8F98;font-size:13px;" id="confermaBody">
+        Stai per rinnovare <strong id="contaSel">0</strong> contratti.<br>
+        Data rinnovo: <strong id="confDataR"></strong><br>
+        Data fine: <strong id="confDataF">— (indeterminato)</strong>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;">
+        <button type="button" class="btn" data-bs-dismiss="modal" style="background:rgba(255,255,255,0.05);color:#8A8F98;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:6px 16px;font-size:12px;">Annulla</button>
+        <button type="button" id="btnConferma" onclick="eseguiRinnovo()" class="btn" style="background:rgba(94,106,210,0.2);color:#9ca3ff;border:1px solid rgba(94,106,210,0.3);border-radius:8px;padding:6px 20px;font-size:12px;font-weight:600;">
+          <i class="bi bi-check-lg me-1"></i> Conferma Rinnovo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modaleRisultato" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" class="card-simple">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-clipboard-check me-2" style="color:#10b981;"></i>Risultato Rinnovo</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;color:#8A8F98;font-size:13px;" id="risultatoBody"></div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;">
+        <button type="button" class="btn" data-bs-dismiss="modal" style="background:rgba(94,106,210,0.15);color:#9ca3ff;border:1px solid rgba(94,106,210,0.25);border-radius:8px;padding:6px 16px;font-size:12px;" onclick="location.reload()">OK, ricarica</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var selezionaVisibili = true;
+
+document.addEventListener('DOMContentLoaded', function() {
+    aggiornaConteggio('rinnovaTable', 'fCount');
+});
+
+function filteraRighe() {
+    var testo = (document.getElementById('fTesto').value || '').toUpperCase();
+    var livFiltro = (document.getElementById('fLivello').value || '').toUpperCase();
+    var comuneFiltro = (document.getElementById('fComune').value || '').toUpperCase();
+    var progFiltro = (document.getElementById('fProgetto').value || '').toUpperCase();
+    var table = document.getElementById('rinnovaTable');
+    var rows = table.getElementsByTagName('tr');
+    var visibili = 0;
+    for (var i = 1; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName('td');
+        if (!cells || cells.length < 5) continue;
+        var mostra = true;
+        if (testo) {
+            var trovato = false;
+            for (var j = 1; j < 5; j++) {
+                var txt = (cells[j].textContent || '').toUpperCase();
+                if (txt.indexOf(testo) !== -1) { trovato = true; break; }
+            }
+            if (!trovato) mostra = false;
+        }
+        if (mostra && livFiltro) {
+            var liv = (cells[5].textContent || '').toUpperCase();
+            if (liv.indexOf(livFiltro) === -1) mostra = false;
+        }
+        if (mostra && comuneFiltro) {
+            var comune = (cells[3].textContent || '').toUpperCase();
+            if (comune.indexOf(comuneFiltro) === -1) mostra = false;
+        }
+        if (mostra && progFiltro) {
+            var prog = (cells[4].textContent || '').toUpperCase();
+            if (prog.indexOf(progFiltro) === -1) mostra = false;
+        }
+        rows[i].style.display = mostra ? '' : 'none';
+        if (mostra) visibili++;
+    }
+    aggiornaConteggio('rinnovaTable', 'fCount');
+}
+
+function toggleAll() {
+    var checked = document.getElementById('selAll').checked;
+    document.querySelectorAll('#rinnovaTable tbody tr').forEach(function(tr) {
+        if (tr.style.display !== 'none') {
+            tr.querySelector('.row-checkbox').checked = checked;
+        }
+    });
+}
+
+function toggleSeleziona() {
+    var rows = document.querySelectorAll('#rinnovaTable tbody tr');
+    var daSpuntare = selezionaVisibili;
+    rows.forEach(function(tr) {
+        if (tr.style.display !== 'none') {
+            tr.querySelector('.row-checkbox').checked = daSpuntare;
+        }
+    });
+    var all = document.getElementById('selAll');
+    all.checked = daSpuntare;
+    all.indeterminate = false;
+    selezionaVisibili = !daSpuntare;
+    var btn = document.getElementById('btnSel');
+    btn.innerHTML = daSpuntare ? '<i class="bi bi-x-square"></i>' : '<i class="bi bi-check2-square"></i>';
+    aggiornaConteggio('rinnovaTable', 'fCount');
+}
+
+function getSelezionati() {
+    var pks = [];
+    document.querySelectorAll('.row-checkbox:checked').forEach(function(cb) {
+        pks.push(parseInt(cb.value));
+    });
+    return pks;
+}
+
+function confermaRinnovo() {
+    var pks = getSelezionati();
+    if (pks.length === 0) { mostraToast('Nessun contratto selezionato.', false); return; }
+    var dataR = document.getElementById('dataRinnovo').value;
+    if (!dataR) { mostraToast('Inserisci la data rinnovo.', false); return; }
+    var dataF = document.getElementById('dataFine').value;
+    document.getElementById('contaSel').textContent = pks.length;
+    document.getElementById('confDataR').textContent = dataR;
+    document.getElementById('confDataF').textContent = dataF || '— (indeterminato)';
+    var modal = new bootstrap.Modal(document.getElementById('modaleConferma'));
+    modal.show();
+}
+
+function eseguiRinnovo() {
+    var pks = getSelezionati();
+    var dataR = document.getElementById('dataRinnovo').value;
+    var dataF = document.getElementById('dataFine').value || '';
+    var btn = document.getElementById('btnConferma');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> In corso...';
+    bootstrap.Modal.getInstance(document.getElementById('modaleConferma')).hide();
+    fetch('/ajax/rinnova-massivo/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+        body: JSON.stringify({ contratto_pks: pks, data_rinnovo: dataR, data_fine: dataF })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        var body = document.getElementById('risultatoBody');
+        if (d.success) {
+            var html = '<div style="text-align:center;"><i class="bi bi-check-circle" style="font-size:48px;color:#10b981;display:block;margin-bottom:12px;"></i>';
+            html += '<p style="color:#EDEDED;font-weight:600;font-size:15px;">Rinnovo completato</p>';
+            html += '<p><strong style="color:#10b981;">' + d.successi + '</strong> contratti rinnovati con successo.</p>';
+            if (d.fallimenti && d.fallimenti.length > 0) {
+                html += '<hr style="border-color:#27282D;"><p style="color:#f59e0b;font-weight:600;">' + d.fallimenti.length + ' fallimento(i):</p><ul style="text-align:left;font-size:12px;">';
+                d.fallimenti.forEach(function(f) { html += '<li>PK ' + f.pk + ': ' + f.motivo + '</li>'; });
+                html += '</ul>';
+            }
+            html += '</div>';
+            body.innerHTML = html;
+        } else {
+            body.innerHTML = '<div style="text-align:center;"><i class="bi bi-x-circle" style="font-size:48px;color:#dc2626;display:block;margin-bottom:12px;"></i><p style="color:#EDEDED;font-weight:600;">' + (d.error || 'Errore durante il rinnovo.') + '</p></div>';
+        }
+        var modal = new bootstrap.Modal(document.getElementById('modaleRisultato'));
+        modal.show();
+    })
+    .catch(function(err) {
+        mostraToast('Errore di rete: ' + err.message, false);
+    })
+    .finally(function() {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Conferma Rinnovo';
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+[project]
+name = "gestione_colf"
+version = "1.0.0"
+requires-python = ">=3.12"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "SIM"]
+ignore = ["E501", "E741"]
+
+[tool.ruff.lint.per-file-ignores]
+"*/migrations/*" = ["E", "F", "I", "N", "UP", "SIM"]
+"*/tests/*" = ["E", "F", "I", "N", "UP", "SIM"]
+"paghe/views/_common_imports.py" = ["F401"]
+"paghe/views/_helpers.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = true
+
+[tool.coverage.run]
+source = ["paghe", "core"]
+omit = ["*/migrations/*", "*/tests/*", "paghe/api/*", "paghe/automation*.py"]

@@ -1,0 +1,834 @@
+{% extends 'base.html' %}
+{% load static %}{% load tabelle_tags %}
+
+{% block extra_css %}
+<style>
+@media print {
+    @page { margin: 15mm 18mm; size: A4 portrait; }
+    * { box-shadow: none !important; text-shadow: none !important; }
+    body { background: white !important; color: #111 !important; }
+    .sidebar, .navbar, .main-header, footer, .no-print,
+    #fAssente, #fMese, #fAnno, #btnPrev, #btnNext, #btnPdfSostituto,
+    #stepIndicators, #step2Panel, #step3Panel, .step-actions { display: none !important; }
+    .main-content, .container-fluid { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
+    #bustaContainer, #bustaSostituto { display: block !important; }
+    #bustaEmpty, #bustaSostitutoEmpty { display: none !important; }
+    #bustaContent > div, #bustaSostitutoContent > div { border: none !important; border-radius: 0 !important; padding: 0 !important; }
+    [style*="border-radius:14px"] { border-radius: 0 !important; }
+    [style*="border-radius:12px"] { border-radius: 4px !important; }
+    [style*="padding:20px 24px"] { padding: 10px 0 !important; }
+    [style*="background:#17181C"] { background: white !important; border: none !important; }
+    [style*="color:#EDEDED"] { color: #111 !important; }
+    [style*="color:#8A8F98"] { color: #666 !important; }
+    [style*="color:#10b981"] { color: #059669 !important; }
+    [style*="color:#f59e0b"] { color: #d97706 !important; }
+    .row { display: flex !important; flex-wrap: wrap !important; }
+    .col-md-6 { width: 50% !important; float: left !important; padding: 0 10px !important; }
+    img, svg, .bi, i { display: none !important; }
+}
+/* Step indicators */
+.step-container { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 24px; }
+.step-item { display: flex; align-items: center; }
+.step-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; border: 2px solid #333; color: #666; background: #1a1a1e; transition: 0.3s; flex-shrink: 0; }
+.step-circle.active { border-color: #10b981; color: #10b981; background: rgba(16,185,129,0.1); }
+.step-circle.done { border-color: #10b981; color: #fff; background: #10b981; }
+.step-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #666; margin: 0 8px; white-space: nowrap; }
+.step-label.active { color: #10b981; }
+.step-label.done { color: #10b981; }
+.step-line { width: 60px; height: 2px; background: #333; margin: 0 4px; }
+.step-line.active { background: #10b981; }
+.step-line.done { background: #10b981; }
+
+/* Budget residuo card */
+.budget-card { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); border-radius: 12px; padding: 16px 20px; text-align: center; }
+.budget-card .amount { font-size: 28px; font-weight: 800; color: #34d399; }
+.budget-card .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; }
+.budget-card.subtle { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
+.budget-card.subtle .amount { color: #EDEDED; }
+
+/* Select2-like contratto search */
+.contratto-select { width: 100%; background: #09090B; border: 1px solid #27282D; color: #EDEDED; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+.contratto-select:focus { border-color: #10b981; outline: none; }
+
+/* Modal styling */
+.modal-content { background: #1a1a1e; border: 1px solid #27282D; border-radius: 14px; }
+.modal-header { border-bottom: 1px solid #27282D; padding: 14px 18px; }
+.modal-header .btn-close { filter: invert(1); }
+.modal-body { padding: 18px; }
+.modal-footer { border-top: 1px solid #27282D; padding: 12px 18px; }
+.form-control-custom { background: #09090B; border: 1px solid #27282D; color: #EDEDED; padding: 7px 10px; border-radius: 6px; font-size: 13px; width: 100%; }
+.form-control-custom:focus { border-color: #5E6AD2; outline: none; }
+.form-control-custom::placeholder { color: #555; }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Sostituzione Malattia</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="container-fluid px-4 py-3">
+
+    <!-- TOP BAR -->
+    <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <h1 class="c-18-b" style="margin:0;">
+            <i class="bi bi-arrow-repeat me-2 c-green2"></i>Sostituzione Malattia
+        </h1>
+        <div class="d-flex align-items-center gap-2">
+            <select id="fAssente" class="contratto-select" style="min-width:320px;" onchange="onCambiaAssente()">
+                <option value="">— Seleziona lavoratore assente —</option>
+                {% for c in contratti %}
+                <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
+                </option>
+                {% endfor %}
+            </select>
+            <select id="fMese" class="contratto-select" style="width:auto;min-width:100px;" onchange="onCambiaMese()">
+                {% for m in mesi_range %}
+                <option value="{{ m }}" {% if m == mese_corrente %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+            <select id="fAnno" class="contratto-select" style="width:auto;min-width:90px;" onchange="onCambiaMese()">
+                {% for a in anni_range %}
+                <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+            <button id="btnPrev" class="btn btn-outline-secondary btn-sm" onclick="naviga(-1)" title="Mese precedente" style="padding:4px 10px;border-radius:8px;"><i class="bi bi-chevron-left"></i></button>
+            <button id="btnNext" class="btn btn-outline-secondary btn-sm" onclick="naviga(1)" title="Mese successivo" style="padding:4px 10px;border-radius:8px;"><i class="bi bi-chevron-right"></i></button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="resetTutto()" title="Reset" style="padding:4px 10px;border-radius:8px;"><i class="bi bi-arrow-counterclockwise"></i></button>
+            <a href="{% url 'calcoli_malattia' %}?contratto={{ contratto_pk|default:'' }}&mese={{ mese_corrente }}&anno={{ anno_corrente }}" class="btn btn-sm" style="background:transparent;color:#f87171;border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;text-decoration:none;"><i class="bi bi-heart-pulse me-1"></i> Malattia</a>
+            <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+            <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-lav-alt" style="text-decoration:none;">
+                <i class="bi bi-journal-text me-1"></i> Archivio Buste
+            </a>
+        </div>
+    </div>
+
+    <!-- Step Indicators -->
+    <div id="stepIndicators" class="step-container no-print">
+        <div class="step-item">
+            <div class="step-circle" id="sc1">1</div>
+            <span class="step-label" id="sl1">Assente</span>
+        </div>
+        <div class="step-line" id="sl1line"></div>
+        <div class="step-item">
+            <div class="step-circle" id="sc2">2</div>
+            <span class="step-label" id="sl2">Malattia</span>
+        </div>
+        <div class="step-line" id="sl2line"></div>
+        <div class="step-item">
+            <div class="step-circle" id="sc3">3</div>
+            <span class="step-label" id="sl3">Sostituto</span>
+        </div>
+    </div>
+
+    <!-- STEP 2: Malattia Parameters + Costo -->
+    <div id="step2Panel" class="no-print" style="display:none;">
+        <div class="card-simple" style="padding:18px 22px;margin-bottom:20px;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <span class="c-10-up">Step 2</span>
+                    <div class="c-15-b" style="margin-top:2px;">Malattia dell'assente</div>
+                    <div id="assenteInfo" style="font-size:12px;color:#8A8F98;margin-top:2px;"></div>
+                </div>
+                <div class="badge-count" style="padding:4px 14px;text-align:center;">
+                    <div class="c-9-up" style="color:#f59e0b;">Budget</div>
+                    <div id="assenteBudget" style="font-size:16px;font-weight:700;color:#f59e0b;">€ 0</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="mb-1 fw-bold c-10-up">Giorni di Malattia: <input type="number" id="giorniInput" min="0" max="180" step="1" value="1" onchange="daInputGiorni()" style="width:55px;background:#09090B;border:1px solid #27282D;color:#f59e0b;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> gg</label>
+                    <input type="range" id="fGiorni" min="0" max="180" step="1" value="1" oninput="daSliderGiorni()" style="background-color:#09090B;width:100%;">
+                </div>
+                <div class="col-md-6 d-flex align-items-end gap-4 pb-2">
+                    <div><label class="mb-1 fw-bold c-10-up">Sostituzione</label>
+                        <label class="toggle-switch toggle-purple"><input type="checkbox" id="sostituzioneToggle" onchange="aggiornaStep2()"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div><label class="mb-1 fw-bold c-10-up">Ricaduta</label>
+                        <label class="toggle-switch toggle-purple"><input type="checkbox" id="ricadutaToggle" onchange="aggiornaStep2()"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div><label class="mb-1 fw-bold c-10-up">Ricoverato</label>
+                        <label class="toggle-switch toggle-purple"><input type="checkbox" id="ricoveratoToggle" onchange="aggiornaStep2()"><span class="toggle-slider"></span></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-actions d-flex gap-2">
+                <button class="btn btn-success btn-sm" onclick="calcolaCostoMalattia()" style="border-radius:8px;padding:6px 18px;font-weight:600;">
+                    <i class="bi bi-calculator me-1"></i>Calcola Costo Malattia
+                </button>
+            </div>
+
+            <!-- Risultati Step 2 -->
+            <div id="step2Results" style="display:none;margin-top:18px;padding-top:16px;border-top:1px solid #27282D;">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="budget-card subtle">
+                            <div class="label">Costo Malattia</div>
+                            <div class="amount" id="costoMalattiaDisplay" style="color:#f87171;">€ 0</div>
+                            <div style="font-size:10px;color:#666;margin-top:2px;" id="costoDetail"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="budget-card subtle">
+                            <div class="label">Budget Assente</div>
+                            <div class="amount" id="budgetAssenteDisplay">€ 0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="budget-card">
+                            <div class="label">Budget Residuo</div>
+                            <div class="amount" id="budgetResiduoDisplay">€ 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: Sostituto -->
+    <div id="step3Panel" class="no-print" style="display:none;">
+        <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 22px;margin-bottom:20px;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <span class="c-10-up">Step 3</span>
+                    <div style="font-size:15px;font-weight:700;color:#EDEDED;margin-top:2px;">Sostituto</div>
+                    <div style="font-size:12px;color:#8A8F98;margin-top:2px;">Seleziona o crea il contratto del lavoratore sostituto</div>
+                </div>
+                <div id="budgetResiduoBadge" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:4px 14px;text-align:center;">
+                    <div style="font-size:9px;text-transform:uppercase;color:#34d399;letter-spacing:0.04em;">Budget residuo</div>
+                    <div id="budgetResiduoBadgeAmount" style="font-size:16px;font-weight:700;color:#34d399;">€ 0</div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-3 align-items-center flex-wrap">
+                <button class="btn btn-outline-primary btn-sm" onclick="apriModalCercaSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
+                    <i class="bi bi-search me-1"></i>Cerca esistente
+                </button>
+                <button class="btn btn-outline-success btn-sm" onclick="apriModalNuovoSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
+                    <i class="bi bi-person-plus me-1"></i>Nuovo sostituto
+                </button>
+                <span id="sostitutoSelezionato" style="font-size:13px;color:#8A8F98;display:none;">
+                    <i class="bi bi-check-circle-fill me-1" style="color:#10b981;"></i>
+                    <span id="sostitutoNome"></span>
+                    <button class="btn btn-link btn-sm text-danger p-0 ms-2" onclick="deselezionaSostituto()" style="text-decoration:none;font-size:12px;"><i class="bi bi-x-circle"></i></button>
+                </span>
+            </div>
+
+            <div id="step3Actions" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #27282D;">
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    <button class="btn btn-success btn-sm" onclick="calcolaBustaSostituto()" style="border-radius:8px;padding:6px 18px;font-weight:600;">
+                        <i class="bi bi-calculator me-1"></i>Calcola Busta Sostituto
+                    </button>
+                    <button id="btnPdfSostituto" class="btn btn-outline-danger btn-sm" onclick="scaricaPdfSostituto()" style="border-radius:8px;padding:6px 16px;display:none;">
+                        <i class="bi bi-file-pdf me-1"></i>PDF
+                    </button>
+                    <label style="font-size:10px;color:#8A8F98;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;margin-right:4px;">
+                        <input type="checkbox" id="chkAllegaLul" style="accent-color:#dc3545;width:14px;height:14px;"> Allega LUL
+                    </label>
+                    <button id="btnStampaSostituto" class="btn btn-warning btn-sm" onclick="stampaBustaSostituto(this)" style="border-radius:8px;padding:6px 16px;display:none;background:#ffc107;color:#000;border:none;font-weight:600;">
+                        <i class="bi bi-printer me-1"></i>STAMPA
+                    </button>
+                    <button id="btnSalvaBusta" class="btn btn-sm" onclick="salvaBusta()" style="border-radius:8px;padding:6px 16px;display:none;background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.25);font-weight:600;">
+                        <i class="bi bi-save me-1"></i> SALVA BUSTA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BUSTA SOSTITUTO -->
+    <div id="bustaSostituto" style="display:none;margin-top:12px;">
+        <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+        </div>
+        <div id="bustaSostitutoContent"></div>
+    </div>
+    <div id="bustaSostitutoEmpty" style="text-align:center;padding:60px 20px;color:#555;">
+        <i class="bi bi-file-earmark-text" style="font-size:32px;display:block;margin-bottom:12px;"></i>
+        <div style="font-size:14px;">Completa i passaggi per calcolare la busta del sostituto</div>
+    </div>
+
+    <!-- MODALE: Cerca sostituto esistente -->
+    <div class="modal fade" id="modalCercaSostituto" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="font-size:15px;font-weight:700;"><i class="bi bi-search me-2"></i>Cerca contratto esistente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="cercaSostitutoInput" class="form-control-custom mb-3" placeholder="Cerca per nome lavoratore, datore o codice INPS..." oninput="cercaSostituti(this.value)">
+                    <div id="cercaSostitutoResults" style="max-height:300px;overflow-y:auto;">
+                        <div style="text-align:center;padding:30px;color:#555;font-size:13px;">Inizia a digitare per cercare...</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal" style="border-radius:8px;">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE: Nuovo sostituto -->
+    <div class="modal fade" id="modalNuovoSostituto" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" style="font-size:15px;font-weight:700;"><i class="bi bi-person-plus me-2"></i>Nuovo sostituto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Nome *</label>
+                            <input type="text" id="nsNome" class="form-control-custom" placeholder="Nome">
+                        </div>
+                        <div class="col-6">
+                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Cognome *</label>
+                            <input type="text" id="nsCognome" class="form-control-custom" placeholder="Cognome">
+                        </div>
+                        <div class="col-12">
+                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Codice Fiscale *</label>
+                            <input type="text" id="nsCF" class="form-control-custom" placeholder="Codice Fiscale" style="text-transform:uppercase;">
+                        </div>
+                        <div class="col-6">
+                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Livello *</label>
+                            <select id="nsLivello" class="form-control-custom">
+                                {% for l in livelli %}
+                                <option value="{{ l.pk }}">{{ l.codice }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Ore mensili *</label>
+                            <input type="number" id="nsOre" class="form-control-custom" placeholder="es. 120" step="0.5" min="1" value="120">
+                        </div>
+                        <div class="col-6">
+                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Data inizio *</label>
+                            <input type="date" id="nsDataInizio" class="form-control-custom">
+                        </div>
+                        <div class="col-6">
+                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Data fine</label>
+                            <input type="date" id="nsDataFine" class="form-control-custom">
+                        </div>
+                        <div class="col-12">
+                            <label class="d-flex align-items-center gap-2" style="font-size:13px;color:#EDEDED;cursor:pointer;">
+                                <input type="checkbox" id="nsConvivente" style="accent-color:#5E6AD2;"> Convivente
+                            </label>
+                        </div>
+                    </div>
+                    <div id="nsErrore" style="display:none;color:#f87171;font-size:12px;margin-top:10px;padding:8px 12px;background:rgba(248,113,113,0.1);border-radius:6px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal" style="border-radius:8px;">Annulla</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="creaNuovoSostituto()" style="border-radius:8px;"><i class="bi bi-check-lg me-1"></i>Crea e seleziona</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- HELP MODAL -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Sostituzione Malattia</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+Qui puoi gestire la <b>Sostituzione per Malattia</b> di un collaboratore domestico. Quando un lavoratore si ammala, puoi:<br>
+<b>1.</b> Calcolare quanto costa la sua malattia.<br>
+<b>2.</b> Trovare o creare un <b>lavoratore sostituto</b> che lo copra.<br>
+<b>3.</b> Calcolare la busta paga del sostituto usando il <b>budget residuo</b> (cioè i soldi che avanzano dal budget dell'assente dopo aver pagato la malattia).<br><br>
+È un flusso in <b>3 step</b> guidati — segui le istruzioni in pagina.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 1 — Seleziona il lavoratore assente</b><br>
+Scegli dal menu a tendina il contratto del lavoratore che si ammala. Il sistema carica i dati del contratto (datore, budget mensile, etc.).<br><br>
+Puoi anche selezionare il <b>mese e l'anno</b> di riferimento (di default è il mese corrente). Usa le frecce < e > per navigare tra i mesi.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 2 — Calcola il costo della malattia</b><br>
+Imposta i <b>giorni di malattia</b> con lo slider (0–180) o digitando il numero. Poi scegli le opzioni:<br>
+— <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
+— <b>Ricaduta:</b> se è la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
+— <b>Ricoverato:</b> se il lavoratore è ricoverato, si aggiunge l'indennità vitto/alloggio.<br><br>
+Clicca <b>"Calcola Costo Malattia"</b>. Il sistema mostra:<br>
+— <b>Costo malattia:</b> quanto costa al datore la malattia del lavoratore.<br>
+— <b>Budget assente:</b> il budget mensile del lavoratore malato.<br>
+— <b>Budget residuo:</b> la differenza = budget_assente − costo_malattia. Sono i soldi disponibili per pagare il sostituto.<br><br>
+<b>Attenzione:</b> se il costo malattia è uguale o superiore al budget, non ci sono soldi per il sostituto.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 3 — Scegli il sostituto e calcola la busta</b><br>
+Hai <b>due modi</b> per trovare un sostituto:<br><br>
+<b>A) Cerca un sostituto esistente:</b><br>
+Clicca "Cerca esistente". Si apre una modale con un campo di ricerca: digita almeno 2 caratteri per cercare tra i contratti attivi (escluso l'assente). Quando trovi il lavoratore giusto, clicca su di esso per selezionarlo.<br><br>
+<b>B) Crea un nuovo sostituto:</b><br>
+Clicca "Nuovo sostituto". Si apre una modale per creare un nuovo lavoratore e un contratto a <b>termine (determinato)</b> apposta per la sostituzione. Compila i campi obbligatori:<br>
+&nbsp;&nbsp;— Nome, Cognome, Codice Fiscale.<br>
+&nbsp;&nbsp;— Livello contrattuale.<br>
+&nbsp;&nbsp;— Ore mensili previste.<br>
+&nbsp;&nbsp;— Data inizio e data fine della sostituzione.<br>
+&nbsp;&nbsp;— Se convivente o meno.<br>
+Clicca "Crea e seleziona". Il sistema crea il lavoratore e il contratto, e lo seleziona automaticamente.<br><br>
+Dopo aver selezionato il sostituto, clicca <b>"Calcola Busta Sostituto"</b>. Il sistema calcola la sua busta paga usando il <b>budget residuo</b> dallo Step 2 (invece del budget originale del contratto).</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Budget residuo — Come funziona</b><br>
+Il concetto è semplice: se il lavoratore assente aveva un budget mensile di €500 e la sua malattia costa €150, restano €350 per pagare il sostituto.<br><br>
+Il sistema usa questi €350 come <b>budget_override</b> per calcolare la busta del sostituto. Tutto il calcolo (paga base, ratei, contributi, prorating) viene fatto su questo budget residuo.<br><br>
+Se il budget residuo è €0 o negativo, il sistema mostra un errore e non è possibile calcolare la busta del sostituto.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">PDF della Busta Sostituto</b><br>
+Dopo aver calcolato la busta del sostituto, puoi scaricare il <b>PDF</b> cliccando il pulsante apposito. Il PDF include tutti i dettagli della busta paga e la nota "calcolata sul budget residuo".</p>
+
+<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Navigazione e Reset</b><br>
+Puoi tornare alla pagina Malattia cliccando il pulsante "Malattia" (in alto). Usa il pulsante "Reset" per ricominciare da capo. Lo step indicator in alto mostra sempre a che punto sei del flusso.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var assentePk = {{ contratto_pk|default:'null' }};
+var sostitutoPk = null;
+var budgetResiduo = 0;
+var mese = {{ mese_corrente }};
+var anno = {{ anno_corrente }};
+var mese_nomi = ['', 'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
+                 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+
+function aggiornaStep(num) {
+    for (var i = 1; i <= 3; i++) {
+        var c = document.getElementById('sc' + i);
+        var l = document.getElementById('sl' + i);
+        var ln = document.getElementById('sl' + i + 'line');
+        c.className = 'step-circle';
+        l.className = 'step-label';
+        if (ln) ln.className = 'step-line';
+        if (i < num) {
+            c.classList.add('done');
+            l.classList.add('done');
+            if (ln) ln.classList.add('done');
+        } else if (i === num) {
+            c.classList.add('active');
+            l.classList.add('active');
+            if (ln) ln.classList.add('active');
+        }
+    }
+}
+
+function onCambiaAssente() {
+    assentePk = document.getElementById('fAssente').value;
+    if (assentePk) {
+        document.getElementById('step2Panel').style.display = 'block';
+        document.getElementById('step3Panel').style.display = 'none';
+        document.getElementById('bustaSostituto').style.display = 'none';
+        document.getElementById('bustaSostitutoEmpty').style.display = 'block';
+        document.getElementById('step2Results').style.display = 'none';
+        sostitutoPk = null;
+        budgetResiduo = 0;
+        aggiornaStep(1);
+        caricamentoAssente();
+    } else {
+        document.getElementById('step2Panel').style.display = 'none';
+        document.getElementById('step3Panel').style.display = 'none';
+        aggiornaStep(0);
+    }
+}
+
+function onCambiaMese() {
+    mese = parseInt(document.getElementById('fMese').value);
+    anno = parseInt(document.getElementById('fAnno').value);
+    if (assentePk) {
+        document.getElementById('step2Results').style.display = 'none';
+        document.getElementById('step3Panel').style.display = 'none';
+        document.getElementById('bustaSostituto').style.display = 'none';
+        sostitutoPk = null;
+        aggiornaStep(1);
+    }
+}
+
+function naviga(delta) {
+    var m = parseInt(document.getElementById('fMese').value);
+    var a = parseInt(document.getElementById('fAnno').value);
+    m += delta;
+    if (m < 1) { m = 12; a -= 1; }
+    if (m > 12) { m = 1; a += 1; }
+    document.getElementById('fMese').value = m;
+    document.getElementById('fAnno').value = a;
+    onCambiaMese();
+}
+
+function caricamentoAssente() {
+    if (!assentePk) return;
+    var sel = document.getElementById('fAssente');
+    var opt = sel.options[sel.selectedIndex];
+    var testo = opt ? opt.text : '';
+    document.getElementById('assenteInfo').textContent = testo || 'Contratto #' + assentePk;
+    // Get budget and datore_pk from detail endpoint
+    fetch('/ajax/dettaglio-contratto-copia/' + assentePk + '/')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        document.getElementById('assenteBudget').textContent = '€ ?';
+        aggiornaStep(1);
+    })
+    .catch(function() {
+        document.getElementById('assenteInfo').textContent = 'Errore caricamento dati';
+    });
+}
+
+// Slider giorni
+window.daSliderGiorni = function() {
+    document.getElementById('giorniInput').value = document.getElementById('fGiorni').value;
+};
+window.daInputGiorni = function() {
+    var inp = document.getElementById('giorniInput');
+    var v = parseInt(inp.value, 10);
+    if (isNaN(v) || v < 0) v = 0;
+    if (v > 180) v = 180;
+    inp.value = v;
+    document.getElementById('fGiorni').value = v;
+};
+window.aggiornaStep2 = function() {
+    // No auto-calc, just visual update
+};
+
+function calcolaCostoMalattia() {
+    if (!assentePk) return;
+    var gg = parseInt(document.getElementById('giorniInput').value) || 0;
+    if (gg <= 0) { mostraToast('Inserire giorni di malattia', false); return; }
+    var params = 'mese=' + mese + '&anno=' + anno + '&giorni_malattia=' + gg;
+    params += '&sostituzione=' + (document.getElementById('sostituzioneToggle').checked ? '1' : '0');
+    params += '&ricaduta=' + (document.getElementById('ricadutaToggle').checked ? '1' : '0');
+    params += '&ricoverato=' + (document.getElementById('ricoveratoToggle').checked ? '1' : '0');
+    fetch('/ajax/calcola-costo-malattia-sostituzione/' + assentePk + '/?' + params)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.errore) { mostraToast(d.errore, false); return; }
+        document.getElementById('costoMalattiaDisplay').textContent = '€ ' + (d.costo_malattia || 0).toFixed(2);
+        document.getElementById('budgetAssenteDisplay').textContent = '€ ' + (d.budget_assente || 0).toFixed(2);
+        document.getElementById('budgetResiduoDisplay').textContent = '€ ' + (d.budget_residuo || 0).toFixed(2);
+        document.getElementById('budgetResiduoBadgeAmount').textContent = '€ ' + (d.budget_residuo || 0).toFixed(2);
+        budgetResiduo = d.budget_residuo || 0;
+        var det = d.giorni_50 > 0 ? (d.giorni_50 + ' gg 50% + ' + d.giorni_100 + ' gg 100%') : (d.giorni_100 + ' gg 100%');
+        if (d.ricaduta) det = 'Ricaduta — 100% (' + d.giorni_100 + ' gg)';
+        if (d.indennita_va > 0) det += ' + vitto/alloggio €' + d.indennita_va.toFixed(2);
+        document.getElementById('costoDetail').textContent = det;
+        document.getElementById('step2Results').style.display = 'block';
+        document.getElementById('step3Panel').style.display = 'block';
+        aggiornaStep(2);
+    })
+    .catch(function() { mostraToast('Errore nel calcolo', false); });
+}
+
+function deselezionaSostituto() {
+    sostitutoPk = null;
+    document.getElementById('sostitutoSelezionato').style.display = 'none';
+    document.getElementById('step3Actions').style.display = 'none';
+    document.getElementById('bustaSostituto').style.display = 'none';
+    document.getElementById('bustaSostitutoEmpty').style.display = 'block';
+    document.getElementById('btnPdfSostituto').style.display = 'none';
+}
+
+function selezionaSostituto(pk, nome) {
+    sostitutoPk = pk;
+    document.getElementById('sostitutoNome').textContent = nome;
+    document.getElementById('sostitutoSelezionato').style.display = 'inline';
+    document.getElementById('step3Actions').style.display = 'block';
+    document.getElementById('bustaSostituto').style.display = 'none';
+    document.getElementById('bustaSostitutoEmpty').style.display = 'block';
+    document.getElementById('btnPdfSostituto').style.display = 'none';
+    bootstrap.Modal.getInstance(document.getElementById('modalCercaSostituto')).hide();
+    bootstrap.Modal.getInstance(document.getElementById('modalNuovoSostituto')).hide();
+    aggiornaStep(3);
+}
+
+function cercaSostituti(q) {
+    if (q.length < 2) {
+        document.getElementById('cercaSostitutoResults').innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Digita almeno 2 caratteri...</div>';
+        return;
+    }
+    fetch('/ajax/cerca-contratti-copia/?q=' + encodeURIComponent(q))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        var html = '';
+        if (d.results.length === 0) {
+            html = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Nessun risultato</div>';
+        } else {
+            for (var i = 0; i < d.results.length; i++) {
+                var r = d.results[i];
+                if (r.pk == assentePk) continue; // exclude the sick worker
+                html += '<div class="d-flex align-items-center justify-content-between p-2" style="border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;border-radius:6px;" onmouseover="this.style.background=\'rgba(255,255,255,0.05)\'" onmouseout="this.style.background=\'transparent\'" onclick="selezionaSostituto(' + r.pk + ', \'' + r.lavoratore.replace(/'/g, "\\'") + ' — ' + r.datore.replace(/'/g, "\\'") + '\')">';
+                html += '<div><div style="font-weight:600;font-size:13px;color:#EDEDED;">' + r.lavoratore + '</div>';
+                html += '<div style="font-size:11px;color:#8A8F98;">' + r.datore + ' — ' + r.tipo_contratto + (r.codice_inps ? ' — INPS: ' + r.codice_inps : '') + '</div></div>';
+                html += '<i class="bi bi-plus-circle" style="color:#10b981;font-size:18px;"></i>';
+                html += '</div>';
+            }
+        }
+        document.getElementById('cercaSostitutoResults').innerHTML = html;
+    });
+}
+
+function apriModalCercaSostituto() {
+    var modal = new bootstrap.Modal(document.getElementById('modalCercaSostituto'));
+    document.getElementById('cercaSostitutoInput').value = '';
+    document.getElementById('cercaSostitutoResults').innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Inizia a digitare per cercare...</div>';
+    modal.show();
+}
+
+function apriModalNuovoSostituto() {
+    var oggi = new Date();
+    var meseStr = ('0' + (mese)).slice(-2);
+    document.getElementById('nsDataInizio').value = anno + '-' + meseStr + '-01';
+    document.getElementById('nsDataFine').value = '';
+    document.getElementById('nsNome').value = '';
+    document.getElementById('nsCognome').value = '';
+    document.getElementById('nsCF').value = '';
+    document.getElementById('nsOre').value = '120';
+    document.getElementById('nsConvivente').checked = false;
+    document.getElementById('nsErrore').style.display = 'none';
+    // Pre-select livello from assente if available
+    var modal = new bootstrap.Modal(document.getElementById('modalNuovoSostituto'));
+    modal.show();
+}
+
+function creaNuovoSostituto() {
+    var nome = document.getElementById('nsNome').value.trim();
+    var cognome = document.getElementById('nsCognome').value.trim();
+    var cf = document.getElementById('nsCF').value.trim().toUpperCase();
+    var ore = parseFloat(document.getElementById('nsOre').value);
+    var dataInizio = document.getElementById('nsDataInizio').value;
+    var dataFine = document.getElementById('nsDataFine').value;
+    var isConv = document.getElementById('nsConvivente').checked ? '1' : '0';
+    if (!nome || !cognome || !cf || !dataInizio || !ore) {
+        document.getElementById('nsErrore').textContent = 'Compilare tutti i campi obbligatori (*)';
+        document.getElementById('nsErrore').style.display = 'block';
+        return;
+    }
+    // Get assente's datore pk from the dropdown
+    var sel = document.getElementById('fAssente');
+    var assPk = sel.value;
+    if (!assPk) { mostraToast('Selezionare prima il lavoratore assente', false); return; }
+    var formData = new FormData();
+    formData.append('datore_pk', '');
+    formData.append('nome', nome);
+    formData.append('cognome', cognome);
+    formData.append('codice_fiscale', cf);
+    formData.append('livello_pk', document.getElementById('nsLivello').value);
+    formData.append('ore_mensili', ore);
+    formData.append('data_inizio', dataInizio);
+    formData.append('data_fine', dataFine);
+    formData.append('is_convivente', isConv);
+    // Get datore from assente
+    fetch('/ajax/dettaglio-contratto-copia/' + assPk + '/')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        formData.set('datore_pk', d.datore); // datore is FK pk
+        return fetch('/ajax/crea-contratto-sostituto/', { method: 'POST', body: formData });
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.errore) {
+            document.getElementById('nsErrore').textContent = d.errore;
+            document.getElementById('nsErrore').style.display = 'block';
+            return;
+        }
+        selezionaSostituto(d.pk, d.contratto);
+    })
+    .catch(function() { mostraToast('Errore creazione sostituto', false); });
+}
+
+function calcolaBustaSostituto() {
+    if (!sostitutoPk) { mostraToast('Selezionare un sostituto', false); return; }
+    if (budgetResiduo <= 0) {
+        mostraToast('Budget residuo esaurito (€' + budgetResiduo.toFixed(2) + '). Non è possibile calcolare la busta del sostituto.', false);
+        return;
+    }
+    var params = 'mese=' + mese + '&anno=' + anno + '&budget_residuo=' + budgetResiduo.toFixed(2);
+    fetch('/ajax/calcola-busta-sostituto/' + sostitutoPk + '/?' + params)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.errore) { mostraToast(d.errore, false); return; }
+        renderBustaSostituto(d);
+        document.getElementById('bustaSostituto').style.display = 'block';
+        document.getElementById('bustaSostitutoEmpty').style.display = 'none';
+        document.getElementById('btnPdfSostituto').style.display = 'inline-block';
+        document.getElementById('btnStampaSostituto').style.display = 'inline-block';
+        document.getElementById('btnSalvaBusta').style.display = 'inline-block';
+        document.getElementById('btnSalvaBusta').dataset.pk = sostitutoPk;
+        var warn = document.getElementById('bustaEsistenteWarning');
+        if (warn) warn.style.display = d.busta_esistente ? 'block' : 'none';
+        aggiornaStep(3);
+    })
+    .catch(function() { mostraToast('Errore calcolo busta sostituto', false); });
+}
+
+function renderBustaSostituto(d) {
+    var h = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:20px 24px;">';
+    // Header
+    h += '<div class="d-flex justify-content-between align-items-center mb-3">';
+    h += '<div><span class="c-10-up">' + d.mese_nome + ' ' + d.anno + '</span>';
+    h += '<div style="font-size:16px;font-weight:800;color:#EDEDED;margin-top:2px;">Busta Sostituto</div></div>';
+    h += '<div style="text-align:right;"><span style="font-size:10px;text-transform:uppercase;color:#8A8F98;">' + (d.tipo_calcolo || '') + '</span>';
+    h += '<div style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.lavoratore + '</div></div></div>';
+    // Info row
+    h += '<div class="row g-2 mb-3" style="font-size:11px;color:#8A8F98;">';
+    h += '<div class="col-md-4"><b>Datore:</b> ' + (d.datore || '') + '</div>';
+    h += '<div class="col-md-4"><b>Ore:</b> ' + (d.ore_mensili || 0) + ' h/mese (INPS: ' + (d.ore_inps || 0) + ' h)</div>';
+    h += '<div class="col-md-4"><b>Budget applicato:</b> € ' + (d.budget_mensile || 0).toFixed(2) + '</div></div>';
+    // Table
+    h += '<div style="border-top:1px solid #27282D;padding-top:12px;">';
+    h += '<table style="width:100%;font-size:12px;border-collapse:collapse;">';
+    h += '<tr><th style="text-align:left;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Voce</th><th style="text-align:right;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
+    // Paga base
+    var pb = d.paga_base || {};
+    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Paga base (' + (pb.orario || 0).toFixed(4) + '€/h &times; ' + (d.ore_mensili || 0) + ' h)</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (pb.totale || 0).toFixed(2) + '</td></tr>';
+    // Indennità
+    var inds = d.indennita || [];
+    for (var i = 0; i < inds.length; i++) {
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + (inds[i].label || '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (inds[i].totale || 0).toFixed(2) + '</td></tr>';
+    }
+    // Scatti
+    var sc = d.scatti_anzianita || {};
+    if (sc.valore > 0) {
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Scatti anzianità (' + (sc.dettaglio || '') + ')</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (sc.orario || 0).toFixed(2) + '</td></tr>';
+    }
+    // Ratei
+    var ratei = d.ratei_pagati || [];
+    for (var j = 0; j < ratei.length; j++) {
+        var r = ratei[j];
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + r.label + (r.incluso ? ' (incluso)' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (r.totale || 0).toFixed(2) + '</td></tr>';
+    }
+    // Lordo
+    h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">TOTALE LORDO</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">€ ' + (d.totale_lordo || 0).toFixed(2) + '</td></tr>';
+    // Separator
+    h += '<tr><td colspan="2" style="padding:2px;"></td></tr>';
+    // Contributi
+    var contr = d.contributi || {};
+    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Contributi INPS' + (contr.inps && contr.inps.fascia ? ' (' + contr.inps.fascia + ')' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (contr.totale || 0).toFixed(2) + '</td></tr>';
+    // Trattenute
+    var trat = d.trattenute || {};
+    if (trat.convivenza && trat.convivenza.totale > 0) {
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Vitto e alloggio</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.convivenza.totale || 0).toFixed(2) + '</td></tr>';
+    }
+    if (trat.ratei_accantonati > 0) {
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Ratei accantonati</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.ratei_accantonati || 0).toFixed(2) + '</td></tr>';
+    }
+    // Netto
+    h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">NETTO A PAGARE</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">€ ' + (d.netto || 0).toFixed(2) + '</td></tr>';
+    h += '</table></div>';
+    // Verifica copertura
+    if (d.verifica_copertura !== undefined) {
+        var vc = d.verifica_copertura;
+        var vcColor = vc >= 0 ? '#10b981' : '#f87171';
+        h += '<div style="margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;text-align:center;">';
+        h += '<span style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Verifica copertura budget</span>';
+        h += '<div style="font-size:15px;font-weight:700;color:' + vcColor + ';">€ ' + vc.toFixed(2) + '</div></div>';
+    }
+    h += '</div>';
+    document.getElementById('bustaSostitutoContent').innerHTML = h;
+}
+
+function getCSRFToken() {
+    var name = 'csrftoken';
+    var value = '; ' + document.cookie;
+    var parts = value.split('; ' + name + '=');
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return '';
+}
+window.salvaBusta = function() {
+    var pk = document.getElementById('btnSalvaBusta').dataset.pk;
+    if (!pk) return;
+    var warn = document.getElementById('bustaEsistenteWarning');
+    if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
+        if (!confirm('Busta paga già salvata per questo periodo. Sovrascrivere?')) return;
+    }
+    var btn = document.getElementById('btnSalvaBusta');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> SALVATAGGIO...';
+    var formData = new FormData();
+    formData.append('contratto_pk', pk);
+    formData.append('mese', mese);
+    formData.append('anno', anno);
+    formData.append('tipo_calcolo', 'SOSTITUZIONE');
+    formData.append('csrfmiddlewaretoken', getCSRFToken());
+    fetch('/ajax/salva-busta/', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) {
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> SALVATA';
+            setTimeout(function() {
+                btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+                btn.disabled = false;
+            }, 2000);
+        } else {
+            mostraToast(d.errore || 'Errore salvataggio', false);
+            btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+            btn.disabled = false;
+        }
+    }).catch(function(e) {
+        console.error(e);
+        mostraToast('Errore di rete', false);
+        btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+        btn.disabled = false;
+    });
+};
+function scaricaPdfSostituto() {
+    if (!sostitutoPk) return;
+    var params = 'mese=' + mese + '&anno=' + anno + '&budget_residuo=' + budgetResiduo.toFixed(2)
+        + '&allega_lul=' + (document.getElementById('chkAllegaLul').checked ? '1' : '0');
+    apriNelPannello('/ajax/busta-sostituto-pdf/' + sostitutoPk + '/?' + params);
+}
+
+function resetTutto() {
+    document.getElementById('fAssente').value = '';
+    document.getElementById('fMese').value = '' + mese;
+    document.getElementById('fAnno').value = '' + anno;
+    assentePk = null;
+    sostitutoPk = null;
+    budgetResiduo = 0;
+    document.getElementById('step2Panel').style.display = 'none';
+    document.getElementById('step3Panel').style.display = 'none';
+    document.getElementById('bustaSostituto').style.display = 'none';
+    document.getElementById('bustaSostitutoEmpty').style.display = 'block';
+    document.getElementById('step2Results').style.display = 'none';
+    aggiornaStep(0);
+}
+
+// Init
+(function() {
+    aggiornaStep(0);
+    if (assentePk) {
+        setTimeout(onCambiaAssente, 100);
+    }
+})();
+
+window.stampaBustaSostituto = function(btn) {
+    var pk = document.getElementById('btnSalvaBusta').dataset.pk;
+    if (!pk) { mostraToast('Nessuna busta selezionata.', false); return; }
+    var d = window._lastStdData;
+    if (!d || !d.busta_esistente) {
+        mostraToast('Salva prima la busta paga con "SALVA BUSTA".', false);
+        return;
+    }
+    stampaBusta(pk, btn);
+};
+</script>
+{% endblock %}

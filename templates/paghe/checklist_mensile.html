@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Checklist Mensile</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<style>
+.checklist-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#17181C;border:1px solid rgba(255,255,255,0.04);border-radius:10px;transition:all 0.15s;}
+.checklist-item:hover{border-color:rgba(94,106,210,0.15);}
+.checklist-item.completato{opacity:0.65;}
+.checklist-item.completato .cl-label{text-decoration:line-through;color:#545;}
+.checklist-circle{width:32px;height:32px;border-radius:50%;border:2px solid #333;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.15s;font-size:14px;color:transparent;background:transparent;}
+.checklist-circle:hover{border-color:#5E6AD2;background:rgba(94,106,210,0.08);}
+.checklist-circle.done{border-color:#10b981;background:rgba(16,185,129,0.12);color:#10b981;}
+.checklist-circle.obbligatorio{border-color:#f59e0b;}
+.checklist-item.nascosto{display:none;}
+.toggle-switch .toggle-slider::after{display:none;}
+.toggle-switch .toggle-slider{width:36px;height:20px;background:#555;border-radius:10px;border:1px solid #666;position:relative;display:inline-block;transition:background .2s;margin-left:0;}
+.toggle-switch .toggle-slider::after{content:'';position:absolute;width:16px;height:16px;background:#ccc;border-radius:50%;top:1px;left:1px;transition:transform .2s;display:block;}
+.toggle-switch input:checked+.toggle-slider{background:rgba(94,106,210,0.3);border-color:#5E6AD2;}
+.toggle-switch input:checked+.toggle-slider::after{transform:translateX(16px);}
+.cat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;flex-shrink:0;}
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 fw-bold mb-0"><i class="bi bi-check2-square me-2" style="color:#5E6AD2;"></i>Checklist Mensile
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        </h1>
+</div>
+
+<div class="d-flex flex-wrap gap-3 mb-4 align-items-center">
+    <div class="d-flex align-items-center gap-2">
+        <a href="?mese={{ prev_mese }}&anno={{ prev_anno }}" class="btn btn-sm" style="background:#17181C;border:1px solid #27282D;border-radius:8px;color:#EDEDED;padding:6px 12px;"><i class="bi bi-chevron-left"></i></a>
+        <div class="fw-bold" style="font-size:16px;min-width:180px;text-align:center;">{{ mese_nome }} {{ anno }}</div>
+        <a href="?mese={{ next_mese }}&anno={{ next_anno }}" class="btn btn-sm" style="background:#17181C;border:1px solid #27282D;border-radius:8px;color:#EDEDED;padding:6px 12px;"><i class="bi bi-chevron-right"></i></a>
+        <a href="?mese={{ oggi.month }}&anno={{ oggi.year }}" class="btn btn-sm" style="background:#17181C;border:1px solid #27282D;border-radius:8px;color:#5E6AD2;padding:6px 12px;font-size:11px;">Mese corrente</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-8">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:#17181C;border:1px solid #27282D;border-radius:12px;">
+            <div style="flex-shrink:0;width:44px;height:44px;border-radius:10px;background:{% if progresso_pct == 100 %}rgba(16,185,129,0.15){% else %}rgba(94,106,210,0.12){% endif %};display:flex;align-items:center;justify-content:center;">
+                <i class="bi {% if progresso_pct == 100 %}bi-check-lg{% else %}bi-list-check{% endif %}" style="font-size:20px;color:{% if progresso_pct == 100 %}#10b981{% else %}#5E6AD2{% endif %};"></i>
+            </div>
+            <div style="flex:1;">
+                <div style="font-size:12px;color:#8A8F98;margin-bottom:4px;">{{ completati }}/{{ totale }} completate</div>
+                <div class="progress" style="height:8px;background:#27282D;border-radius:4px;max-width:300px;">
+                    <div class="progress-bar" style="width:{{ progresso_pct }}%;background:{% if progresso_pct == 100 %}#10b981{% elif progresso_pct > 50 %}#5E6AD2{% else %}#f59e0b{% endif %};border-radius:4px;transition:width 0.5s;"></div>
+                </div>
+            </div>
+            <button class="btn btn-sm" onclick="resettaMese({{ anno }},{{ mese }})" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);color:#f87171;border-radius:6px;padding:6px 12px;font-size:11px;">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Resetta
+            </button>
+            <label class="toggle-switch" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-left:8px;font-size:11px;color:#8A8F98;user-select:none;">
+                <input type="checkbox" id="nascondiCompletate" onchange="toggleNascondiCompletate()" style="display:none;">
+                <span class="toggle-slider" style="position:relative;display:inline-block;width:36px;height:20px;background:#555;border-radius:10px;border:1px solid #666;transition:background .2s;"></span>
+                <span>Nascondi completate</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:6px;" id="checklist-lista">
+{% for c in completamenti %}
+{% with a=c.attivita %}
+<div class="checklist-item{% if c.completato %} completato{% endif %}" data-pk="{{ c.pk }}" data-obbligatorio="{{ a.obbligatorio|yesno:'si,no' }}">
+    <div class="checklist-circle{% if c.completato %} done{% endif %}{% if a.obbligatorio %} obbligatorio{% endif %}" onclick="toggleChecklist({{ c.pk }})">
+        {% if c.completato %}<i class="bi bi-check-lg"></i>{% endif %}
+    </div>
+    <div class="cat-badge" style="background:{% if a.categoria == 'BUSTE_PAGA' %}rgba(94,106,210,0.12);color:#5E6AD2{% elif a.categoria == 'CONTRIBUTI' %}rgba(245,158,11,0.12);color:#f59e0b{% elif a.categoria == 'CU' %}rgba(16,185,129,0.12);color:#10b981{% elif a.categoria == 'DOCUMENTI' %}rgba(6,182,212,0.12);color:#06b6d4{% else %}rgba(139,92,246,0.12);color:#8b5cf6{% endif %};">{{ a.get_categoria_display }}</div>
+    <div style="flex:1;min-width:0;">
+        <div class="cl-label" style="font-size:13px;font-weight:600;color:#EDEDED;">{{ a.label }}</div>
+        {% if c.note %}<div style="font-size:10px;color:#8A8F98;margin-top:2px;">{{ c.note }}</div>{% endif %}
+    </div>
+    <div style="font-size:9px;color:#545;flex-shrink:0;text-align:right;">
+        {% if c.completato_il %}{{ c.completato_il|date:"d/m H:i" }}{% endif %}
+        {% if c.completato_da %}<br>{{ c.completato_da.username }}{% endif %}
+    </div>
+    <button class="btn btn-sm" onclick="editChecklistNote({{ c.pk }})" title="Aggiungi nota" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#8A8F98;padding:4px 8px;font-size:11px;"><i class="bi bi-pencil"></i></button>
+</div>
+{% endwith %}
+{% empty %}
+<div class="text-center py-5" class="card-simple">
+    <i class="bi bi-check2-square text-secondary" style="font-size:32px;display:block;margin-bottom:8px;"></i>
+    <div class="text-secondary">Nessuna attività per questo mese.</div>
+</div>
+{% endfor %}
+</div>
+
+<div class="modal fade" id="noteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+            <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+                <h5 class="modal-title" style="font-size:14px;color:#EDEDED;">Nota attività</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="padding:18px;">
+                <input type="hidden" id="notePk" value="">
+                <textarea id="noteText" class="form-control" rows="3" placeholder="Inserisci una nota..." style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;"></textarea>
+            </div>
+            <div class="modal-footer" style="border-top:1px solid #27282D;padding:14px 18px;">
+                <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#8A8F98;padding:8px 16px;">Annulla</button>
+                <button type="button" onclick="salvaNota()" class="btn btn-sm" style="background:#5E6AD2;color:white;border:none;border-radius:8px;padding:8px 16px;font-weight:600;">Salva</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleNascondiCompletate() {
+    var hide = document.getElementById('nascondiCompletate').checked;
+    document.querySelectorAll('.checklist-item.completato').forEach(function(el) {
+        el.classList.toggle('nascosto', hide);
+    });
+    localStorage.setItem('checklist_nascondi_completate', hide ? '1' : '0');
+}
+(function() {
+    if (localStorage.getItem('checklist_nascondi_completate') === '1') {
+        document.getElementById('nascondiCompletate').checked = true;
+        document.querySelectorAll('.checklist-item.completato').forEach(function(el) {
+            el.classList.add('nascosto');
+        });
+    }
+})();
+
+function toggleChecklist(pk) {
+    fetch('/ajax/checklist/toggle/' + pk + '/', { method:'POST', headers:{ 'X-Requested-With':'XMLHttpRequest', 'X-CSRFToken':getCSRFToken() } })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if(d.success) window.location.reload();
+            else mostraToast('Errore', false);
+        })
+        .catch(function(){ mostraToast('Errore di rete', false); });
+}
+
+function editChecklistNote(pk) {
+    document.getElementById('notePk').value = pk;
+    var item = document.querySelector('.checklist-item[data-pk="' + pk + '"]');
+    var noteEl = item ? item.querySelector('.cl-label + div') : null;
+    document.getElementById('noteText').value = noteEl ? noteEl.textContent.trim() : '';
+    var modal = new bootstrap.Modal(document.getElementById('noteModal'));
+    modal.show();
+}
+
+function salvaNota() {
+    var pk = document.getElementById('notePk').value;
+    var note = document.getElementById('noteText').value.trim();
+    var formData = new FormData();
+    formData.append('note', note);
+    fetch('/ajax/checklist/note/' + pk + '/', { method:'POST', body:formData, headers:{ 'X-Requested-With':'XMLHttpRequest', 'X-CSRFToken':getCSRFToken() } })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if(d.success) { bootstrap.Modal.getInstance(document.getElementById('noteModal')).hide(); window.location.reload(); }
+            else mostraToast('Errore', false);
+        })
+        .catch(function(){ mostraToast('Errore di rete', false); });
+}
+
+function resettaMese(anno, mese) {
+    if (!confirm('Resettare tutte le attività per ' + mese + '/' + anno + '?')) return;
+    var formData = new FormData();
+    formData.append('anno', anno);
+    formData.append('mese', mese);
+    fetch('/ajax/checklist/reset-mese/', { method:'POST', body:formData, headers:{ 'X-Requested-With':'XMLHttpRequest', 'X-CSRFToken':getCSRFToken() } })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if(d.success) window.location.reload();
+            else mostraToast('Errore', false);
+        })
+        .catch(function(){ mostraToast('Errore di rete', false); });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Checklist Mensile
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        La Checklist Mensile ti aiuta a monitorare le attività periodiche da svolgere ogni mese per ogni contratto. Ogni attività completata viene tracciata con data e ora.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Clicca sul <b>cerchio</b> accanto a ogni attività per segnarla come completata (si riempie di verde).<br>
+        <b>2.</b> Usa le frecce <b>&lt; &gt;</b> per navigare tra i mesi oppure clicca "Mese corrente" per tornare a oggi.<br>
+        <b>3.</b> La barra di progresso mostra il completamento complessivo del mese.<br>
+        <b>4.</b> Clicca <b>"Resetta"</b> per azzerare tutte le attività del mese selezionato.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Attività obbligatorie</b><br>
+        Le attività con bordo giallo sono <b>obbligatorie</b> e vanno completate prima della chiusura del mese. Le altre sono facoltative ma consigliate per una gestione ordinata.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

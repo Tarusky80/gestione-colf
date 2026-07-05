@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      PYTHONUNBUFFERED: '1'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Installa dipendenze
+        run: pip install -r requirements.txt
+
+      - name: Crea .env per CI
+        run: |
+          cat > .env << 'EOF'
+          DJANGO_SECRET_KEY=ci-secret-key-not-for-production
+          DJANGO_DEBUG=False
+          DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+          EOF
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Verifiche Django
+        run: python manage.py check
+
+      - name: Test con coverage
+        run: |
+          coverage run manage.py test paghe.tests -v2
+          coverage xml
+          coverage report
+
+      - name: Posta commento coverage su PR
+        if: github.event_name == 'pull_request' && (success() || failure())
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: python .github/scripts/coverage_comment.py

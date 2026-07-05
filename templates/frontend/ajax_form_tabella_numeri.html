@@ -1,0 +1,48 @@
+<form id="dynamicForm" method="POST">
+    {% csrf_token %}
+    <div style="max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 8px;">
+        {% if form.codice %}
+        <div class="row g-2 mb-3">
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.codice.label }}</label>
+                {{ form.codice }}
+            </div>
+            <div class="col-md-8">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.descrizione.label }}</label>
+                {{ form.descrizione }}
+            </div>
+        </div>
+        {% else %}
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" class="c-10-up">{{ form.descrizione.label }}</label>
+            {{ form.descrizione }}
+        </div>
+        {% endif %}
+
+        <div class="row g-2 mb-3">
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.quota_datore.label }}</label>
+                <input type="text" inputmode="decimal" name="quota_datore" id="id_quota_datore" step="0.0001" value="{{ form.quota_datore.value|default:0|stringformat:'.4f' }}" oninput="calcTotale()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px; border-radius:8px; width:100%;">
+            </div>
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.quota_lavoratore.label }}</label>
+                <input type="text" inputmode="decimal" name="quota_lavoratore" id="id_quota_lavoratore" step="0.0001" value="{{ form.quota_lavoratore.value|default:0|stringformat:'.4f' }}" oninput="calcTotale()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px; border-radius:8px; width:100%;">
+            </div>
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.totale.label }}</label>
+                <input type="text" inputmode="decimal" name="totale" id="id_totale" step="0.0001" value="{{ form.totale.value|default:0|stringformat:'.4f' }}" readonly style="background-color:#09090B; border:1px solid #9ca3ff; color:#9ca3ff; font-size:13px; font-weight:700; padding:8px 12px; border-radius:8px; width:100%;">
+            </div>
+        </div>
+
+        {% for error in form.non_field_errors %}
+            <div class="mb-2 fw-bold" style="font-size: 12px; color: #ff6b6b;">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end gap-2" style="border-top: 1px solid #27282D; padding-top: 20px;">
+        <button type="button" class="btn" data-bs-dismiss="offcanvas" style="color: #8A8F98; background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px 20px; font-size: 13px; font-weight: 500;">Annulla</button>
+        <button type="submit" class="btn-linear px-4 py-2" id="btnSalvaForm" style="font-size: 13px; background: #5E6AD2; color: white; border: none; border-radius: 8px; padding: 10px 24px; font-weight: 600;">
+            <i class="bi bi-check2"></i> Salva
+        </button>
+    </div>
+</form>

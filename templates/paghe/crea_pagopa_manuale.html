@@ -1,0 +1,723 @@
+{% extends 'base.html' %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Crea PAGOPA Manuale</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+{{ contratti_data|json_script:"pagopa-contratti-data" }}
+<style>
+  html,body{height:100%;}
+  .pm-page{min-height:100vh;display:flex;flex-direction:column;background:#131418;}
+
+  .pm-cb{background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;line-height:22px;height:22px;flex-shrink:0;}
+  .pm-cb:hover{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.08);}
+  .pm-cb.copied{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.15);}
+  .pm-label{color:#8A8F98;font-size:11px;font-weight:600;white-space:nowrap;min-width:65px;flex-shrink:0;}
+  .pm-val{color:#EDEDED;font-size:12px;font-weight:500;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .pm-mcrd{background:#1A1B21;border:1px solid #27282D;border-radius:8px;padding:10px 14px;flex:1;min-width:180px;}
+  .pm-mcrd-title{color:#5E6AD2;font-size:11px;font-weight:700;margin-bottom:6px;border-bottom:1px solid #27282D;padding-bottom:4px;}
+  .pm-row{display:flex;align-items:center;gap:6px;padding:2px 0;}
+  .pm-row+.pm-row{border-top:1px solid #1E1F23;}
+
+  .radio-card{padding:12px 18px;border:1px solid #27282D;border-radius:10px;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02);min-width:140px;text-align:center;user-select:none;}
+  .radio-card:hover{border-color:#5E6AD2;}
+  .radio-card.selected{border-color:#34d399;background:rgba(52,211,153,0.08);}
+  .radio-card input[type="radio"]{display:none;}
+  .radio-card .label-giornate{font-size:20px;font-weight:700;color:#EDEDED;line-height:1.2;}
+  .radio-card .sotto-tipo{font-size:10px;color:#8A8F98;margin-top:2px;}
+  .trim-mesi{margin-top:6px;}
+  .trim-mese{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:1px 0;}
+  .trim-mese-label{font-weight:600;color:#EDEDED;}
+  .trim-mese-sett{color:#34d399;}
+  .trim-badge{margin-top:8px;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;text-align:center;display:inline-block;width:100%;}
+  .trim-badge-completo{color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);}
+  .trim-badge-parziale{color:#f87171;background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);}
+
+  .drop-zone{border:2px dashed #3B3C42;border-radius:10px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,0.02);}
+  .drop-zone:hover,.drop-zone.dragover{border-color:#5E6AD2;background:rgba(94,106,210,0.06);}
+  .drop-zone.has-file{border-color:#10b981;background:rgba(16,185,129,0.04);}
+  .drop-zone-icon{font-size:36px;color:#5C5F66;display:block;margin-bottom:8px;}
+  .drop-zone-text{color:#8A8F98;font-size:13px;}
+  .drop-zone-hint{color:#5C5F66;font-size:11px;margin-top:4px;}
+  .pdf-list{max-height:300px;overflow-y:auto;}
+  .pdf-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#1A1B21;border:1px solid #27282D;border-radius:6px;margin-bottom:4px;font-size:12px;}
+  .pdf-item .bi-filetype-pdf{color:#f87171;font-size:18px;flex-shrink:0;}
+  .pdf-item .info{flex:1;min-width:0;}
+  .pdf-item .name{color:#EDEDED;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pdf-item .meta{color:#5C5F66;font-size:10px;}
+
+  .nav-arrow{background:#1E1F23;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:8px 14px;font-size:16px;line-height:1;transition:all 0.15s;}
+  .nav-arrow:hover{background:#27282D;color:#EDEDED;}
+  .toggle-ore{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;vertical-align:middle;}
+  .toggle-ore input{display:none;}
+  .toggle-ore .slider{display:inline-block;flex-shrink:0;width:36px;height:20px;background:#555;border:1px solid #666;border-radius:10px;position:relative;transition:all 0.2s;cursor:pointer;}
+  .toggle-ore .slider::before{content:'';position:absolute;left:2px;bottom:1px;width:16px;height:16px;background:#ccc;border-radius:50%;transition:transform 0.2s;display:block;}
+  .toggle-ore input:checked+.slider{background:rgba(245,158,11,0.3);border-color:#f59e0b;}
+  .toggle-ore input:checked+.slider::before{transform:translateX(16px);background:#f59e0b;}
+</style>
+
+<div class="pm-page">
+
+  <div class="container-fluid p-4">
+
+    <!-- BOX 1: HEADER -->
+    <div class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;margin-bottom:20px;">
+      <div class="d-flex align-items-start gap-3">
+        <div class="flex-grow-1">
+          <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" style="color:#10b981;"></i>Crea PAGOPA Manuale</h4>
+          <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto e un trimestre, copia i dati manualmente sul sito INPS e carica il PDF ottenuto.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-shrink-0">
+          <button id="openPopupBtn" class="btn" style="background:#10b981;color:#fff;border:none;border-radius:6px;padding:5px 16px;font-size:12px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;">
+            <i class="bi bi-window-stack"></i>APRI POPUP DATI
+          </button>
+          <a id="openPagopaBtn" href="{{ opzioni.link_inps_mav }}" target="_blank" rel="noopener" class="btn" style="background:#5E6AD2;color:#fff;border:none;border-radius:6px;padding:5px 16px;font-size:12px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;">
+            <i class="bi bi-box-arrow-up-right"></i>APRI SITO PAGOPA
+          </a>
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGA 1: SELEZIONE (sx) + DATI ANAGRAFICI (dx) -->
+    <div class="row g-3 mb-3">
+
+      <!-- CARD 1 — Selezione -->
+      <div class="col-md-6">
+        <div class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;height:100%;">
+          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-search me-2" style="color:#10b981;"></i>SELEZIONE CONTRATTO</h5>
+          <div class="row g-3">
+            <div class="col-12">
+              <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
+              <div class="d-flex gap-2 align-items-center">
+                <button class="nav-arrow btn" onclick="navigaContratto(-1)" id="btnPrevContratto"><i class="bi bi-chevron-left"></i></button>
+                <select id="contrattoSelect" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
+                  <option value="">— Seleziona contratto —</option>
+                  {% for c in contratti_data %}
+                  <option value="{{ c.pk }}">{{ c.contratto_option }}</option>
+                  {% endfor %}
+                </select>
+                <button class="nav-arrow btn" onclick="navigaContratto(1)" id="btnNextContratto"><i class="bi bi-chevron-right"></i></button>
+                <span id="contrattoCounter" style="font-size:11px;color:#5C5F66;white-space:nowrap;min-width:50px;text-align:center;"></span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Anno</label>
+              <input type="number" id="annoInput" class="form-control" min="2020" max="2035" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;" value="{{ 'now'|date:'Y' }}">
+            </div>
+            <div class="col-12">
+              <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Trimestre</label>
+              <div class="d-flex gap-3 flex-wrap" id="trimestreRadioGroup">
+                <label class="radio-card" data-trimestre="Q1">
+                  <input type="radio" name="trimestre" value="Q1">
+                  <div class="label-giornate">TRIMESTRE 1</div>
+                  <div class="trim-mesi" id="trim_mesi_Q1"></div>
+                  <div class="trim-badge" id="trim_badge_Q1"></div>
+                </label>
+                <label class="radio-card" data-trimestre="Q2">
+                  <input type="radio" name="trimestre" value="Q2">
+                  <div class="label-giornate">TRIMESTRE 2</div>
+                  <div class="trim-mesi" id="trim_mesi_Q2"></div>
+                  <div class="trim-badge" id="trim_badge_Q2"></div>
+                </label>
+                <label class="radio-card" data-trimestre="Q3">
+                  <input type="radio" name="trimestre" value="Q3">
+                  <div class="label-giornate">TRIMESTRE 3</div>
+                  <div class="trim-mesi" id="trim_mesi_Q3"></div>
+                  <div class="trim-badge" id="trim_badge_Q3"></div>
+                </label>
+                <label class="radio-card" data-trimestre="Q4">
+                  <input type="radio" name="trimestre" value="Q4">
+                  <div class="label-giornate">TRIMESTRE 4</div>
+                  <div class="trim-mesi" id="trim_mesi_Q4"></div>
+                  <div class="trim-badge" id="trim_badge_Q4"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2 — Dati Anagrafici -->
+      <div class="col-md-6">
+        <div class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;height:100%;">
+          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-person me-2" style="color:#10b981;"></i>DATI ANAGRAFICI</h5>
+          <div id="pmFields" style="display:none;">
+            <div class="pm-mcrd" style="margin-bottom:0;padding:0;">
+              <div class="row g-0">
+                <div class="col-6" style="border-right:1px solid #27282D;padding:10px 14px;">
+                  <div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">DATORE DI LAVORO</div>
+                  <div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="v_d_nome">—</span><button class="pm-cb" data-copy="v_d_nome">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="v_d_cf">—</span><button class="pm-cb" data-copy="v_d_cf">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="v_d_indirizzo">—</span><button class="pm-cb" data-copy="v_d_indirizzo">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="v_d_beneficiario">—</span><button class="pm-cb" data-copy="v_d_beneficiario">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="v_d_progetti">—</span><button class="pm-cb" data-copy="v_d_progetti">COPIA</button></div>
+                </div>
+                <div class="col-6" style="padding:10px 14px;">
+                  <div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">LAVORATORE</div>
+                  <div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="v_l_nome">—</span><button class="pm-cb" data-copy="v_l_nome">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="v_l_cf">—</span><button class="pm-cb" data-copy="v_l_cf">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="v_l_cod_rapporto">—</span><button class="pm-cb" data-copy="v_l_cod_rapporto">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="v_l_indirizzo">—</span><button class="pm-cb" data-copy="v_l_indirizzo">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="v_l_cassa">—</span><button class="pm-cb" data-copy="v_l_cassa">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="v_l_data_assunzione">—</span><button class="pm-cb" data-copy="v_l_data_assunzione">COPIA</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGA 2: PARAMETRI PAGOPA (full width) -->
+    <div class="row g-3 mb-3">
+      <div class="col-12">
+        <div class="p-4" class="card-simple">
+          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-credit-card-2-front me-2" style="color:#10b981;"></i>PARAMETRI PAGOPA — <span id="pmTitleTrimestre">Q1 2026</span></h5>
+          <div class="row g-3">
+            <div class="col-md">
+              <div class="pm-mcrd">
+                <div class="pm-mcrd-title">PAGA INPS</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="pm-val" id="v_p_paga_inps" data-raw="">—</span>
+                  <button class="pm-cb" data-copy="v_p_paga_inps">COPIA</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="pm-mcrd">
+                <div class="pm-mcrd-title">ORE TRIM.</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="pm-val" id="v_p_ore_trim">—</span>
+                  <button class="pm-cb" data-copy="v_p_ore_trim">COPIA</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="pm-mcrd">
+                <div class="pm-mcrd-title">CONTRIBUTI</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="pm-val" id="v_p_contrib">—</span>
+                  <button class="pm-cb" data-copy="v_p_contrib">COPIA</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="pm-mcrd">
+                <div class="pm-mcrd-title">CASSA</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="pm-val" id="v_p_cassa">—</span>
+                  <button class="pm-cb" data-copy="v_p_cassa">COPIA</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md">
+              <div class="pm-mcrd">
+                <div class="pm-mcrd-title">TOTALE</div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="pm-val" id="v_p_totale">—</span>
+                  <button class="pm-cb" data-copy="v_p_totale">COPIA</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="trimestreParzialeWarning" style="display:none;margin-top:16px;padding:10px 14px;background:rgba(248,113,113,0.1);border:1px solid #f87171;border-radius:8px;font-size:12px;color:#f87171;font-weight:600;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span id="trimestreParzialeMsg"></span>
+          </div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid #27282D;">
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+              <label style="font-size:11px;color:#f59e0b;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-pencil me-1" style="color:#f59e0b;"></i>MODIFICA ORE PAGOPA</label>
+              <label class="toggle-ore">
+                <input type="checkbox" id="toggleOreAuto" onchange="localStorage.setItem('pagopa_ore_auto',this.checked?'1':'0');caricaDatiPagopa()">
+                <span class="slider"></span>
+                <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">Auto</span>
+              </label>
+              <input type="number" id="orePagopaInput" value="" placeholder="Lascia vuoto per ore calcolate" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;padding:6px 10px;max-width:150px;">
+              <span style="font-size:10px;color:#8A8F98;">ore trim.</span>
+              <button class="btn" onclick="caricaOreModificate()" style="background:#f59e0b;color:#000;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;"><i class="bi bi-upload me-1"></i> CARICA ORE</button>
+              <button class="btn" onclick="resettaOrePagopa()" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina</button>
+              <span id="orePagopaStatus" style="font-size:10px;color:#8A8F98;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGA 3: DOCUMENTO PAGOPA (full width) -->
+    <div class="row g-3 mb-3">
+      <div class="col-12">
+        <div id="pmUpload" class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;display:none;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <h5 style="color:#EDEDED;font-size:13px;font-weight:700;margin:0;"><i class="bi bi-cloud-upload me-1" style="color:#10b981;"></i> DOCUMENTO PAGOPA MANUALE</h5>
+            <span style="font-size:10px;color:#5C5F66;">Carica qui il PDF ottenuto dal sito INPS</span>
+          </div>
+
+          <div id="dropZone" class="drop-zone">
+            <span class="drop-zone-icon"><i class="bi bi-file-earmark-pdf"></i></span>
+            <div class="drop-zone-text"><strong>Trascina il PDF qui</strong> oppure <span style="color:#5E6AD2;text-decoration:underline;">clicca per selezionare</span></div>
+            <div class="drop-zone-hint">Solo file PDF • Massimo 10 MB</div>
+            <input type="file" id="fileInput" accept=".pdf" style="display:none;">
+          </div>
+          <div style="font-size:11px;color:#5C5F66;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span><i class="bi bi-folder me-1"></i> I PDF scaricati da INPS sono in: <code style="color:#8A8F98;background:#1E1F23;padding:1px 6px;border-radius:3px;">{{ download_folder }}</code></span>
+            <button onclick="fetch('/ajax/apri-cartella-download/').then(function(r){return r.json()}).then(function(d){if(!d.success&&d.error)mostraToast(d.error, false)})" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:4px;padding:3px 10px;font-size:10px;cursor:pointer;"><i class="bi bi-folder-symlink me-1"></i>Apri</button>
+          </div>
+
+          <div id="uploadFeedback" style="display:none;font-size:12px;padding:8px 12px;border-radius:6px;margin-top:8px;"></div>
+
+          <div id="pdfListContainer" style="margin-top:12px;display:none;">
+            <div style="font-size:11px;color:#8A8F98;font-weight:600;margin-bottom:6px;">PDF caricati</div>
+            <div id="pdfList" class="pdf-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Crea PAGOPA Manuale
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Versione <b>manuale</b> di PagoPA: inserisci i dati del contratto, l'importo e le ore per creare un bollettino di pagamento senza automazione INPS. Utile quando l'automazione non è disponibile o preferisci compilare manualmente.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Seleziona un <b>contratto</b> e un <b>trimestre</b> di riferimento.<br>
+        <b>2.</b> Copia i dati necessari usando i pulsanti <b style="color:#10b981;">COPIA</b>.<br>
+        <b>3.</b> <b style="color:#10b981;">APRI POPUP DATI</b> per avere tutti i dati in una finestra separata mentre navighi sul sito INPS.<br>
+        <b>4.</b> <b style="color:#5E6AD2;">APRI SITO PAGOPA</b> per accedere al sito INPS e compilare il bollettino.<br>
+        <b>5.</b> Scarica il PDF dal sito INPS e <b>caricalo</b> tramite drag &amp; drop in pagina.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Versioni PDF</b><br>
+        I PDF caricati vengono salvati con nome progressivo (v01, v02, ...) per tenere traccia delle diverse versioni dello stesso bollettino.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var contrattiData = JSON.parse(document.getElementById('pagopa-contratti-data').textContent);
+var _contrattoSelezionato = null;
+var _trimestre = 'Q1';
+var _anno = parseInt(document.getElementById('annoInput').value || new Date().getFullYear());
+
+function getContrattoData(pk) {
+  return contrattiData.find(function(c) { return c.pk === pk; }) || null;
+}
+
+function aggiornaCampi(d, daAjax) {
+  if (!d) return;
+  document.getElementById('pmFields').style.display = 'flex';
+
+  function setVal(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val || '—';
+  }
+
+  setVal('v_d_nome', d.nome_datore);
+  setVal('v_d_cf', d.cf_datore);
+  setVal('v_d_indirizzo', d.indirizzo_datore);
+  setVal('v_d_beneficiario', d.beneficiario || '—');
+  setVal('v_d_progetti', d.progetti || '—');
+  setVal('v_l_nome', d.nome_lavoratore);
+  setVal('v_l_cf', d.cf_lavoratore);
+  setVal('v_l_cod_rapporto', d.codice_rapporto_inps || '—');
+  setVal('v_l_indirizzo', d.indirizzo_lavoratore);
+  setVal('v_l_cassa', d.cassa_label || '—');
+  setVal('v_l_data_assunzione', d.data_assunzione);
+
+  setVal('v_p_ore_trim', d.ore_trim);
+  setVal('v_p_cassa', '€ ' + (d.imp_cassa_trim || 0).toFixed(2));
+  setVal('v_p_contrib', '€ ' + (d.stima_contrib_trim || 0).toFixed(2));
+  setVal('v_p_totale', '€ ' + (d.contrib_totali || 0).toFixed(2));
+  setVal('v_p_paga_inps', '€ ' + (d.paga_oraria_inps || 0).toFixed(2) + '/h');
+  var pagaEl = document.getElementById('v_p_paga_inps');
+  if (pagaEl) pagaEl.setAttribute('data-raw', (d.paga_oraria_inps || 0).toFixed(2));
+
+  var qLabel = document.getElementById('pmTitleTrimestre');
+  if (qLabel) qLabel.textContent = _trimestre + ' ' + _anno;
+
+  var warn = document.getElementById('trimestreParzialeWarning');
+  var msg = document.getElementById('trimestreParzialeMsg');
+  if (d.trimestre_parziale) {
+    var trimLabel = {Q1:'Gen-Mar', Q2:'Apr-Giu', Q3:'Lug-Set', Q4:'Ott-Dic'}[_trimestre] || _trimestre;
+    msg.innerHTML = 'Attenzione: contratto assunto il <b>' + (d.data_assunzione || '—') + '</b>, dopo l\'inizio del trimestre ' + _trimestre + ' (' + (d.data_inizio_trimestre || '—') + '). I contributi INPS potrebbero non essere dovuti per l\'intero trimestre.';
+    warn.style.display = 'block';
+  } else {
+    warn.style.display = 'none';
+  }
+
+  var mesiNomi = {1:'GEN',2:'FEB',3:'MAR',4:'APR',5:'MAG',6:'GIU',7:'LUG',8:'AGO',9:'SET',10:'OTT',11:'NOV',12:'DIC'};
+  var mesiPerTrim = {Q1:[1,2,3],Q2:[4,5,6],Q3:[7,8,9],Q4:[10,11,12]};
+  var td = d.trimestri_dettaglio || {};
+  Object.keys(td).forEach(function(q) {
+    var info = td[q];
+    var mesiEl = document.getElementById('trim_mesi_' + q);
+    if (mesiEl && info.settimane) {
+      mesiEl.innerHTML = info.settimane.map(function(w,i) {
+        var checks = '';
+        for (var c=0;c<w;c++) checks += '✓';
+        return '<div class="trim-mese"><span class="trim-mese-label">' + mesiNomi[mesiPerTrim[q][i]] + '</span> <span class="trim-mese-sett">' + w + ' (' + checks + ')</span></div>';
+      }).join('');
+    }
+    var badge = document.getElementById('trim_badge_' + q);
+    if (badge) {
+      if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = '✓ COMPLETO'; }
+      else { badge.className = 'trim-badge trim-badge-parziale'; badge.textContent = '⚠ PARZIALE'; }
+    }
+    var card = document.querySelector('#trimestreRadioGroup .radio-card[data-trimestre="' + q + '"]');
+    if (card) {
+      if (info.corrente) { card.style.borderColor = '#f59e0b'; }
+      else { card.style.borderColor = ''; }
+    }
+  });
+
+  aggiornaModificaOre(d);
+}
+
+function aggiornaModificaOre(d) {
+  var displayVal = d.ore_override || d.ore_mav_custom;
+  var oreVal = parseInt(displayVal, 10);
+  var hasCustom = displayVal !== '' && oreVal > 0;
+  var input = document.getElementById('orePagopaInput');
+  if (input) {
+    input.value = (displayVal && oreVal > 0 ? displayVal : '');
+    input.style.borderColor = hasCustom ? '#f59e0b' : '#27282D';
+  }
+  var toggle = document.getElementById('toggleOreAuto');
+  if (toggle) {
+    toggle.checked = localStorage.getItem('pagopa_ore_auto') !== '0';
+  }
+}
+
+function caricaDatiPagopa(oreOverride) {
+  var pk = _contrattoSelezionato;
+  if (!pk) return;
+  var oreAuto = localStorage.getItem('pagopa_ore_auto') !== '0';
+  var url = '/ajax/carica-dati-pagopa/?contratto_pk=' + pk + '&trimestre=' + _trimestre + '&anno=' + _anno + '&ore_auto=' + (oreAuto ? '1' : '0');
+  if (oreOverride !== undefined && oreOverride !== null && oreOverride !== '') {
+    url += '&ore_override=' + encodeURIComponent(oreOverride);
+  }
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (!d.success) return;
+      d.pk = d.contratto_pk;
+      aggiornaCampi(d, true);
+    })
+    .catch(function() {});
+}
+
+function caricaOreModificate() {
+  if (!_contrattoSelezionato) return;
+  var ore = document.getElementById('orePagopaInput').value;
+  var status = document.getElementById('orePagopaStatus');
+  status.style.color = '#8A8F98';
+  status.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Caricamento...';
+  caricaDatiPagopa(ore);
+}
+
+function resettaOrePagopa() {
+  if (!_contrattoSelezionato) return;
+  var status = document.getElementById('orePagopaStatus');
+  status.style.color = '#8A8F98';
+  status.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Ripristino...';
+  caricaDatiPagopa();
+}
+
+function popolaCampi(pk) {
+  var d = getContrattoData(pk);
+  var fields = document.getElementById('pmFields');
+  var upload = document.getElementById('pmUpload');
+
+  if (!d) {
+    fields.style.display = 'none';
+    upload.style.display = 'none';
+    return;
+  }
+
+  aggiornaCampi(d, false);
+  upload.style.display = 'block';
+  caricaListaPdf();
+  caricaDatiPagopa();
+}
+
+function caricaListaPdf() {
+  var sel = document.getElementById('contrattoSelect');
+  var pk = sel.value;
+  if (!pk) return;
+  var container = document.getElementById('pdfListContainer');
+  var list = document.getElementById('pdfList');
+
+  fetch('/ajax/lista-pdf-pagopa-manuale/?contratto_pk=' + pk + '&trimestre=' + _trimestre + '&anno=' + _anno)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (!d.ok || !d.documenti || !d.documenti.length) {
+        container.style.display = 'none';
+        return;
+      }
+      container.style.display = 'block';
+      list.innerHTML = d.documenti.map(function(doc) {
+        var size = (doc.file_size / 1024).toFixed(0) + ' KB';
+        var data = new Date(doc.creato_il).toLocaleDateString('it-IT', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        return '<div class="pdf-item">' +
+          '<i class="bi bi-filetype-pdf"></i>' +
+          '<div class="info"><div class="name" title="' + doc.file_name + '">' + doc.titolo + '</div><div class="meta">' + data + ' • ' + size + '</div></div>' +
+          '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:4px;padding:2px 10px;font-size:10px;font-weight:600;text-decoration:none;"><i class="bi bi-eye me-1"></i>APRI</a>' +
+          '</div>';
+      }).join('');
+    })
+    .catch(function() {});
+}
+
+function navigaContratto(delta) {
+  var sel = document.getElementById('contrattoSelect');
+  var idx = sel.selectedIndex + delta;
+  if (idx < 0) idx = 0;
+  if (idx >= sel.options.length) idx = sel.options.length - 1;
+  sel.selectedIndex = idx;
+  aggiornaCounter();
+  sel.dispatchEvent(new Event('change'));
+}
+
+function aggiornaCounter() {
+  var sel = document.getElementById('contrattoSelect');
+  var counter = document.getElementById('contrattoCounter');
+  if (!counter) return;
+  var idx = sel.selectedIndex;
+  var tot = sel.options.length;
+  var num = idx + 1;
+  counter.textContent = num + ' / ' + tot;
+}
+
+document.querySelectorAll('.pm-cb').forEach(function(b) {
+  b.addEventListener('click', function() {
+    var id = this.getAttribute('data-copy');
+    var el = document.getElementById(id);
+    if (!el) return;
+    var t = el.getAttribute('data-raw') || el.textContent;
+    if (!t || t === '—') return;
+    navigator.clipboard.writeText(t).then(function() {
+      b.classList.add('copied');
+      var o = b.textContent;
+      b.textContent = '✓ COPIATO';
+      setTimeout(function() { b.textContent = o; b.classList.remove('copied'); }, 1200);
+    }).catch(function() {});
+  });
+});
+
+document.getElementById('contrattoSelect').addEventListener('change', function() {
+  var pk = this.value ? parseInt(this.value) : null;
+  _contrattoSelezionato = pk;
+  popolaCampi(pk);
+  aggiornaCounter();
+  if (pk) {
+    document.getElementById('openPopupBtn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('openPopupBtn').style.display = 'none';
+  }
+});
+
+function selezionaTrimestre(val) {
+  document.querySelectorAll('#trimestreRadioGroup .radio-card').forEach(function(el) { el.classList.remove('selected'); });
+  var rc = document.querySelector('#trimestreRadioGroup .radio-card[data-trimestre="' + val + '"]');
+  if (rc) rc.classList.add('selected');
+  document.querySelectorAll('input[name="trimestre"]').forEach(function(el) { el.checked = false; });
+  var input = document.querySelector('input[name="trimestre"][value="' + val + '"]');
+  if (input) input.checked = true;
+  _trimestre = val;
+  if (_contrattoSelezionato) popolaCampi(_contrattoSelezionato);
+}
+
+function determinaTrimestreDefault() {
+  var oggi = new Date();
+  var m = oggi.getMonth() + 1;
+  var y = oggi.getFullYear();
+  var qCorrente, finePrec, qPrec;
+  if (m <= 3)       { qCorrente = 'Q1'; finePrec = new Date(y-1, 11, 31); qPrec = 'Q4'; }
+  else if (m <= 6)  { qCorrente = 'Q2'; finePrec = new Date(y, 2, 31);    qPrec = 'Q1'; }
+  else if (m <= 9)  { qCorrente = 'Q3'; finePrec = new Date(y, 5, 30);    qPrec = 'Q2'; }
+  else              { qCorrente = 'Q4'; finePrec = new Date(y, 8, 30);    qPrec = 'Q3'; }
+  var diff = Math.floor((oggi - finePrec) / (1000*60*60*24));
+  if (diff >= 0 && diff <= 10) {
+    if (qCorrente === 'Q1') return {q: 'Q4', anno: y - 1};
+    return {q: qPrec, anno: y};
+  }
+  return {q: qCorrente, anno: y};
+}
+
+document.querySelectorAll('#trimestreRadioGroup .radio-card').forEach(function(el) {
+  el.addEventListener('click', function() {
+    selezionaTrimestre(this.getAttribute('data-trimestre'));
+  });
+});
+
+document.getElementById('annoInput').addEventListener('change', function() {
+  _anno = parseInt(this.value) || new Date().getFullYear();
+  if (_contrattoSelezionato) popolaCampi(_contrattoSelezionato);
+});
+
+document.getElementById('openPopupBtn').addEventListener('click', function() {
+  var pk = _contrattoSelezionato;
+  if (!pk) return;
+  var oreAuto = localStorage.getItem('pagopa_ore_auto') !== '0' ? '1' : '0';
+  window.open('/procedure/crea-pagopa-manuale/popup/' + pk + '/?ore_auto=' + oreAuto, 'popupPagopaManuale', 'width=520,height=800,scrollbars=yes,resizable=yes');
+});
+
+// Auto-select trimestre/anno correnti
+(function() {
+  var def = determinaTrimestreDefault();
+  selezionaTrimestre(def.q);
+  document.getElementById('annoInput').value = def.anno;
+  _anno = def.anno;
+})();
+
+// Auto-select from query param + initial counter
+(function() {
+  var sel = document.getElementById('contrattoSelect');
+  {% if contratto_pk %}
+  sel.value = '{{ contratto_pk }}';
+  {% endif %}
+  aggiornaCounter();
+  sel.dispatchEvent(new Event('change'));
+})();
+
+// Drag & drop upload
+var dropZone = document.getElementById('dropZone');
+var fileInput = document.getElementById('fileInput');
+
+async function apriFilePicker() {
+  if (window.showOpenFilePicker) {
+    try {
+      var handles = await window.showOpenFilePicker({
+        types: [{ description: 'PDF', accept: { 'application/pdf': ['.pdf'] } }],
+        startIn: 'downloads',
+      });
+      if (handles && handles.length) {
+        var file = await handles[0].getFile();
+        uploadFile(file);
+      }
+    } catch (e) {
+      if (e.name !== 'AbortError' && e.name !== 'SecurityError') fileInput.click();
+    }
+  } else {
+    fileInput.click();
+  }
+}
+
+dropZone.addEventListener('click', function(e) {
+  if (e.target === fileInput) return;
+  apriFilePicker();
+});
+
+dropZone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', function() {
+  dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+    uploadFile(fileInput.files[0]);
+  }
+});
+
+fileInput.addEventListener('change', function() {
+  if (this.files.length) uploadFile(this.files[0]);
+});
+
+function uploadFile(file) {
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) {
+    mostraFeedback('❌ File troppo grande. Massimo 10 MB.', 'err');
+    return;
+  }
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    mostraFeedback('❌ Solo file PDF sono accettati.', 'err');
+    return;
+  }
+
+  var pk = _contrattoSelezionato;
+  if (!pk) { mostraFeedback('❌ Seleziona un contratto prima.', 'err'); return; }
+
+  var fb = document.getElementById('uploadFeedback');
+  fb.style.display = 'block';
+  fb.innerHTML = '⏳ Caricamento in corso…';
+  fb.style.color = '#8A8F98';
+  fb.style.background = 'rgba(255,255,255,0.04)';
+
+  var formData = new FormData();
+  formData.append('file', file);
+  formData.append('contratto_pk', pk);
+  formData.append('trimestre', _trimestre);
+  formData.append('anno', _anno);
+
+  fetch('/ajax/carica-pdf-pagopa-manuale/', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': getCSRFToken() },
+    body: formData,
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.ok) {
+      mostraFeedback('✅ PDF caricato con successo! (' + d.file_name + ')', 'ok');
+      dropZone.classList.add('has-file');
+      caricaListaPdf();
+    } else {
+      mostraFeedback('❌ ' + (d.errore || 'Errore durante il caricamento.'), 'err');
+    }
+  })
+  .catch(function() {
+    mostraFeedback('❌ Errore di rete durante il caricamento.', 'err');
+  });
+
+  fileInput.value = '';
+}
+
+function mostraFeedback(msg, tipo) {
+  var fb = document.getElementById('uploadFeedback');
+  fb.style.display = 'block';
+  fb.textContent = msg;
+  if (tipo === 'ok') {
+    fb.style.color = '#34d399';
+    fb.style.background = 'rgba(52,211,153,0.08)';
+    setTimeout(function() { fb.style.display = 'none'; }, 5000);
+  } else {
+    fb.style.color = '#f87171';
+    fb.style.background = 'rgba(248,113,113,0.08)';
+  }
+}
+// Sincronizza toggle Auto all'avvio
+(function(){
+  var t = document.getElementById('toggleOreAuto');
+  if (t) {
+    if (localStorage.getItem('pagopa_ore_auto') === null) localStorage.setItem('pagopa_ore_auto', '0');
+    t.checked = localStorage.getItem('pagopa_ore_auto') !== '0';
+  }
+})();
+</script>
+{% endblock %}

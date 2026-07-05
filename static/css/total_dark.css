@@ -1,0 +1,114 @@
+/* ======================================================
+   ADMIN OVERRIDES — Colonne, Select2, Form Input
+   ====================================================== */
+
+/* --- COLONNE SUPPORT (usato in admin.py fieldsets) --- */
+.colonne-2 .form-row {
+    width: 50% !important;
+    float: left !important;
+    border-bottom: none !important;
+    flex-direction: column !important;
+}
+
+.colonne-3 .form-row {
+    width: 33.33% !important;
+    float: left !important;
+    border-bottom: none !important;
+    flex-direction: column !important;
+}
+
+fieldset.colonne-2, fieldset.colonne-3 {
+    display: flow-root !important;
+    clear: both !important;
+    border: 1px solid #27272a !important;
+    margin-top: 10px !important;
+    padding: 10px !important;
+    border-radius: 12px;
+}
+
+/* --- CAMPI INPUT --- */
+input[type="text"], input[type="number"], input[type="email"], input[type="url"],
+select, .vTextField, .vIntegerField, .vDateField, .vTimeField, .select2-selection--single {
+    border-radius: 10px !important;
+    border: 1px solid #3f3f46 !important;
+    background-color: #18181b !important;
+    color: #fafafa !important;
+    height: 38px !important;
+    line-height: 1.5 !important;
+    padding: 4px 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+textarea, .vLargeTextField {
+    border-radius: 10px !important;
+    border: 1px solid #3f3f46 !important;
+    background-color: #18181b !important;
+    color: #fafafa !important;
+    padding: 12px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+    min-height: 100px !important;
+    resize: vertical !important;
+    line-height: 1.5 !important;
+}
+
+/* --- WIDGET PROGETTI E TAG (Select2) --- */
+.select2-container--default .select2-selection--multiple {
+    background-color: #18181b !important;
+    border: 1px solid #3f3f46 !important;
+    border-radius: 10px !important;
+    min-height: 38px !important;
+    padding: 2px 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #27272a !important;
+    border: 1px solid #3f3f46 !important;
+    color: #fafafa !important;
+    border-radius: 6px !important;
+    padding: 2px 8px 2px 24px !important;
+    margin: 3px !important;
+    font-size: 13px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #a1a1aa !important;
+    border-right: none !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+.select2-search.select2-search--inline, .select2-search__field {
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.select2-dropdown {
+    background-color: #09090b !important;
+    border: 1px solid #3f3f46 !important;
+    z-index: 9999;
+}
+
+.select2-results__option--highlighted[aria-selected] {
+    background-color: #3f3f46 !important;
+}
+
+/* --- RELATED WIDGET ICONS --- */
+.related-widget-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.related-widget-wrapper-link {
+    margin-left: 8px !important;
+    vertical-align: middle !important;
+}

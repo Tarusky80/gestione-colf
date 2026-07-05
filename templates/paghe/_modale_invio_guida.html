@@ -1,0 +1,87 @@
+<div class="modal fade" id="modalInvioGuida{{ guide_id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-envelope me-2" style="color:#5E6AD2;"></i>Invia Guida via Email
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;">
+        <div class="mb-3">
+          <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Seleziona i destinatari</label>
+          <div id="listaDatoriGuida{{ guide_id }}" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px;">
+            {% for datore in datori %}
+            <label class="d-flex align-items-center gap-2" style="cursor:pointer;padding:4px 6px;border-radius:6px;font-size:12px;color:#C0C4CC;">
+              <input type="checkbox" class="guida-destinatario-{{ guide_id }}" value="{{ datore.email }}" style="accent-color:#5E6AD2;">
+              <span>{{ datore.nome_cognome }}</span>
+              <span style="margin-left:auto;font-size:10px;color:#8A8F98;">{{ datore.email }}</span>
+            </label>
+            {% empty %}
+            <div style="color:#8A8F98;font-size:12px;text-align:center;padding:12px;">Nessun datore presente</div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Oppure inserisci email manualmente</label>
+          <input type="text" id="guidaEmailManuale{{ guide_id }}" class="form-control" placeholder="email1@esempio.it, email2@esempio.it" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;padding:14px 18px;">
+        <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#8A8F98;padding:8px 16px;font-size:12px;">Annulla</button>
+        <button type="button" onclick="inviaGuidaEmail(event, '{{ guide_id }}')" class="btn btn-sm" style="background:#5E6AD2;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;">
+          <i class="bi bi-send me-1"></i> Invia
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function apriModaleInvioGuida(guideId) {
+    var modal = new bootstrap.Modal(document.getElementById('modalInvioGuida' + guideId));
+    modal.show();
+}
+
+function inviaGuidaEmail(ev, guideId) {
+    var destinatari = [];
+    document.querySelectorAll('.guida-destinatario-' + guideId + ':checked').forEach(function(cb) {
+        if (cb.value) destinatari.push(cb.value);
+    });
+    var manuale = document.getElementById('guidaEmailManuale' + guideId).value;
+    if (manuale) {
+        manuale.split(',').forEach(function(e) {
+            e = e.trim();
+            if (e && destinatari.indexOf(e) === -1) destinatari.push(e);
+        });
+    }
+    if (destinatari.length === 0) {
+        mostraToast('Seleziona almeno un destinatario', false);
+        return;
+    }
+    var btn = ev.target.closest('button');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Invio...';
+    fetch('/guide/' + guideId.replace(/_/g, '-') + '/invia-email/', {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCSRFToken(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ destinatari: destinatari })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-send me-1"></i> Invia';
+        bootstrap.Modal.getInstance(document.getElementById('modalInvioGuida' + guideId)).hide();
+        if (d.success) {
+            mostraToast('Email inviate a ' + d.ok_count + '/' + d.totale + ' destinatari', true);
+        } else {
+            mostraToast('Errore: ' + (d.error || 'Invio fallito'), false);
+        }
+    })
+    .catch(function(e) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-send me-1"></i> Invia';
+        mostraToast('Errore di rete', false);
+    });
+}
+</script>

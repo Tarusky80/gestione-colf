@@ -1,0 +1,134 @@
+/* ============================================
+   UTILS.CSS — Utility class per tema scuro
+   Sostituisce tema.css + pattern inline comuni
+   ============================================ */
+
+/* --- TEXT COLORS --- */
+.c-text    { color: #EDEDED; }
+.c-muted   { color: #8A8F98; }
+.c-accent  { color: #5E6AD2; }
+.c-green   { color: #34d399; }
+.c-green2  { color: #10b981; }
+.c-red     { color: #f87171; }
+.c-amber   { color: #f59e0b; }
+.c-gray    { color: #5C5F66; }
+
+/* --- FONT SIZES + WEIGHTS --- */
+.fs-10 { font-size: 10px; }
+.fs-11 { font-size: 11px; }
+.fs-12 { font-size: 12px; }
+.fs-13 { font-size: 13px; }
+.fs-14 { font-size: 14px; }
+.fs-15 { font-size: 15px; }
+.fw-6  { font-weight: 600; }
+.fw-7  { font-weight: 700; }
+
+/* --- COMPOUND: size + color + weight --- */
+.c-14    { color: #EDEDED; font-size: 14px; }
+.c-13-b  { font-size: 13px; font-weight: 600; color: #EDEDED; }
+.c-15-b  { font-size: 15px; font-weight: 700; color: #EDEDED; }
+.c-18-b  { font-size: 18px; font-weight: 800; color: #EDEDED; }
+.c-12    { font-size: 12px; color: #EDEDED; }
+.c-12-b  { font-size: 12px; font-weight: 600; color: #EDEDED; }
+.c-11-m  { color: #8A8F98; font-size: 11px; }
+.c-12-m  { font-size: 12px; color: #8A8F98; }
+.c-11-mb { font-size: 11px; color: #8A8F98; font-weight: 600; }
+.c-10-up { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; }
+.tag-block { font-size: 10px; color: #8A8F98; display: block; }
+
+/* --- SPACING --- */
+.mb-14 { margin-bottom: 14px; }
+.mb-0  { margin-bottom: 0; }
+
+/* --- DISPLAY --- */
+.d-none      { display: none; }
+.d-table-cell { display: table-cell; }
+.cell-right  { display: table-cell; padding: 6px 4px; text-align: right; }
+
+/* --- CARDS / BORDERS / BACKGROUNDS --- */
+.card-simple  { background: #17181C; border: 1px solid #27282D; border-radius: 14px; }
+.card-alt     { background: #1a1a1e; border: 1px solid #27282D; border-radius: 14px; }
+.card-alt-12  { background: #17181C; border: 1px solid #27282D; border-radius: 12px; }
+.card-body    { padding: 18px; font-size: 13px; color: #8A8F98; line-height: 1.6; }
+.b-card       { border-bottom: 1px solid #27282D; padding: 14px 18px; }
+.b-light      { border-bottom: 1px solid rgba(255,255,255,0.04); }
+.bg-input     { background-color: #09090B; border: 1px solid #27282D; color: #ffffff; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
+
+/* --- MODAL CARD --- */
+.modal-linear { background: #1a1a1e; border: 1px solid #27282D; border-radius: 14px; }
+.modal-linear-header { border-bottom: 1px solid #27282D; padding: 20px 28px; }
+.modal-linear-body { padding: 28px; }
+
+/* --- BADGE FILTRO --- */
+.badge-filter { display: inline-flex; align-items: center; gap: 5px; background: rgba(245,158,11,0.12); color: #fbbf24; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.2); }
+.badge-count { display: inline-flex; align-items: center; gap: 5px; background: rgba(245,158,11,0.12); color: #fbbf24; }
+
+/* --- PULSANTE HELP --- */
+.btn-help { background: transparent; color: #8A8F98; border: 1px solid #333; border-radius: 50%; width: 30px; height: 30px; padding: 0; font-size: 14px; font-weight: 700; line-height: 1; flex-shrink: 0; vertical-align: middle; margin-left: 8px; }
+
+/* --- EXPORT XLSX BUTTON --- */
+.btn-xlsx { background: rgba(94,106,210,0.1); color: #9ca3ff; border: 1px solid rgba(94,106,210,0.15); border-radius: 8px; padding: 5px 12px; font-size: 11px; font-weight: 600; }
+
+/* --- SEARCH INPUT --- */
+.search-input { padding: 10px 14px 10px 38px; font-size: 13px; border-radius: 10px; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px; }
+
+/* --- STICKY HEADER --- */
+.sticky-header { position: sticky; top: 0; z-index: 1; background: #17181C; }
+
+/* --- MISC --- */
+.cursor-pointer { cursor: pointer; }
+.nowrap         { white-space: nowrap; }
+
+/* --- CHECKBOX --- */
+.c-checkbox { accent-color: #5E6AD2; width: 16px; height: 16px; }
+
+/* --- TOGGLE SWITCH OVERRIDE --- */
+.toggle-switch .toggle-slider::after { display: none; }
+.toggle-switch .toggle-slider { width: 42px; height: 22px; background: #555; border: 1px solid #666; border-radius: 11px; position: relative; display: inline-block; flex-shrink: 0; cursor: pointer; }
+.toggle-switch .toggle-slider::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; bottom: 1px; background: #ccc; border-radius: 50%; transition: transform 0.2s; }
+.toggle-switch input:checked + .toggle-slider { background: rgba(52,211,153,0.3); border-color: #34d399; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+.toggle-switch.conv-toggle-small input:checked + .toggle-slider { background: rgba(52,211,153,0.3); border-color: #34d399; }
+.toggle-switch.toggle-purple input:checked + .toggle-slider { background: rgba(94,106,210,0.3); border-color: #5E6AD2; }
+.toggle-switch.toggle-purple input:checked + .toggle-slider::before { background-color: #5E6AD2; }
+
+/* --- ACTION BUTTONS --- */
+.btn-soft { border-radius: 8px; font-size: 12px; font-weight: 600; }
+.btn-amber { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; }
+.btn-green-action { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.25); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; }
+.btn-lav { background: rgba(94,106,210,0.12); color: #818cf8; border: 1px solid rgba(94,106,210,0.2); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; }
+.btn-lav-alt { background: rgba(94,106,210,0.15); color: #5E6AD2; border: 1px solid rgba(94,106,210,0.25); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; }
+.btn-yellow { background: #ffc107; color: #000; border: none; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; }
+.btn-outline-soft { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #8A8F98; padding: 4px 10px; font-size: 11px; }
+
+/* --- UPPERCASE LABEL 9px --- */
+.c-9-up { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; }
+.c-9-up-fw { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; font-weight: 700; }
+
+/* --- DASHBOARD KPI HELPERS --- */
+.kpi-dash { border-radius: 12px; padding: 14px 16px; }
+.icon-wrap-42 { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.kpi-val-lg { font-size: 22px; font-weight: 800; color: #EDEDED; line-height: 1.2; }
+.kpi-sub { font-size: 10px; color: #545; }
+
+/* --- KPI GRADIENT CARDS --- */
+.kpi-card-red { background: linear-gradient(135deg, rgba(248,113,113,0.12) 0%, rgba(248,113,113,0.04) 100%); border: 1px solid rgba(248,113,113,0.15); border-radius: 14px; }
+.kpi-card-green { background: linear-gradient(135deg, rgba(52,211,153,0.12) 0%, rgba(52,211,153,0.04) 100%); border: 1px solid rgba(52,211,153,0.15); border-radius: 14px; }
+.kpi-card-amber { background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.04) 100%); border: 1px solid rgba(245,158,11,0.15); border-radius: 14px; }
+.kpi-card-blue { background: linear-gradient(135deg, rgba(96,165,250,0.12) 0%, rgba(96,165,250,0.04) 100%); border: 1px solid rgba(96,165,250,0.15); border-radius: 14px; }
+.kpi-card-purple { background: linear-gradient(135deg, rgba(168,85,247,0.12) 0%, rgba(168,85,247,0.04) 100%); border: 1px solid rgba(168,85,247,0.15); border-radius: 14px; }
+
+/* --- MISC HELPERS --- */
+.h-32 { height: 32px; }
+.fw-8 { font-weight: 800; }
+.vr-d { width: 1px; height: 20px; background: #27282D; flex-shrink: 0; }
+
+/* --- INPUT MINI (es. giorniConv) --- */
+.input-mini { width: 50px; background: #09090B; border: 1px solid #27282D; color: #EDEDED; padding: 4px 6px; border-radius: 6px; font-size: 12px; }
+
+/* --- CONTROLS CONTAINER --- */
+.controls-card { background: rgba(255,255,255,0.02); border: 1px solid #27282D; border-radius: 10px; }
+
+/* --- TOGGLE ITEM (comune a tutte le pagine calcoli) --- */
+.toggle-item { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }

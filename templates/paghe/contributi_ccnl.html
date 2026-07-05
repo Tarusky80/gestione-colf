@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contributi INPS CCNL{% endblock %}
+{% block content %}
+<div class="container-fluid py-4" style="max-width:1100px;">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+    <div>
+      <h2 class="mb-1" style="color:#EDEDED;"><i class="bi bi-percent"></i> Contributi INPS CCNL</h2>
+      <p class="small mb-0" style="color:#8A8F98;">Aliquote contributive {{ dati.anno }} — Con quota assegni familiari</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-plus-linear" style="text-decoration:none;" onclick="apriNelPannello('{% url 'contributi_ccnl_pdf' %}')">
+        <i class="bi bi-filetype-pdf"></i> PDF
+      </button>
+      <button class="btn btn-plus-linear" style="background:#10b981;" data-bs-toggle="modal" data-bs-target="#invioModal">
+        <i class="bi bi-envelope"></i> Invia Email
+      </button>
+      <button class="btn btn-plus-linear" style="background:rgba(94,106,210,0.2);border-color:rgba(94,106,210,0.3);color:#a78bfa;" data-bs-toggle="modal" data-bs-target="#helpModal">
+        <i class="bi bi-question-circle"></i>
+      </button>
+    </div>
+  </div>
+
+  <style>
+    .contr-tabella { width:100%;border-collapse:collapse;font-size:14px;margin:16px 0; }
+    .contr-tabella th { background:#2c5282;color:#fff;padding:10px 12px;text-align:center;font-weight:600;font-size:13px; }
+    .contr-tabella td { padding:10px 12px;border-bottom:1px solid #27282D;text-align:center;color:#C0C4CC; }
+    .contr-tabella tbody tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+    .contr-tabella tbody tr:hover td { background:rgba(94,106,210,0.08); }
+    .contr-badge { display:inline-block;background:#2c5282;color:#fff;border-radius:50%;width:28px;height:28px;line-height:28px;text-align:center;font-weight:700;font-size:13px; }
+    .contr-numero { font-weight:700;color:#EDEDED; }
+    .contr-note { text-align:left;font-size:12.5px;color:#8A8F98;max-width:220px; }
+    .contr-soglie { background:#17181C;padding:10px 16px;border-radius:8px;font-size:13px;color:#EDEDED;margin:0 0 8px 0;text-align:center;border:1px solid #27282D; }
+    .contr-approfondimento { margin-top:24px;padding:16px 20px;background:#17181C;border-radius:8px;border:1px solid #27282D; }
+    .contr-approfondimento h4 { color:#2c5282;font-size:15px;margin:12px 0 6px; }
+    .contr-approfondimento h4:first-child { margin-top:0; }
+    .contr-approfondimento ul { margin:0 0 8px;padding-left:20px; }
+    .contr-approfondimento li { font-size:13px;color:#C0C4CC;margin-bottom:4px; }
+  </style>
+
+  {{ html_formattato|safe }}
+
+  <div class="small mt-3" style="color:#8A8F98;">
+    <i class="bi bi-info-circle"></i> La paga effettiva INPS = paga base oraria + tredicesima oraria.
+    Soglie configurabili in <strong>Opzioni Software</strong>.
+  </div>
+</div>
+
+{% include "paghe/_modale_invio_contributi.html" %}
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:500px;">
+    <div class="modal-content" style="background:#1C1C1F; border:1px solid #27282D; border-radius:16px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D; padding:20px 24px;">
+        <h5 class="modal-title" style="color:#EDEDED; font-weight:600;"><i class="bi bi-question-circle" style="color:#5E6AD2; margin-right:8px;"></i> Contributi INPS</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px; color:#C0C4CC; font-size:14px; line-height:1.6;">
+        <p><strong style="color:#EDEDED;">Come si calcola la paga effettiva INPS?</strong></p>
+        <p><code style="background:#0E0F11; padding:2px 8px; border-radius:4px; color:#EDEDED;">paga_base_oraria + tredicesima_oraria</code></p>
+        <p><strong style="color:#EDEDED;">Fasce orarie:</strong></p>
+        <ul>
+          <li><strong style="color:#EDEDED;">≤ 24,9 h/sett</strong> — 3 fasce in base alla paga effettiva</li>
+          <li><strong style="color:#EDEDED;">&gt; 24,9 h/sett</strong> — fascia unica indipendentemente dalla paga</li>
+        </ul>
+        <p><strong style="color:#EDEDED;">Configurazione:</strong> Le soglie sono modificabili in <em>Opzioni Software</em> → <em>Parametri di Calcolo</em>.</p>
+        <p class="mb-0" style="color:#8A8F98;">Riferimento: CCNL Lavoro Domestico — Circolare INPS annuale.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function apriNelPannello(url) {
+  var pannello = document.getElementById('content-frame');
+  if (pannello) { pannello.src = url; document.getElementById('side-frame').classList.add('open'); }
+  else { window.open(url, '_blank'); }
+}
+</script>
+{% endblock %}

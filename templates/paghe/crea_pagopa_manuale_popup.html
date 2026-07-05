@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PagoPA Manuale — {{ d.nome_datore }}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#121318;color:#EDEDED;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:16px;font-size:13px;}
+
+  .header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #27282D;}
+  .header-logo{width:36px;height:36px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#1E1F23;display:flex;align-items:center;justify-content:center;}
+  .header-logo img{width:100%;height:100%;object-fit:contain;}
+  .header-logo .fallback{color:#10b981;font-size:18px;font-weight:700;}
+  .header-info{flex:1;min-width:0;}
+  .header-title{font-size:14px;font-weight:700;color:#EDEDED;}
+  .header-sub{font-size:11px;color:#8A8F98;}
+  .header-badge{background:#10b981;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;}
+
+  .card{background:#1A1B21;border:1px solid #27282D;border-radius:10px;padding:14px;margin-bottom:12px;}
+  .card-title{font-size:12px;font-weight:700;color:#10b981;margin-bottom:10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid #27282D;padding-bottom:8px;}
+  .card-title .icon{font-size:14px;}
+
+  .row{display:flex;align-items:center;gap:6px;padding:3px 0;}
+  .row+.row{border-top:1px solid #1E1F23;}
+  .label{color:#8A8F98;font-weight:600;font-size:12px;min-width:80px;flex-shrink:0;}
+  .value{color:#EDEDED;font-weight:500;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .value.empty{color:#555;font-style:italic;}
+
+  .cb{background:transparent;border:1px solid #333;color:#8A8F98;border-radius:5px;padding:0 10px;font-size:11px;font-weight:600;cursor:pointer;line-height:24px;height:24px;transition:all .15s;flex-shrink:0;letter-spacing:.3px;}
+  .cb:hover{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.08);}
+  .cb.copied{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.15);}
+
+  .footer{margin-top:8px;text-align:center;font-size:10px;color:#555;}
+  .incoda{background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;flex-shrink:0;}
+  .incoda:hover{border-color:#10b981;color:#10b981;}
+  .salva-btn{background:#10b981;color:#fff;border:none;border-radius:4px;padding:0 10px;font-size:10px;font-weight:600;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;flex-shrink:0;}
+  .salva-fbk{font-size:11px;color:#10b981;font-weight:600;display:none;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    {% if opzioni and opzioni.logo %}
+      <img src="{{ opzioni.logo.url }}" alt="Logo">
+    {% else %}
+      <span class="fallback">CS</span>
+    {% endif %}
+  </div>
+  <div class="header-info">
+    <div class="header-title">PagoPA Manuale</div>
+    <div class="header-sub">{{ d.nome_datore }} → {{ d.nome_lavoratore }}</div>
+  </div>
+  <span class="header-badge">PAGAMENTO</span>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="icon">&#9670;</span> DATORE DI LAVORO</div>
+  <div class="row"><span class="label">Nome</span><span class="value" id="d_nome">{{ d.nome_datore }}</span><button class="cb" data-t="d_nome">COPIA</button></div>
+  <div class="row"><span class="label">CF</span><span class="value" id="d_cf">{{ d.cf_datore }}</span><button class="cb" data-t="d_cf">COPIA</button></div>
+  <div class="row"><span class="label">Indirizzo</span><span class="value" id="d_indirizzo">{{ d.indirizzo_datore|default:"—" }}</span><button class="cb" data-t="d_indirizzo">COPIA</button></div>
+  <div class="row"><span class="label">Beneficiario</span><span class="value" id="d_beneficiario">{{ d.beneficiario|default:"—" }}</span><button class="cb" data-t="d_beneficiario">COPIA</button></div>
+  <div class="row"><span class="label">Progetti</span><span class="value" id="d_progetti">{{ d.progetti|default:"—" }}</span><button class="cb" data-t="d_progetti">COPIA</button></div>
+</div>
+
+<div class="card">
+  <div class="card-title"><span class="icon">&#9671;</span> LAVORATORE</div>
+  <div class="row"><span class="label">Nome</span><span class="value" id="l_nome">{{ d.nome_lavoratore }}</span><button class="cb" data-t="l_nome">COPIA</button></div>
+  <div class="row"><span class="label">CF</span><span class="value" id="l_cf">{{ d.cf_lavoratore }}</span><button class="cb" data-t="l_cf">COPIA</button></div>
+  <div class="row"><span class="label">Cod.INPS</span><span class="value" id="l_cod_rapporto">{{ d.codice_rapporto_inps|default:"—" }}</span><button class="cb" data-t="l_cod_rapporto">COPIA</button></div>
+  <div class="row"><span class="label">Indirizzo</span><span class="value" id="l_indirizzo">{{ d.indirizzo_lavoratore|default:"—" }}</span><button class="cb" data-t="l_indirizzo">COPIA</button></div>
+  <div class="row"><span class="label">Cassa</span><span class="value" id="l_cassa">{{ d.cassa_label|default:"—" }}</span><button class="cb" data-t="l_cassa">COPIA</button></div>
+  <div class="row"><span class="label">Assunzione</span><span class="value" id="l_assunzione">{{ d.data_assunzione|default:"—" }}</span><button class="cb" data-t="l_assunzione">COPIA</button></div>
+</div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">&#9632;</span> PAGOPA {{ d.trimestre }} {{ d.anno }}</div>
+    <div class="row"><span class="label">Paga INPS</span><span class="value" id="p_paga_inps" data-raw="{{ d.paga_oraria_inps|floatformat:2 }}">€ {{ d.paga_oraria_inps|floatformat:2 }}/h</span><button class="cb" data-t="p_paga_inps">COPIA</button></div>
+    <div class="row"><span class="label">Ore trim.</span><span class="value" id="p_ore_trim">{{ d.ore_trim }}</span><button class="cb" data-t="p_ore_trim">COPIA</button></div>
+    <div class="row"><span class="label">Cassa</span><span class="value" id="p_cassa">€ {{ d.imp_cassa_trim|floatformat:2 }}</span><button class="cb" data-t="p_cassa">COPIA</button></div>
+    <div class="row"><span class="label">Contributi</span><span class="value" id="p_contrib">€ {{ d.stima_contrib_trim|floatformat:2 }}</span><button class="cb" data-t="p_contrib">COPIA</button></div>
+    <div class="row"><span class="label">Totale</span><span class="value" id="p_totale">€ {{ d.contrib_totali|floatformat:2 }}</span><button class="cb" data-t="p_totale">COPIA</button></div>
+    {% if d.trimestre_parziale %}
+    <div style="margin-top:10px;padding:8px 10px;background:rgba(248,113,113,0.1);border:1px solid #f87171;border-radius:8px;font-size:11px;color:#f87171;font-weight:600;">
+      <i class="bi bi-exclamation-triangle-fill me-1"></i>
+      Attenzione: contratto assunto il <b>{{ d.data_assunzione }}</b>, dopo l'inizio del trimestre ({{ d.data_inizio_trimestre }}). I contributi INPS potrebbero non essere dovuti per l'intero trimestre.
+    </div>
+    {% endif %}
+  </div>
+
+<div class="footer">© {{ opzioni.denominazione_studio|default:"Gestionecolf" }} — Premi COPIA per copiare il valore negli appunti</div>
+
+<script>
+document.querySelectorAll('.cb').forEach(function(b){
+  b.addEventListener('click',function(){
+    var id=this.getAttribute('data-t');
+    var el=document.getElementById(id);
+    if(!el)return;
+    var t=el.getAttribute('data-raw')||el.textContent;
+    if(!t||t==='—')return;
+    navigator.clipboard.writeText(t).then(function(){
+      b.classList.add('copied');
+      var o=b.textContent;
+      b.textContent='✓ COPIATO';
+      setTimeout(function(){b.textContent=o;b.classList.remove('copied');},1200);
+    }).catch(function(){});
+  });
+});
+</script>
+</body>
+</html>

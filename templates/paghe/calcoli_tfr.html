@@ -1,0 +1,480 @@
+{% extends 'base.html' %}{% load static %}{% load tabelle_tags %}
+{% block title %}Busta TFR{% endblock %}
+{% block extra_css %}
+<style>
+  .quick-btn { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:10px; font-weight:600; border-radius:6px; border:1px solid rgba(251,191,36,0.2); background:rgba(251,191,36,0.06); color:#fbbf24; cursor:pointer; transition:all 0.15s; text-decoration:none; white-space:nowrap; }
+  .quick-btn:hover { background:rgba(251,191,36,0.15); border-color:rgba(251,191,36,0.35); }
+  .quick-btn.disabled { opacity:0.35; cursor:not-allowed; pointer-events:none; }
+</style>
+{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Busta TFR</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="container-fluid px-4 py-3">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h1 class="h3 fw-bold mb-1" style="color:#EDEDED;"><i class="bi bi-piggy-bank me-2" style="color:#fbbf24;"></i>BUSTA TFR</h1>
+        <p class="text-secondary small mb-0">Liquidazione trattamento di fine rapporto</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" id="btnLiquidaTfr" disabled onclick="liquidaTfr()" class="btn btn-sm" style="background:rgba(244,114,182,0.15);border:1px solid rgba(244,114,182,0.3);border-radius:8px;padding:8px 14px;font-size:12px;color:#ec4899;font-weight:600;">
+          <i class="bi bi-cash-stack me-1"></i> LIQUIDA TFR
+        </button>
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm" style="background:rgba(94,106,210,0.1);border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;font-size:12px;color:#9ca3ff;text-decoration:none;">
+          <i class="bi bi-journal-text me-1"></i> Archivio Buste
+        </a>
+        <div id="tfrToast" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9999;background:#18181B;border:1px solid #27282D;border-radius:10px;padding:14px 22px;font-size:13px;font-weight:600;color:#EDEDED;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+          <i class="bi bi-check-circle me-2" style="font-size:16px;"></i><span id="tfrToastMsg">TFR Liquidato</span>
+        </div>
+        <button type="button" id="btnVediContratto" onclick="apriContratto()" class="btn btn-sm" style="display:none;background:rgba(94,106,210,0.1);border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;font-size:13px;color:#9ca3ff;">
+          <i class="bi bi-box-arrow-up-right me-1"></i> Contratto
+        </button>
+        <button class="btn btn-sm" onclick="apriCcnlOcchio()" style="background:rgba(94,106,210,0.12);color:#818cf8;border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;" id="btnCcnlOcchio" disabled>
+            <i class="bi bi-eye me-1"></i> CCNL
+        </button>
+        <button type="button" onclick="calcola()" class="btn btn-sm" style="background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;color:#fbbf24;">
+          <i class="bi bi-arrow-repeat me-1"></i> Ricalcola
+        </button>
+        <button type="button" id="btnPdf" disabled onclick="downloadPdf()" class="btn btn-sm" style="background:rgba(251,191,36,0.25);border:1px solid rgba(251,191,36,0.4);border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;color:#fbbf24;">
+          <i class="bi bi-file-pdf me-1"></i> Genera PDF
+        </button>
+        <label style="font-size:10px;color:#8A8F98;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;margin-right:4px;">
+            <input type="checkbox" id="chkAllegaLul" style="accent-color:#fbbf24;width:14px;height:14px;"> Allega LUL
+        </label>
+        <button type="button" id="btnStampa" disabled onclick="stampaBustaCalcolo(this)" class="btn btn-sm" style="background:#ffc107;color:#000;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;">
+          <i class="bi bi-printer me-1"></i> STAMPA
+        </button>
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        <a href="{% url 'calcoli_list' %}" class="btn btn-sm" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:8px 14px;font-size:13px;color:#10b981;text-decoration:none;">
+          <i class="bi bi-file-earmark-text"></i> Standard
+        </a>
+      </div>
+    </div>
+
+    <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 24px;margin-bottom:16px;">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-person-vcard me-1"></i>Contratto</label>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm" onclick="navContratto(-1)" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;padding:4px 8px;color:#8A8F98;font-size:13px;line-height:1;">&#9664;</button>
+            <select id="fContratto" class="form-control" onchange="onCambioContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;width:100%;">
+              <option value="">— Seleziona contratto —</option>
+              {% for c in contratti %}
+              <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
+              {% endfor %}
+            </select>
+            <button class="btn btn-sm" onclick="navContratto(1)" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;padding:4px 8px;color:#8A8F98;font-size:13px;line-height:1;">&#9654;</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-calendar-start me-1"></i>Data inizio maturazione</label>
+          <div class="d-flex gap-1">
+            <input type="date" id="fDataInizio" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
+          </div>
+          <div style="display:flex;gap:4px;margin-top:5px;">
+            <span class="quick-btn" onclick="setDaInizioAnno()"><i class="bi bi-calendar3"></i> Inizio anno</span>
+            <span class="quick-btn" onclick="setDaInizioRapporto()"><i class="bi bi-person-up"></i> Inizio rapporto</span>
+            <span class="quick-btn" onclick="setDaInizioTfrContratto()"><i class="bi bi-piggy-bank"></i> Inizio TFR Contratto</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-calendar-end me-1"></i>Fine maturazione</label>
+          <div class="d-flex gap-1">
+            <select id="fMese" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
+              {% for m in mesi_range %}
+              <option value="{{ m }}" {% if m == mese_corrente %}selected{% endif %}>{{ m }}</option>
+              {% endfor %}
+            </select>
+            <select id="fAnno" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
+              {% for a in anni_range %}
+              <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div style="display:flex;gap:4px;margin-top:5px;">
+            <span class="quick-btn" onclick="setFineMeseCorrente()"><i class="bi bi-calendar-check"></i> Fine mese</span>
+            <span class="quick-btn" onclick="setFineAnnoCorrente()"><i class="bi bi-calendar2-check"></i> Fine anno</span>
+            <span class="quick-btn" onclick="mostraDatepickerFine()"><i class="bi bi-calendar-plus"></i> Data...</span>
+            <input type="date" id="fDataFineCustom" onchange="setFineDaDatepicker()" style="display:none;width:0;height:0;padding:0;border:none;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultEmpty" style="display:{% if contratto_pk %}none{% else %}block{% endif %};">
+      <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:60px 20px;text-align:center;">
+        <i class="bi bi-piggy-bank" style="font-size:48px;color:#555;display:block;margin-bottom:12px;"></i>
+        <div style="font-size:16px;font-weight:600;color:#8A8F98;">Seleziona un contratto</div>
+        <div style="font-size:12px;color:#666;margin-top:4px;">Il calcolo parte automaticamente al cambio dei parametri</div>
+      </div>
+    </div>
+
+    <div id="resultContainer" style="display:none;">
+      <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Liquidazione TFR già salvata per questo periodo. Clicca <strong>LIQUIDA TFR</strong> per sovrascriverla.
+      </div>
+      <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 24px;margin-bottom:16px;">
+        <div id="resultLoading" style="display:none;text-align:center;padding:30px;">
+          <div class="spinner-border" style="color:#fbbf24;" role="status"></div>
+          <div style="margin-top:8px;font-size:13px;color:#8A8F98;">Calcolo in corso...</div>
+        </div>
+        <div id="resultContent"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Busta TFR
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        La <b>Busta TFR</b> genera il documento di liquidazione del Trattamento di Fine Rapporto per il collaboratore domestico. Il TFR è l'accantonamento mensile che viene corrisposto al lavoratore al termine del rapporto di lavoro.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Modalità TFR</b><br>
+        <b>Incluso nel lordo</b> — l'importo TFR è già compreso nella paga base mensile, non viene accantonato separatamente.<br>
+        <b>Separato 100%</b> — l'intero importo del TFR viene accantonato mese per mese e liquidato alla fine del rapporto.<br>
+        <b>Separato 70%</b> — il 70% del TFR viene pagato in busta ogni mese, il restante 30% viene accantonato per la liquidazione finale.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Pulsanti rapidi</b><br>
+        Per il periodo di liquidazione puoi usare i pulsanti rapidi: <b>Inizio anno</b>, <b>Inizio rapporto</b>, <b>Fine mese</b>, <b>Fine anno</b>, <b>Data...</b> per impostare date personalizzate. Il sistema calcola automaticamente il totale maturato nel periodo.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
+        La modalità TFR si configura nel contratto (paga_tfr). Per i contratti con TFR 70%, una parte viene pagata in busta e una parte accantonata. Il TFR accantonato è soggetto a rivalutazione ISTAT.</p>
+        <p class="mb-0"><b>PDF:</b> genera il documento di liquidazione con timbro e firma, salvato nell'archivio documenti.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Liquidazione TFR e Archivio</b><br>
+        <b>LIQUIDA TFR</b> — crea un record di liquidazione TFR nell'archivio buste paga con i dati del periodo selezionato. Il PDF viene generato automaticamente e associato alla busta.<br>
+        <b>Archivio Buste</b> — consulta tutte le liquidazioni TFR salvate (badge rosa), filtrale per tipo=TFR. Da lì puoi cambiare lo stato, vedere il PDF ed eliminare record.<br>
+        <b>Cessazione contratto:</b> quando imposti un contratto a stato <b>CESSATO</b>, l'ultima busta paga e la liquidazione TFR vengono generate automaticamente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+var _lastData = null;
+var contrattiList = [];
+
+(function() {
+  var sel = document.getElementById('fContratto');
+  contrattiList = [];
+  for (var i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value) contrattiList.push(sel.options[i].value);
+  }
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  var oggi = new Date();
+  var di = document.getElementById('fDataInizio');
+  if (di && !di.value) di.value = oggi.toISOString().slice(0, 10);
+  var sel = document.getElementById('fContratto');
+  var btn = document.getElementById('btnVediContratto');
+  if (sel) {
+    if (sel.value) { calcola(); if (btn) btn.style.display = 'inline-flex'; }
+    sel.addEventListener('change', function() {
+      if (btn) btn.style.display = this.value ? 'inline-flex' : 'none';
+      if (this.value) calcola();
+    });
+  }
+});
+
+window.onCambioContratto = function() {
+  if (document.getElementById('fContratto').value) calcola();
+};
+
+window.navContratto = function(dir) {
+  var sel = document.getElementById('fContratto');
+  var idx = contrattiList.indexOf(sel.value);
+  var newIdx = Math.max(0, Math.min(contrattiList.length - 1, idx + dir));
+  sel.value = contrattiList[newIdx] || '';
+  calcola();
+};
+
+window.setDaInizioAnno = function() {
+  var oggi = new Date();
+  var di = document.getElementById('fDataInizio');
+  di.value = oggi.getFullYear() + '-01-01';
+  calcola();
+};
+
+window.setDaInizioRapporto = function() {
+  if (!_lastData || !_lastData.data_assunzione_raw) return;
+  var di = document.getElementById('fDataInizio');
+  di.value = _lastData.data_assunzione_raw;
+  calcola();
+};
+
+window.setDaInizioTfrContratto = function() {
+  if (!_lastData || !_lastData.data_inizio_tfr_raw) return;
+  var di = document.getElementById('fDataInizio');
+  di.value = _lastData.data_inizio_tfr_raw;
+  calcola();
+};
+
+window.setFineMeseCorrente = function() {
+  var oggi = new Date();
+  document.getElementById('fMese').value = String(oggi.getMonth() + 1);
+  document.getElementById('fAnno').value = String(oggi.getFullYear());
+  calcola();
+};
+
+window.setFineAnnoCorrente = function() {
+  document.getElementById('fMese').value = '12';
+  var oggi = new Date();
+  document.getElementById('fAnno').value = String(oggi.getFullYear());
+  calcola();
+};
+
+window.mostraDatepickerFine = function() {
+  var dp = document.getElementById('fDataFineCustom');
+  dp.style.display = 'inline-block';
+  dp.style.width = '130px';
+  dp.style.height = 'auto';
+  dp.style.padding = '4px 8px';
+  dp.style.border = '1px solid rgba(251,191,36,0.3)';
+  dp.style.borderRadius = '6px';
+  dp.style.background = '#09090B';
+  dp.style.color = '#EDEDED';
+  dp.style.fontSize = '11px';
+  dp.focus();
+  dp.showPicker ? dp.showPicker() : dp.click();
+};
+
+window.setFineDaDatepicker = function() {
+  var val = document.getElementById('fDataFineCustom').value;
+  if (!val) return;
+  var parts = val.split('-');
+  if (parts.length !== 3) return;
+  document.getElementById('fMese').value = String(parseInt(parts[1], 10));
+  document.getElementById('fAnno').value = parts[0];
+  calcola();
+};
+
+window.calcola = function() {
+  var pk = document.getElementById('fContratto').value;
+  if (!pk) { document.getElementById('resultEmpty').style.display = 'block'; document.getElementById('resultContainer').style.display = 'none'; document.getElementById('btnLiquidaTfr').disabled = true; return; }
+  document.getElementById('resultEmpty').style.display = 'none';
+  document.getElementById('resultContainer').style.display = 'block';
+  document.getElementById('resultLoading').style.display = 'block';
+  document.getElementById('resultContent').innerHTML = '';
+  document.getElementById('btnPdf').disabled = true;
+  document.getElementById('btnLiquidaTfr').disabled = false;
+  document.getElementById('btnLiquidaTfr').dataset.pk = pk;
+
+  var di = document.getElementById('fDataInizio').value || '';
+  var mese = document.getElementById('fMese').value;
+  var anno = document.getElementById('fAnno').value;
+  var params = '?data_inizio=' + encodeURIComponent(di) + '&mese=' + mese + '&anno=' + anno;
+
+  fetch('/ajax/calcola-busta-tfr/' + pk + '/' + params, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    credentials: 'same-origin'
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    document.getElementById('resultLoading').style.display = 'none';
+    if (d.errore) {
+      document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;font-weight:600;">' + d.errore + '</div>';
+      return;
+    }
+    renderTfr(d);
+    _lastData = d;
+    document.getElementById('btnPdf').disabled = false;
+    document.getElementById('btnStampa').disabled = false;
+    var warn = document.getElementById('bustaEsistenteWarning');
+    if (warn) warn.style.display = d.busta_esistente ? 'block' : 'none';
+  })
+  .catch(function(e) {
+    document.getElementById('resultLoading').style.display = 'none';
+    document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;font-weight:600;">Errore: ' + e.message + '</div>';
+  });
+};
+
+window.renderTfr = function(d) {
+  var html = '';
+
+  html += '<div class="row g-3">';
+
+  // Colonna sx — Info contratto + dettaglio calcolo
+  html += '<div class="col-md-6">';
+
+  // Scheda datore/lavoratore
+  html += '<div style="background:rgba(94,106,210,0.06);border:1px solid rgba(94,106,210,0.15);border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
+  html += '<div style="font-size:11px;font-weight:700;color:#9ca3ff;margin-bottom:8px;"><i class="bi bi-people me-1"></i> DATORE / LAVORATORE</div>';
+  html += '<table style="width:100%;">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:90px;">Datore</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.datore + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Lavoratore</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.lavoratore + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Livello</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.livello + '</td></tr>';
+  html += '</table>';
+  html += '</div>';
+
+  // Info contratto
+  html += '<div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
+  html += '<div style="font-size:11px;font-weight:700;color:#34d399;margin-bottom:8px;"><i class="bi bi-file-text me-1"></i> CONTRATTO</div>';
+  html += '<table style="width:100%;">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Data assunzione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.data_assunzione + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Inizio TFR effettivo</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.data_inizio_tfr_eff + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Paga base oraria</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.paga_base.toFixed(4) + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Budget mensile</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.budget_mensile.toFixed(2) + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Modalità TFR</td><td style="font-size:12px;font-weight:600;color:#fbbf24;padding:2px 0;">' + d.modalita_tfr + '</td></tr>';
+  html += '</table>';
+  html += '</div>';
+
+  // Dettaglio calcolo
+  html += '<div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:12px 14px;">';
+  html += '<div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px;"><i class="bi bi-calculator me-1"></i> CALCOLO TFR</div>';
+  html += '<table style="width:100%;">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Periodo maturazione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.data_inizio + ' — ' + d.data_fine + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Mesi trascorsi</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.mesi + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Ore mensili</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.ore_mensili + ' h</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">TFR orario</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">\u20AC ' + d.tfr_orario.toFixed(4) + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Coefficiente</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + (d.coeff * 100) + '%</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Rateo mensile</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">\u20AC ' + d.tfr_mensile.toFixed(4) + '</td></tr>';
+  html += '<tr style="border-top:1px solid rgba(251,191,36,0.25);"><td style="font-size:12px;font-weight:800;color:#fbbf24;padding:6px 8px 2px 0;">TOTALE ACCANTONATO</td><td style="font-size:16px;font-weight:800;color:#fbbf24;padding:6px 0 2px 0;text-align:right;">\u20AC ' + d.cumulativo.toFixed(2) + '</td></tr>';
+  html += '</table>';
+  html += '</div>';
+
+  html += '</div>'; // fine col-sx
+
+  // Colonna dx — Riepilogo
+  html += '<div class="col-md-6">';
+
+  html += '<div style="padding:20px;background:rgba(251,191,36,0.08);border:2px solid rgba(251,191,36,0.25);border-radius:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">';
+  html += '<div style="font-size:10px;font-weight:700;color:#8A8F98;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">DA LIQUIDARE</div>';
+  html += '<div style="font-size:36px;font-weight:800;color:#fbbf24;margin-bottom:4px;">\u20AC ' + d.cumulativo.toFixed(2) + '</div>';
+  html += '<div style="font-size:11px;color:#8A8F98;margin-bottom:16px;">per <strong>' + d.mesi + ' mesi</strong> di maturazione</div>';
+
+  html += '<hr style="width:60%;border-color:rgba(251,191,36,0.15);margin:8px 0;">';
+
+  html += '<div style="font-size:10px;color:#8A8F98;">Rateo mensile</div>';
+  html += '<div style="font-size:16px;font-weight:700;color:#EDEDED;margin-bottom:10px;">\u20AC ' + d.tfr_mensile.toFixed(4) + '</div>';
+
+  html += '<div style="font-size:10px;color:#8A8F98;">Periodo</div>';
+  html += '<div style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.data_inizio + ' – ' + d.data_fine + '</div>';
+
+  html += '</div>';
+
+  html += '</div>'; // fine col-dx
+
+  html += '</div>'; // fine row
+
+  document.getElementById('resultContent').innerHTML = html;
+};
+
+window.downloadPdf = function() {
+  if (!_lastData) return;
+  var pk = document.getElementById('fContratto').value;
+  if (!pk) return;
+  var di = document.getElementById('fDataInizio').value || '';
+  var mese = document.getElementById('fMese').value;
+  var anno = document.getElementById('fAnno').value;
+  var params = '?data_inizio=' + encodeURIComponent(di) + '&mese=' + mese + '&anno=' + anno
+    + '&allega_lul=' + (document.getElementById('chkAllegaLul').checked ? '1' : '0');
+  apriNelPannello('/ajax/liquidazione-tfr/' + pk + '/' + params);
+};
+
+function getCSRFToken() {
+  var name = 'csrftoken';
+  var value = '; ' + document.cookie;
+  var parts = value.split('; ' + name + '=');
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return '';
+}
+function mostraToast(msg, ok) {
+  var t = document.getElementById('tfrToast');
+  var m = document.getElementById('tfrToastMsg');
+  if (!t) return;
+  var icon = t.querySelector('i');
+  if (icon) icon.className = 'bi ' + (ok ? 'bi-check-circle me-2' : 'bi-x-circle me-2');
+  if (icon) icon.style.color = ok ? '#10b981' : '#ef4444';
+  if (m) m.textContent = msg;
+  t.style.display = 'block';
+  if (window._tfrToastTimer) clearTimeout(window._tfrToastTimer);
+  window._tfrToastTimer = setTimeout(function() { t.style.display = 'none'; }, 3000);
+}
+window.liquidaTfr = function() {
+  var pk = document.getElementById('btnLiquidaTfr').dataset.pk;
+  console.log('liquidaTfr called, pk:', pk);
+  if (!pk) { mostraToast('Nessun contratto selezionato', false); return; }
+  var warn = document.getElementById('bustaEsistenteWarning');
+  if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
+    if (!confirm('Liquidazione TFR già salvata per questo periodo. Sovrascrivere?')) return;
+  }
+  var btn = document.getElementById('btnLiquidaTfr');
+  btn.disabled = true;
+  btn.textContent = ' LIQUIDAZIONE...';
+  var sp = document.createElement('span');
+  sp.className = 'spinner-border spinner-border-sm me-1';
+  sp.setAttribute('role', 'status');
+  btn.prepend(sp);
+  var formData = new FormData();
+  formData.append('contratto_pk', pk);
+  formData.append('mese', document.getElementById('fMese').value);
+  formData.append('anno', document.getElementById('fAnno').value);
+  var di = document.getElementById('fDataInizio').value || '';
+  if (di) formData.append('data_inizio', di);
+  formData.append('csrfmiddlewaretoken', getCSRFToken());
+  fetch('/ajax/liquida-tfr/', {
+    method: 'POST',
+    body: formData,
+    credentials: 'same-origin',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    console.log('liquidaTfr response:', d);
+    if (d.ok) {
+      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> LIQUIDATA';
+      if (warn) warn.style.display = 'none';
+      mostraToast('TFR liquidato con successo!', true);
+      setTimeout(function() {
+        btn.innerHTML = '<i class="bi bi-cash-stack me-1"></i> LIQUIDA TFR';
+        btn.disabled = false;
+      }, 2500);
+    } else {
+      mostraToast(d.errore || 'Errore liquidazione', false);
+      btn.innerHTML = '<i class="bi bi-cash-stack me-1"></i> LIQUIDA TFR';
+      btn.disabled = false;
+    }
+  }).catch(function(e) {
+    console.error('liquidaTfr error:', e);
+    mostraToast('Errore di rete', false);
+    btn.innerHTML = '<i class="bi bi-cash-stack me-1"></i> LIQUIDA TFR';
+    btn.disabled = false;
+  });
+};
+window.apriContratto = function() {
+  var pk = document.getElementById('fContratto').value;
+  if (pk) loadAjaxForm('/ajax/modifica-contratto/' + pk + '/', 'Modifica Contratto');
+};
+
+window.stampaBustaCalcolo = function(btn) {
+    var pk = document.getElementById('btnPdf').dataset.pk;
+    if (!pk) { mostraToast('Nessuna busta selezionata.', false); return; }
+    var d = window._lastStdData;
+    if (!d || !d.busta_esistente) {
+        mostraToast('Salva prima la busta paga con "SALVA BUSTA".', false);
+        return;
+    }
+    stampaBusta(pk, btn);
+};
+</script>
+{% include 'paghe/_ccnl_occhio_include.html' %}
+{% endblock %}

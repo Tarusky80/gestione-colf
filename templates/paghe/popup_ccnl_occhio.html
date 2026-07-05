@@ -1,0 +1,510 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Colpo d'Occhio CCNL</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<style>
+* { box-sizing: border-box; }
+body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-serif; margin:0; overflow-x:hidden; }
+.ccnl-livello-btn { padding:5px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; border:none; }
+.ccnl-livello-btn:hover { filter: brightness(1.3); }
+.ccnl-occhio-item { display:flex; align-items:center; justify-content:space-between; padding:7px 14px; border-bottom:1px solid rgba(39,40,45,0.4); font-size:12px; transition:all 0.15s; }
+.ccnl-occhio-item[data-key]:hover { background:rgba(255,255,255,0.04); }
+#busta-anteprima { position:sticky; top:0; }
+#busta-anteprima .busta-riga { display:flex; justify-content:space-between; font-size:11px; padding:2px 0; }
+#busta-anteprima .busta-sezione { padding:8px 14px; border-bottom:1px solid #27282D; }
+#busta-anteprima .busta-sezione:last-child { border-bottom:none; }
+#busta-anteprima .loading-overlay { position:absolute; inset:0; background:rgba(14,15,17,0.7); display:flex; align-items:center; justify-content:center; border-radius:10px; z-index:5; opacity:0; pointer-events:none; transition:opacity 0.2s; }
+#busta-anteprima .loading-overlay.active { opacity:1; pointer-events:auto; }
+</style>
+</head>
+<body>
+
+{% if errore %}
+<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:40px;text-align:center;">
+  <div style="font-size:48px;color:#f87171;margin-bottom:16px;"><i class="bi bi-exclamation-triangle-fill"></i></div>
+  <h5 style="color:#EDEDED;margin-bottom:8px;">Parametri CCNL non disponibili</h5>
+  <p style="color:#8A8F98;font-size:13px;max-width:400px;">{{ errore }}</p>
+  <button onclick="window.close()" style="margin-top:16px;padding:10px 24px;border-radius:8px;border:none;background:#5E6AD2;color:white;font-size:13px;font-weight:600;cursor:pointer;">Chiudi</button>
+</div>
+{% elif parametri %}
+
+<div style="display:flex;flex-direction:column;height:calc(100vh - 38px);">
+
+  {% comment %} Header con livello selector {% endcomment %}
+  <div style="padding:12px 20px;border-bottom:1px solid #27282D;flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:28px;height:28px;border-radius:8px;background:rgba(94,106,210,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;color:#5E6AD2;">
+          <i class="bi bi-eye"></i>
+        </div>
+        <span style="font-size:14px;font-weight:700;color:#EDEDED;">Colpo d'Occhio CCNL</span>
+        <span style="font-size:11px;color:#8A8F98;background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:4px;">{{ parametri.anno }}</span>
+      </div>
+      <button onclick="window.close()" style="background:none;border:none;color:#8A8F98;font-size:16px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:4px;"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      {% for l in livelli %}
+      <button class="ccnl-livello-btn" data-livello-pk="{{ l.pk }}"
+        style="background:{% if l.pk == parametri.livello_id %}{{ l.colore }}30{% else %}rgba(255,255,255,0.04){% endif %};color:{% if l.pk == parametri.livello_id %}{{ l.colore }}{% else %}#8A8F98{% endif %};border:1px solid {% if l.pk == parametri.livello_id %}{{ l.colore }}50{% else %}transparent{% endif %};{% if l.pk == parametri.livello_id %}box-shadow:0 0 12px {{ l.colore }}20;{% endif %}">
+        {{ l.codice }}
+      </button>
+      {% endfor %}
+    </div>
+
+    {% if contratto %}
+    <div style="display:flex;align-items:center;gap:12px;margin-top:8px;font-size:11px;color:#5C5F66;">
+      <span><i class="bi bi-person-badge me-1"></i>{{ contratto.lavoratore.nome_cognome }}</span>
+      <span><i class="bi bi-building me-1"></i>{{ contratto.datore.nome_cognome }}</span>
+      <span style="margin-left:auto;">
+        <span style="color:#34d399;">●</span> abilitato
+        <span style="color:#f87171;margin-left:6px;">●</span> disabilitato
+        <span style="color:#5C5F66;margin-left:6px;">●</span> clicca per simulare
+      </span>
+    </div>
+    {% endif %}
+  </div>
+
+  {% comment %} Corpo scrollabile a due colonne {% endcomment %}
+  <div style="flex:1;overflow-y:auto;padding:12px 20px;">
+    <div style="display:flex;gap:16px;align-items:flex-start;min-height:100%;">
+
+      {% comment %} COLONNA SINISTRA — CCNL Toggles {% endcomment %}
+      <div style="flex:0 0 40%;">
+
+        {% for group in groups %}
+        <div style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;margin-bottom:10px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.02);">
+            <i class="bi bi-{{ group.icon }}"></i>
+            {{ group.title }}
+          </div>
+          {% for item in group.items %}
+          <div class="ccnl-occhio-item" data-key="{{ item.key|default:'' }}" data-value="{{ item.value|stringformat:'.4f' }}" data-attiva="{% if item.attiva is not None %}{{ item.attiva|yesno:'true,false' }}{% endif %}"
+            style="cursor:{% if item.key %}pointer{% else %}default{% endif %};{% if item.key and item.attiva is not None %}background:{% if item.attiva %}rgba(52,211,153,0.04){% else %}transparent{% endif %};{% endif %}">
+            <div style="display:flex;align-items:center;gap:8px;">
+              {% if item.key and item.attiva is not None %}
+              <span class="ccnl-toggle-icon" style="font-size:13px;color:{% if item.attiva %}#34d399{% else %}#5C5F66{% endif %};">
+                {% if item.attiva %}<i class="bi bi-toggle-on"></i>{% else %}<i class="bi bi-toggle-off"></i>{% endif %}
+              </span>
+              {% elif item.fixed %}
+              <span style="font-size:13px;color:#8A8F98;"><i class="bi bi-lock"></i></span>
+              {% endif %}
+              <span style="color:{% if item.fixed %}#8A8F98{% else %}#EDEDEB{% endif %};">{{ item.label }}</span>
+            </div>
+            <span class="ccnl-value" style="font-weight:600;{% if item.value %}color:#5E6AD2;{% else %}color:#5C5F66;{% endif %}">
+              {% if item.key == 'rateo_tfr_separato' or item.key == 'rateo_anticipo_70' %}—{% else %}€ {{ item.value|floatformat:4 }}{% endif %}
+            </span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+
+        {% if parametri.fonte_url %}
+        <div style="text-align:center;padding:6px;font-size:10px;color:#5C5F66;">
+          <i class="bi bi-link-45deg me-1"></i> Fonte:
+          <a href="{{ parametri.fonte_url }}" target="_blank" style="color:#5E6AD2;text-decoration:none;">{{ parametri.fonte_url }}</a>
+        </div>
+        {% endif %}
+      </div>
+
+      {% comment %} COLONNA DESTRA — Anteprima Busta Paga (pre-renderizzata via _calcola_busta_data) {% endcomment %}
+      <div id="busta-anteprima" style="flex:0 0 60%;" data-contratto-pk="{{ contratto.pk }}" data-mese="{{ mese_corrente }}" data-anno="{{ parametri.anno }}">
+        <div class="loading-overlay" id="busta-loading"><div class="spinner-border text-primary" role="status"></div></div>
+        <div style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;overflow:hidden;">
+
+          {% with b=busta_json %}
+          {% comment %} Intestazione Budget / Ore {% endcomment %}
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.03);">
+            <div><i class="bi bi-calculator me-1"></i> Anteprima Busta Paga</div>
+            <div style="display:flex;gap:14px;font-size:10px;font-weight:400;text-transform:none;">
+              <span>Budget: <span class="busta-budget" style="color:#34d399;font-weight:600;">€ {{ b.budget_mensile|floatformat:2 }}</span></span>
+              <span>Ore: <span class="busta-ore" style="color:#5E6AD2;font-weight:600;">{{ b.ore_mensili }}h</span></span>
+            </div>
+          </div>
+
+          {% comment %} RETRIBUZIONE LORDA {% endcomment %}
+          <div class="busta-sezione">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#8A8F98;margin-bottom:6px;">Retribuzione Lorda</div>
+            <div class="busta-riga">
+              <span style="color:#8A8F98;">Paga base</span>
+              <span class="busta-pagabase-val" style="color:#EDEDED;font-weight:600;">€ {{ b.paga_base.totale|floatformat:2 }}</span>
+            </div>
+            <div class="busta-riga">
+              <span style="color:#8A8F98;">Indennità</span>
+              <span class="busta-indennita-val" style="color:#34d399;font-weight:600;">€ {{ b.totale_indennita|floatformat:2 }}</span>
+            </div>
+            <div class="busta-riga">
+              <span style="color:#8A8F98;">Scatti</span>
+              <span class="busta-scatti-val" style="color:#f59e0b;font-weight:600;">€ {{ b.scatti_anzianita.valore|floatformat:2 }}</span>
+            </div>
+            <div class="busta-riga">
+              <span style="color:#8A8F98;">Ratei pagati</span>
+              <span class="busta-ratei-val" style="color:#34d399;font-weight:600;">€ {{ b.totale_ratei_pagati|floatformat:2 }}</span>
+            </div>
+            <div style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
+              <span style="color:#EDEDED;">TOTALE LORDO</span>
+              <span class="busta-totale-lordo-val" style="color:#34d399;">€ {{ b.totale_lordo|floatformat:2 }}</span>
+            </div>
+          </div>
+
+          {% comment %} CONTRIBUTI {% endcomment %}
+          <div class="busta-sezione">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#8A8F98;margin-bottom:6px;">Contributi</div>
+            <div class="busta-riga">
+              <span style="color:#8A8F98;">INPS <span class="busta-inps-rate">(€ {{ b.contributi.inps.orario|floatformat:4 }}/h)</span></span>
+              <span class="busta-inps-val" style="color:#f87171;font-weight:600;">€ {{ b.contributi.inps.totale|floatformat:2 }}</span>
+            </div>
+            <div class="busta-riga">
+              <span style="color:#8A8F98;">{{ b.contributi.cassa.nome|default:'Cassa' }} <span class="busta-cassa-rate">(€ {{ b.contributi.cassa.orario|floatformat:4 }}/h)</span></span>
+              <span class="busta-cassa-val" style="color:#f87171;font-weight:600;">€ {{ b.contributi.cassa.totale|floatformat:2 }}</span>
+            </div>
+            <div style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
+              <span style="color:#EDEDED;">Totale contributi</span>
+              <span class="busta-totale-contributi-val" style="color:#f87171;">€ {{ b.contributi.totale|floatformat:2 }}</span>
+            </div>
+          </div>
+
+          {% comment %} TRATTENUTE {% endcomment %}
+          <div class="busta-sezione">
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#8A8F98;margin-bottom:6px;">Trattenute</div>
+
+            {% comment %} Convivenza toggles {% endcomment %}
+            <div class="busta-convivenza-section">
+              <div class="busta-riga">
+                <span style="color:#8A8F98;">Convivenza</span>
+                <span class="busta-convivenza-val" style="color:#f87171;font-weight:600;">€ {{ b.trattenute.convivenza.totale|floatformat:2 }}</span>
+              </div>
+              <div class="busta-conv-item" data-key="conv_pranzo" style="display:flex;align-items:center;gap:6px;padding:3px 0 3px 12px;font-size:10px;color:#8A8F98;cursor:pointer;">
+                <span class="busta-conv-icon" style="font-size:10px;color:#5C5F66;"><i class="bi bi-square"></i></span>
+                Pranzo (<span class="busta-conv-rate">{{ conv_pranzo_rate|floatformat:4 }}</span> €/g)
+              </div>
+              <div class="busta-conv-item" data-key="conv_cena" style="display:flex;align-items:center;gap:6px;padding:3px 0 3px 12px;font-size:10px;color:#8A8F98;cursor:pointer;">
+                <span class="busta-conv-icon" style="font-size:10px;color:#5C5F66;"><i class="bi bi-square"></i></span>
+                Cena (<span class="busta-conv-rate">{{ conv_cena_rate|floatformat:4 }}</span> €/g)
+              </div>
+              <div class="busta-conv-item" data-key="conv_alloggio" style="display:flex;align-items:center;gap:6px;padding:3px 0 3px 12px;font-size:10px;color:#8A8F98;cursor:pointer;">
+                <span class="busta-conv-icon" style="font-size:10px;color:#5C5F66;"><i class="bi bi-square"></i></span>
+                Alloggio (<span class="busta-conv-rate">{{ conv_alloggio_rate|floatformat:4 }}</span> €/g)
+              </div>
+            </div>
+
+            <div class="busta-riga" style="margin-top:4px;">
+              <span style="color:#8A8F98;">Ratei accantonati</span>
+              <span class="busta-ratei-accantonati-val" style="color:#f87171;font-weight:600;">€ {{ b.trattenute.ratei_accantonati|floatformat:2 }}</span>
+            </div>
+            <div style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
+              <span style="color:#EDEDED;">Totale trattenute</span>
+              <span class="busta-totale-trattenute-val" style="color:#f87171;">€ {{ b.trattenute.totale|floatformat:2 }}</span>
+            </div>
+          </div>
+
+          {% comment %} NETTO {% endcomment %}
+          <div class="busta-sezione">
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;">
+              <span style="color:#EDEDED;">NETTO IN BUSTA</span>
+              <span class="busta-netto-val" style="color:#5E6AD2;">€ {{ b.netto|floatformat:2 }}</span>
+            </div>
+            <div class="busta-riga" style="margin-top:4px;">
+              <span style="color:#8A8F98;">TFR accumulato</span>
+              <span class="busta-tfr-val" style="color:#f59e0b;font-weight:600;">€ {{ b.tfr_accumulato|floatformat:2 }}</span>
+            </div>
+            <div class="busta-riga">
+              <span style="color:#8A8F98;">Differenza budget</span>
+              <span class="busta-differenza-val" style="font-weight:600;">€ {{ b.differenza|floatformat:2 }}</span>
+            </div>
+          </div>
+          {% endwith %}
+
+          {% comment %} Scatti di Anzianità {% endcomment %}
+          <div class="ccnl-scatti-section" style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;margin-top:10px;overflow:hidden;transition:all 0.15s;">
+            <div class="ccnl-scatti-header" data-key="scatti" data-value="{{ scatto_effettivo|stringformat:'.4f' }}" data-attiva="{{ scatti_attiva|yesno:'true,false' }}"
+              style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.02);cursor:pointer;transition:all 0.15s;">
+              <span class="ccnl-toggle-icon" style="font-size:13px;color:#5C5F66;">
+                <i class="bi bi-toggle-off"></i>
+              </span>
+              <i class="bi bi-arrow-up-circle"></i>
+              Scatti di Anzianità
+              <span style="margin-left:auto;font-size:11px;color:#5C5F66;font-weight:400;text-transform:none;">
+                <span class="ccnl-scatto-label" style="color:#f59e0b;font-weight:600;">€ {{ scatto_value|floatformat:4 }}/h</span> per biennio · <span style="color:#8A8F98;">{{ bienni_accumulati }} bienni maturati</span>
+              </span>
+            </div>
+            <div class="scatti-table-wrapper" style="padding:6px 14px;transition:opacity 0.2s;opacity:0.4;">
+              <table style="width:100%;border-collapse:collapse;font-size:11px;">
+                <thead>
+                  <tr style="border-bottom:1px solid #27282D;color:#5C5F66;font-size:9px;text-transform:uppercase;letter-spacing:0.04em;">
+                    <th style="padding:4px 6px;text-align:left;">Biennio</th>
+                    <th style="padding:4px 6px;text-align:left;">Anzianità</th>
+                    <th style="padding:4px 6px;text-align:right;">Orario</th>
+                    <th style="padding:4px 6px;text-align:right;">Mensile (170h)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for b in bienni %}
+                  <tr style="border-bottom:1px solid rgba(39,40,45,0.3);">
+                    <td style="padding:4px 6px;color:#8A8F98;">{{ b.biennio }}°</td>
+                    <td style="padding:4px 6px;color:#EDEDEB;">{{ b.anni }} anni</td>
+                    <td style="padding:4px 6px;text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.orario|floatformat:4 }}</td>
+                    <td style="padding:4px 6px;text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.mensile|floatformat:2 }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  {% comment %} Riepilogo - barra fissa in fondo {% endcomment %}
+  <div style="flex-shrink:0;border-top:1px solid #27282D;background:rgba(255,255,255,0.02);padding:12px 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:16px;font-size:12px;flex-wrap:wrap;">
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Paga Base</span>
+          <div class="ccnl-sum-pagabase" data-pagabase="{{ paga_base|stringformat:'.4f' }}" data-retribsost="{{ retrib_sost_value|stringformat:'.4f' }}" data-retribsost-attiva="{{ retrib_sost_attiva|yesno:'true,false' }}" style="color:#EDEDED;font-weight:600;">€ {{ paga_base_effettiva|floatformat:4 }}</div>
+        </div>
+        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Voci Var.</span>
+          <div class="ccnl-sum-voci" style="color:#34d399;font-weight:600;">€ {{ totale_toggleabili|floatformat:4 }}</div>
+        </div>
+        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Scatti</span>
+          <div class="ccnl-sum-scatti" style="color:#f59e0b;font-weight:600;">€ 0.0000</div>
+        </div>
+        <div style="color:#5C5F66;font-size:16px;">=</div>
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Totale Orario Lordo</span>
+          <div class="ccnl-sum-totale" style="font-size:16px;font-weight:700;color:#5E6AD2;">€ {{ paga_oraria_lorda|floatformat:4 }}</div>
+        </div>
+      </div>
+      <button onclick="ccnlOcchioDownloadRiepilogo()" style="padding:8px 16px;border-radius:8px;border:none;background:#5E6AD2;color:white;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <i class="bi bi-file-pdf"></i> Scarica Riepilogo CCNL
+      </button>
+      {% if livello_contratto %}
+      <div id="livello-diff-badge" style="padding:6px 12px;border-radius:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);font-size:11px;white-space:nowrap;{% if livello_contratto.pk|default:'' == parametri.livello_id %}display:none;{% endif %}">
+        <span style="color:#f59e0b;">± differenza da Liv. {{ livello_contratto.codice }}</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+{% endif %}
+<script>
+var CONTRATTO_PK = {{ contratto.pk|default:'0' }};
+var ANNO = {{ parametri.anno|default:'2025' }};
+var MESE = {{ mese_corrente|default:'6' }};
+var LIVELLO_PK = {{ parametri.livello_id|default:'0' }};
+
+window.ccnlOcchioCambiaLivello = function(livelloPk) {
+    var url = window.location.pathname;
+    var params = new URLSearchParams(window.location.search);
+    params.set('livello_pk', livelloPk);
+    url += '?' + params.toString();
+    window.location.href = url;
+};
+
+window.ccnlOcchioDownloadRiepilogo = function() {
+    var params = ccnlOcchioCollezioneToggle();
+    params.set('contratto_pk', CONTRATTO_PK);
+    params.set('livello_pk', {{ parametri.livello_id }});
+    params.set('anno', ANNO);
+    window.open('/ajax/ccnl-occhio-riepilogo-pdf/?' + params.toString(), '_blank', 'width=900,height=750,scrollbars=yes');
+};
+
+window.ccnlOcchioAggiornaBadgeLivello = function(livelloPk) {
+    var badge = document.getElementById('livello-diff-badge');
+    if (!badge) return;
+    if (livelloPk && livelloPk === {{ parametri.livello_id }}) {
+        badge.style.display = 'none';
+    } else {
+        badge.style.display = 'block';
+    }
+};
+
+window.ccnlOcchioAggiornaBadgeLivello({{ livello_contratto.pk|default:'null' }});
+
+function ccnlToggleElement(el) {
+    if (!el) return;
+    var attiva = el.dataset.attiva === 'true';
+    el.dataset.attiva = attiva ? 'false' : 'true';
+    var icon = el.querySelector('.ccnl-toggle-icon');
+    if (icon) {
+        icon.innerHTML = attiva ? '<i class="bi bi-toggle-off"></i>' : '<i class="bi bi-toggle-on"></i>';
+        icon.style.color = attiva ? '#5C5F66' : '#34d399';
+    }
+    if (el.dataset.key === 'retrib_sostituzione') {
+        var baseEl = document.querySelector('.ccnl-sum-pagabase');
+        if (baseEl) {
+            baseEl.dataset.retribsostAttiva = attiva ? 'false' : 'true';
+            var val = attiva ? baseEl.dataset.pagabase : baseEl.dataset.retribsost;
+            baseEl.textContent = '€ ' + parseFloat(val || '0').toFixed(4);
+        }
+    } else if (el.classList.contains('ccnl-scatti-header')) {
+        el.style.background = attiva ? 'rgba(255,255,255,0.02)' : 'rgba(52,211,153,0.04)';
+        var tbl = el.parentElement.querySelector('table, .scatti-table-wrapper');
+        if (tbl) tbl.style.opacity = attiva ? '0.4' : '1';
+    } else {
+        el.style.background = attiva ? 'transparent' : 'rgba(52,211,153,0.04)';
+    }
+    ccnlOcchioAggiornaRiepilogo();
+    if (el.dataset.key === 'rateo_tfr_separato' && el.dataset.attiva === 'false') {
+        var ant70 = document.querySelector('.ccnl-occhio-item[data-key="rateo_anticipo_70"]');
+        if (ant70 && ant70.dataset.attiva === 'true') ccnlToggleElement(ant70);
+    }
+    ccnlOcchioRichiediBusta();
+}
+
+document.addEventListener('click', function(e) {
+    var target = e.target.closest('.ccnl-livello-btn[data-livello-pk]');
+    if (target) {
+        ccnlOcchioCambiaLivello(parseInt(target.dataset.livelloPk));
+        return;
+    }
+    target = e.target.closest('.ccnl-occhio-item[data-key]');
+    if (target && target.dataset.key) {
+        if (target.dataset.key === 'rateo_anticipo_70') {
+            var sep = document.querySelector('.ccnl-occhio-item[data-key="rateo_tfr_separato"]');
+            if (sep && sep.dataset.attiva === 'false') return;
+        }
+        ccnlToggleElement(target); return;
+    }
+    target = e.target.closest('.ccnl-scatti-header[data-key]');
+    if (target && target.dataset.key) { ccnlToggleElement(target); return; }
+    target = e.target.closest('.busta-conv-item[data-key]');
+    if (target && target.dataset.key) { ccnlToggleConvivenza(target); return; }
+});
+
+function ccnlToggleConvivenza(el) {
+    if (!el) return;
+    var isChecked = el.querySelector('.bi-check-square, .bi-square');
+    if (!isChecked) return;
+    var attiva = isChecked.classList.contains('bi-check-square') ? false : true;
+    isChecked.className = attiva ? 'bi bi-check-square' : 'bi bi-square';
+    isChecked.style.color = attiva ? '#34d399' : '#5C5F66';
+    el.style.color = attiva ? '#EDEDEB' : '#8A8F98';
+    ccnlOcchioRichiediBusta();
+}
+
+window.ccnlOcchioAggiornaRiepilogo = function() {
+    var pagaBaseEl = document.querySelector('.ccnl-sum-pagabase');
+    if (!pagaBaseEl) return;
+    var usaRetrib = pagaBaseEl.dataset.retribsostAttiva === 'true';
+    var pagaBase = parseFloat(usaRetrib ? (pagaBaseEl.dataset.retribsost || '0') : (pagaBaseEl.dataset.pagabase || '0'));
+    var items = document.querySelectorAll('.ccnl-occhio-item[data-key]');
+    var totaleVoci = 0;
+    items.forEach(function(item) {
+        var val = parseFloat(item.dataset.value || '0');
+        if (item.dataset.key !== 'retrib_sostituzione' && item.dataset.attiva === 'true') { totaleVoci += val; }
+    });
+    var scattiHeader = document.querySelector('.ccnl-scatti-header[data-key]');
+    var scattoVal = 0;
+    if (scattiHeader && scattiHeader.dataset.attiva === 'true') {
+        scattoVal = parseFloat(scattiHeader.dataset.value || '0');
+    }
+    var vociEl = document.querySelector('.ccnl-sum-voci');
+    if (vociEl) vociEl.textContent = '€ ' + totaleVoci.toFixed(4);
+    var scattiSumEl = document.querySelector('.ccnl-sum-scatti');
+    if (scattiSumEl) scattiSumEl.textContent = '€ ' + scattoVal.toFixed(4);
+    var totEl = document.querySelector('.ccnl-sum-totale');
+    if (totEl) totEl.textContent = '€ ' + (pagaBase + totaleVoci + scattoVal).toFixed(4);
+};
+
+function ccnlOcchioCollezioneToggle() {
+    var params = new URLSearchParams();
+    params.set('mese', MESE);
+    params.set('anno', ANNO);
+    params.set('livello_pk', LIVELLO_PK);
+    document.querySelectorAll('.ccnl-occhio-item[data-key], .ccnl-scatti-header[data-key]').forEach(function(el) {
+        var key = el.dataset.key;
+        if (!key || key === 'retrib_sostituzione') return;
+        params.set(key, el.dataset.attiva === 'true' ? '1' : '0');
+    });
+    document.querySelectorAll('.ccnl-occhio-item[data-key]').forEach(function(el) {
+        var key = el.dataset.key;
+        if (!key) return;
+        params.set('p_' + key, el.dataset.attiva === 'true' ? '1' : '0');
+    });
+    document.querySelectorAll('.busta-conv-item[data-key]').forEach(function(el) {
+        var key = el.dataset.key;
+        if (!key) return;
+        var icon = el.querySelector('.bi-check-square, .bi-square');
+        if (!icon) return;
+        params.set('incl_' + key.replace('conv_', ''), icon.classList.contains('bi-check-square') ? '1' : '0');
+    });
+    return params;
+}
+
+var _bustaXhr = null;
+function ccnlOcchioRichiediBusta() {
+    if (_bustaXhr) { _bustaXhr.abort(); }
+    var loading = document.getElementById('busta-loading');
+    if (loading) loading.classList.add('active');
+    var params = ccnlOcchioCollezioneToggle();
+    _bustaXhr = fetch('/ajax/ccnl-occhio-busta/' + CONTRATTO_PK + '/?' + params.toString())
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            _bustaXhr = null;
+            if (loading) loading.classList.remove('active');
+            if (data.errore) { console.error('Busta errore:', data.errore); return; }
+            ccnlOcchioAggiornaBustaDOM(data);
+        })
+        .catch(function(err) {
+            _bustaXhr = null;
+            if (loading) loading.classList.remove('active');
+            if (err.name !== 'AbortError') console.error(err);
+        });
+}
+
+function euroFixed(v, d) {
+    if (d === undefined) d = 2;
+    return '€ ' + parseFloat(v || 0).toFixed(d);
+}
+
+function attrVal(v) {
+    return (v === undefined || v === null) ? 0 : v;
+}
+
+window.ccnlOcchioAggiornaBustaDOM = function(data) {
+    var q = function(s) { return document.querySelector(s); };
+    if (q('.busta-budget')) q('.busta-budget').textContent = euroFixed(data.budget_mensile);
+    if (q('.busta-ore')) q('.busta-ore').textContent = (data.ore_mensili || 0) + 'h';
+    if (q('.busta-pagabase-val')) q('.busta-pagabase-val').textContent = euroFixed(attrVal(data.paga_base) ? data.paga_base.totale : 0);
+    if (q('.busta-indennita-val')) q('.busta-indennita-val').textContent = euroFixed(data.totale_indennita);
+    if (q('.busta-scatti-val')) q('.busta-scatti-val').textContent = euroFixed(attrVal(data.scatti_anzianita) ? data.scatti_anzianita.valore : 0);
+    if (q('.busta-ratei-val')) q('.busta-ratei-val').textContent = euroFixed(data.totale_ratei_pagati);
+    if (q('.busta-totale-lordo-val')) q('.busta-totale-lordo-val').textContent = euroFixed(data.totale_lordo);
+    if (q('.busta-inps-rate')) q('.busta-inps-rate').textContent = '(€ ' + (attrVal(data.contributi) ? parseFloat(attrVal(data.contributi.inps).orario || 0).toFixed(4) : '0.0000') + '/h)';
+    if (q('.busta-inps-val')) q('.busta-inps-val').textContent = euroFixed(attrVal(data.contributi) ? data.contributi.inps.totale : 0);
+    if (q('.busta-cassa-rate')) q('.busta-cassa-rate').textContent = '(€ ' + (attrVal(data.contributi) ? parseFloat(attrVal(data.contributi.cassa).orario || 0).toFixed(4) : '0.0000') + '/h)';
+    if (q('.busta-cassa-val')) q('.busta-cassa-val').textContent = euroFixed(attrVal(data.contributi) ? data.contributi.cassa.totale : 0);
+    if (q('.busta-totale-contributi-val')) q('.busta-totale-contributi-val').textContent = euroFixed(attrVal(data.contributi) ? data.contributi.totale : 0);
+    if (q('.busta-convivenza-val')) q('.busta-convivenza-val').textContent = euroFixed(attrVal(data.trattenute) ? data.trattenute.convivenza.totale : 0);
+    if (q('.busta-ratei-accantonati-val')) q('.busta-ratei-accantonati-val').textContent = euroFixed(attrVal(data.trattenute) ? data.trattenute.ratei_accantonati : 0);
+    if (q('.busta-totale-trattenute-val')) q('.busta-totale-trattenute-val').textContent = euroFixed(attrVal(data.trattenute) ? data.trattenute.totale : 0);
+    if (q('.busta-netto-val')) q('.busta-netto-val').textContent = euroFixed(data.netto);
+    if (q('.busta-tfr-val')) q('.busta-tfr-val').textContent = euroFixed(data.tfr_accumulato);
+    if (q('.busta-differenza-val')) {
+        var diff = parseFloat(data.differenza || 0);
+        q('.busta-differenza-val').textContent = euroFixed(diff);
+        q('.busta-differenza-val').style.color = diff < 0 ? '#f87171' : (diff > 0 ? '#34d399' : '#8A8F98');
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    ccnlOcchioAggiornaRiepilogo();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% load tabelle_tags %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'datori_list' %}">Anagrafiche</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Progetti Regionali</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">{{ titolo|upper }}
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">Gestione {{ verbose_name|default:titolo|lower }}.</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal"></span></span>
+        <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#9ca3ff;border:1px solid rgba(94,106,210,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-download me-1"></i> Export XLSX</a>
+        <button class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-upload me-1"></i> Importa</button>
+        <button class="btn btn-sm" onclick="loadAjaxForm('/ajax/nuovo-tabella/progetti-regionali/', 'Nuovo {{ titolo }}')" style="background: #5E6AD2; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-size: 12px; font-weight: 600;">
+            <i class="bi bi-plus-lg me-1"></i> Nuovo
+        </button>
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+            <div style="position: relative;">
+                <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
+                <input type="text" id="fTesto" class="form-control" placeholder="Beneficiario, tipo..." oninput="filteraProgetti()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" onclick="toggleAvanzati()" id="btnAvanzati" style="background:rgba(94,106,210,0.1); color:#9ca3ff; border:1px solid rgba(94,106,210,0.15); border-radius:8px; padding:8px 16px; font-size:12px; cursor:pointer; transition:all 0.15s;">
+                <i class="bi bi-sliders me-1"></i> Filtri avanzati
+            </button>
+        </div>
+        <div class="col-md-3 d-flex align-items-end justify-content-end"></div>
+    </div>
+
+    <div id="filtriAvanzati" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid #27282D;">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">Tipo Progetto</label>
+                <select id="fTipo" class="form-control" onchange="filteraProgetti()" class="bg-input">
+                    <option value="">Tutti</option>
+                    {% for t in tipi %}
+                    <option value="{{ t.nome|upper }}">{{ t.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">Data Inizio dal</label>
+                <input type="date" id="fInizioDa" class="form-control" oninput="filteraProgetti()" class="bg-input">
+            </div>
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">Data Inizio al</label>
+                <input type="date" id="fInizioA" class="form-control" oninput="filteraProgetti()" class="bg-input">
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-12">
+                <label class="mb-1 fw-bold" class="c-10-up">Budget Mensile (€)</label>
+                <div class="d-flex align-items-center gap-3">
+                    <span id="rangeValDa" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
+                    <div style="flex:1; position:relative; height:40px;">
+                        <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
+                        <div id="rangeProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
+                        <input type="range" id="fMenDa" min="0" max="5000" step="50" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
+                        <input type="range" id="fMenA" min="0" max="5000" step="50" value="5000" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
+                    </div>
+                    <span id="rangeValA" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">5000</span>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-12">
+                <button type="button" onclick="svuotaFiltri()" style="background:rgba(255,255,255,0.05); color:#8A8F98; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:6px 14px; font-size:11px; cursor:pointer; transition:all 0.15s;">
+                    <i class="bi bi-x-lg me-1"></i> Azzera filtri
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="custom-table-container">
+    <table class="table custom-table sortable" id="progettiTable" data-tipo="progetti-regionali">
+        <thead>
+            <tr>
+                {% for f in fields %}
+                    <th>{{ f.verbose_name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in objects %}
+            <tr class="clickable-row" data-type="tabella" data-pk="{{ obj.pk }}" data-title="{{ obj }}">
+                {% for f in fields %}
+                    {% with val=obj|field_value:f.name %}
+                    <td>
+                        {% if f.name == 'tipo' and val.type != 'none' %}
+                            {% with colore=obj.tipo.colore|default:'#10b981' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
+                        {% elif val.type == 'bool' and val.value %}<i class="bi bi-check-circle-fill text-success"></i>
+                        {% elif val.type == 'bool' and not val.value %}<i class="bi bi-x-circle-fill text-secondary"></i>
+                        {% elif val.type == 'none' %}<span class="text-secondary small">—</span>
+                        {% elif val.type == 'date' %}{{ val.value|date:"d/m/Y" }}
+                        {% elif val.type == 'number' %}{% if 'budget' in f.name %}€ {{ val.value|floatformat:2 }}{% else %}{{ val.value|floatformat:0 }}{% endif %}
+                        {% else %}{{ val.value }}{% endif %}
+                    </td>
+                    {% endwith %}
+                {% endfor %}
+            </tr>
+            {% empty %}
+            <tr><td colspan="99" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun dato presente</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'paghe/_import_xlsx_modal.html' with tipo='progetti-regionali' modal_suffix='Progetti' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<style>
+    #fMenDa::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:20px; height:20px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+    #fMenA::-webkit-slider-thumb  { -webkit-appearance:none; appearance:none; width:20px; height:20px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+    #fMenDa::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+    #fMenA::-moz-range-thumb  { width:20px; height:20px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+</style>
+<script>
+var filtriVisibili = false;
+
+function toggleAvanzati() {
+    filtriVisibili = !filtriVisibili;
+    var el = document.getElementById('filtriAvanzati');
+    var btn = document.getElementById('btnAvanzati');
+    el.style.display = filtriVisibili ? '' : 'none';
+    btn.innerHTML = filtriVisibili
+        ? '<i class="bi bi-sliders me-1"></i> Filtri avanzati <i class="bi bi-chevron-up ms-1"></i>'
+        : '<i class="bi bi-sliders me-1"></i> Filtri avanzati';
+    if (filtriVisibili) aggiornaRange();
+}
+
+function aggiornaRange() {
+    var da = document.getElementById('fMenDa');
+    var a  = document.getElementById('fMenA');
+    var max = parseInt(a.max);
+    var vDa = parseInt(da.value) || 0;
+    var vA  = parseInt(a.value) || max;
+    if (vDa > vA) { vA = vDa; a.value = vDa; }
+    document.getElementById('rangeValDa').textContent = vDa;
+    document.getElementById('rangeValA').textContent  = vA;
+    var pctDa = (vDa / max) * 100;
+    var pctA  = (vA  / max) * 100;
+    document.getElementById('rangeProgress').style.left = pctDa + '%';
+    document.getElementById('rangeProgress').style.width = (pctA - pctDa) + '%';
+    filteraProgetti();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    aggiornaConteggio('progettiTable', 'fCount');
+    var ranges = document.querySelectorAll('#filtriAvanzati input[type="range"]');
+    ranges.forEach(function(el) {
+        el.addEventListener('mousedown', function(e) {
+            ranges.forEach(function(r) { r.style.zIndex = '3'; });
+            this.style.zIndex = '5';
+        });
+        el.addEventListener('touchstart', function(e) {
+            ranges.forEach(function(r) { r.style.zIndex = '3'; });
+            this.style.zIndex = '5';
+        });
+        el.addEventListener('input', aggiornaRange);
+    });
+});
+
+function filteraProgetti() {
+    var testo = (document.getElementById('fTesto').value || '').toUpperCase();
+    var tipoFiltro = (document.getElementById('fTipo').value || '').toUpperCase();
+    var inizioDa = document.getElementById('fInizioDa').value;
+    var inizioA  = document.getElementById('fInizioA').value;
+    var bMenDa = parseInt(document.getElementById('fMenDa').value) || 0;
+    var bMenA  = parseInt(document.getElementById('fMenA').value) || 0;
+
+    var table = document.getElementById('progettiTable');
+    var rows = table.getElementsByTagName('tr');
+    var visibili = 0;
+
+    for (var i = 1; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName('td');
+        if (!cells || cells.length < 5) continue;
+
+        var mostra = true;
+
+        // Testo libero: colonne 0 (beneficiario) e 1 (tipo)
+        if (testo) {
+            var c0 = (cells[0].textContent || '').toUpperCase();
+            var c1 = (cells[1].textContent || '').toUpperCase();
+            if (c0.indexOf(testo) === -1 && c1.indexOf(testo) === -1) mostra = false;
+        }
+
+        // Tipo (colonna 1) — dropdown
+        if (mostra && tipoFiltro) {
+            var c1 = (cells[1].textContent || '').toUpperCase();
+            if (c1.indexOf(tipoFiltro) === -1) mostra = false;
+        }
+
+        // Data Inizio (colonna 2)
+        if (mostra && (inizioDa || inizioA)) {
+            var raw2 = cells[2].textContent.trim();
+            var d2 = raw2 && raw2 !== '—' ? parseDateIt(raw2) : null;
+            if (inizioDa && (!d2 || d2 < new Date(inizioDa + 'T00:00:00'))) mostra = false;
+            if (mostra && inizioA && (!d2 || d2 > new Date(inizioA + 'T23:59:59'))) mostra = false;
+        }
+
+        // Budget Mensile (colonna 6)
+        if (mostra && (bMenDa > 0 || bMenA < 5000)) {
+            var raw6 = cells[6].textContent.trim();
+            if (raw6 && raw6 !== '—') {
+                // Supporta sia formato italiano (1.234,56) che inglese (1234.56)
+                var cleaned = raw6.replace('€', '').trim().replace(/\./g, '').replace(',', '.');
+                var val6 = parseFloat(cleaned);
+                if (!isNaN(val6)) {
+                    if (val6 < bMenDa || val6 > bMenA) mostra = false;
+                }
+            }
+        }
+
+        rows[i].style.display = mostra ? '' : 'none';
+        if (mostra) visibili++;
+    }
+
+    aggiornaConteggio('progettiTable', 'fCount');
+}
+
+function parseDateIt(str) {
+    var parts = str.split('/');
+    if (parts.length === 3) return new Date(parts[2] + '-' + parts[1] + '-' + parts[0] + 'T00:00:00');
+    return null;
+}
+
+function svuotaFiltri() {
+    document.getElementById('fTesto').value = '';
+    document.getElementById('fTipo').value = '';
+    document.getElementById('fInizioDa').value = '';
+    document.getElementById('fInizioA').value = '';
+    document.getElementById('fMenDa').value = 0;
+    document.getElementById('fMenA').value = 5000;
+    aggiornaRange();
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — {{ titolo|default:"Progetti Regionali" }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
+        <p>Gestione dei progetti regionali associati ai contratti.</p>
+        <p>Clicca su una riga per modificare il progetto. Usa i filtri avanzati per cercare per tipo, date e budget.</p>
+        <p class="mb-0">Il pulsante <strong>"Nuovo"</strong> permette di creare un nuovo progetto regionale.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

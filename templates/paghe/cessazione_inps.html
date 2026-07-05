@@ -1,0 +1,476 @@
+{% extends 'base.html' %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'iscrizione_inps' %}">Procedure Web</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Cessazione INPS</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+{{ contratti_data|json_script:"cess-contratti-data" }}
+<style>
+  html,body{height:100%;}
+  .ces-page{min-height:100vh;display:flex;flex-direction:column;background:#131418;}
+  .ces-top{background:#17181C;border:1px solid #27282D;border-radius:10px;margin:12px 24px 0;padding:14px 20px;flex-shrink:0;
+    background:linear-gradient(135deg,#17181C 0%,#1A1B21 100%);}
+  .ces-intro{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+  .ces-intro-inner{text-align:center;max-width:460px;}
+  .ces-intro-icon{font-size:56px;color:#27282D;margin-bottom:16px;display:block;}
+  .ces-intro-icon .bi{background:rgba(94,106,210,.08);padding:16px;border-radius:16px;}
+  .ces-intro h2{color:#EDEDED;font-size:18px;font-weight:700;margin-bottom:8px;}
+  .ces-intro p{color:#8A8F98;font-size:13px;line-height:1.7;margin-bottom:20px;}
+
+  .ces-cb{background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;line-height:22px;height:22px;flex-shrink:0;}
+  .ces-cb:hover{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.08);}
+  .ces-cb.copied{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.15);}
+  .ces-label{color:#8A8F98;font-size:11px;font-weight:600;white-space:nowrap;min-width:65px;flex-shrink:0;}
+  .ces-val{color:#EDEDED;font-size:12px;font-weight:500;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .ces-fields{display:none;flex-wrap:wrap;gap:10px;padding:8px 0 4px 0;}
+  .ces-mcrd{background:#1A1B21;border:1px solid #27282D;border-radius:8px;padding:10px 14px;flex:1;min-width:180px;}
+  .ces-mcrd-title{color:#5E6AD2;font-size:11px;font-weight:700;margin-bottom:6px;border-bottom:1px solid #27282D;padding-bottom:4px;}
+  .ces-row{display:flex;align-items:center;gap:6px;padding:2px 0;}
+  .ces-row+.ces-row{border-top:1px solid #1E1F23;}
+
+  .ces-steps{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+  .ces-step{display:flex;align-items:center;gap:10px;background:#1A1B21;border:1px solid #27282D;border-radius:10px;padding:10px 16px;font-size:12px;text-align:left;}
+  .ces-step-num{width:26px;height:26px;border-radius:50%;background:#5E6AD2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ces-step-text{color:#8A8F98;line-height:1.4;white-space:nowrap;}
+  .ces-step-text strong{color:#EDEDED;font-weight:600;}
+
+  .ces-preview{background:#1A1B21;border:1px solid #27282D;border-radius:10px;margin:16px 24px;padding:14px 18px;display:none;flex:1;}
+  .ces-preview-row{display:flex;gap:24px;flex-wrap:wrap;flex:1;}
+  .ces-preview-col{flex:1;min-width:180px;}
+  .ces-preview-col .title{color:#5E6AD2;font-size:11px;font-weight:700;margin-bottom:6px;border-bottom:1px solid #27282D;padding-bottom:4px;}
+  .ces-preview-item{display:flex;justify-content:space-between;gap:8px;padding:2px 0;font-size:12px;}
+  .ces-preview-item .l{color:#8A8F98;}
+  .ces-preview-item .v{color:#EDEDED;font-weight:500;text-align:right;}
+
+  .ces-box{background:#1A1B21;border:1px solid #27282D;border-radius:10px;margin:0 24px 12px;padding:14px 18px;display:none;flex-shrink:0;}
+  .ces-box-title{color:#EF4444;font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #27282D;padding-bottom:8px;}
+  .ces-box-title .bi{font-size:16px;}
+  .ces-box-row{display:flex;gap:16px;flex-wrap:wrap;}
+  .ces-box-col{flex:1;min-width:200px;}
+  .ces-box-field{margin-bottom:8px;}
+  .ces-box-field label{color:#8A8F98;font-size:11px;font-weight:600;display:block;margin-bottom:3px;}
+  .ces-box-field select,.ces-box-field input{background:#09090B;border:1px solid #333;color:#EDEDED;border-radius:5px;padding:5px 10px;font-size:13px;width:100%;}
+  .ces-box-field select option{background:#1A1B21;color:#EDEDED;}
+  .ces-box-field .small-hint{color:#8A8F98;font-size:10px;margin-top:2px;}
+
+  .ces-info-card{background:#131418;border:1px solid #27282D;border-radius:8px;padding:8px 12px;text-align:center;}
+  .ces-info-card .num{color:#EDEDED;font-size:20px;font-weight:700;display:block;}
+  .ces-info-card .lbl{color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+</style>
+
+<div class="ces-page">
+
+  <div class="ces-top">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <div style="color:#EDEDED;font-size:15px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:8px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#EF4444;display:inline-block;"></span>
+        Cessazione INPS
+      </div>
+      <select id="contrattoSelect" style="background:#1E1F23;border:1px solid #333;color:#EDEDED;border-radius:6px;padding:5px 12px;font-size:12px;width:calc(400px + 6cm);">
+        <option value="">— Seleziona contratto —</option>
+        {% for c in contratti_data %}
+        <option value="{{ c.pk }}">{{ c.contratto_option }}</option>
+        {% endfor %}
+      </select>
+      <div class="d-flex gap-2">
+        <button id="openPopupBtn" class="btn" style="background:#10b981;color:#fff;border:none;border-radius:6px;padding:5px 16px;font-size:12px;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+          <i class="bi bi-window-stack"></i>APRI POPUP DATI
+        </button>
+        <a id="openCessBtn" href="{{ web_config.link_inps_cessazione }}" target="_blank" rel="noopener" class="btn" style="background:#5E6AD2;color:#fff;border:none;border-radius:6px;padding:5px 16px;font-size:12px;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+          <i class="bi bi-box-arrow-up-right"></i>APRI SITO INPS
+        </a>
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      </div>
+    </div>
+    <div id="cesFields" class="ces-fields">
+      <div class="ces-mcrd">
+        <div class="ces-mcrd-title">DATORE DI LAVORO</div>
+        <div class="ces-row"><span class="ces-label">Cognome</span><span class="ces-val" id="v_d_cognome">—</span><button class="ces-cb" data-copy="v_d_cognome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Nome</span><span class="ces-val" id="v_d_nome">—</span><button class="ces-cb" data-copy="v_d_nome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Indirizzo</span><span class="ces-val" id="v_d_indirizzo">—</span><button class="ces-cb" data-copy="v_d_indirizzo">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Comune</span><span class="ces-val" id="v_d_comune">—</span><button class="ces-cb" data-copy="v_d_comune">COPIA</button></div>
+      </div>
+      <div class="ces-mcrd">
+        <div class="ces-mcrd-title">LAVORATORE</div>
+        <div class="ces-row"><span class="ces-label">CF</span><span class="ces-val" id="v_l_cf">—</span><button class="ces-cb" data-copy="v_l_cf">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Cognome</span><span class="ces-val" id="v_l_cognome">—</span><button class="ces-cb" data-copy="v_l_cognome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Nome</span><span class="ces-val" id="v_l_nome">—</span><button class="ces-cb" data-copy="v_l_nome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Data nascita</span><span class="ces-val" id="v_l_data_nascita">—</span><button class="ces-cb" data-copy="v_l_data_nascita">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Sesso</span><span class="ces-val" id="v_l_sesso">—</span><button class="ces-cb" data-copy="v_l_sesso">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Indirizzo</span><span class="ces-val" id="v_l_indirizzo">—</span><button class="ces-cb" data-copy="v_l_indirizzo">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Comune</span><span class="ces-val" id="v_l_comune">—</span><button class="ces-cb" data-copy="v_l_comune">COPIA</button></div>
+      </div>
+      <div class="ces-mcrd">
+        <div class="ces-mcrd-title">CONTRATTO</div>
+        <div class="ces-row"><span class="ces-label">Tipo</span><span class="ces-val" id="v_c_tipo">—</span><button class="ces-cb" data-copy="v_c_tipo">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Assunzione</span><span class="ces-val" id="v_c_data_ass">—</span><button class="ces-cb" data-copy="v_c_data_ass">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Data fine</span><span class="ces-val" id="v_c_data_fine">—</span><button class="ces-cb" data-copy="v_c_data_fine">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Ore/sett</span><span class="ces-val" id="v_c_ore">—</span><button class="ces-cb" data-copy="v_c_ore">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Paga INPS</span><span class="ces-val" id="v_c_paga">—</span><button class="ces-cb" data-copy="v_c_paga">COPIA</button></div>
+        <div class="ces-row" style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;">
+          <span class="ces-label" style="min-width:auto;">Cod.INPS</span>
+          <input id="v_c_codice_inps" style="background:#09090B;border:1px solid #333;color:#EDEDED;border-radius:4px;padding:2px 6px;font-size:12px;flex:1;min-width:80px;" placeholder="Codice rapporto" value="">
+          <button class="incolla-btn" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">INCOLLA</button>
+          <button class="salva-btn" style="background:#10b981;color:#fff;border:none;border-radius:4px;padding:0 10px;font-size:10px;font-weight:600;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
+          <span class="salva-feedback" style="font-size:11px;color:#10b981;font-weight:600;display:none;">✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cesIntro" class="ces-intro">
+    <div class="ces-intro-inner">
+      <span class="ces-intro-icon"><i class="bi bi-file-earmark-x"></i></span>
+      <h2>Procedura di Cessazione INPS</h2>
+      <p>Seleziona un contratto attivo, imposta data e causale di cessazione, calcola il preavviso e accedi al sito INPS.</p>
+      <div class="ces-steps">
+        <div class="ces-step">
+          <span class="ces-step-num">1</span>
+          <div class="ces-step-text">Seleziona un <strong>contratto</strong></div>
+        </div>
+        <div class="ces-step">
+          <span class="ces-step-num">2</span>
+          <div class="ces-step-text">Imposta <strong style="color:#EF4444;">data e causale</strong> cessazione</div>
+        </div>
+        <div class="ces-step">
+          <span class="ces-step-num">3</span>
+          <div class="ces-step-text"><strong style="color:#10b981;">APRI POPUP DATI</strong> per copiare</div>
+        </div>
+        <div class="ces-step">
+          <span class="ces-step-num">4</span>
+          <div class="ces-step-text"><strong style="color:#5E6AD2;">APRI SITO INPS</strong> per procedere</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cesCessBox" class="ces-box">
+    <div class="ces-box-title"><i class="bi bi-exclamation-triangle-fill"></i> Dati Cessazione</div>
+    <div class="ces-box-row">
+      <div class="ces-box-col">
+        <div class="ces-box-field">
+          <label>Data cessazione</label>
+          <input type="date" id="inputDataFine" class="form-control">
+          <div class="small-hint">Precaricata dal DB o oggi. Modifica e salva.</div>
+        </div>
+        <div class="ces-box-field">
+          <label>Causale cessazione</label>
+          <select id="selectCausale">
+            <option value="">— Seleziona —</option>
+            <option value="DIMISSIONI">Dimissioni</option>
+            <option value="LICENZIAMENTO">Licenziamento</option>
+            <option value="SCADENZA_TERMINE">Scadenza termine</option>
+            <option value="DECESSO_DATORE">Decesso datore</option>
+            <option value="DECESSO_LAVORATORE">Decesso lavoratore</option>
+          </select>
+          <div class="small-hint">Seleziona la causale per calcolare il preavviso.</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:6px;">
+          <button id="btnSalvaCessazione" class="btn" style="background:#10b981;color:#fff;border:none;border-radius:5px;padding:5px 20px;font-size:12px;font-weight:600;"><i class="bi bi-check2 me-1"></i>SALVA</button>
+          <span id="salvaCessFbk" style="font-size:12px;color:#10b981;font-weight:600;display:none;align-self:center;">✓</span>
+        </div>
+      </div>
+      <div class="ces-box-col">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+          <div class="ces-info-card" style="flex:1;">
+            <span class="num" id="infoAnzianita">—</span>
+            <span class="lbl">Anzianità</span>
+          </div>
+          <div class="ces-info-card" style="flex:1;">
+            <span class="num" id="infoOreSett">—</span>
+            <span class="lbl">Ore/sett</span>
+          </div>
+          <div class="ces-info-card" style="flex:1;">
+            <span class="num" id="infoConvivente" style="font-size:14px;">—</span>
+            <span class="lbl">Convivente</span>
+          </div>
+        </div>
+        <div class="ces-info-card" style="margin-bottom:0;">
+          <span class="num" id="infoPreavviso" style="color:#F59E0B;font-size:24px;">—</span>
+          <span class="lbl">Preavviso</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cesPreview" class="ces-preview">
+    <div class="ces-preview-row">
+      <div class="ces-preview-col">
+        <div class="title">DATORE</div>
+        <div class="ces-preview-item"><span class="l">Cognome</span><span class="v" id="pv_d_cognome">—</span></div>
+        <div class="ces-preview-item"><span class="l">Nome</span><span class="v" id="pv_d_nome">—</span></div>
+        <div class="ces-preview-item"><span class="l">Indirizzo</span><span class="v" id="pv_d_indirizzo">—</span></div>
+        <div class="ces-preview-item"><span class="l">Comune</span><span class="v" id="pv_d_comune">—</span></div>
+      </div>
+      <div class="ces-preview-col">
+        <div class="title">LAVORATORE</div>
+        <div class="ces-preview-item"><span class="l">CF</span><span class="v" id="pv_l_cf">—</span></div>
+        <div class="ces-preview-item"><span class="l">Cognome</span><span class="v" id="pv_l_cognome">—</span></div>
+        <div class="ces-preview-item"><span class="l">Nome</span><span class="v" id="pv_l_nome">—</span></div>
+        <div class="ces-preview-item"><span class="l">Data nascita</span><span class="v" id="pv_l_data">—</span></div>
+        <div class="ces-preview-item"><span class="l">Sesso</span><span class="v" id="pv_l_sesso">—</span></div>
+      </div>
+      <div class="ces-preview-col">
+        <div class="title">CONTRATTO</div>
+        <div class="ces-preview-item"><span class="l">Tipo</span><span class="v" id="pv_c_tipo">—</span></div>
+        <div class="ces-preview-item"><span class="l">Assunzione</span><span class="v" id="pv_c_data_ass">—</span></div>
+        <div class="ces-preview-item"><span class="l">Data fine</span><span class="v" id="pv_c_data_fine">—</span></div>
+        <div class="ces-preview-item"><span class="l">Ore/sett</span><span class="v" id="pv_c_ore">—</span></div>
+        <div class="ces-preview-item"><span class="l">Paga INPS</span><span class="v" id="pv_c_paga">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Cessazione INPS</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
+        <p>Seleziona un contratto attivo, imposta la <strong>data di cessazione</strong> e la <strong>causale</strong>, poi salva.</p>
+        <p>Il preavviso viene calcolato automaticamente in base al CCNL Colf/Badanti:</p>
+        <ul>
+          <li><strong>&gt; 24 ore/sett</strong> — 15gg (&lt;5 anni) / 30gg (≥5 anni)</li>
+          <li><strong>≤ 24 ore/sett</strong> — 8gg (≤2 anni) / 15gg (&gt;2 anni)</li>
+          <li><strong>Conviventi</strong> — 30gg (≤1 anno) / 60gg (&gt;1 anno)</li>
+          <li><strong>Dimissioni</strong> — 50% del licenziamento</li>
+        </ul>
+        <p class="mb-0">Usa <strong style="color:#10b981;">APRI POPUP DATI</strong> per copiare i dati e <strong style="color:#5E6AD2;">APRI SITO INPS</strong> per procedere con la pratica.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function _calcolaPreavvisoJS(assunzioneStr, dataFineStr, causale, isConv, oreSett) {
+  if (['SCADENZA_TERMINE','DECESSO_DATORE','DECESSO_LAVORATORE'].indexOf(causale) !== -1) {
+    return { finale: 0, etichetta: 'Nessun preavviso' };
+  }
+  if (!assunzioneStr || !dataFineStr) return { finale: 0, etichetta: '—' };
+  var ass = new Date(assunzioneStr);
+  var fine = new Date(dataFineStr);
+  var anni = (fine - ass) / (365.25 * 86400000);
+  if (anni < 0) return { finale: 0, etichetta: '—' };
+  var lic;
+  if (isConv) {
+    lic = anni <= 1 ? 30 : 60;
+  } else if (oreSett > 24) {
+    lic = anni < 5 ? 15 : 30;
+  } else {
+    lic = anni <= 2 ? 8 : 15;
+  }
+  var dim = Math.max(Math.round(lic / 2), 1);
+  var finale = causale === 'DIMISSIONI' ? dim : lic;
+  var etichetta = causale === 'DIMISSIONI' ? finale + ' giorni (dimissioni)' : finale + ' giorni (licenziamento)';
+  return { finale: finale, etichetta: etichetta, licenziamento: lic, dimissioni: dim, anni: Math.round(anni * 10) / 10 };
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var data = JSON.parse(document.getElementById('cess-contratti-data').textContent);
+  var select = document.getElementById('contrattoSelect');
+  var fields = document.getElementById('cesFields');
+  var intro = document.getElementById('cesIntro');
+  var preview = document.getElementById('cesPreview');
+  var cessBox = document.getElementById('cesCessBox');
+  var popupBtn = document.getElementById('openPopupBtn');
+
+  function sv(id, val) { var el = document.getElementById(id); if (el) el.textContent = val || '\u2014'; }
+
+  function aggiornaPreavviso(c) {
+    var df = document.getElementById('inputDataFine').value;
+    var causale = document.getElementById('selectCausale').value;
+    var oggi = new Date();
+    var dataFine = df || oggi.toISOString().split('T')[0];
+    if (!df) document.getElementById('inputDataFine').value = dataFine;
+
+    var preav = _calcolaPreavvisoJS(c.contratto.data_assunzione_raw || c.contratto.data_assunzione, dataFine, causale, c.contratto.is_convivente || false, parseFloat((c.contratto.ore_settimanali || '0').replace(',', '.')));
+
+    document.getElementById('infoAnzianita').textContent = preav.anni !== undefined ? preav.anni + ' anni' : '—';
+    document.getElementById('infoPreavviso').textContent = preav.finale > 0 ? preav.finale + ' gg' : preav.etichetta;
+    if (preav.finale > 0) {
+      document.getElementById('infoPreavviso').style.color = '#F59E0B';
+    } else {
+      document.getElementById('infoPreavviso').style.color = '#8A8F98';
+    }
+    document.getElementById('infoOreSett').textContent = (c.contratto.ore_settimanali || '\u2014') + ' h';
+    document.getElementById('infoConvivente').textContent = c.contratto.is_convivente ? 'Sì' : 'No';
+  }
+
+  function popola(pk) {
+    var c = data.find(function(d) { return d.pk == pk; });
+    if (!c) {
+      fields.style.display = 'none';
+      intro.style.display = 'flex';
+      preview.style.display = 'none';
+      cessBox.style.display = 'none';
+      return;
+    }
+    fields.style.display = 'flex';
+    intro.style.display = 'none';
+    preview.style.display = 'flex';
+    cessBox.style.display = 'block';
+
+    sv('v_d_cognome', c.datore.cognome);
+    sv('v_d_nome', c.datore.nome);
+    sv('v_d_indirizzo', c.datore.indirizzo);
+    sv('v_d_comune', c.datore.comune);
+    sv('v_l_cf', c.lavoratore.cf);
+    sv('v_l_cognome', c.lavoratore.cognome);
+    sv('v_l_nome', c.lavoratore.nome);
+    sv('v_l_data_nascita', c.lavoratore.data_nascita);
+    sv('v_l_sesso', c.lavoratore.sesso);
+    sv('v_l_indirizzo', c.lavoratore.indirizzo);
+    sv('v_l_comune', c.lavoratore.comune);
+    sv('v_c_tipo', c.contratto.tipo);
+    sv('v_c_data_ass', c.contratto.data_assunzione);
+    sv('v_c_data_fine', c.contratto.data_fine);
+    sv('v_c_ore', c.contratto.ore_settimanali);
+    sv('v_c_paga', c.contratto.paga_inps ? '\u20AC ' + c.contratto.paga_inps + '/h' : '\u2014');
+    var ci = document.getElementById('v_c_codice_inps');
+    if (ci) ci.value = c.contratto.codice_rapporto_inps || '';
+
+    sv('pv_d_cognome', c.datore.cognome);
+    sv('pv_d_nome', c.datore.nome);
+    sv('pv_d_indirizzo', c.datore.indirizzo);
+    sv('pv_d_comune', c.datore.comune);
+    sv('pv_l_cf', c.lavoratore.cf);
+    sv('pv_l_cognome', c.lavoratore.cognome);
+    sv('pv_l_nome', c.lavoratore.nome);
+    sv('pv_l_data', c.lavoratore.data_nascita);
+    sv('pv_l_sesso', c.lavoratore.sesso);
+    sv('pv_c_tipo', c.contratto.tipo);
+    sv('pv_c_data_ass', c.contratto.data_assunzione);
+    sv('pv_c_data_fine', c.contratto.data_fine);
+    sv('pv_c_ore', c.contratto.ore_settimanali);
+    sv('pv_c_paga', c.contratto.paga_inps ? '\u20AC ' + c.contratto.paga_inps + '/h' : '\u2014');
+
+    // Cessazione fields
+    document.getElementById('inputDataFine').value = c.contratto.data_fine_raw || '';
+    document.getElementById('selectCausale').value = c.contratto.causale_cessazione || '';
+
+    // Preavviso
+    aggiornaPreavviso(c);
+  }
+
+  select.addEventListener('change', function() { popola(this.value); });
+  {% if contratto_pk %}
+  select.value = '{{ contratto_pk }}';
+  popola(select.value);
+  {% else %}
+  if (select.value) popola(select.value);
+  {% endif %}
+
+  // Ricalcolo preavviso su cambio data/causale
+  document.getElementById('inputDataFine').addEventListener('change', function() {
+    var pk = parseInt(select.value);
+    var c = data.find(function(d) { return d.pk == pk; });
+    if (c) aggiornaPreavviso(c);
+  });
+  document.getElementById('selectCausale').addEventListener('change', function() {
+    var pk = parseInt(select.value);
+    var c = data.find(function(d) { return d.pk == pk; });
+    if (c) aggiornaPreavviso(c);
+  });
+
+  popupBtn.addEventListener('click', function() {
+    var pk = select.value;
+    if (!pk) return;
+    var url = '{% url "cessazione_inps_popup" 0 %}'.replace('0', pk);
+    window.open(url, '_blank', 'width=520,height=800,scrollbars=yes,resizable=yes');
+  });
+
+  // INCOLLA
+  document.querySelector('.incolla-btn') && document.querySelector('.incolla-btn').addEventListener('click', function() {
+    navigator.clipboard.readText().then(function(t) {
+      var inp = document.getElementById('v_c_codice_inps');
+      if (inp) inp.value = t;
+    }).catch(function() {});
+  });
+
+  // SALVA codice INPS
+  document.querySelector('.salva-btn') && document.querySelector('.salva-btn').addEventListener('click', function() {
+    var pk = select.value;
+    if (!pk) return;
+    var inp = document.getElementById('v_c_codice_inps');
+    if (!inp) return;
+    var codice = inp.value.trim();
+    var fb = document.querySelector('.salva-feedback');
+    var btn = this;
+    btn.textContent = '...';
+    fetch('{% url "ajax_salva_codice_rapporto_inps" %}', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+      body: JSON.stringify({pk: parseInt(pk), codice: codice})
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      btn.textContent = 'SALVA';
+      if (d.ok) {
+        if (fb) fb.style.display = 'inline';
+        if (fb) fb.textContent = '\u2713';
+        setTimeout(function() { if (fb) fb.style.display = 'none'; }, 2000);
+      }
+    }).catch(function() { btn.textContent = 'SALVA'; });
+  });
+
+  // SALVA data fine + causale
+  document.getElementById('btnSalvaCessazione').addEventListener('click', function() {
+    var pk = parseInt(select.value);
+    if (!pk) return;
+    var dataFine = document.getElementById('inputDataFine').value;
+    var causale = document.getElementById('selectCausale').value;
+    var btn = this;
+    var fbk = document.getElementById('salvaCessFbk');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>...';
+    fetch('{% url "ajax_salva_data_fine_cessazione" %}', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+      body: JSON.stringify({pk: pk, data_fine: dataFine, causale_cessazione: causale})
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-check2 me-1"></i>SALVA';
+      if (d.ok) {
+        fbk.style.display = 'inline';
+        setTimeout(function() { fbk.style.display = 'none'; }, 2000);
+        var c = data.find(function(x) { return x.pk == pk; });
+        if (c && d.causale_cessazione !== undefined) {
+          c.contratto.causale_cessazione = d.causale_cessazione;
+        }
+        if (c && d.preavviso) {
+          document.getElementById('infoPreavviso').textContent = d.preavviso.finale > 0 ? d.preavviso.finale + ' gg' : (d.preavviso.etichetta || '—');
+          if (d.preavviso.finale > 0) document.getElementById('infoPreavviso').style.color = '#F59E0B';
+        }
+      }
+    }).catch(function() {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-check2 me-1"></i>SALVA';
+    });
+  });
+
+  // COPIA buttons
+  document.querySelectorAll('.ces-cb').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var targetId = this.getAttribute('data-copy');
+      var el = document.getElementById(targetId);
+      if (!el) return;
+      var text = el.textContent;
+      if (text === '\u2014' || !text) return;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.classList.add('copied');
+        var orig = btn.textContent;
+        btn.textContent = '\u2713';
+        setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 900);
+      }).catch(function() {});
+    });
+  });
+});
+</script>
+{% endblock %}

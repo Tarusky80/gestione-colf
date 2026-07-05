@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+{% load permessi_tags %}
+{% block content %}
+<div class="perm-container">
+  <div class="perm-header">
+    <i class="bi bi-shield-lock perm-header-icon"></i>
+    <h1 class="perm-header-title">Ruoli e Permessi</h1>
+  </div>
+
+  <div class="table-responsive perm-table-wrap">
+    <table class="table table-dark table-hover perm-table">
+      <thead>
+        <tr>
+          <th>Utente</th>
+          <th>Email</th>
+          <th>Ruolo</th>
+          <th>Ultimo accesso</th>
+          <th class="text-right">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in utenti %}
+        <tr>
+          <td class="td-name">{{ u.username }}</td>
+          <td class="td-meta">{{ u.email|default:'—' }}</td>
+          <td>
+            <span class="badge perm-badge" data-ruolo="{{ u.profilo.ruolo|default:'OPERATORE' }}">
+              {{ u.profilo.get_ruolo_display|default:'Operatore' }}
+            </span>
+          </td>
+          <td class="td-meta">{{ u.last_login|date:'d/m/Y H:i'|default:'Mai' }}</td>
+          <td class="text-right">
+            <button class="btn btn-sm perm-btn-modifica" onclick="apriModalePermessi({{ u.pk }})">
+              <i class="bi bi-pencil me-1"></i>Modifica
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="perm-empty">Nessun utente staff trovato.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modale Modifica Ruolo -->
+<div class="modal fade" id="modalePermessi" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content perm-modal-content">
+      <div class="modal-header perm-modal-header">
+        <h5 class="modal-title perm-modal-title">
+          <i class="bi bi-person-gear me-2"></i>Modifica Permessi
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body perm-modal-body">
+        <!-- Scheda utente -->
+        <div id="schedaUtente" class="perm-scheda">
+          <div class="perm-scheda-row">
+            <div class="perm-scheda-avatar">
+              <i class="bi bi-person"></i>
+            </div>
+            <div class="perm-scheda-info">
+              <div id="schedaUsername" class="perm-scheda-nome"></div>
+              <div id="schedaEmail" class="perm-scheda-email"></div>
+            </div>
+            <div id="schedaRuoloBadge" class="perm-scheda-badge"></div>
+          </div>
+          <div id="schedaAccesso" class="perm-scheda-accesso"></div>
+        </div>
+
+        <!-- Selettore ruolo -->
+        <div class="perm-form-group">
+          <label class="perm-label"><i class="bi bi-person-badge me-1"></i>Ruolo</label>
+          <select id="selectRuolo" class="form-control perm-select">
+            {% for val, label in ruoli %}
+            <option value="{{ val }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+          <div id="ruoloDescrizione" class="perm-desc-ruolo"></div>
+        </div>
+
+        <!-- Permessi raggruppati -->
+        <div>
+          <div class="perm-section-header">
+            <i class="bi bi-list-check"></i>
+            <span class="perm-section-title">Permessi</span>
+            <span id="riepilogoPermessiBadge" class="perm-section-badge"></span>
+          </div>
+
+          <div id="grigliaPermessi" class="perm-griglia">
+            {% for gruppo, chiavi in permessi_gruppi %}
+            <div class="perm-gruppo">
+              <div class="perm-gruppo-header">
+                <i class="bi {{ gruppo.icona }}"></i>{{ gruppo.label }}
+              </div>
+              <div class="perm-gruppo-body">
+                {% for p in chiavi %}
+                <label class="perm-check-label" data-perm="{{ p }}">
+                  <input type="checkbox" class="perm-check" value="{{ p }}">
+                  <span class="perm-label-text">{{ etichette|get_item:p }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer perm-modal-footer">
+        <span id="statoSovrascritture" class="perm-stato-sovrasc"></span>
+        <div class="perm-btn-group">
+          <button type="button" class="btn btn-sm perm-btn-annulla" data-bs-dismiss="modal">Annulla</button>
+          <button type="button" class="btn btn-sm perm-btn-salva" onclick="salvaPermessi()">
+            <i class="bi bi-check-lg me-1"></i>Salva
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* === LAYOUT PAGINA === */
+.perm-container { padding: 24px; max-width: 1400px; margin: 0 auto; }
+.perm-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.perm-header-icon { color: #5E6AD2; font-size: 24px; }
+.perm-header-title { font-size: 18px; font-weight: 700; color: #EDEDED; margin: 0; }
+
+/* === TABELLA === */
+.perm-table-wrap { background: #1a1a1e; border: 1px solid #27282D; border-radius: 12px; overflow: hidden; }
+.perm-table { margin: 0; font-size: 13px; background: transparent; }
+.perm-table thead { background: rgba(255,255,255,0.03); border-bottom: 1px solid #27282D; }
+.perm-table th { padding: 12px 14px; color: #8A8F98; font-weight: 600; }
+.perm-table td { padding: 10px 14px; }
+.perm-table .text-right { text-align: right; }
+.perm-table .td-name { color: #EDEDED; font-weight: 500; }
+.perm-table .td-meta { color: #8A8F98; }
+.perm-table .perm-empty { padding: 30px; text-align: center; color: #545; }
+
+/* === BADGE RUOLO === */
+.perm-badge { border-radius: 6px; padding: 3px 10px; font-size: 12px; }
+.perm-badge[data-ruolo="ADMIN"] { background: rgba(94,106,210,0.2); color: #5E6AD2; }
+.perm-badge[data-ruolo="OPERATORE"] { background: rgba(16,185,129,0.2); color: #10B981; }
+.perm-badge[data-ruolo="CONSULENTE"] { background: rgba(245,158,11,0.2); color: #f59e0b; }
+.perm-badge[data-ruolo="DATORE"] { background: rgba(107,114,128,0.2); color: #6b7280; }
+
+/* === PULSANTE MODIFICA === */
+.perm-btn-modifica { background: rgba(94,106,210,0.1); color: #5E6AD2; border: 1px solid rgba(94,106,210,0.2); border-radius: 8px; padding: 4px 12px; font-size: 12px; }
+
+/* === MODALE === */
+.perm-modal-content { background: #1a1a1e; border: 1px solid #27282D; border-radius: 14px; }
+.perm-modal-header { border-bottom: 1px solid #27282D; padding: 14px 18px; }
+.perm-modal-title { font-size: 15px; font-weight: 700; color: #EDEDED; }
+.perm-modal-body { padding: 18px; font-size: 13px; color: #8A8F98; }
+.perm-modal-footer { border-top: 1px solid #27282D; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; }
+
+/* === SCHEDA UTENTE === */
+.perm-scheda { display: none; padding: 14px 16px; background: rgba(255,255,255,0.03); border: 1px solid #27282D; border-radius: 10px; margin-bottom: 18px; }
+.perm-scheda-row { display: flex; align-items: center; gap: 12px; }
+.perm-scheda-avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(94,106,210,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.perm-scheda-avatar i { color: #5E6AD2; font-size: 18px; }
+.perm-scheda-info { flex: 1; }
+.perm-scheda-nome { font-size: 14px; font-weight: 600; color: #EDEDED; }
+.perm-scheda-email { font-size: 12px; color: #545; }
+.perm-scheda-badge { flex-shrink: 0; }
+.perm-scheda-accesso { font-size: 11px; color: #545; margin-top: 8px; padding-top: 8px; border-top: 1px solid #27282D; }
+
+/* === FORM === */
+.perm-form-group { margin-bottom: 18px; }
+.perm-label { display: block; margin-bottom: 6px; color: #EDEDED; font-weight: 600; font-size: 13px; }
+.perm-label i { color: #5E6AD2; }
+.perm-select { background: #09090B; border: 1px solid #27282D; color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 13px; max-width: 300px; }
+.perm-desc-ruolo { font-size: 12px; margin-top: 6px; padding-left: 2px; }
+
+/* === SEZIONE PERMESSI === */
+.perm-section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.perm-section-header i { color: #5E6AD2; font-size: 14px; }
+.perm-section-title { color: #EDEDED; font-weight: 600; font-size: 13px; }
+.perm-section-badge { font-size: 11px; color: #545; margin-left: auto; }
+
+/* === GRIGLIA PERMESSI === */
+.perm-griglia { display: flex; flex-direction: column; gap: 10px; }
+.perm-gruppo { background: rgba(255,255,255,0.02); border: 1px solid #27282D; border-radius: 10px; overflow: hidden; }
+.perm-gruppo-header { padding: 8px 14px; background: rgba(255,255,255,0.03); border-bottom: 1px solid #27282D; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #5E6AD2; }
+.perm-gruppo-header i { margin-right: 6px; }
+.perm-gruppo-body { padding: 6px 14px 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px; }
+
+/* === CHECKBOX === */
+.perm-check-label { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 12px; color: #8A8F98; transition: background 0.1s; }
+.perm-check-label:hover { background: rgba(94,106,210,0.06) !important; }
+.perm-check-label input:checked ~ .perm-label-text { color: #EDEDED; font-weight: 500; }
+.perm-check-label.overridden { background: rgba(245,158,11,0.06) !important; }
+.perm-check-label.overridden .perm-label-text::after { content: ' (sovrascritto)'; font-size: 10px; color: #f59e0b; font-weight: 400; }
+.perm-check { accent-color: #5E6AD2; }
+
+/* === PULSANTI FOOTER === */
+.perm-btn-group { display: flex; gap: 8px; }
+.perm-btn-annulla { background: transparent; border: 1px solid #27282D; color: #8A8F98; border-radius: 8px; padding: 6px 14px; }
+.perm-btn-salva { background: #5E6AD2; border: none; color: #fff; border-radius: 8px; padding: 6px 14px; font-weight: 600; }
+
+/* === STATO SOVRASCRITTURE === */
+.perm-stato-sovrasc { font-size: 11px; }
+.perm-stato-ok { color: #545; }
+.perm-stato-warn { color: #f59e0b; }
+
+/* === DESCRIZIONE RUOLO === */
+.perm-desc-admin { color: rgba(94,106,210,0.7); }
+.perm-desc-operatore { color: rgba(16,185,129,0.7); }
+.perm-desc-consulente { color: rgba(245,158,11,0.7); }
+.perm-desc-datore { color: #545; }
+</style>
+
+<script>
+var _userIdEditing = null;
+var _permessiDefault = {{ permessi_default_json|safe }};
+var _permessiOverrideCorrenti = {};
+
+var RUOLO_DESCRIZIONI = {
+    'ADMIN': 'Accesso completo a tutte le funzionalità del gestionale, inclusi backup, impostazioni e gestione permessi.',
+    'OPERATORE': 'Gestione ordinaria di anagrafiche, contratti e buste paga. Non può eliminare dati né accedere a impostazioni di sistema.',
+    'CONSULENTE': 'Accesso in sola lettura a tutte le anagrafiche e documenti. Non può creare, modificare o eliminare dati.',
+    'DATORE': 'Nessun permesso di back-office. Accesso limitato al solo portale datore di lavoro.',
+};
+
+function apriModalePermessi(userId) {
+    _userIdEditing = userId;
+    fetch('/ajax/permessi/utenti/')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var utente = data.utenti.find(function(u) { return u.id === userId; });
+            if (!utente) return;
+            _permessiOverrideCorrenti = utente.permessi_json || {};
+
+            document.getElementById('schedaUsername').textContent = utente.username;
+            document.getElementById('schedaEmail').textContent = utente.email || 'Nessuna email';
+            document.getElementById('schedaAccesso').textContent = 'Ultimo accesso: ' + (utente.ultimo_accesso || 'Mai');
+            document.getElementById('schedaRuoloBadge').innerHTML =
+                '<span class="badge perm-badge" data-ruolo="' + utente.ruolo + '">' +
+                ({'ADMIN':'Amministratore','OPERATORE':'Operatore','CONSULENTE':'Consulente'}[utente.ruolo] || 'Datore') +
+                '</span>';
+            document.getElementById('schedaUtente').style.display = 'block';
+
+            document.getElementById('selectRuolo').value = utente.ruolo;
+            aggiornaDescrizioneRuolo(utente.ruolo);
+
+            document.querySelectorAll('.perm-check').forEach(function(cb) {
+                var defaults = _permessiDefault[utente.ruolo] || {};
+                var overrideVal = _permessiOverrideCorrenti[cb.value];
+                cb.checked = (overrideVal !== undefined) ? overrideVal : (defaults[cb.value] === true);
+                aggiornaStatoLabel(cb, utente.ruolo);
+            });
+
+            aggiornaRiepilogo(utente.ruolo);
+            var modal = new bootstrap.Modal(document.getElementById('modalePermessi'));
+            modal.show();
+        });
+}
+
+function aggiornaDescrizioneRuolo(ruolo) {
+    var el = document.getElementById('ruoloDescrizione');
+    el.textContent = RUOLO_DESCRIZIONI[ruolo] || '';
+    el.className = 'perm-desc-ruolo perm-desc-' + ruolo.toLowerCase();
+}
+
+function aggiornaStatoLabel(cb, ruolo) {
+    var label = cb.closest('.perm-check-label');
+    if (!label) return;
+    var defaults = _permessiDefault[ruolo] || {};
+    var overrideVal = _permessiOverrideCorrenti[cb.value];
+    label.classList.toggle('overridden', overrideVal !== undefined && overrideVal !== (defaults[cb.value] === true));
+}
+
+function aggiornaRiepilogo(ruolo) {
+    var defaults = _permessiDefault[ruolo] || {};
+    var checks = document.querySelectorAll('.perm-check');
+    var attivi = 0, sovrascritti = 0;
+    checks.forEach(function(cb) {
+        if (cb.checked) attivi++;
+        var defaultVal = defaults[cb.value] === true;
+        if (_permessiOverrideCorrenti[cb.value] !== undefined && _permessiOverrideCorrenti[cb.value] !== defaultVal) {
+            sovrascritti++;
+        }
+    });
+    document.getElementById('riepilogoPermessiBadge').textContent =
+        attivi + ' permessi attivi' + (sovrascritti > 0 ? ', ' + sovrascritti + ' sovrascritti' : '');
+    var statoEl = document.getElementById('statoSovrascritture');
+    statoEl.textContent = sovrascritti > 0
+        ? '⚠ ' + sovrascritti + ' permesso/i sovrascritto/i rispetto al ruolo'
+        : '✓ Nessuna sovrascrittura individuale';
+    statoEl.className = 'perm-stato-sovrasc perm-stato-' + (sovrascritti > 0 ? 'warn' : 'ok');
+}
+
+function salvaPermessi() {
+    var permessiOverride = {};
+    var ruoloCorrente = document.getElementById('selectRuolo').value;
+    var defaults = _permessiDefault[ruoloCorrente] || {};
+    document.querySelectorAll('.perm-check').forEach(function(cb) {
+        var defaultVal = defaults[cb.value] === true;
+        if (cb.checked !== defaultVal) {
+            permessiOverride[cb.value] = cb.checked;
+        }
+    });
+    fetch('/ajax/permessi/modifica-ruolo/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({
+            user_id: _userIdEditing,
+            ruolo: ruoloCorrente,
+            permessi_override: permessiOverride,
+        }),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) { if (resp.ok) location.reload(); });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var sel = document.getElementById('selectRuolo');
+    if (!sel) return;
+    sel.addEventListener('change', function() {
+        var ruolo = this.value;
+        aggiornaDescrizioneRuolo(ruolo);
+        var defaults = _permessiDefault[ruolo] || {};
+        document.querySelectorAll('.perm-check').forEach(function(cb) {
+            var overrideVal = _permessiOverrideCorrenti[cb.value];
+            cb.checked = (overrideVal !== undefined) ? overrideVal : (defaults[cb.value] === true);
+            aggiornaStatoLabel(cb, ruolo);
+        });
+        aggiornaRiepilogo(ruolo);
+    });
+});
+</script>
+{% endblock %}

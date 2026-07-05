@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Libro Unico del Lavoro</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Libro Unico del Lavoro
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button></h1>
+        <p class="text-secondary small mb-0">Registro mensile obbligatorio (D.Lgs. 151/2015)</p>
+    </div>
+</div>
+
+<div style="background:#17181C;border:1px solid #27282D;border-radius:12px;padding:18px 20px;margin-bottom:20px;">
+    <form id="formGeneraLul" method="get" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;">
+        <div>
+            <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;margin-bottom:4px;">Anno</label>
+            <select name="anno" onchange="this.form.submit()" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:7px 12px;border-radius:8px;min-width:100px;">
+                {% for a in anni_disponibili %}
+                <option value="{{ a }}" {% if a == anno %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;margin-bottom:4px;">Datore</label>
+            <select name="datore" onchange="this.form.submit()" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:7px 12px;border-radius:8px;min-width:220px;">
+                <option value="">Tutti i datori</option>
+                {% for d in datori %}
+                <option value="{{ d.pk }}" {% if d.pk|stringformat:"s" == datore_id %}selected{% endif %}>{{ d.nome_cognome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;margin-bottom:4px;">Mese</label>
+            <select id="meseGeneraLul" name="mese" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:7px 12px;border-radius:8px;min-width:140px;">
+                {% for mese_nome in MESI_IT %}
+                {% if forloop.counter0 > 0 %}
+                <option value="{{ forloop.counter0 }}" {% if forloop.counter0 == mese_default %}selected{% endif %}>
+                    {{ forloop.counter0|stringformat:"02d" }} — {{ mese_nome|upper }}
+                </option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <button type="button" class="btn btn-sm" onclick="generaLul()" style="background:rgba(94,106,210,0.15);color:#5E6AD2;border:1px solid rgba(94,106,210,0.25);border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;">
+            <i class="bi bi-file-earmark-arrow-down me-1"></i> GENERA LUL
+        </button>
+    </form>
+</div>
+
+<div id="lulTabella" style="background:#17181C;border:1px solid #27282D;border-radius:12px;overflow:hidden;">
+    {% if lul_docs %}
+    <table style="width:100%;border-collapse:collapse;">
+        <thead>
+            <tr style="border-bottom:1px solid #27282D;">
+                <th style="padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;text-align:left;">Datore</th>
+                <th style="padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;text-align:left;">Periodo</th>
+                <th style="padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;text-align:left;">File</th>
+                <th style="padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;text-align:right;">Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in lul_docs %}
+            <tr style="border-bottom:1px solid #27282D;">
+                <td style="padding:10px 14px;font-size:13px;color:#EDEDED;">{{ d.datore.nome_cognome }}</td>
+                <td style="padding:10px 14px;font-size:13px;color:#C0C4CC;">{{ d.titolo|cut:"LUL " }}</td>
+                <td style="padding:10px 14px;font-size:12px;color:#8A8F98;">{{ d.file_name }}</td>
+                <td style="padding:10px 14px;text-align:right;white-space:nowrap;">
+                    <a href="#" onclick="event.preventDefault();apriNelPannello('/ajax/vedi-documento/{{ d.pk }}/', {{ d.pk }})" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#5E6AD2;border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:4px 12px;font-size:11px;font-weight:600;text-decoration:none;">
+                        <i class="bi bi-download me-1"></i> PDF
+                    </a>
+                    <button onclick="eliminaLul({{ d.pk }})" class="btn btn-sm" style="background:rgba(220,53,69,0.1);color:#dc3545;border:1px solid rgba(220,53,69,0.2);border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;margin-left:4px;">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="text-center py-5" style="color:#545;">
+        <i class="bi bi-journal-text" style="font-size:32px;display:block;margin-bottom:8px;"></i>
+        <div style="font-size:14px;">Nessun LUL generato per {{ anno }}</div>
+        <div style="font-size:11px;color:#3A3B40;margin-top:4px;">Seleziona un datore e mese, poi clicca "GENERA LUL"</div>
+    </div>
+    {% endif %}
+</div>
+
+<div id="lulSpinner" style="display:none;" class="text-center py-5">
+    <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
+    <div style="color:#8A8F98;font-size:13px;margin-top:8px;">Generazione LUL in corso...</div>
+</div>
+
+{% include 'paghe/partials/_lul_help_modal.html' %}
+
+<script>
+function generaLul() {
+    var form = document.getElementById('formGeneraLul');
+    var datoreSelect = form.querySelector('select[name="datore"]');
+    var meseSelect = document.getElementById('meseGeneraLul');
+    var annoInput = form.querySelector('select[name="anno"]');
+
+    if (!datoreSelect.value) {
+        alert('Seleziona un datore di lavoro.');
+        return;
+    }
+
+    var formData = new FormData();
+    formData.append('datore_id', datoreSelect.value);
+    formData.append('mese', meseSelect.value);
+    formData.append('anno', annoInput.value);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    document.getElementById('lulTabella').style.display = 'none';
+    document.getElementById('lulSpinner').style.display = 'block';
+
+    fetch('/ajax/lul/genera/', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        document.getElementById('lulSpinner').style.display = 'none';
+        document.getElementById('lulTabella').style.display = 'block';
+        if (data.errore) {
+            alert(data.errore);
+        } else {
+            apriNelPannello(data.url, data.documento_pk);
+            location.reload();
+        }
+    })
+    .catch(function(err) {
+        document.getElementById('lulSpinner').style.display = 'none';
+        document.getElementById('lulTabella').style.display = 'block';
+        alert('Errore durante la generazione del LUL.');
+    });
+}
+
+function eliminaLul(pk) {
+    if (!confirm('Eliminare definitivamente questo LUL?')) return;
+    var formData = new FormData();
+    formData.append('documento_pk', pk);
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    fetch('/ajax/lul/elimina/', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.errore) { alert(data.errore); }
+        else { location.reload(); }
+    })
+    .catch(function() { alert('Errore durante l\'eliminazione del LUL.'); });
+}
+</script>
+{% endblock %}

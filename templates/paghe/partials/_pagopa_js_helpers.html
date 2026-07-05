@@ -1,0 +1,110 @@
+function copiaAppunti(testo, btn) {
+    navigator.clipboard.writeText(testo).then(function() {
+        var origHtml = btn.innerHTML;
+        var origColor = btn.style.color || '#5C5F66';
+        btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>COPIATO';
+        btn.style.color = '#34d399';
+        setTimeout(function() {
+            btn.innerHTML = origHtml;
+            btn.style.color = origColor;
+        }, 1500);
+    }).catch(function() {});
+}
+
+function logPagopa(msg, type) {
+    var c = document.getElementById('automationLog');
+    if (!c) return;
+    var t = new Date().toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    var color = type === 'ok' ? '#34d399' : type === 'err' ? '#f87171' : type === 'warn' ? '#f59e0b' : '#8A8F98';
+    c.innerHTML += '<div style="color:' + color + ';"><span style="color:#5C5F66;">[' + t + ']</span> ' + msg + '</div>';
+    c.scrollTop = c.scrollHeight;
+}
+
+function pulisciConsole() {
+    document.getElementById('automationLog').innerHTML = '';
+}
+
+function copiaConsole() {
+    var c = document.getElementById('automationLog');
+    if (!c) return;
+    var testo = c.innerText || '';
+    if (!testo) return;
+    navigator.clipboard.writeText(testo).then(function() {
+        var fb = document.getElementById('copiaFeedback');
+        if (fb) {
+            fb.style.display = 'inline';
+            setTimeout(function() { fb.style.display = 'none'; }, 2000);
+        }
+    }).catch(function() {
+        var range = document.createRange();
+        range.selectNodeContents(c);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand('copy');
+        sel.removeAllRanges();
+    });
+}
+
+function mostraLogsBackend(d) {
+    if (!d.logs || !d.logs.length) return;
+    var daMostrare = d.logs.slice(-50);
+    for (var i = 0; i < daMostrare.length; i++) {
+        var riga = daMostrare[i];
+        var tipo = '';
+        if (riga.indexOf('❌') !== -1 || riga.indexOf('ERRORE') !== -1) tipo = 'err';
+        else if (riga.indexOf('✅') !== -1 || riga.indexOf('OK') !== -1 || riga.indexOf('PDF salvato') !== -1) tipo = 'ok';
+        else if (riga.indexOf('⚠️') !== -1 || riga.indexOf('TIMEOUT') !== -1) tipo = 'warn';
+        logPagopa(riga.replace('[PAGOPA] ', ''), tipo);
+    }
+}
+
+function escapeHtml(t) {
+    if (!t) return '';
+    return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var _pagopaStepLabels = {
+    'captcha': 'Attesa risoluzione CAPTCHA',
+    'visualizza': 'Rilevamento pagina trimestre',
+    'seleziona_trimestre': 'Selezione trimestre/anno',
+    'conferma_trimestre': 'Invio trimestre e Avanti',
+    'compila': 'Compilazione bollettino',
+    'avanti': 'Conferma dati',
+    'conferma': 'Conferma modifica',
+    'stampa': 'Stampa Avviso di Pagamento',
+    'salva': 'Salvataggio PDF',
+    'done': 'Completato!'
+};
+
+function aggiornaStepActions(step, stepNum, stepTotal, msg, success) {
+    var actions = document.getElementById('stepActions');
+    var title = document.getElementById('stepActionsTitle');
+    var desc = document.getElementById('stepActionsDesc');
+
+    if (!actions) return;
+
+    if (step === 'done') {
+        actions.style.display = 'none';
+        return;
+    }
+
+    actions.style.display = 'block';
+    var label = _pagopaStepLabels[step] || step;
+    var prog = stepNum ? '[' + stepNum + '/' + stepTotal + '] ' : '';
+
+    if (step === 'captcha') {
+        actions.style.background = 'rgba(245,158,11,0.1)';
+        actions.style.borderColor = 'rgba(245,158,11,0.3)';
+        title.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><b>RISOLVI IL CAPTCHA</b>';
+        desc.innerHTML = '&Egrave; aperta una finestra Chrome con il sito INPS PagoPA.<br>' +
+            '1. Inserisci manualmente il CAPTCHA nella pagina INPS.<br>' +
+            '2. Premi <kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Ctrl</kbd>+' +
+            '<kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Invio</kbd> nella finestra Chrome per proseguire.';
+    } else {
+        actions.style.background = success ? 'rgba(52,211,153,0.08)' : 'rgba(92,106,210,0.08)';
+        actions.style.borderColor = success ? 'rgba(52,211,153,0.3)' : 'rgba(92,106,210,0.3)';
+        title.innerHTML = '<i class="bi bi-' + (success ? 'check-circle' : 'arrow-right-circle') + ' me-2" style="color:' + (success ? '#34d399' : '#5E6AD2') + ';"></i><b>' + prog + label + '</b>';
+        desc.innerHTML = msg || (success ? 'Step completato. L\'automazione proceder&agrave; automaticamente.' : 'In esecuzione...');
+    }
+}

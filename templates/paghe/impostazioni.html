@@ -1,0 +1,619 @@
+{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+.impostazioni-page { max-width: 1100px; margin: 0 auto; }
+.impostazioni-page .settings-layout { display: flex; gap: 28px; align-items: flex-start; }
+.impostazioni-page .settings-main { flex: 1; min-width: 0; }
+.impostazioni-page .settings-nav { position: sticky; top: 28px; width: 200px; flex-shrink: 0; background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 2px; }
+.impostazioni-page .settings-nav a { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; color: #8A8F98; text-decoration: none; transition: all 0.15s; }
+.impostazioni-page .settings-nav a:hover { background: rgba(255,255,255,0.04); color: white; }
+.impostazioni-page .settings-nav a i { font-size: 14px; width: 16px; text-align: center; }
+.impostazioni-page .settings-nav a.active { background: rgba(94,106,210,0.12); color: #5E6AD2; }
+.impostazioni-page .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.impostazioni-page .page-header h1 { font-size: 24px; font-weight: 800; margin: 0; color: white; }
+
+.impostazioni-page .page-header p { color: #8A8F98; font-size: 13px; margin: 2px 0 0; }
+.impostazioni-page .top-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.impostazioni-page .logo-card { background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px; text-align: center; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: border-color 0.2s; }
+.impostazioni-page .logo-card:hover { border-color: rgba(94,106,210,0.3); }
+.impostazioni-page .logo-card img { max-width: 160px; max-height: 80px; border-radius: 6px; object-fit: contain; }
+.impostazioni-page .logo-card .no-logo { color: #8A8F98; font-size: 12px; }
+.impostazioni-page .logo-card .logo-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #8A8F98; opacity: 0.6; }
+.impostazioni-page .info-card { background: linear-gradient(135deg, rgba(94,106,210,0.08) 0%, transparent 100%); border: 1px solid #27282D; border-radius: 14px; padding: 20px 24px; display: flex; flex-direction: column; justify-content: center; }
+.impostazioni-page .info-card h2 { font-size: 18px; font-weight: 800; color: white; margin: 0 0 2px; }
+.impostazioni-page .info-card .sub { color: #8A8F98; font-size: 12px; }
+.impostazioni-page .section-card { background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px; margin-bottom: 18px; transition: border-color 0.2s; border-left: 3px solid transparent; }
+.impostazioni-page .section-card:hover { border-color: rgba(255,255,255,0.08); }
+.impostazioni-page .section-card.s-gen { border-left-color: #5E6AD2; }
+.impostazioni-page .section-card.s-perc { border-left-color: #10b981; }
+.impostazioni-page .section-card.s-mail { border-left-color: #06b6d4; }
+.impostazioni-page .section-card.s-link { border-left-color: #f59e0b; }
+.impostazioni-page .section-card.s-calc { border-left-color: #ec4899; }
+.impostazioni-page .section-card.s-studio { border-left-color: #a855f7; }
+.impostazioni-page .section-card h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #8A8F98; margin: 0 0 18px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; }
+.impostazioni-page .section-card h3 i { margin-right: 8px; font-size: 14px; opacity: 0.8; }
+.impostazioni-page .section-card h3 .hint { font-size: 10px; font-weight: 400; text-transform: none; letter-spacing: 0; opacity: 0.5; }
+.impostazioni-page .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.impostazioni-page .form-grid .full-width { grid-column: 1 / -1; }
+.impostazioni-page .form-group { display: flex; flex-direction: column; }
+.impostazioni-page .form-group label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #8A8F98; margin-bottom: 5px; }
+.impostazioni-page .form-group input:not([type="file"]):not([type="checkbox"]),
+.impostazioni-page .form-group select,
+.impostazioni-page .form-group textarea { width: 100%; background: #09090B; border: 1px solid #27282D; color: #EDEDED; font-size: 13px; padding: 9px 12px; border-radius: 8px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; box-sizing: border-box; }
+.impostazioni-page .form-group input:not([type="file"]):not([type="checkbox"]):focus,
+.impostazioni-page .form-group select:focus,
+.impostazioni-page .form-group textarea:focus { border-color: #5E6AD2; box-shadow: 0 0 0 3px rgba(94,106,210,0.1); }
+.impostazioni-page .form-group textarea { min-height: 65px; resize: vertical; }
+.impostazioni-page .form-group input[type="file"] { width: 100%; box-sizing: border-box; color: #EDEDED; background: #09090B; border: 1px solid #18181B; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; transition: border-color 0.2s; }
+.impostazioni-page .form-group input[type="file"]:hover { border-color: rgba(94,106,210,0.3); }
+.impostazioni-page .form-group input[type="file"]::file-selector-button { background: #09090B !important; color: #EDEDED !important; border: none !important; border-radius: 6px; padding: 4px 14px; font-size: 11px; font-weight: 600; cursor: pointer; margin-right: 10px; }
+.impostazioni-page .form-group input[type="file"]::file-selector-button:hover { background: #09090B !important; color: #EDEDED !important; }
+.impostazioni-page .form-group .help-text { font-size: 11px; color: #8A8F98; margin-top: 3px; opacity: 0.6; }
+.impostazioni-page .form-group .errors { font-size: 11px; color: #ef4444; margin-top: 3px; }
+.impostazioni-page .btn-save { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #5E6AD2, #7c3aed); color: white; border: none; border-radius: 10px; padding: 12px 28px; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.impostazioni-page .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(94,106,210,0.3); }
+.impostazioni-page .btn-save i { font-size: 16px; }
+.impostazioni-page .testo-preview { margin-top: 8px; padding: 10px 14px; background: #09090B; border: 1px solid #27282D; border-radius: 8px; font-size: 12px; color: #a0a0a0; white-space: pre-wrap; display: none; max-height: 100px; overflow-y: auto; line-height: 1.5; }
+.impostazioni-page .section-card.collapsible .collapse-toggle { cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #8A8F98; font-size: 10px; font-weight: 600; text-transform: none; letter-spacing: 0; user-select: none; transition: color 0.15s; }
+.impostazioni-page .section-card.collapsible .collapse-toggle:hover { color: #5E6AD2; }
+.impostazioni-page .section-card.collapsible .collapse-toggle .bi { transition: transform 0.2s; font-size: 14px; }
+.impostazioni-page .section-card.collapsible .collapse-toggle.collapsed .bi { transform: rotate(-90deg); }
+.impostazioni-page .section-card.collapsible .collapse-content { overflow: hidden; transition: max-height 0.25s ease; }
+.impostazioni-page .form-group .inline-check { display: flex; align-items: center; gap: 10px; padding-top: 20px; }
+.impostazioni-page .form-group .inline-check input[type="checkbox"] { accent-color: #5E6AD2; width: 16px; height: 16px; cursor: pointer; }
+.impostazioni-page .form-group .inline-check label { margin: 0; font-size: 12px; font-weight: 600; text-transform: none; cursor: pointer; }
+@media (max-width: 900px) { .impostazioni-page .settings-layout { flex-direction: column; } .impostazioni-page .settings-nav { display: none; } .impostazioni-page .top-cards { grid-template-columns: 1fr; } .impostazioni-page .form-grid { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'backup_page' %}">Sistema</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Impostazioni</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="impostazioni-page">
+  <div class="page-header">
+    <div>
+      <h1 class="fw-bold">IMPOSTAZIONI
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      </h1>
+      <p>Configura le opzioni generali del gestionale.</p>
+    </div>
+  </div>
+
+  <div class="settings-layout">
+    <div class="settings-nav">
+      <a href="#s-gen" onclick="document.getElementById('s-gen').scrollIntoView({behavior:'smooth'});return false;"><i class="bi bi-info-circle"></i> Generali</a>
+      <a href="#s-perc" onclick="document.getElementById('s-perc').scrollIntoView({behavior:'smooth'});return false;"><i class="bi bi-folder"></i> Percorsi</a>
+      <a href="#s-mail" onclick="document.getElementById('s-mail').scrollIntoView({behavior:'smooth'});return false;"><i class="bi bi-envelope"></i> Email</a>
+      <a href="#s-link" onclick="document.getElementById('s-link').scrollIntoView({behavior:'smooth'});return false;"><i class="bi bi-link-45deg"></i> Collegamenti</a>
+      <a href="#s-calc" onclick="document.getElementById('s-calc').scrollIntoView({behavior:'smooth'});return false;"><i class="bi bi-sliders"></i> Calcolo</a>
+      <a href="#s-studio" onclick="document.getElementById('s-studio').scrollIntoView({behavior:'smooth'});return false;"><i class="bi bi-buildings"></i> Studio</a>
+    </div>
+
+    <div class="settings-main">
+
+  <div class="top-cards">
+    <div class="logo-card">
+      {% if opzioni.logo %}
+        <img src="{{ opzioni.logo.url }}" alt="Logo">
+      {% else %}
+        <div class="no-logo"><i class="bi bi-image" style="font-size: 28px; display: block; margin-bottom: 6px; opacity: 0.4;"></i>Nessun logo caricato</div>
+      {% endif %}
+      <div class="logo-label">Logo programma</div>
+    </div>
+    <div class="logo-card">
+      {% if opzioni.logo_buste_paga %}
+        <img src="{{ opzioni.logo_buste_paga.url }}" alt="Logo Buste Paga">
+      {% else %}
+        <div class="no-logo"><i class="bi bi-receipt" style="font-size: 28px; display: block; margin-bottom: 6px; opacity: 0.4;"></i>Nessun logo caricato</div>
+      {% endif %}
+      <div class="logo-label">Logo buste paga</div>
+    </div>
+    <div class="info-card">
+      <h2>{{ opzioni.nome_programma }}</h2>
+      <div class="sub">Versione {{ opzioni.versione_programma }}</div>
+    </div>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="section-card s-gen" id="s-gen">
+      <h3><span><i class="bi bi-info-circle"></i> Informazioni Generali</span></h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>{{ form.nome_programma.label }}</label>
+          {{ form.nome_programma }}
+          {% if form.nome_programma.help_text %}<div class="help-text">{{ form.nome_programma.help_text }}</div>{% endif %}
+          {% for e in form.nome_programma.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.versione_programma.label }}</label>
+          {{ form.versione_programma }}
+          {% if form.versione_programma.help_text %}<div class="help-text">{{ form.versione_programma.help_text }}</div>{% endif %}
+          {% for e in form.versione_programma.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.logo.label }}</label>
+          {{ form.logo }}
+          {% if form.logo.help_text %}<div class="help-text">{{ form.logo.help_text }}</div>{% endif %}
+          {% for e in form.logo.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.logo_buste_paga.label }}</label>
+          {{ form.logo_buste_paga }}
+          {% if form.logo_buste_paga.help_text %}<div class="help-text">{{ form.logo_buste_paga.help_text }}</div>{% endif %}
+          {% for e in form.logo_buste_paga.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card s-perc" id="s-perc">
+      <h3><span><i class="bi bi-folder"></i> Percorsi e File</span></h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>{{ form.exe_posta.label }}</label>
+          <div style="display:flex;gap:4px;">
+            {{ form.exe_posta }}
+            <button type="button" onclick="sfogliaExePosta()" style="flex-shrink:0;background:#5E6AD2;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-folder2-open"></i> Sfoglia</button>
+          </div>
+          {% if form.exe_posta.help_text %}<div class="help-text">{{ form.exe_posta.help_text }}</div>{% endif %}
+          {% for e in form.exe_posta.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.exe_lettore_pdf.label }}</label>
+          <div style="display:flex;gap:4px;">
+            {{ form.exe_lettore_pdf }}
+            <button type="button" onclick="sfogliaExeLettore()" style="flex-shrink:0;background:#5E6AD2;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-folder2-open"></i> Sfoglia</button>
+          </div>
+          {% if form.exe_lettore_pdf.help_text %}<div class="help-text">{{ form.exe_lettore_pdf.help_text }}</div>{% endif %}
+          {% for e in form.exe_lettore_pdf.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.cartella_documenti.label }}</label>
+          {{ form.cartella_documenti }}
+          {% if form.cartella_documenti.help_text %}<div class="help-text">{{ form.cartella_documenti.help_text }}</div>{% endif %}
+          {% for e in form.cartella_documenti.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.cartella_backup.label }}</label>
+          {{ form.cartella_backup }}
+          {% if form.cartella_backup.help_text %}<div class="help-text">{{ form.cartella_backup.help_text }}</div>{% endif %}
+          {% for e in form.cartella_backup.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.giorni_ritenzione_backup.label }}</label>
+          {{ form.giorni_ritenzione_backup }}
+          {% if form.giorni_ritenzione_backup.help_text %}<div class="help-text">{{ form.giorni_ritenzione_backup.help_text }}</div>{% endif %}
+          {% for e in form.giorni_ritenzione_backup.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card s-mail collapsible" id="s-mail">
+      <h3><span><i class="bi bi-envelope"></i> Configurazione Email</span> <span class="collapse-toggle"><i class="bi bi-chevron-down"></i></span></h3>
+      <div class="collapse-content">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>{{ form.email_smtp_server.label }}</label>
+          {{ form.email_smtp_server }}
+          <div class="help-text">Es. smtp.gmail.com, smtp.libero.it, mail.tuo-dominio.it</div>
+          {% for e in form.email_smtp_server.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.email_smtp_port.label }}</label>
+          {{ form.email_smtp_port }}
+          <div class="help-text">Solitamente 587 (TLS) o 465 (SSL)</div>
+          {% for e in form.email_smtp_port.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.email_smtp_username.label }}</label>
+          {{ form.email_smtp_username }}
+          {% if form.email_smtp_username.help_text %}<div class="help-text">{{ form.email_smtp_username.help_text }}</div>{% endif %}
+          {% for e in form.email_smtp_username.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.email_smtp_password.label }}</label>
+          {{ form.email_smtp_password }}
+          <div class="help-text">Inserisci la password dell'account SMTP (in chiaro)</div>
+          {% for e in form.email_smtp_password.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.email_mittente.label }}</label>
+          {{ form.email_mittente }}
+          <div class="help-text">L'indirizzo che apparirà come mittente</div>
+          {% for e in form.email_mittente.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group inline-check">
+          {{ form.email_usa_tls }}
+          <label for="{{ form.email_usa_tls.id_for_label }}">Usa TLS (consigliato)</label>
+        </div>
+        <div class="form-group full-width inline-check">
+          {{ form.email_usa_programma_posta }}
+          <label for="{{ form.email_usa_programma_posta.id_for_label }}">Usa il programma di posta locale invece di SMTP</label>
+          <div class="help-text" style="margin:0;">Se attivo, usa l'exe configurato sopra per inviare le email</div>
+        </div>
+        <div class="form-group full-width inline-check">
+          {{ form.notifiche_scadenze_attive }}
+          <label for="{{ form.notifiche_scadenze_attive.id_for_label }}">Notifiche scadenze attive</label>
+          <div class="help-text" style="margin:0;">Se attivo, ogni lunedì alle 08:00 invia un promemoria email delle scadenze imminenti</div>
+        </div>
+        <div class="form-group full-width" style="margin-top:8px;">
+          <button type="button" id="btnTestEmail" onclick="testSMTP()" style="background:rgba(6,182,212,0.12);color:#06b6d4;border:1px solid rgba(6,182,212,0.25);border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer;">
+            <i class="bi bi-send me-1"></i> Invia email di prova
+          </button>
+          <div id="esitoTestEmail" class="help-text" style="margin-top:6px;font-weight:600;display:none;"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="section-card s-link collapsible" id="s-link">
+      <h3><span><i class="bi bi-link-45deg"></i> Collegamenti Esterni</span> <span class="collapse-toggle"><i class="bi bi-chevron-down"></i></span></h3>
+      <div class="collapse-content">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>{{ form.link_inps_mav.label }}</label>
+          {{ form.link_inps_mav }}
+          {% if form.link_inps_mav.help_text %}<div class="help-text">{{ form.link_inps_mav.help_text }}</div>{% endif %}
+          {% for e in form.link_inps_mav.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.link_inps_iscrizione.label }}</label>
+          {{ form.link_inps_iscrizione }}
+          {% if form.link_inps_iscrizione.help_text %}<div class="help-text">{{ form.link_inps_iscrizione.help_text }}</div>{% endif %}
+          {% for e in form.link_inps_iscrizione.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.disponibile_1.label }}</label>
+          {{ form.disponibile_1 }}
+          {% if form.disponibile_1.help_text %}<div class="help-text">{{ form.disponibile_1.help_text }}</div>{% endif %}
+          {% for e in form.disponibile_1.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.disponibile_2.label }}</label>
+          {{ form.disponibile_2 }}
+          {% if form.disponibile_2.help_text %}<div class="help-text">{{ form.disponibile_2.help_text }}</div>{% endif %}
+          {% for e in form.disponibile_2.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card s-calc" id="s-calc">
+      <h3><span><i class="bi bi-sliders"></i> Parametri di Calcolo</span></h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>{{ form.soglia_ore_contributi.label }}</label>
+          {{ form.soglia_ore_contributi }}
+          {% if form.soglia_ore_contributi.help_text %}<div class="help-text">{{ form.soglia_ore_contributi.help_text }}</div>{% endif %}
+          {% for e in form.soglia_ore_contributi.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.soglia_paga_1_contributi.label }}</label>
+          {{ form.soglia_paga_1_contributi }}
+          {% if form.soglia_paga_1_contributi.help_text %}<div class="help-text">{{ form.soglia_paga_1_contributi.help_text }}</div>{% endif %}
+          {% for e in form.soglia_paga_1_contributi.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.soglia_paga_2_contributi.label }}</label>
+          {{ form.soglia_paga_2_contributi }}
+          {% if form.soglia_paga_2_contributi.help_text %}<div class="help-text">{{ form.soglia_paga_2_contributi.help_text }}</div>{% endif %}
+          {% for e in form.soglia_paga_2_contributi.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.rateo_ferie_mensile.label }}</label>
+          {{ form.rateo_ferie_mensile }}
+          {% if form.rateo_ferie_mensile.help_text %}<div class="help-text">{{ form.rateo_ferie_mensile.help_text }}</div>{% endif %}
+          {% for e in form.rateo_ferie_mensile.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.mesi_annuali_std.label }}</label>
+          {{ form.mesi_annuali_std }}
+          {% if form.mesi_annuali_std.help_text %}<div class="help-text">{{ form.mesi_annuali_std.help_text }}</div>{% endif %}
+          {% for e in form.mesi_annuali_std.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.giorni_mensili_std.label }}</label>
+          {{ form.giorni_mensili_std }}
+          {% if form.giorni_mensili_std.help_text %}<div class="help-text">{{ form.giorni_mensili_std.help_text }}</div>{% endif %}
+          {% for e in form.giorni_mensili_std.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.settimane_annuali_std.label }}</label>
+          {{ form.settimane_annuali_std }}
+          {% if form.settimane_annuali_std.help_text %}<div class="help-text">{{ form.settimane_annuali_std.help_text }}</div>{% endif %}
+          {% for e in form.settimane_annuali_std.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.anno_gestione.label }}</label>
+          {{ form.anno_gestione }}
+          {% if form.anno_gestione.help_text %}<div class="help-text">{{ form.anno_gestione.help_text }}</div>{% endif %}
+          {% for e in form.anno_gestione.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card s-studio" id="s-studio">
+      <h3><span><i class="bi bi-buildings"></i> Dati Studio</span></h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>{{ form.nome_studio.label }}</label>
+          {{ form.nome_studio }}
+          {% if form.nome_studio.help_text %}<div class="help-text">{{ form.nome_studio.help_text }}</div>{% endif %}
+          {% for e in form.nome_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>NOME STUDIO LUNGO (per buste paga e liste)</label>
+          {{ form.denominazione_studio }}
+          {% if form.denominazione_studio.help_text %}<div class="help-text">{{ form.denominazione_studio.help_text }}</div>{% endif %}
+          {% for e in form.denominazione_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group full-width">
+          <label>INDIRIZZO STUDIO</label>
+          {{ form.dati_studio }}
+          {% if form.dati_studio.help_text %}<div class="help-text">{{ form.dati_studio.help_text }}</div>{% endif %}
+          {% for e in form.dati_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.comune_studio.label }}</label>
+          {{ form.comune_studio }}
+          {% if form.comune_studio.help_text %}<div class="help-text">{{ form.comune_studio.help_text }}</div>{% endif %}
+          {% for e in form.comune_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.cap_studio.label }}</label>
+          {{ form.cap_studio }}
+          {% if form.cap_studio.help_text %}<div class="help-text">{{ form.cap_studio.help_text }}</div>{% endif %}
+          {% for e in form.cap_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.telefono_studio.label }}</label>
+          {{ form.telefono_studio }}
+          {% if form.telefono_studio.help_text %}<div class="help-text">{{ form.telefono_studio.help_text }}</div>{% endif %}
+          {% for e in form.telefono_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.email_studio.label }}</label>
+          {{ form.email_studio }}
+          {% if form.email_studio.help_text %}<div class="help-text">{{ form.email_studio.help_text }}</div>{% endif %}
+          {% for e in form.email_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.iban_studio.label }}</label>
+          {{ form.iban_studio }}
+          {% if form.iban_studio.help_text %}<div class="help-text">{{ form.iban_studio.help_text }}</div>{% endif %}
+          {% for e in form.iban_studio.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.intestatario_iban.label }}</label>
+          {{ form.intestatario_iban }}
+          {% if form.intestatario_iban.help_text %}<div class="help-text">{{ form.intestatario_iban.help_text }}</div>{% endif %}
+          {% for e in form.intestatario_iban.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label>{{ form.banca_iban.label }}</label>
+          {{ form.banca_iban }}
+          {% if form.banca_iban.help_text %}<div class="help-text">{{ form.banca_iban.help_text }}</div>{% endif %}
+          {% for e in form.banca_iban.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.testo_note_footer_mail.label }}</label>
+          {{ form.testo_note_footer_mail }}
+          {% if form.testo_note_footer_mail.help_text %}<div class="help-text">{{ form.testo_note_footer_mail.help_text }}</div>{% endif %}
+          {% for e in form.testo_note_footer_mail.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+          <div id="preview-note-footer-mail" class="testo-preview"></div>
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.testo_firma_email.label }}</label>
+          {{ form.testo_firma_email }}
+          {% if form.testo_firma_email.help_text %}<div class="help-text">{{ form.testo_firma_email.help_text }}</div>{% endif %}
+          {% for e in form.testo_firma_email.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+          <div id="preview-firma-email" class="testo-preview"></div>
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.testo_alert_contributi.label }}</label>
+          {{ form.testo_alert_contributi }}
+          {% if form.testo_alert_contributi.help_text %}<div class="help-text">{{ form.testo_alert_contributi.help_text }}</div>{% endif %}
+          {% for e in form.testo_alert_contributi.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+          <div id="preview-alert-contributi" class="testo-preview"></div>
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.testo_note_avvertenze.label }}</label>
+          {{ form.testo_note_avvertenze }}
+          {% if form.testo_note_avvertenze.help_text %}<div class="help-text">{{ form.testo_note_avvertenze.help_text }}</div>{% endif %}
+          {% for e in form.testo_note_avvertenze.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+          <div id="preview-note-avvertenze" class="testo-preview"></div>
+        </div>
+        <div class="form-group full-width">
+          <label>{{ form.tiny_api_key.label }}</label>
+          {{ form.tiny_api_key }}
+          {% if form.tiny_api_key.help_text %}<div class="help-text">{{ form.tiny_api_key.help_text }}</div>{% endif %}
+          {% for e in form.tiny_api_key.errors %}<div class="errors">{{ e }}</div>{% endfor %}
+          <div class="help-text">Inserisci la API key di TinyMCE (la trovi nel tuo account tiny.cloud) per l'editor dei testi preimpostati.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end mb-5 mt-4">
+      <button type="submit" class="btn-save">
+        <i class="bi bi-check-lg"></i> Salva Impostazioni
+      </button>
+    </div>
+  </form>
+</div>
+</div> <!-- /settings-layout -->
+{% endblock %}
+
+{% block extra_js %}
+<style>
+  .section-card.collapsible .collapse-toggle { cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #8A8F98; font-size: 10px; font-weight: 600; text-transform: none; letter-spacing: 0; user-select: none; transition: color 0.15s; }
+  .section-card.collapsible .collapse-toggle:hover { color: #5E6AD2; }
+  .section-card.collapsible .collapse-toggle .bi { transition: transform 0.2s; font-size: 14px; }
+  .section-card.collapsible .collapse-toggle.collapsed .bi { transform: rotate(-90deg); }
+  .section-card.collapsible .collapse-content { overflow: hidden; transition: max-height 0.25s ease; }
+</style>
+<script> 
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.section-card.collapsible').forEach(function(card) {
+      var toggle = card.querySelector('.collapse-toggle');
+      var content = card.querySelector('.collapse-content');
+      if (!toggle || !content) return;
+      var startCollapsed = card.id === 's-mail' || card.id === 's-link';
+      if (startCollapsed) {
+        toggle.classList.add('collapsed');
+        content.style.maxHeight = '0px';
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+      }
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        var isClosed = toggle.classList.toggle('collapsed');
+        content.style.maxHeight = isClosed ? '0px' : content.scrollHeight + 'px';
+      });
+    });
+  });
+</script>
+<script>
+function caricaAnteprimaTesto(selectId, previewId) {
+  var sel = document.getElementById(selectId);
+  var preview = document.getElementById(previewId);
+  if (!sel || !preview) return;
+  var pk = sel.value;
+  if (!pk) { preview.style.display = 'none'; preview.textContent = ''; return; }
+  fetch('/ajax/testo-preimpostato/' + pk + '/')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      preview.innerHTML = d.corpo || '';
+      preview.style.display = d.corpo ? 'block' : 'none';
+    })
+    .catch(function() { preview.style.display = 'none'; });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var alertSel = document.querySelector('[name="testo_alert_contributi"]');
+  var noteSel = document.querySelector('[name="testo_note_avvertenze"]');
+  var footerSel = document.querySelector('[name="testo_note_footer_mail"]');
+  var firmaSel = document.querySelector('[name="testo_firma_email"]');
+  if (alertSel) {
+    alertSel.id = alertSel.id || 'id_testo_alert_contributi';
+    alertSel.addEventListener('change', function() { caricaAnteprimaTesto(alertSel.id, 'preview-alert-contributi'); });
+    setTimeout(function() { caricaAnteprimaTesto(alertSel.id, 'preview-alert-contributi'); }, 100);
+  }
+  if (noteSel) {
+    noteSel.id = noteSel.id || 'id_testo_note_avvertenze';
+    noteSel.addEventListener('change', function() { caricaAnteprimaTesto(noteSel.id, 'preview-note-avvertenze'); });
+    setTimeout(function() { caricaAnteprimaTesto(noteSel.id, 'preview-note-avvertenze'); }, 100);
+  }
+  if (footerSel) {
+    footerSel.id = footerSel.id || 'id_testo_note_footer_mail';
+    footerSel.addEventListener('change', function() { caricaAnteprimaTesto(footerSel.id, 'preview-note-footer-mail'); });
+    setTimeout(function() { caricaAnteprimaTesto(footerSel.id, 'preview-note-footer-mail'); }, 100);
+  }
+  if (firmaSel) {
+    firmaSel.id = firmaSel.id || 'id_testo_firma_email';
+    firmaSel.addEventListener('change', function() { caricaAnteprimaTesto(firmaSel.id, 'preview-firma-email'); });
+    setTimeout(function() { caricaAnteprimaTesto(firmaSel.id, 'preview-firma-email'); }, 100);
+  }
+});
+
+function testSMTP() {
+  var btn = document.getElementById('btnTestEmail');
+  var esito = document.getElementById('esitoTestEmail');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Invio in corso...';
+  esito.style.display = 'none';
+  var csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+  var csrfToken = csrfInput ? csrfInput.value : '';
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 15000);
+  fetch('/ajax/test-smtp/', {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrfToken, 'Content-Type': 'application/x-www-form-urlencoded' },
+    signal: controller.signal
+  })
+  .then(function(r) {
+    clearTimeout(timeoutId);
+    return r.json().catch(function() { throw new Error('Risposta non valida dal server'); });
+  })
+  .then(function(d) {
+    esito.style.display = 'block';
+    if (d.success) {
+      esito.style.color = '#34d399';
+      esito.innerHTML = '<i class="bi bi-check-circle me-1"></i> ' + d.message;
+    } else {
+      esito.style.color = '#f87171';
+      esito.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> ' + (d.error || 'Invio fallito.');
+    }
+  })
+  .catch(function(err) {
+    esito.style.display = 'block';
+    esito.style.color = '#f87171';
+    esito.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> ' + (err.name === 'AbortError' ? 'Timeout: server non risponde dopo 15s' : err.message);
+  })
+  .finally(function() { btn.disabled = false; btn.innerHTML = '<i class="bi bi-send me-1"></i> Invia email di prova'; });
+}
+
+function sfogliaExePosta() {
+  fetch('/ajax/sfoglia-file/', { method:'POST', headers:{'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value} })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.path) {
+        var input = document.querySelector('[name="exe_posta"]');
+        if (input) input.value = d.path;
+      }
+    })
+    .catch(function() { mostraToast('Impossibile aprire il selettore file.', false); });
+}
+
+function sfogliaExeLettore() {
+  fetch('/ajax/sfoglia-file/', { method:'POST', headers:{'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value} })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.path) {
+        var input = document.querySelector('[name="exe_lettore_pdf"]');
+        if (input) input.value = d.path;
+      }
+    })
+    .catch(function() { mostraToast('Impossibile aprire il selettore file.', false); });
+}
+</script>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Impostazioni
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Qui puoi configurare tutte le <b>opzioni generali</b> del gestionale. Le impostazioni sono raggruppate in sezioni tematiche.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sezioni</b><br>
+        <b>Generali</b> — nome programma, versione, logo, colore e opzioni di visualizzazione.<br>
+        <b>Percorsi</b> — cartella documenti, percorso dell'exe del client di posta (es. Thunderbird) e del lettore PDF.<br>
+        <b>Email</b> — configurazione SMTP per l'invio email direttamente dal gestionale. Usa il pulsante <b>Invia email di prova</b> per testare la configurazione.<br>
+        <b>Collegamenti</b> — imposta l'indirizzo dello studio e il link esterno INPS per le procedure.<br>
+        <b>Calcolo</b> — parametri di calcolo buste paga e soglie.<br>
+        <b>Studio</b> — nome studio, indirizzo studio, recapiti (telefono, email, IBAN) e testi preimpostati.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salvataggio</b><br>
+        Le modifiche vengono salvate singolarmente per ogni sezione. Clicca <b>Salva</b> in fondo a ogni blocco per applicare le modifiche.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Liste Stampe</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">LISTE STAMPE
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+    </h1>
+    <p class="text-secondary small mb-0">Genera elenchi PDF in formato orizzontale.</p>
+</div>
+
+<div class="row g-4" id="listeGrid">
+
+    <!-- DATORI -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card-lista" data-tipo="datori">
+            <div class="card-lista-icon"><i class="bi bi-building"></i></div>
+            <div class="card-lista-body">
+                <h5 class="card-lista-title">Datori di Lavoro</h5>
+                <p class="card-lista-desc">Anagrafica completa dei datori di lavoro con CF, indirizzo, telefono, email e note.</p>
+            </div>
+            <button class="btn-genera-pdf" onclick="generaLista('datori')">
+                <i class="bi bi-filetype-pdf"></i> Genera PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- LAVORATORI -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card-lista" data-tipo="lavoratori">
+            <div class="card-lista-icon"><i class="bi bi-person-workspace"></i></div>
+            <div class="card-lista-body">
+                <h5 class="card-lista-title">Lavoratori</h5>
+                <p class="card-lista-desc">Anagrafica completa dei lavoratori con CF, sesso, data nascita, indirizzo, telefono, email.</p>
+            </div>
+            <button class="btn-genera-pdf" onclick="generaLista('lavoratori')">
+                <i class="bi bi-filetype-pdf"></i> Genera PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- BENEFICIARI -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card-lista" data-tipo="beneficiari">
+            <div class="card-lista-icon"><i class="bi bi-person-heart"></i></div>
+            <div class="card-lista-body">
+                <h5 class="card-lista-title">Beneficiari</h5>
+                <p class="card-lista-desc">Anagrafica completa dei beneficiari con CF, data nascita, indirizzo e telefono.</p>
+            </div>
+            <button class="btn-genera-pdf" onclick="generaLista('beneficiari')">
+                <i class="bi bi-filetype-pdf"></i> Genera PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- PROGETTI REGIONALI -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card-lista" data-tipo="progetti">
+            <div class="card-lista-icon"><i class="bi bi-diagram-3"></i></div>
+            <div class="card-lista-body">
+                <h5 class="card-lista-title">Progetti Regionali</h5>
+                <p class="card-lista-desc">Elenco dei progetti con beneficiario, tipo, date, budget annuale e mensile.</p>
+                <div class="card-lista-filtri">
+                    <select id="filtroTipoProgetto" class="form-select form-select-sm" onchange="aggiornaParametriFiltro()">
+                        <option value="">Tutti i tipi</option>
+                        {% for tp in tipi_progetto %}
+                        <option value="{{ tp.pk }}">{{ tp.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button class="btn-genera-pdf" onclick="generaLista('progetti')">
+                <i class="bi bi-filetype-pdf"></i> Genera PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTRATTI ATTIVI -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card-lista" data-tipo="contratti-attivi">
+            <div class="card-lista-icon"><i class="bi bi-file-earmark-text"></i></div>
+            <div class="card-lista-body">
+                <h5 class="card-lista-title">Contratti Attivi</h5>
+                <p class="card-lista-desc">Elenco dei contratti attivi con datore, lavoratore, beneficiario, progetto, budget e ore.</p>
+                <div class="card-lista-filtri">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <select id="filtroDatoreContratti" class="form-select form-select-sm">
+                                <option value="">Tutti i datori</option>
+                                {% for d in datori %}
+                                <option value="{{ d.codice_fiscale }}">{{ d.nome_cognome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <select id="filtroLivello" class="form-select form-select-sm">
+                                <option value="">Tutti i livelli</option>
+                                {% for l in livelli %}
+                                <option value="{{ l.codice|upper }}">{{ l.codice }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-genera-pdf" onclick="generaLista('contratti-attivi')">
+                <i class="bi bi-filetype-pdf"></i> Genera PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- PAGOPA INPS -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <div class="card-lista" data-tipo="pagopa-inps">
+            <div class="card-lista-icon"><i class="bi bi-credit-card"></i></div>
+            <div class="card-lista-body">
+                <h5 class="card-lista-title">PagoPA INPS</h5>
+                <p class="card-lista-desc">Dati contributivi per PagoPA: ore settimanali, paga oraria INPS, importo e codice cassa.</p>
+                <div class="card-lista-filtri">
+                    <select id="filtroDatorePagoPA" class="form-select form-select-sm">
+                        <option value="">Tutti i datori</option>
+                        {% for d in datori %}
+                        <option value="{{ d.codice_fiscale }}">{{ d.nome_cognome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button class="btn-genera-pdf" onclick="generaLista('pagopa-inps')">
+                <i class="bi bi-filetype-pdf"></i> Genera PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- PERSONALIZZATE -->
+    <div class="col-12 col-md-6 col-xl-4">
+        <a href="{% url 'tabella_list' 'modelli-lista' %}" style="text-decoration:none;color:inherit;">
+        <div class="card-lista">
+            <div class="card-lista-icon"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+            <div class="card-lista-body">
+                <h5 class="card-lista-title">Liste Personalizzate</h5>
+                <p class="card-lista-desc">Crea e genera liste con colonne e campi a tua scelta.</p>
+            </div>
+            <div style="padding:8px 16px; background:rgba(94,106,210,0.1); color:#9ca3ff; border:1px solid rgba(94,106,210,0.15); border-radius:8px; font-size:11px; font-weight:500; display:inline-block; align-self:flex-end; text-align:center;">
+                <i class="bi bi-gear me-1"></i> Gestisci Modelli
+            </div>
+        </div>
+        </a>
+    </div>
+
+</div>
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Liste Stampe</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
+        <p>Genera elenchi PDF per datori, lavoratori, beneficiari, progetti, contratti attivi e dati PagoPA.</p>
+        <p>Alcune liste permettono di selezionare filtri (es. tipo progetto, datore, livello) prima della generazione.</p>
+        <p class="mb-0">I PDF vengono aperti in una nuova scheda del browser.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-lista {
+        background: #17181C;
+        border: 1px solid #27282D;
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        position: relative;
+        height: 100%;
+    }
+    .card-lista:hover {
+        border-color: rgba(94,106,210,0.3);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    }
+    .card-lista-disabled {
+        opacity: 0.55;
+    }
+    .card-lista-disabled:hover {
+        border-color: #27282D;
+        box-shadow: none;
+    }
+    .card-lista-icon {
+        font-size: 28px;
+        color: #5E6AD2;
+        margin-bottom: 12px;
+        line-height: 1;
+    }
+    .card-lista-body {
+        flex: 1;
+    }
+    .card-lista-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 6px 0;
+        letter-spacing: -0.01em;
+    }
+    .card-lista-desc {
+        font-size: 12px;
+        color: #8A8F98;
+        margin: 0 0 12px 0;
+        line-height: 1.5;
+    }
+    .card-lista-filtri {
+        margin-bottom: 12px;
+    }
+    .card-lista-filtri .form-select-sm {
+        background-color: #09090B;
+        border: 1px solid #27282D;
+        color: #fff;
+        font-size: 11px;
+        border-radius: 6px;
+        padding: 4px 8px;
+    }
+    .card-lista-filtri .form-select-sm:focus {
+        border-color: #5E6AD2;
+        box-shadow: none;
+    }
+    .btn-genera-pdf {
+        background: rgba(94,106,210,0.12);
+        border: 1px solid rgba(94,106,210,0.2);
+        color: #9ca3ff;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        align-self: flex-start;
+    }
+    .btn-genera-pdf:hover:not(:disabled) {
+        background: rgba(94,106,210,0.2);
+        border-color: rgba(94,106,210,0.35);
+        color: #b0b7ff;
+    }
+    .btn-genera-pdf:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .btn-genera-pdf.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function aggiornaParametriFiltro() {
+    // Placeholder per aggiornamenti futuri
+}
+
+function getFiltri(tipo) {
+    var params = new URLSearchParams();
+    if (tipo === 'progetti') {
+        var tp = document.getElementById('filtroTipoProgetto');
+        if (tp && tp.value) params.set('tipo_progetto', tp.value);
+    }
+    if (tipo === 'contratti-attivi') {
+        var d = document.getElementById('filtroDatoreContratti');
+        if (d && d.value) params.set('datore', d.value);
+        var l = document.getElementById('filtroLivello');
+        if (l && l.value) params.set('livello', l.value);
+    }
+    if (tipo === 'pagopa-inps') {
+        var d = document.getElementById('filtroDatorePagoPA');
+        if (d && d.value) params.set('datore', d.value);
+    }
+    return params.toString();
+}
+
+function generaLista(tipo) {
+    var btn = document.querySelector('.card-lista[data-tipo="' + tipo + '"] .btn-genera-pdf');
+    btn.classList.add('loading');
+    btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Generazione...';
+
+    var params = getFiltri(tipo);
+    var url = '/ajax/genera-lista/' + tipo + '/';
+    if (params) url += '?' + params;
+
+    fetch(url)
+        .then(function(r) {
+            if (!r.ok) throw new Error('Errore generazione');
+            return r.blob();
+        })
+        .then(function(blob) {
+            var blobUrl = URL.createObjectURL(blob);
+            apriNelPannello(blobUrl);
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="bi bi-filetype-pdf"></i> Genera PDF';
+        })
+        .catch(function(err) {
+            console.error(err);
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="bi bi-filetype-pdf"></i> Genera PDF';
+        });
+}
+</script>
+{% endblock %}

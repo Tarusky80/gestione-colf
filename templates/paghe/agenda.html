@@ -1,0 +1,452 @@
+{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Agenda</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<style>
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#27282D;border:1px solid #27282D;border-radius:14px;overflow:hidden;}
+.cal-header{text-align:center;padding:10px 4px;font-size:10px;font-weight:700;color:#8A8F98;text-transform:uppercase;background:#17181C;letter-spacing:0.5px;}
+.cal-cell{min-height:80px;padding:6px;background:#17181C;cursor:pointer;transition:background 0.12s;position:relative;}
+.cal-cell:hover{background:rgba(94,106,210,0.1);}
+.cal-cell.selected{background:rgba(94,106,210,0.15);box-shadow:inset 0 0 0 1px #5E6AD2;}
+.cal-cell.fuori-mese{background:#141519;}
+.cal-cell.fuori-mese .cal-numero{color:#3A3B40;}
+.cal-numero{font-size:13px;font-weight:600;color:#8A8F98;margin-bottom:4px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+.cal-numero.oggi{background:#5E6AD2;color:#fff;border-radius:50%;font-weight:700;}
+.cal-dots{display:flex;gap:3px;flex-wrap:wrap;padding:0 2px;}
+.cal-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cal-piu{font-size:9px;color:#8A8F98;line-height:1;}
+.cal-cell.festivo{border-top:2px solid rgba(248,113,113,0.35);}
+.cal-drop-hover{background:rgba(94,106,210,0.2) !important;}
+.cal-festivo{font-size:8px;color:#f87171;line-height:1.1;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
+#agenda-lista{gap:6px;display:flex;flex-direction:column;}
+.agenda-item{display:flex;align-items:center;gap:12px;padding:12px 18px;border:1px solid rgba(255,255,255,0.04);border-radius:10px;transition:background 0.15s,opacity 0.2s;cursor:pointer;background:#17181C;}
+.agenda-item:hover{background:rgba(94,106,210,0.06);border-color:rgba(94,106,210,0.15);}
+.agenda-item.agenda-hidden{display:none;}
+.agenda-item.virtuale{border-left:3px solid #a78bfa;background:#1b1a24;}
+.agenda-item.virtuale:hover{border-color:#a78bfa;background:rgba(167,139,250,0.08);}
+.agenda-item .colore-bar{width:3px;flex-shrink:0;border-radius:2px;align-self:stretch;}
+.agenda-badge-auto{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:rgba(167,139,250,0.15);color:#a78bfa;margin-left:6px;vertical-align:middle;}
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">AGENDA APPUNTAMENTI
+          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        </h1>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex align-items-center gap-2">
+        <a href="?mese={{ prev_mese }}&anno={{ prev_anno }}" class="btn btn-sm" style="background:#17181C;border:1px solid #27282D;border-radius:8px;color:#EDEDED;padding:6px 12px;">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <div class="fw-bold" style="font-size:16px;min-width:140px;text-align:center;">{{ mese_nome }} {{ anno }}</div>
+        <a href="?mese={{ next_mese }}&anno={{ next_anno }}" class="btn btn-sm" style="background:#17181C;border:1px solid #27282D;border-radius:8px;color:#EDEDED;padding:6px 12px;">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+        <a href="?mese={{ oggi.month }}&anno={{ oggi.year }}" class="btn btn-sm" style="background:#17181C;border:1px solid #27282D;border-radius:8px;color:#5E6AD2;padding:6px 12px;font-size:11px;">Oggi</a>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{% url 'agenda_pdf' %}?mese={{ mese }}&anno={{ anno }}" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,0.04);border:1px solid #27282D;border-radius:8px;color:#8A8F98;padding:8px 14px;font-size:11px;font-weight:600;text-decoration:none;">
+            <i class="bi bi-printer me-1"></i> PDF
+        </a>
+        <button class="btn btn-sm" onclick="apriModalAgenda(null)" style="background:#5E6AD2;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;">
+            <i class="bi bi-plus-lg me-1"></i> Nuovo Appuntamento
+        </button>
+    </div>
+</div>
+
+<div class="d-flex gap-2 mb-3 flex-wrap">
+    <button class="btn btn-sm agenda-filtro" data-filtro="tutti" onclick="filtraAgenda('tutti')" style="background:#5E6AD2;color:white;border:none;border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;">Tutti</button>
+    <button class="btn btn-sm agenda-filtro" data-filtro="SCADENZA" onclick="filtraAgenda('SCADENZA')" style="background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.2);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;">Scadenze</button>
+    <button class="btn btn-sm agenda-filtro" data-filtro="APPUNTAMENTO" onclick="filtraAgenda('APPUNTAMENTO')" style="background:rgba(94,106,210,0.12);color:#b0b8ff;border:1px solid rgba(94,106,210,0.2);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;">Appuntamenti</button>
+    <button class="btn btn-sm agenda-filtro" data-filtro="PROMEMORIA" onclick="filtraAgenda('PROMEMORIA')" style="background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.2);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;">Promemoria</button>
+</div>
+
+{% if prossime_scadenze %}
+<div id="agenda-allerta-scadenze" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px;">
+    <i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;font-size:16px;flex-shrink:0;margin-top:2px;"></i>
+    <div style="flex:1;">
+        <div style="font-size:12px;font-weight:700;color:#f59e0b;margin-bottom:4px;">
+            Hai {{ prossime_scadenze|length }} scadenza{{ prossime_scadenze|pluralize:'e' }} nei prossimi 3 giorni
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">
+        {% for s in prossime_scadenze|slice:':6' %}
+            <span style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.15);border-radius:4px;padding:2px 8px;font-size:10px;color:#EDEDED;white-space:nowrap;">
+                {{ s.data|date:"d/m" }} — {{ s.titolo }}
+            </span>
+        {% endfor %}
+        {% if prossime_scadenze|length > 6 %}
+            <span style="font-size:10px;color:#8A8F98;padding:2px 4px;">+{{ prossime_scadenze|length|add:"-6" }} altre</span>
+        {% endif %}
+        </div>
+    </div>
+    <button onclick="this.closest('#agenda-allerta-scadenze').style.display='none';sessionStorage.setItem('agenda_allerta_chiusa','1');" style="background:transparent;border:none;color:#8A8F98;font-size:14px;cursor:pointer;padding:0;line-height:1;" title="Chiudi">&times;</button>
+</div>
+{% endif %}
+
+<div class="d-flex gap-3 mb-3 flex-wrap align-items-center">
+    <div style="flex:1;min-width:160px;position:relative;">
+        <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#545;font-size:12px;pointer-events:none;"></i>
+        <input type="text" id="agenda-cerca" oninput="cercaAgenda(this.value)" placeholder="Cerca per titolo o descrizione..." style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:7px 10px 7px 28px;font-size:12px;outline:none;">
+    </div>
+</div>
+
+{% if oggi_eventi %}
+<div style="background:rgba(94,106,210,0.06);border:1px solid rgba(94,106,210,0.12);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="background:#5E6AD2;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>
+        <span style="font-size:11px;font-weight:700;color:#b0b8ff;text-transform:uppercase;">Oggi — {{ oggi|date:"d/m/Y" }}</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+    {% for app in oggi_eventi %}
+        <span style="display:inline-flex;align-items:center;gap:6px;background:{% if app.colore %}{{ app.colore }}22{% elif app.tipo == 'SCADENZA' %}rgba(245,158,11,0.12){% elif app.tipo == 'APPUNTAMENTO' %}rgba(94,106,210,0.12){% else %}rgba(16,185,129,0.12){% endif %};border:1px solid {% if app.colore %}{{ app.colore }}44{% elif app.tipo == 'SCADENZA' %}rgba(245,158,11,0.2){% elif app.tipo == 'APPUNTAMENTO' %}rgba(94,106,210,0.2){% else %}rgba(16,185,129,0.2){% endif %};border-radius:6px;padding:3px 10px;font-size:11px;color:#EDEDED;">
+            {% if app.ora %}<span style="font-size:10px;color:#8A8F98;">{{ app.ora|time:"H:i" }}</span>{% endif %}
+            <span>{{ app.titolo }}</span>
+            {% if app.virtuale %}<span class="agenda-badge-auto">Auto</span>{% endif %}
+        </span>
+    {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="cal-grid mb-4">
+    {% for nome_giorno in giorni_della_settimana %}
+        <div class="cal-header">{{ nome_giorno|slice:":3" }}</div>
+    {% endfor %}
+    {% for settimana in settimane %}
+        {% for giorno in settimana %}
+        <div class="cal-cell{% if giorno.fuori_mese %} fuori-mese{% endif %}{% if giorno.festivo %} festivo{% endif %} cal-drop-target"
+             data-giorno="{{ giorno.data|date:'Y-m-d' }}"
+             data-numero="{{ giorno.appuntamenti|length }}"
+             onclick="selezionaGiorno('{{ giorno.data|date:'Y-m-d' }}', this)"
+             ondragover="event.preventDefault();this.classList.add('cal-drop-hover')"
+             ondragleave="this.classList.remove('cal-drop-hover')"
+             ondrop="onDropGiorno(event, '{{ giorno.data|date:'Y-m-d' }}')">
+            <div class="cal-numero{% if giorno.oggi %} oggi{% endif %}">{% if giorno.festivo and not giorno.oggi %}<span style="color:#f87171;">{% endif %}{{ giorno.numero }}{% if giorno.festivo and not giorno.oggi %}</span>{% endif %}</div>
+            {% if giorno.festivo %}<div class="cal-festivo" title="{{ giorno.nome_festivo }}">{{ giorno.nome_festivo }}</div>{% endif %}
+            {% if giorno.appuntamenti %}
+            <div class="cal-dots">
+                {% for app in giorno.appuntamenti|slice:':3' %}
+                <span class="cal-dot" style="background:{% if app.colore %}{{ app.colore }}{% elif app.tipo == 'SCADENZA' %}#f59e0b{% elif app.tipo == 'APPUNTAMENTO' %}#5E6AD2{% else %}#34d399{% endif %};"></span>
+                {% endfor %}
+                {% if giorno.appuntamenti|length > 3 %}
+                <span class="cal-piu">+{{ giorno.appuntamenti|length|add:"-3" }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <span style="font-size:13px;font-weight:600;color:#EDEDED;" id="agenda-counter">
+            {% if appuntamenti %}
+                {{ appuntamenti|length }} eventi
+                <span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:6px;">
+                {% if conteggio_per_tipo.SCADENZA %}<span style="color:#f59e0b;">{{ conteggio_per_tipo.SCADENZA }} scad.</span>{% endif %}
+                {% if conteggio_per_tipo.APPUNTAMENTO %}{% if conteggio_per_tipo.SCADENZA %} · {% endif %}<span style="color:#b0b8ff;">{{ conteggio_per_tipo.APPUNTAMENTO }} app.</span>{% endif %}
+                {% if conteggio_per_tipo.PROMEMORIA %}{% if conteggio_per_tipo.SCADENZA or conteggio_per_tipo.APPUNTAMENTO %} · {% endif %}<span style="color:#34d399;">{{ conteggio_per_tipo.PROMEMORIA }} prom.</span>{% endif %}
+                </span>
+            {% else %}
+                Nessun evento
+            {% endif %}
+        </span>
+        <span style="font-size:11px;color:#8A8F98;margin-left:8px;display:none;" id="agenda-giorno-label"></span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm" onclick="deselezionaGiorno()" id="agenda-mostra-tutti" style="display:none;background:rgba(255,255,255,0.04);border:1px solid #27282D;border-radius:6px;color:#8A8F98;padding:4px 10px;font-size:11px;">
+            <i class="bi bi-x-lg me-1"></i> Mostra tutti
+        </button>
+    </div>
+</div>
+
+<div id="agenda-lista">
+{% for app in appuntamenti %}
+<div class="agenda-item{% if app.virtuale %} virtuale{% endif %}" data-tipo="{{ app.tipo }}" data-completato="{{ app.completato|yesno:'si,no' }}" data-giorno="{{ app.data|date:'Y-m-d' }}" data-pk="{{ app.pk }}" data-virtuale="{{ app.virtuale|yesno:'si,no' }}" {% if app.pk %}draggable="true"{% endif %} {% if app.pk %}onclick="apriModalAgenda({{ app.pk }},'{{ app.titolo|escapejs }}','{{ app.data|date:'Y-m-d' }}','{{ app.descrizione|escapejs }}','{{ app.tipo }}','{{ app.ricorrenza }}','{{ app.ora|time:'H:i'|default:'' }}','{{ app.colore|default:'' }}')"{% endif %} ondragstart="onDragStart(event, {{ app.pk }})" ondragend="this.style.opacity='1'">
+    {% if app.colore %}<div class="colore-bar" style="background:{{ app.colore }};"></div>{% endif %}
+    <div style="flex-shrink:0;width:40px;text-align:center;">
+        <div style="font-size:18px;font-weight:700;color:{% if app.completato %}#3A3B40{% else %}#EDEDED{% endif %};">{{ app.data|date:"d" }}</div>
+        {% if app.ora %}<div style="font-size:9px;color:#b0b8ff;font-weight:600;">{{ app.ora|time:"H:i" }}</div>{% endif %}
+        <div style="font-size:9px;color:#8A8F98;text-transform:uppercase;">{{ app.data|date:"D" }}</div>
+    </div>
+    <div style="flex-shrink:0;">
+        <span style="display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600;
+            {% if app.tipo == 'SCADENZA' %}background:rgba(245,158,11,0.15);color:#f59e0b;
+            {% elif app.tipo == 'APPUNTAMENTO' %}background:rgba(94,106,210,0.15);color:#b0b8ff;
+            {% else %}background:rgba(16,185,129,0.15);color:#34d399;{% endif %}">
+            {{ app.get_tipo_display }}{% if app.virtuale %}<span class="agenda-badge-auto">Auto</span>{% endif %}
+        </span>
+        {% if app.ricorrenza and app.ricorrenza != 'NESSUNA' %}
+        <span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:600;background:rgba(167,139,250,0.1);color:#a78bfa;margin-left:4px;vertical-align:middle;">{{ app.get_ricorrenza_display|slice:':3' }}</span>
+        {% endif %}
+    </div>
+    <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;color:{% if app.completato %}#3A3B40{% else %}#EDEDED{% endif %};{% if app.completato %}text-decoration:line-through;{% endif %}">{{ app.titolo }}</div>
+        {% if app.descrizione %}
+        <div style="font-size:11px;color:#8A8F98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ app.descrizione }}</div>
+        {% endif %}
+    </div>
+    <div style="flex-shrink:0;display:flex;gap:4px;">
+        {% if app.pk %}
+        <button onclick="event.stopPropagation();toggleCompletato({{ app.pk }})" class="btn btn-sm" style="background:{% if app.completato %}rgba(16,185,129,0.15){% else %}rgba(255,255,255,0.04){% endif %};border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:{% if app.completato %}#34d399{% else %}#8A8F98{% endif %};padding:4px 8px;font-size:11px;">
+            <i class="bi {% if app.completato %}bi-check-circle-fill{% else %}bi-circle{% endif %}"></i>
+        </button>
+        <button onclick="event.stopPropagation();eliminaAgenda({{ app.pk }})" class="btn btn-sm" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);color:#f87171;border-radius:6px;padding:4px 8px;font-size:11px;">
+            <i class="bi bi-trash3"></i>
+        </button>
+        {% else %}
+        <span style="font-size:10px;color:#8A8F98;font-style:italic;">{% if app.ricorrenza != 'NESSUNA' %}Ricorrenza{% else %}Scadenza automatica{% endif %}</span>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="text-center py-5" class="card-simple">
+    <i class="bi bi-calendar-check fs-1 mb-3 d-block text-muted"></i>
+    <div class="text-secondary">Nessun appuntamento per questo mese.</div>
+    <button class="btn btn-sm mt-3" onclick="apriModalAgenda(null)" style="background:#5E6AD2;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;">
+        <i class="bi bi-plus-lg me-1"></i> Crea il primo
+    </button>
+</div>
+{% endfor %}
+</div>
+
+<div class="modal fade" id="modalAgenda" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;" id="modalAgendaTitle">Nuovo Appuntamento</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;">
+        <input type="hidden" id="agendaPk" value="">
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Data</label>
+            <input type="date" id="agendaData" class="form-control" value="{{ oggi|date:'Y-m-d' }}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Ora (opzionale)</label>
+            <input type="time" id="agendaOra" class="form-control" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Titolo</label>
+            <input type="text" id="agendaTitolo" class="form-control" placeholder="Descrizione breve" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Tipo</label>
+            <select id="agendaTipo" class="form-select" onchange="aggiornaColoreDaTipo()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+                <option value="PROMEMORIA">Promemoria</option>
+                <option value="APPUNTAMENTO">Appuntamento</option>
+                <option value="SCADENZA">Scadenza</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Colore</label>
+            <div class="d-flex gap-2 flex-wrap">
+                <input type="color" id="agendaColore" class="form-control form-control-color" style="width:44px;height:36px;padding:2px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);cursor:pointer;">
+                <button type="button" onclick="document.getElementById('agendaColore').value='';this.style.outline='2px solid #5E6AD2'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#8A8F98;padding:4px 10px;font-size:11px;cursor:pointer;">Nessuno</button>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Ricorrenza</label>
+            <select id="agendaRicorrenza" class="form-select" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+                <option value="NESSUNA">Nessuna</option>
+                <option value="SETTIMANALE">Settimanale</option>
+                <option value="MENSILE">Mensile</option>
+                <option value="ANNUALE">Annuale</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Descrizione (opzionale)</label>
+            <textarea id="agendaDescrizione" class="form-control" rows="2" placeholder="Dettagli..." style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;padding:14px 18px;">
+          <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#8A8F98;padding:8px 16px;font-size:12px;">Annulla</button>
+          <button type="button" onclick="salvaAgenda()" class="btn btn-sm" style="background:#5E6AD2;color:white;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;">
+              <i class="bi bi-check-lg me-1"></i> Salva
+          </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Agenda Appuntamenti
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        Agenda mensile per tenere traccia di appuntamenti, scadenze (F24, INPS, ecc.) e promemoria vari.</p>
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Clicca su un giorno del calendario per vedere gli eventi di quel giorno.<br>
+        <b>2.</b> Usa le frecce < & > per navigare tra i mesi, o <b>Oggi</b> per tornare al mese corrente.<br>
+        <b>3.</b> Clicca <b>Nuovo Appuntamento</b> o premi <kbd>Ctrl+N</kbd> per aggiungere.<br>
+        <b>4.</b> Clicca su un evento per modificarlo.<br>
+        <b>5.</b> Usa <i class="bi bi-circle"></i> per segnare come completato, <i class="bi bi-trash3"></i> per eliminare.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var _agendaGiornoSel = null;
+
+function selezionaGiorno(dataStr, el) {
+    document.querySelectorAll('.cal-cell.selected').forEach(function(c) { c.classList.remove('selected'); });
+    if (el) el.classList.add('selected');
+    _agendaGiornoSel = dataStr;
+
+    var mostraTutti = document.getElementById('agenda-mostra-tutti');
+    mostraTutti.style.display = 'inline-flex';
+
+    var count = 0;
+    document.querySelectorAll('#agenda-lista .agenda-item').forEach(function(item) {
+        if (item.dataset.giorno === dataStr) {
+            item.classList.remove('agenda-hidden');
+            count++;
+        } else {
+            item.classList.add('agenda-hidden');
+        }
+    });
+
+    var label = document.getElementById('agenda-giorno-label');
+    label.style.display = 'inline';
+    var gg = new Date(dataStr + 'T12:00:00');
+    var nomiGiorni = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+    label.textContent = '— ' + nomiGiorni[gg.getDay()] + ' ' + gg.getDate() + '/' + (gg.getMonth()+1) + ' (' + count + ' eventi)';
+}
+
+function filtraAgenda(tipo) {
+    document.querySelectorAll('.agenda-filtro').forEach(function(b) {
+        b.style.background = (b.dataset.filtro === tipo) ? '#5E6AD2' : 'transparent';
+        b.style.color = (b.dataset.filtro === tipo) ? 'white' : '';
+    });
+    document.querySelectorAll('#agenda-lista .agenda-item').forEach(function(item) {
+        if (tipo === 'tutti') { item.classList.remove('agenda-hidden'); }
+        else { item.classList[item.dataset.tipo === tipo ? 'remove' : 'add']('agenda-hidden'); }
+    });
+}
+
+function deselezionaGiorno() {
+    document.querySelectorAll('.cal-cell.selected').forEach(function(c) { c.classList.remove('selected'); });
+    _agendaGiornoSel = null;
+    document.getElementById('agenda-mostra-tutti').style.display = 'none';
+    document.getElementById('agenda-giorno-label').style.display = 'none';
+    document.querySelectorAll('#agenda-lista .agenda-item').forEach(function(item) { item.classList.remove('agenda-hidden'); });
+}
+
+function apriModalAgenda(pk, titolo, data, descrizione, tipo, ricorrenza, ora, colore) {
+    document.getElementById('agendaPk').value = pk || '';
+    document.getElementById('agendaData').value = data || _agendaGiornoSel || '{{ oggi|date:"Y-m-d" }}';
+    document.getElementById('agendaOra').value = ora || '';
+    document.getElementById('agendaTitolo').value = titolo || '';
+    document.getElementById('agendaDescrizione').value = descrizione || '';
+    document.getElementById('agendaTipo').value = tipo || 'PROMEMORIA';
+    document.getElementById('agendaColore').value = colore || '';
+    document.getElementById('agendaRicorrenza').value = ricorrenza || 'NESSUNA';
+    document.getElementById('modalAgendaTitle').textContent = pk ? 'Modifica Appuntamento' : 'Nuovo Appuntamento';
+    var modal = new bootstrap.Modal(document.getElementById('modalAgenda'));
+    modal.show();
+}
+
+function aggiornaColoreDaTipo() {
+    var mappa = { 'SCADENZA':'#f59e0b', 'APPUNTAMENTO':'#5E6AD2', 'PROMEMORIA':'#34d399' };
+    var coloreEl = document.getElementById('agendaColore');
+    if (!coloreEl.value) coloreEl.value = mappa[document.getElementById('agendaTipo').value] || '';
+}
+
+function cercaAgenda(testo) {
+    testo = testo.toLowerCase().trim();
+    document.querySelectorAll('#agenda-lista .agenda-item').forEach(function(item) {
+        if (!testo) { item.classList.remove('agenda-hidden'); return; }
+        var match = item.textContent.toLowerCase().indexOf(testo) !== -1;
+        item.classList.toggle('agenda-hidden', !match);
+    });
+}
+
+function salvaAgenda() {
+    var pk = document.getElementById('agendaPk').value;
+    var data = document.getElementById('agendaData').value;
+    var titolo = document.getElementById('agendaTitolo').value.trim();
+    if (!titolo) { mostraToast('Inserisci un titolo', false); return; }
+    var descrizione = document.getElementById('agendaDescrizione').value.trim();
+    var tipo = document.getElementById('agendaTipo').value;
+    var ricorrenza = document.getElementById('agendaRicorrenza').value;
+    var ora = document.getElementById('agendaOra').value;
+    var colore = document.getElementById('agendaColore').value;
+    var formData = new FormData();
+    formData.append('data', data);
+    formData.append('titolo', titolo);
+    formData.append('descrizione', descrizione);
+    formData.append('tipo', tipo);
+    formData.append('ricorrenza', ricorrenza);
+    formData.append('ora', ora);
+    formData.append('colore', colore);
+    var url = pk ? ('/ajax/agenda/modifica/' + pk + '/') : '/ajax/agenda/nuovo/';
+    fetch(url, { method:'POST', body:formData, headers:{ 'X-Requested-With':'XMLHttpRequest', 'X-CSRFToken':getCSRFToken() } })
+        .then(function(r){return r.json();})
+        .then(function(d){
+            if(d.success){bootstrap.Modal.getInstance(document.getElementById('modalAgenda')).hide();window.location.reload();}
+            else{mostraToast('Errore: '+(d.error||'Operazione fallita'),false);}
+        })
+        .catch(function(e){mostraToast('Errore di rete',false);});
+}
+
+function toggleCompletato(pk) {
+    fetch('/ajax/agenda/toggle/'+pk+'/', { method:'POST', headers:{ 'X-Requested-With':'XMLHttpRequest', 'X-CSRFToken':getCSRFToken() } })
+        .then(function(r){return r.json();})
+        .then(function(d){if(d.success)window.location.reload();})
+        .catch(function(e){mostraToast('Errore di rete',false);});
+}
+
+function eliminaAgenda(pk) {
+    if(!confirm('Eliminare questo appuntamento?'))return;
+    fetch('/ajax/agenda/elimina/'+pk+'/', { method:'POST', headers:{ 'X-Requested-With':'XMLHttpRequest', 'X-CSRFToken':getCSRFToken() } })
+        .then(function(r){return r.json();})
+        .then(function(d){if(d.success)window.location.reload();else mostraToast('Errore',false);})
+        .catch(function(e){mostraToast('Errore di rete',false);});
+}
+
+var _dragPk = null;
+function onDragStart(ev, pk) { _dragPk = pk; ev.dataTransfer.effectAllowed = 'move'; ev.target.style.opacity = '0.5'; }
+function onDropGiorno(ev, dataStr) {
+    ev.preventDefault();
+    ev.currentTarget.classList.remove('cal-drop-hover');
+    if (!_dragPk) return;
+    fetch('/ajax/agenda/sposta/' + _dragPk + '/', { method:'POST', headers:{ 'X-Requested-With':'XMLHttpRequest', 'X-CSRFToken':getCSRFToken(), 'Content-Type':'application/x-www-form-urlencoded' }, body:'data='+encodeURIComponent(dataStr) })
+        .then(function(r){return r.json();})
+        .then(function(d){if(d.success)window.location.reload();else mostraToast('Errore spostamento',false);_dragPk=null;})
+        .catch(function(e){mostraToast('Errore di rete',false);_dragPk=null;});
+}
+
+document.addEventListener('keydown', function(e) {
+    if(e.key==='n'&&(e.ctrlKey||e.metaKey)&&!e.target.closest('input,textarea,select')){
+        e.preventDefault();
+        apriModalAgenda(null);
+    }
+});
+
+(function() {
+    if (sessionStorage.getItem('agenda_allerta_chiusa')) {
+        var el = document.getElementById('agenda-allerta-scadenze');
+        if (el) el.style.display = 'none';
+    }
+})();
+</script>
+{% endblock %}

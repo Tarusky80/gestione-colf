@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Decalogo del Colloquio</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<style>
+.guida-section{margin-bottom:28px;}
+.guida-section h4{font-size:17px;font-weight:700;color:#EDEDED;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.guida-section p{font-size:13px;color:#C0C4CC;line-height:1.7;margin-bottom:8px;}
+.guida-section ul{padding-left:20px;margin-bottom:8px;}
+.guida-section li{font-size:13px;color:#C0C4CC;line-height:1.7;margin-bottom:4px;}
+.guida-note{background:rgba(245,158,11,0.06);border-left:3px solid #f59e0b;padding:8px 14px;margin:10px 0 12px;border-radius:6px;font-size:12px;color:#d4a84b;}
+.guida-warning{background:rgba(248,113,113,0.08);border-left:3px solid #f87171;padding:8px 14px;margin:10px 0 12px;border-radius:6px;font-size:12px;color:#f87171;}
+.decalogo-numero{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#5E6AD2;color:white;font-size:13px;font-weight:700;margin-right:10px;flex-shrink:0;}
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold mb-0"><i class="bi bi-chat-dots me-2" style="color:#5E6AD2;"></i>{{ guide.title }}</h1>
+    <div class="d-flex gap-2">
+        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'decalogo_colloquio_pdf' %}', 0)" class="btn btn-sm" style="background:rgba(255,255,255,0.04);border:1px solid #27282D;border-radius:8px;color:#8A8F98;padding:8px 14px;font-size:11px;font-weight:600;text-decoration:none;">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Scarica PDF
+        </a>
+        <button onclick="apriModaleInvioGuida('decalogo_colloquio')" class="btn btn-sm" style="background:rgba(255,255,255,0.04);border:1px solid #27282D;border-radius:8px;color:#8A8F98;padding:8px 14px;font-size:11px;font-weight:600;">
+            <i class="bi bi-envelope me-1"></i> Invia Email
+        </button>
+    </div>
+</div>
+
+{% if guide.subtitle %}
+<p style="color:#8A8F98;font-size:14px;margin-bottom:24px;">{{ guide.subtitle }}</p>
+{% endif %}
+
+<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:24px;">
+    {% autoescape off %}{{ html_content }}{% endautoescape %}
+</div>
+
+{% include 'paghe/_modale_invio_guida.html' with guide_id='decalogo_colloquio' %}
+{% endblock %}

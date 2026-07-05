@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'datori_list' %}">Anagrafiche</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Datori di Lavoro</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">DATORI DI LAVORO
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      <div class="d-inline-block float-end">
+        <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);margin-right:6px;vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
+        <a href="{% url 'ajax_esporta_xlsx' 'datori' %}" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#9ca3ff;border:1px solid rgba(94,106,210,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;margin-left:6px;"><i class="bi bi-download me-1"></i> Export XLSX</a>
+        <button class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalDatori')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;margin-left:4px;"><i class="bi bi-upload me-1"></i> Importa</button>
+      </div>
+    </h1>
+    <p class="text-secondary small mb-0">Gestione delle anagrafiche dei datori.</p>
+</div>
+
+<div class="mb-3 row g-3 align-items-end" style="max-width: 600px;">
+    <div class="col-md-6">
+        <div style="position: relative;">
+            <i class="bi bi-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8A8F98; font-size: 14px;"></i>
+            <input type="text" id="filterDatori" class="search-input-main" placeholder="Filtra datori..." onkeyup="filterTable('filterDatori', 'datoriTable', 0, 1, 2, 3);aggiornaConteggio('datoriTable','fCount')" style="padding: 10px 14px 10px 38px; font-size: 13px; border-radius: 10px;">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label class="mb-1 fw-bold" class="c-10-up">Comune</label>
+        <select id="fComune" class="form-control" onchange="filtraPerComune('fComune', 'datoriTable')" style="background:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:8px 12px;border-radius:8px;">
+            <option value="">Tutti</option>
+            {% for c in comuni %}
+            <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="custom-table-container">
+    <table class="table custom-table sortable" id="datoriTable">
+        <thead>
+            <tr>
+                <th>Nome e Cognome</th>
+                <th>Codice Fiscale</th>
+                <th>Indirizzo</th>
+                <th>Comune</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th style="width:80px;text-align:center;">Accesso</th>
+                <th style="width:60px;text-align:center;">Portale</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for datore in datori %}
+            <tr class="clickable-row" data-type="datore" data-pk="{{ datore.pk }}" data-title="{{ datore.nome_cognome }}" data-sub="{{ datore.codice_fiscale }}" data-comune="{{ datore.comune|default:'' }}">
+                <td><div class="fw-bold">{{ datore.nome_cognome }}</div></td>
+                <td><div class="text-secondary">{{ datore.codice_fiscale }}</div></td>
+                <td>{{ datore.indirizzo|default:"-" }}</td>
+                <td>{{ datore.comune|default:"-" }}</td>
+                <td>{{ datore.email|default:"-" }}</td>
+                <td>{{ datore.telefono|default:"-" }}</td>
+                <td style="text-align:center;vertical-align:middle;">
+                    <span id="accIcon_{{ datore.codice_fiscale }}" onclick="event.stopPropagation();apriModalAccesso('{{ datore.codice_fiscale }}','{{ datore.nome_cognome|escapejs }}')" title="Gestisci accesso" style="display:inline-block;width:28px;height:28px;border-radius:50%;background:#27282D;cursor:pointer;border:2px solid #3B3C42;transition:all .2s;"></span>
+                </td>
+                <td style="text-align:center;vertical-align:middle;">
+                    <a href="/portal/?cf={{ datore.codice_fiscale }}" target="_blank" onclick="event.stopPropagation();" title="Apri portale datore" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#27282D;border:2px solid #3B3C42;color:#9ca3ff;text-decoration:none;font-size:13px;transition:all .2s;" onmouseover="this.style.background='#5E6AD2';this.style.borderColor='#5E6AD2';this.style.color='#fff';" onmouseout="this.style.background='#27282D';this.style.borderColor='#3B3C42';this.style.color='#9ca3ff';"><i class="bi bi-box-arrow-up-right"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-secondary py-5">
+                    <i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>
+                    Nessun datore registrato
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Datori di Lavoro
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Qui trovi l'elenco completo di tutti i <b>datori di lavoro</b> registrati nel gestionale. Ogni riga della tabella mostra nome e cognome, codice fiscale, indirizzo, comune, email e telefono.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> <b>Clicca su una riga</b> per aprire il pannello delle azioni rapide: Modifica, Duplica, Elimina, Documenti.<br>
+        <b>2.</b> Usa il <b>campo di ricerca</b> per filtrare in tempo reale per nome, codice fiscale, indirizzo o email.<br>
+        <b>3.</b> Usa il menu a tendina <b>Comune</b> per filtrare per comune di residenza.<br>
+        <b>4.</b> <b>Export XLSX</b> — scarica l'intero elenco in formato Excel.<br>
+        <b>5.</b> <b>Importa</b> — carica un file XLSX per importare più datori in una volta.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Modifica e Duplica</b><br>
+        La modifica apre un pannello laterale (offcanvas) con tutti i campi dell'anagrafica. La duplica crea una copia esatta da modificare. L'eliminazione sposta il record nella pagina "Eliminati" da cui può essere ripristinato.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'paghe/_import_xlsx_modal.html' with tipo='datori' %}
+
+{# Modale gestione accesso datore #}
+<div class="modal fade" id="modaleAccessoDatore" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-shield-lock me-2" style="color:#5E6AD2;"></i> <span id="accModalTitle">Accesso Datore</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;">
+        <div style="margin-bottom:14px;">
+          <span style="font-weight:600;color:#EDEDED;">Datore:</span>
+          <span id="accModalNome" style="color:#8A8F98;margin-left:6px;"></span>
+        </div>
+        <div style="margin-bottom:14px;">
+          <span style="font-weight:600;color:#EDEDED;">Codice Fiscale:</span>
+          <span id="accModalCf" style="color:#8A8F98;margin-left:6px;font-family:monospace;"></span>
+        </div>
+        <div id="accStatoAttuale" style="margin-bottom:16px;padding:8px 12px;background:#09090B;border:1px solid #27282D;border-radius:8px;font-size:12px;"></div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;">Nuova password</label>
+          <div style="position:relative;">
+            <input type="password" id="accPassword" style="width:100%;background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:8px;padding:10px 40px 10px 14px;font-size:13px;outline:none;" placeholder="Inserisci password (min 4 caratteri)" autocomplete="new-password">
+            <button type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#5C5F66;cursor:pointer;font-size:16px;padding:0;" onclick="var p=document.getElementById('accPassword');var i=this.querySelector('i');if(p.type==='password'){p.type='text';i.className='bi bi-eye-fill'}else{p.type='password';i.className='bi bi-eye-slash-fill'}"><i class="bi bi-eye-slash-fill"></i></button>
+          </div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:12px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;">Conferma password</label>
+          <input type="password" id="accPasswordConfirm" style="width:100%;background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:8px;padding:10px 14px;font-size:13px;outline:none;" placeholder="Ripeti la password" autocomplete="new-password">
+        </div>
+        <div id="accPassError" style="display:none;color:#f87171;font-size:12px;margin-top:6px;"></div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+        <button type="button" id="btnDisabilitaAccesso" onclick="disabilitaAccessoDatore()" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;display:none;"><i class="bi bi-lock-fill me-1"></i> Disabilita accesso</button>
+        <div style="display:flex;gap:8px;margin-left:auto;">
+          <button type="button" data-bs-dismiss="modal" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;">Chiudi</button>
+          <button type="button" id="btnSalvaAccesso" onclick="salvaAccessoDatore()" style="background:#5E6AD2;border:none;color:white;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-check-lg me-1"></i> <span id="btnAccLabel">Abilita accesso</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var _accCf = '';
+
+function apriModalAccesso(cf, nome) {
+    _accCf = cf;
+    document.getElementById('accModalCf').textContent = cf;
+    document.getElementById('accModalNome').textContent = nome;
+    document.getElementById('accPassword').value = '';
+    document.getElementById('accPasswordConfirm').value = '';
+    document.getElementById('accPassError').style.display = 'none';
+    document.getElementById('accPassError').textContent = '';
+    document.getElementById('btnSalvaAccesso').disabled = false;
+    // Carica stato attuale
+    fetch('/ajax/datore-stato-accesso/' + encodeURIComponent(cf) + '/')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        var el = document.getElementById('accStatoAttuale');
+        var disBtn = document.getElementById('btnDisabilitaAccesso');
+        var btnLabel = document.getElementById('btnAccLabel');
+        if (d.abilitato) {
+            el.innerHTML = '<span style="color:#34d399;"><i class="bi bi-unlock-fill me-1"></i> Accesso abilitato</span>' + (d.ultimo_accesso ? '<br><span style="color:#5C5F66;">Ultimo accesso: ' + d.ultimo_accesso + '</span>' : '');
+            disBtn.style.display = '';
+            btnLabel.textContent = 'Modifica password';
+        } else {
+            el.innerHTML = '<span style="color:#f87171;"><i class="bi bi-lock-fill me-1"></i> Accesso non abilitato</span>';
+            disBtn.style.display = 'none';
+            btnLabel.textContent = 'Abilita accesso';
+        }
+    });
+    new bootstrap.Modal(document.getElementById('modaleAccessoDatore')).show();
+}
+
+function salvaAccessoDatore() {
+    var pw = document.getElementById('accPassword').value;
+    var confirm = document.getElementById('accPasswordConfirm').value;
+    var errEl = document.getElementById('accPassError');
+    if (!pw || pw.length < 4) {
+        errEl.textContent = 'La password deve essere di almeno 4 caratteri.';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (pw !== confirm) {
+        errEl.textContent = 'Le password non coincidono.';
+        errEl.style.display = 'block';
+        return;
+    }
+    document.getElementById('btnSalvaAccesso').disabled = true;
+    fetch('/ajax/datore-abilita-accesso/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({codice_fiscale: _accCf, password: pw, abilita: true})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+        if (res.success) {
+            bootstrap.Modal.getInstance(document.getElementById('modaleAccessoDatore')).hide();
+            aggiornaIconaAccesso(_accCf);
+            mostraToast(res.message || 'Accesso abilitato.', true);
+        } else {
+            document.getElementById('btnSalvaAccesso').disabled = false;
+            errEl.textContent = res.error || 'Errore sconosciuto.';
+            errEl.style.display = 'block';
+        }
+    })
+    .catch(function(){
+        document.getElementById('btnSalvaAccesso').disabled = false;
+        errEl.textContent = 'Errore di rete.';
+        errEl.style.display = 'block';
+    });
+}
+
+function disabilitaAccessoDatore() {
+    if (!confirm('Disabilitare l\'accesso per questo datore?')) return;
+    fetch('/ajax/datore-abilita-accesso/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({codice_fiscale: _accCf, password: 'x', abilita: false})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+        if (res.success) {
+            bootstrap.Modal.getInstance(document.getElementById('modaleAccessoDatore')).hide();
+            aggiornaIconaAccesso(_accCf);
+            mostraToast('Accesso disabilitato.', true);
+        } else {
+            mostraToast(res.error || 'Errore.', false);
+        }
+    })
+    .catch(function(){ mostraToast('Errore di rete.', false); });
+}
+
+function aggiornaIconaAccesso(cf) {
+    fetch('/ajax/datore-stato-accesso/' + encodeURIComponent(cf) + '/')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        var icon = document.getElementById('accIcon_' + cf);
+        if (icon) {
+            if (d.abilitato) {
+                icon.style.background = '#34d399';
+                icon.style.borderColor = '#34d399';
+                icon.title = 'Accesso abilitato - Clicca per gestire';
+            } else {
+                icon.style.background = '#f87171';
+                icon.style.borderColor = '#f87171';
+                icon.title = 'Accesso non abilitato - Clicca per gestire';
+            }
+        }
+    });
+}
+
+// Carica stato accesso all'avvio per ogni datore
+document.addEventListener('DOMContentLoaded', function(){
+    {% for datore in datori %}
+    aggiornaIconaAccesso('{{ datore.codice_fiscale }}');
+    {% endfor %}
+});
+</script>
+{% endblock %}

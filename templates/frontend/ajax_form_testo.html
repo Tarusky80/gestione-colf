@@ -1,0 +1,74 @@
+<form id="dynamicForm" method="POST" style="height:100%; display:flex; flex-direction:column; overflow:hidden;">
+    {% csrf_token %}
+    <div style="flex-shrink:0; display:flex; gap:10px; padding-bottom:6px;">
+        <div style="flex:2;">
+            <label class="mb-1 fw-bold" class="c-10-up">TIPO</label>
+            {{ form.tipo }}
+        </div>
+        <div style="flex:3;">
+            <label class="mb-1 fw-bold" class="c-10-up">CODICE</label>
+            {{ form.codice }}
+        </div>
+    </div>
+
+{% verbatim %}
+    <div style="flex-shrink:0; margin-bottom:6px; padding:5px 10px; background:rgba(156,163,255,0.06); border:1px solid rgba(156,163,255,0.1); border-radius:6px; font-size:12px; color:#8A8F98; line-height:2; user-select:none;">
+        <span style="font-weight:600; color:#9ca3ff; margin-right:8px;">Layout:</span>
+        <code style="cursor:pointer;color:#a3a8c2; font-size:12px;" onclick="editorInserisce('{{INIZIO_PAGINA}}')">{{INIZIO_PAGINA}}</code>
+        <code style="cursor:pointer;color:#a3a8c2; font-size:12px;" onclick="editorInserisce('{{STOP_INIZIO_PAGINA}}')">{{STOP_INIZIO_PAGINA}}</code>
+        <code style="cursor:pointer;color:#a3a8c2; font-size:12px;" onclick="editorInserisce('{{CAMBIA_PAGINA}}')">{{CAMBIA_PAGINA}}</code>
+        <code style="cursor:pointer;color:#a3a8c2; font-size:12px;" onclick="editorInserisce('{{FINE_PAGINA}}')">{{FINE_PAGINA}}</code>
+        <code style="cursor:pointer;color:#a3a8c2; font-size:12px;" onclick="editorInserisce('{{STOP_FINE_PAGINA}}')">{{STOP_FINE_PAGINA}}</code>
+        <code style="cursor:pointer;color:#5E6AD2; font-size:12px;" onclick="editorInserisce('{{TOP_DOCUMENTO}}')">{{TOP_DOCUMENTO}}</code>
+        <code style="cursor:pointer;color:#5E6AD2; font-size:12px;" onclick="editorInserisce('{{FOOTER_DOCUMENTO}}')">{{FOOTER_DOCUMENTO}}</code>
+        <code style="cursor:pointer;color:#f59e0b; font-size:12px;" onclick="editorInserisce('{{LOGO_PROGRAMMA,80}}')">{{LOGO_PROGRAMMA,80}}</code>
+        <code style="cursor:pointer;color:#a3a8c2; font-size:12px;" onclick="editorInserisce('{{LINEA}}')">{{LINEA}}</code>
+        <code style="cursor:pointer;color:#a3a8c2; font-size:12px;" onclick="editorInserisce('{{HR}}')">{{HR}}</code>
+        <span style="font-weight:600; color:#9ca3ff; margin:0 8px;">Calc:</span>
+        <code style="cursor:pointer;color:#10b981; font-size:12px;" onclick="editorInserisce('{{CONTRIBUTI_MENSILI}}')">{{CONTRIBUTI_MENSILI}}</code>
+        <code style="cursor:pointer;color:#10b981; font-size:12px;" onclick="editorInserisce('{{PAGA_ORARIA}}')">{{PAGA_ORARIA}}</code>
+    </div>
+{% endverbatim %}
+
+    {# --- OGGETTO (TinyMCE) --- #}
+    <div id="oggettoField" style="flex-shrink:0; padding-bottom:4px;">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="mb-0 fw-bold" class="c-10-up">OGGETTO</label>
+        </div>
+        <textarea name="oggetto_titolo" id="id_oggetto_titolo" onfocus="lastTargetTesto='id_oggetto_titolo'" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:6px 12px; border-radius:8px; width:100%; height:150px;">{{ form.oggetto_titolo.value|default:'' }}</textarea>
+    </div>
+
+    {# --- CORPO TESTO (TinyMCE, flex:1) --- #}
+    <div style="flex:1; display:flex; flex-direction:column; min-height:0; position:relative;">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="mb-0 fw-bold" class="c-10-up">CORPO TESTO</label>
+            <div class="d-flex gap-2">
+            <button type="button" onclick="downloadPreviewPdf()" style="background:rgba(245,158,11,0.12); color:#f59e0b; border:1px solid rgba(245,158,11,0.25); border-radius:6px; padding:5px 14px; font-size:12px; font-weight:600; cursor:pointer;">
+                <i class="bi bi-filetype-pdf"></i> PDF
+            </button>
+            <button type="button" onclick="togglePreview()" id="btnTogglePreview" style="background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.25); border-radius:6px; padding:5px 14px; font-size:12px; font-weight:600; cursor:pointer;">
+                <i class="bi bi-eye"></i> Anteprima
+            </button>
+            </div>
+        </div>
+        <textarea name="corpo_testo" id="id_corpo_testo" onfocus="lastTargetTesto='id_corpo_testo'" style="flex:1; background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px; border-radius:8px; width:100%; min-height:80px;">{{ form.corpo_testo.value|default:'' }}</textarea>
+    </div>
+
+    {# --- NOTE INTERNE (semplice textarea) --- #}
+    <div style="flex-shrink:0; padding-top:6px;">
+        <label class="mb-1 fw-bold" class="c-10-up">NOTE INTERNE</label>
+        <textarea name="note_interne" id="id_note_interne" class="form-control" rows="1" onfocus="lastTargetTesto='id_note_interne'" oninput="aggiornaAnteprimaTesto()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:12px; padding:4px 10px; border-radius:6px; width:100%;">{{ form.note_interne.value|default:'' }}</textarea>
+    </div>
+
+    {% for error in form.non_field_errors %}
+        <div class="mb-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>
+    {% endfor %}
+
+    <div style="flex-shrink:0; padding-top:10px; display:flex; justify-content:flex-end; gap:8px; border-top:1px solid #27282D; margin-top:8px;">
+        <button type="button" class="btn" data-bs-dismiss="offcanvas" style="color: #8A8F98; background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 18px; font-size: 12px; font-weight: 500;">Annulla</button>
+        <button type="submit" class="btn-linear px-4 py-2" id="btnSalvaForm" style="font-size: 12px; background: #5E6AD2; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-weight: 600;">
+            <i class="bi bi-check2"></i> Salva
+        </button>
+    </div>
+</form>
+

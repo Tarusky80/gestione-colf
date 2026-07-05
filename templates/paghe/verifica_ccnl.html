@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tabelle_tags %}
+{% block content %}
+<style>
+.ver-voci { display:flex; gap:24px; flex-wrap:wrap; margin-bottom:24px; }
+.ver-voce { display:flex; align-items:center; gap:8px; font-size:13px; }
+.ver-voce .badge { font-size:16px; font-weight:700; padding:2px 12px; border-radius:6px; }
+.ver-table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px; }
+.ver-table th { background:#2c5282; color:#fff; padding:6px 8px; text-align:center; font-weight:600; white-space:nowrap; }
+.ver-table td { padding:5px 8px; text-align:center; border-bottom:1px solid #27282D; }
+.ver-table tr:hover td { background:rgba(255,255,255,0.03); }
+.cell-ok { background:rgba(16,185,129,0.12); color:#34d399; }
+.cell-diff { background:rgba(239,68,68,0.12); color:#ef4444; }
+.cell-solo-ccnl { background:rgba(234,179,8,0.12); color:#eab308; }
+.cell-solo-db { background:rgba(139,92,246,0.12); color:#a78bfa; }
+.cell-nessuno { color:#5C5F66; }
+.col-db { border-left:1px dashed #444; }
+.tipo-badge { font-size:9px; padding:1px 5px; border-radius:3px; margin-left:4px; }
+.tipo-diretto { background:rgba(16,185,129,0.15); color:#34d399; }
+.tipo-approssimativo { background:rgba(234,179,8,0.15); color:#eab308; }
+.extra-riga td { background:rgba(139,92,246,0.06); font-style:italic; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 fw-bold mb-0">VERIFICA CCNL <small class="text-secondary" style="font-size:13px;font-weight:400;">confronto Tabelle CCNL vs ParametriCCNL</small></h1>
+  <a href="/tabella/parametri-ccnl/" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#9ca3ff;border:1px solid rgba(94,106,210,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-arrow-left me-1"></i> Torna a Parametri CCNL</a>
+</div>
+
+<div class="ver-voci">
+  <div class="ver-voce"><span class="badge" style="background:#34d399;">{{ totali.ok }}</span> OK</div>
+  <div class="ver-voce"><span class="badge" style="background:#ef4444;">{{ totali.diff }}</span> Differenze</div>
+  <div class="ver-voce"><span class="badge" style="background:#eab308;">{{ totali.solo_ccnl }}</span> Solo CCNL</div>
+  <div class="ver-voce"><span class="badge" style="background:#a78bfa;">{{ totali.solo_db }}</span> Solo DB</div>
+</div>
+
+{% for r in risultati %}
+<div class="p-3 mb-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;{% if r.extra_db %}border-color:#a78bfa;{% endif %}">
+  <h4 class="mb-3" style="font-size:14px;font-weight:600;color:#EDEDED;">
+    {{ r.anno }} — <span style="color:#2c5282;">{{ r.livello }}</span>
+    {% if not r.db_presente %}<span class="badge" style="background:#eab308;font-size:9px;vertical-align:middle;">solo CCNL</span>{% endif %}
+    {% if r.extra_db %}<span class="badge" style="background:#a78bfa;font-size:9px;vertical-align:middle;">extra DB</span>{% endif %}
+  </h4>
+
+  {% if r.extra_db %}
+  <p class="small text-secondary mb-0">Record presente solo nel database (ParametriCCNL), non presente nelle Tabelle CCNL di confronto.</p>
+  {% else %}
+  <table class="ver-table">
+    <thead>
+      <tr>
+        <th>Colonna</th>
+        <th>CCNL</th>
+        <th class="col-db">DB</th>
+        <th>Stato</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for col in colonne_ordine %}
+      {% with c=r.colonne|get_item:col %}
+      {% if c.stato != 'nessuno' %}
+      <tr>
+        <td style="text-align:left;font-weight:500;white-space:nowrap;">
+          {{ colonne_label|get_item:col }}
+          {% if c.tipo == 'approssimativo' %}<span class="tipo-badge tipo-approssimativo" title="Mapping approssimativo">~</span>{% endif %}
+        </td>
+        <td>{{ c.ccnl }}</td>
+        <td class="col-db">{{ c.db }}</td>
+        <td>
+          {% if c.stato == 'ok' %}<span class="cell-ok" style="padding:1px 8px;border-radius:4px;">✓ Ok</span>{% endif %}
+          {% if c.stato == 'diff' %}<span class="cell-diff" style="padding:1px 8px;border-radius:4px;">✗ {{ c.ccnl }} ≠ {{ c.db }}</span>{% endif %}
+          {% if c.stato == 'solo_ccnl' %}<span class="cell-solo-ccnl" style="padding:1px 8px;border-radius:4px;">solo CCNL</span>{% endif %}
+          {% if c.stato == 'solo_db' %}<span class="cell-solo-db" style="padding:1px 8px;border-radius:4px;">solo DB</span>{% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% endwith %}
+      {% endfor %}
+
+      {% for nome, v in r.indennita.items %}
+      {% if v.stato != 'ok' %}
+      <tr>
+        <td style="text-align:left;font-weight:500;">Indennità {{ nome|capfirst }}</td>
+        <td>€ {{ v.ccnl }}</td>
+        <td class="col-db">€ {{ v.db }}</td>
+        <td>
+          {% if v.stato == 'diff' %}<span class="cell-diff" style="padding:1px 8px;border-radius:4px;">✗</span>{% endif %}
+          {% if v.stato == 'solo_ccnl' %}<span class="cell-solo-ccnl" style="padding:1px 8px;border-radius:4px;">solo CCNL</span>{% endif %}
+          {% if v.stato == 'solo_db' %}<span class="cell-solo-db" style="padding:1px 8px;border-radius:4px;">solo DB</span>{% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+
+      {% for col in colonne_ordine %}
+      {% with c=r.colonne|get_item:col %}
+      {% if c.stato == 'nessuno' %}
+      <tr>
+        <td style="text-align:left;font-weight:500;color:#5C5F66;">{{ colonne_label|get_item:col }}</td>
+        <td class="cell-nessuno">—</td>
+        <td class="col-db cell-nessuno">—</td>
+        <td><span class="cell-nessuno">—</span></td>
+      </tr>
+      {% endif %}
+      {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+{% empty %}
+<div class="p-5 text-center text-secondary">
+  <i class="bi bi-check-circle fs-1 mb-3 d-block" style="color:#34d399;"></i>
+  Nessun dato da confrontare.
+</div>
+{% endfor %}
+{% endblock %}

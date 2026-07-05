@@ -1,0 +1,523 @@
+{% extends 'base.html' %}
+{% load tabelle_tags %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'datori_list' %}">Anagrafiche</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contratti Attivi</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+    .custom-table td { white-space: normal; vertical-align: top; min-width: 80px; }
+    .custom-table th { white-space: nowrap; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">CONTRATTI ATTIVI
+      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+      <div class="d-inline-block float-end">
+        <span id="fCount" class="badge-filter"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
+        <button onclick="esportaExcelContratti()" class="btn btn-sm btn-xlsx"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Scarica Excel</button>
+        <button class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalContratti')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;margin-left:4px;"><i class="bi bi-upload me-1"></i> Importa</button>
+      </div>
+    </h1>
+    <p class="text-secondary small mb-0">Elenco dei contratti attualmente attivi.</p>
+</div>
+
+<div class="card-simple p-3 mb-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="c-10-up mb-1 fw-bold">Ricerca</label>
+            <div style="position: relative;">
+                <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
+                <input type="text" id="fTesto" class="form-control bg-input" placeholder="Datore, lavoratore, beneficiario..." oninput="filteraContratti()" style="padding:8px 12px 8px 34px;">
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" onclick="toggleAvanzati()" id="btnAvanzati" style="background:rgba(94,106,210,0.1); color:#9ca3ff; border:1px solid rgba(94,106,210,0.15); border-radius:8px; padding:8px 16px; font-size:12px; cursor:pointer; transition:all 0.15s;">
+                <i class="bi bi-sliders me-1"></i> Filtri avanzati
+            </button>
+        </div>
+        <div class="col-md-3 d-flex align-items-end justify-content-end"></div>
+    </div>
+
+    <div id="filtriAvanzati" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid #27282D;">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="c-10-up mb-1 fw-bold">Livello</label>
+                <select id="fLivello" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    {% for l in livelli %}
+                    <option value="{{ l.codice|upper }}">{{ l.codice }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="c-10-up mb-1 fw-bold">Comune</label>
+                <select id="fComune" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    {% for c in comuni %}
+                    <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="c-10-up mb-1 fw-bold">Progetto Regionale</label>
+                <select id="fProgetto" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    {% for tp in tipi_progetto %}
+                    <option value="{{ tp.nome|upper }}">{{ tp.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="c-10-up mb-1 fw-bold">Stato</label>
+                <select id="fStato" class="form-control bg-input" onchange="filteraContratti()">
+                    <option value="">Tutti</option>
+                    <option value="ATTIVO">Attivo</option>
+                    <option value="CESSATO">Cessato</option>
+                    <option value="RISOLTO">Risolto</option>
+                </select>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-4">
+                <label class="c-10-up mb-1 fw-bold">Data Assunzione dal</label>
+                <input type="date" id="fAssDa" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+            <div class="col-md-4">
+                <label class="c-10-up mb-1 fw-bold">Data Assunzione al</label>
+                <input type="date" id="fAssA" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+            <div class="col-md-4">
+                <label class="c-10-up mb-1 fw-bold">Data Fine dal</label>
+                <input type="date" id="fFineDa" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <label class="c-10-up mb-1 fw-bold">Budget Annuale (&euro;)</label>
+                <div class="d-flex align-items-center gap-3">
+                    <span id="bAnDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
+                    <div style="flex:1; position:relative; height:40px;">
+                        <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
+                        <div id="bAnProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
+                        <input type="range" id="fBAnDa" min="0" max="50000" step="500" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
+                        <input type="range" id="fBAnA" min="0" max="50000" step="500" value="50000" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
+                    </div>
+                    <span id="bAnAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">50k</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="c-10-up mb-1 fw-bold">Budget Mensile (&euro;)</label>
+                <div class="d-flex align-items-center gap-3">
+                    <span id="bMenDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
+                    <div style="flex:1; position:relative; height:40px;">
+                        <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
+                        <div id="bMenProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
+                        <input type="range" id="fBMenDa" min="0" max="2500" step="25" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
+                        <input type="range" id="fBMenA" min="0" max="2500" step="25" value="2500" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
+                    </div>
+                    <span id="bMenAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">2.5k</span>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-md-3">
+                <label class="c-10-up mb-1 fw-bold">ORE da</label>
+                <input type="number" id="fOreDa" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+            <div class="col-md-3">
+                <label class="c-10-up mb-1 fw-bold">ORE a</label>
+                <input type="number" id="fOreA" class="form-control bg-input" oninput="filteraContratti()">
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <div class="col-12">
+                <button type="button" onclick="svuotaFiltri()" style="background:rgba(255,255,255,0.05); color:#8A8F98; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:6px 14px; font-size:11px; cursor:pointer; transition:all 0.15s;">
+                    <i class="bi bi-x-lg me-1"></i> Azzera filtri
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="custom-table-container card-simple" style="padding: 20px;">
+    <table class="table custom-table sortable" id="contrTable" data-mp="{{ mese_prec|stringformat:'02d' }}" data-mc="{{ mese_corr|stringformat:'02d' }}" data-ms="{{ mese_succ|stringformat:'02d' }}" data-ap="{{ anno_prec }}" data-ac="{{ anno_corr }}" data-as="{{ anno_succ }}">
+        <thead>
+            <tr>
+                <th>Datore</th>
+                <th>Lavoratore</th>
+                <th>Beneficiario</th>
+                <th>Progetto Regionale</th>
+                <th>Paese Ben.</th>
+                <th>Liv.</th>
+                <th>Data Ass.</th>
+                <th>Data Fine</th>
+                <th>Budg. Ann. &euro;</th>
+                <th>Budg. Mes. &euro;</th>
+                <th>TFR accum. &euro;</th>
+                <th>ORE</th>
+                <th>Stato</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in contratti %}
+            {% with progetti=c.progetto.all %}
+            <tr class="clickable-row" data-type="contratto" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} - {{ c.lavoratore.nome_cognome }}{% for p in progetti %}{% if forloop.first %} - {% endif %}{{ p.beneficiario.nome_cognome }} [{{ p.tipo.nome }}]{% if not forloop.last %} | {% endif %}{% endfor %}" data-sub="Liv. {{ c.parametri_minimi.livello.codice }} · {{ c.get_stato_display }}" data-comune="{% if progetti %}{{ progetti.0.beneficiario.comune|default:'' }}{% endif %}" data-budget_annuale="{{ c.budget_annuale_totale }}">
+                <td><div class="fw-bold">{{ c.datore.nome_cognome }}</div></td>
+                <td><div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div></td>
+                <td>
+                    {% if progetti %}
+                        {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.beneficiario.nome_cognome }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                </td>
+                <td>
+                    {% if progetti %}
+                        {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.tipo.nome|default:"N/D" }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                </td>
+                <td>{% if progetti %}{{ progetti.0.beneficiario.comune|default:"—" }}{% else %}—{% endif %}</td>
+                <td>{% with colore=c.parametri_minimi.livello.colore|default:'#5E6AD2' %}<span style="background:rgba({{ colore|hex_to_rgb }},0.15); color:{{ colore }}; padding:2px 8px; border-radius:6px; font-size:12px; font-weight:600; white-space:nowrap;">{{ c.parametri_minimi.livello.codice }}</span>{% endwith %}
+                </td>
+                <td>{{ c.data_assunzione|date:"d/m/y" }}</td>
+                <td>{% if progetti %}{{ progetti.0.data_fine|date:"d/m/y"|default:"—" }}{% else %}—{% endif %}</td>
+                <td>&euro; {{ c.budget_annuale_totale|floatformat:2 }}</td>
+                <td>&euro; {{ c.budget_di_partenza|floatformat:0 }}</td>
+                <td>{% if c.modalita_tfr != 'INCLUSO' %}&euro; {{ c.totale_tfr_accantonato_cumulativo|floatformat:2 }}{% else %}<span class="text-secondary small">&mdash;</span>{% endif %}</td>
+                <td><span style="color:#10b981; font-weight:700;">{{ c.ore_calcolate|floatformat:0 }}</span></td>
+                <td>{% if c.stato == 'ATTIVO' %}<span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1 rounded-3">Attivo</span>{% elif c.stato == 'CESSATO' or c.stato == 'RISOLTO' %}<span class="badge bg-secondary bg-opacity-25 px-2 py-1 rounded-3">{{ c.stato }}</span>{% else %}<span class="badge bg-secondary bg-opacity-25 px-2 py-1 rounded-3">{{ c.stato }}</span>{% endif %}</td>
+            </tr>
+            {% endwith %}
+            {% empty %}
+            <tr><td colspan="13" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun contratto registrato</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b">
+          <i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Contratti Attivi
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body card-body">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Elenco di tutti i <b>contratti attivi</b> tra datori e lavoratori. Ogni contratto è il cuore del gestionale: da qui passano i calcoli delle buste paga, le procedure INPS, i documenti e la certificazione unica.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> <b>Clicca su una riga</b> per aprire il pannello delle azioni: Modifica, Duplica, Elimina, Vai a Busta Paga, Genera documento, Documenti archivio.<br>
+        <b>2.</b> Usa i <b>Filtri avanzati</b> in alto per cercare per livello CCNL, progetto regionale, stato, data assunzione/cessazione, budget minimo/massimo e ore.<br>
+        <b>3.</b> Clicca sulle intestazioni delle colonne per <b>ordinare</b> la tabella (es. per budget, ore, data).</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Colonne principali</b><br>
+        <b>Datore → Lavoratore → Beneficiario</b> — le tre parti del contratto.<br>
+        <b>Tipo</b> — Determinato / Indeterminato.<br>
+        <b>Budget / Ore</b> — budget mensile e ore calcolate dal sistema.<br>
+        <b>TFR</b> — <i class="bi bi-file-text" style="color:#10b981;"></i> indica presenza di documenti allegati.<br>
+        <b>Prog.</b> — numero di progetti regionali collegati.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Azioni rapide dal pannello</b><br>
+        <b>Busta mese precedente/corrente/successivo</b> — link diretto al calcolo busta paga per quel periodo.<br>
+        <b>Genera documento</b> — apre la scelta del tipo di documento da generare (lettera assunzione, licenziamento, ecc.).<br>
+        <b>Documenti archivio</b> — tutti i documenti PDF generati per quel contratto.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+    #fBAnDa::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+    #fBAnA::-webkit-slider-thumb  { -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+    #fBMenDa::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+    #fBMenA::-webkit-slider-thumb  { -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; box-shadow:0 0 6px rgba(94,106,210,0.4); }
+    #fBAnDa::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; }
+    #fBAnA::-moz-range-thumb  { width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; }
+    #fBMenDa::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; }
+    #fBMenA::-moz-range-thumb  { width:18px; height:18px; border-radius:50%; background:#5E6AD2; border:2px solid #09090B; cursor:pointer; pointer-events:auto; }
+</style>
+<script>
+var filtriVisibili = false;
+
+function toggleAvanzati() {
+    filtriVisibili = !filtriVisibili;
+    var el = document.getElementById('filtriAvanzati');
+    var btn = document.getElementById('btnAvanzati');
+    el.style.display = filtriVisibili ? '' : 'none';
+    btn.innerHTML = filtriVisibili
+        ? '<i class="bi bi-sliders me-1"></i> Filtri avanzati <i class="bi bi-chevron-up ms-1"></i>'
+        : '<i class="bi bi-sliders me-1"></i> Filtri avanzati';
+    if (filtriVisibili) { aggBAn(); aggBMen(); }
+}
+
+function aggBAn() {
+    var da = document.getElementById('fBAnDa');
+    var a  = document.getElementById('fBAnA');
+    var max = parseInt(a.max);
+    var vDa = parseInt(da.value) || 0;
+    var vA  = parseInt(a.value) || max;
+    if (vDa > vA) { vA = vDa; a.value = vDa; }
+    document.getElementById('bAnDaVal').textContent = vDa;
+    document.getElementById('bAnAVal').textContent  = vA > 999 ? Math.round(vA/1000) + 'k' : vA;
+    var pctDa = (vDa / max) * 100;
+    var pctA  = (vA  / max) * 100;
+    document.getElementById('bAnProgress').style.left = pctDa + '%';
+    document.getElementById('bAnProgress').style.width = (pctA - pctDa) + '%';
+    filteraContratti();
+}
+
+function aggBMen() {
+    var da = document.getElementById('fBMenDa');
+    var a  = document.getElementById('fBMenA');
+    var max = parseInt(a.max);
+    var vDa = parseInt(da.value) || 0;
+    var vA  = parseInt(a.value) || max;
+    if (vDa > vA) { vA = vDa; a.value = vDa; }
+    document.getElementById('bMenDaVal').textContent = vDa;
+    document.getElementById('bMenAVal').textContent  = vA > 999 ? Math.round(vA/1000) + 'k' : vA;
+    var pctDa = (vDa / max) * 100;
+    var pctA  = (vA  / max) * 100;
+    document.getElementById('bMenProgress').style.left = pctDa + '%';
+    document.getElementById('bMenProgress').style.width = (pctA - pctDa) + '%';
+    filteraContratti();
+}
+
+function parseDateIt(str) {
+    var parts = str.split('/');
+    if (parts.length === 3) return new Date(parts[2] + '-' + parts[1] + '-' + parts[0] + 'T00:00:00');
+    return null;
+}
+
+function esportaExcelContratti() {
+    var params = new URLSearchParams();
+    var fStato = document.getElementById('fStato');
+    if (fStato && fStato.value) params.set('stato', fStato.value);
+    window.location.href = "{% url 'ajax_esporta_xlsx_filtrato' 'contratti' %}?" + params.toString();
+}
+
+function filteraContratti() {
+    var testo = (document.getElementById('fTesto').value || '').toUpperCase();
+    var livFiltro = (document.getElementById('fLivello').value || '').toUpperCase();
+    var comuneFiltro = (document.getElementById('fComune').value || '').toUpperCase();
+    var progFiltro = (document.getElementById('fProgetto').value || '').toUpperCase();
+    var statoFiltro = (document.getElementById('fStato').value || '').toUpperCase();
+    var assDa = document.getElementById('fAssDa').value;
+    var assA  = document.getElementById('fAssA').value;
+    var fineDa = document.getElementById('fFineDa').value;
+    var bAnDa = parseInt(document.getElementById('fBAnDa').value) || 0;
+    var bAnA  = parseInt(document.getElementById('fBAnA').value) || 0;
+    var bMenDa = parseInt(document.getElementById('fBMenDa').value) || 0;
+    var bMenA  = parseInt(document.getElementById('fBMenA').value) || 0;
+    var oreDa = parseFloat(document.getElementById('fOreDa').value);
+    var oreA  = parseFloat(document.getElementById('fOreA').value);
+
+    var table = document.getElementById('contrTable');
+    var rows = table.getElementsByTagName('tr');
+    var visibili = 0;
+
+    for (var i = 1; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName('td');
+        if (!cells || cells.length < 5) continue;
+        var mostra = true;
+
+        if (testo) {
+            var trovato = false;
+            for (var j = 0; j < 5; j++) {
+                var txt = (cells[j].textContent || '').toUpperCase();
+                if (txt.indexOf(testo) !== -1) { trovato = true; break; }
+            }
+            if (!trovato) mostra = false;
+        }
+
+        if (mostra && livFiltro) {
+            var liv = (cells[5].textContent || '').toUpperCase();
+            if (liv.indexOf(livFiltro) === -1) mostra = false;
+        }
+
+        if (mostra && comuneFiltro) {
+            var comune = (cells[4].textContent || '').toUpperCase();
+            if (comune.indexOf(comuneFiltro) === -1) mostra = false;
+        }
+
+        if (mostra && progFiltro) {
+            var prog = (cells[3].textContent || '').toUpperCase();
+            if (prog.indexOf(progFiltro) === -1) mostra = false;
+        }
+
+        if (mostra && (assDa || assA)) {
+            var raw = cells[6].textContent.trim();
+            var d = raw ? parseDateIt(raw) : null;
+            if (assDa && (!d || d < new Date(assDa + 'T00:00:00'))) mostra = false;
+            if (mostra && assA && (!d || d > new Date(assA + 'T23:59:59'))) mostra = false;
+        }
+
+        if (mostra && (fineDa)) {
+            var raw = cells[7].textContent.trim();
+            if (raw && raw !== '—') {
+                var d = parseDateIt(raw);
+                if (fineDa && (!d || d < new Date(fineDa + 'T00:00:00'))) mostra = false;
+            }
+        }
+
+        if (mostra && (bAnDa > 0 || bAnA < 50000)) {
+            var raw = cells[8].textContent.trim();
+            if (raw) {
+                var val = parseFloat(raw.replace(/[€\s]/g, '').replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(val) && (val < bAnDa || val > bAnA)) mostra = false;
+            }
+        }
+
+        if (mostra && (bMenDa > 0 || bMenA < 2500)) {
+            var raw = cells[9].textContent.trim();
+            if (raw) {
+                var val = parseFloat(raw.replace(/[€\s]/g, '').replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(val) && (val < bMenDa || val > bMenA)) mostra = false;
+            }
+        }
+
+        if (mostra && !isNaN(oreDa)) {
+            var raw = cells[10].textContent.trim();
+            var val = parseFloat(raw);
+            if (!isNaN(val) && val < oreDa) mostra = false;
+        }
+        if (mostra && !isNaN(oreA)) {
+            var raw = cells[10].textContent.trim();
+            var val = parseFloat(raw);
+            if (!isNaN(val) && val > oreA) mostra = false;
+        }
+
+        if (mostra && statoFiltro) {
+            var st = (cells[11].textContent || '').toUpperCase();
+            if (st.indexOf(statoFiltro) === -1) mostra = false;
+        }
+
+        rows[i].style.display = mostra ? '' : 'none';
+        if (mostra) visibili++;
+    }
+    aggiornaConteggio('contrTable', 'fCount');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    aggiornaConteggio('contrTable', 'fCount');
+    var ranges = document.querySelectorAll('#filtriAvanzati input[type="range"]');
+    ranges.forEach(function(el) {
+        el.addEventListener('mousedown', function(e) {
+            var container = this.closest('.d-flex').querySelectorAll('input[type="range"]');
+            container.forEach(function(r) { r.style.zIndex = '3'; });
+            this.style.zIndex = '5';
+        });
+        el.addEventListener('touchstart', function(e) {
+            var container = this.closest('.d-flex').querySelectorAll('input[type="range"]');
+            container.forEach(function(r) { r.style.zIndex = '3'; });
+            this.style.zIndex = '5';
+        });
+        if (el.id === 'fBAnDa' || el.id === 'fBAnA') el.addEventListener('input', aggBAn);
+        else el.addEventListener('input', aggBMen);
+    });
+    filteraContratti();
+});
+
+function svuotaFiltri() {
+    document.getElementById('fTesto').value = '';
+    document.getElementById('fLivello').value = '';
+    document.getElementById('fComune').value = '';
+    document.getElementById('fProgetto').value = '';
+    document.getElementById('fStato').value = '';
+    document.getElementById('fAssDa').value = '';
+    document.getElementById('fAssA').value = '';
+    document.getElementById('fFineDa').value = '';
+    document.getElementById('fBAnDa').value = 0;
+    document.getElementById('fBAnA').value = 50000;
+    document.getElementById('fBMenDa').value = 0;
+    document.getElementById('fBMenA').value = 2500;
+    document.getElementById('fOreDa').value = '';
+    document.getElementById('fOreA').value = '';
+    aggBAn();
+    aggBMen();
+}
+
+/* === GESTIONE DOCUMENTI CONTRATTO === */
+function caricaConteggiDocumenti() {
+    document.querySelectorAll('[id^="docCount-"]').forEach(function(el) {
+        var pk = el.id.replace('docCount-', '');
+        fetch('/ajax/documenti-contratto/' + pk + '/')
+            .then(function(r) { return r.json(); })
+            .then(function(d) { el.textContent = d.totale || 0; })
+            .catch(function() { el.textContent = '?'; });
+    });
+}
+
+function apriDocumentiContratto(pk) {
+    var modal = new bootstrap.Modal(document.getElementById('modaleDocumentiContratto') || creaModaleDocumenti());
+    var body = document.querySelector('#modaleDocumentiContratto .modal-body');
+    if (body) body.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-light"></div></div>';
+    modal.show();
+    fetch('/ajax/documenti-contratto/' + pk + '/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (!body) return;
+            if (d.documenti.length === 0) {
+                body.innerHTML = '<div class="text-center py-4" style="color:#8A8F98;"><i class="bi bi-inbox" style="font-size:32px;display:block;margin-bottom:8px;opacity:0.4;color:#5C5F66;"></i>Nessun documento associato a questo contratto.</div>';
+                return;
+            }
+            var html = '<div class="list-group">';
+            d.documenti.forEach(function(doc) {
+                html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">';
+                html += '<div><strong style="color:#EDEDED;">' + doc.tipo + '</strong><br><small style="color:#8A8F98;">' + doc.titolo + ' &middot; ' + doc.creato_il + '</small></div>';
+                html += '<div class="d-flex gap-1">';
+                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn btn-sm" style="background:#2563eb;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;"><i class="bi bi-eye"></i></a>';
+                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" download class="btn btn-sm" style="background:#059669;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;"><i class="bi bi-download"></i></a>';
+                html += '<a href="/apri-cartella-documento/' + doc.pk + '/" class="btn btn-sm" style="background:#6b7280;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;text-decoration:none;"><i class="bi bi-folder2-open"></i></a>';
+                html += '<button onclick="eliminaDocContratto(' + doc.pk + ', this)" class="btn btn-sm" style="background:#dc2626;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;border:none;"><i class="bi bi-trash3"></i></button>';
+                html += '</div></div>';
+            });
+            html += '</div>';
+            body.innerHTML = html;
+        });
+}
+
+function eliminaDocContratto(pk, btn) {
+  if (!confirm('Eliminare questo documento? Il file PDF verrà cancellato.')) return;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+  fetch('/ajax/elimina-documento/' + pk + '/', { method:'POST', headers:{'X-CSRFToken':'{{ csrf_token }}'} })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { if (d.success) { location.reload(); } else { mostraToast(d.error || 'Errore', false); } })
+    .catch(function() { mostraToast('Errore di rete', false); });
+}
+
+function creaModaleDocumenti() {
+    var div = document.createElement('div');
+    div.className = 'modal fade';
+    div.id = 'modaleDocumentiContratto';
+    div.tabIndex = -1;
+    div.innerHTML = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="background:#17181C;border:1px solid #27282D;"><div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" style="color:#EDEDED;">Documenti Contratto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body" style="color:#EDEDED;"></div></div></div>';
+    document.body.appendChild(div);
+    return div;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(caricaConteggiDocumenti, 500);
+});
+
+/* ---- CCNL Colpo d'Occhio (popup) ---- */
+window.apriCcnlOcchioContratto = function(pk) {
+    window.apriCcnlOcchioPopup(pk, new Date().getFullYear());
+};
+</script>
+{% include 'paghe/_import_xlsx_modal.html' with tipo='contratti' %}
+
+
+{% endblock %}

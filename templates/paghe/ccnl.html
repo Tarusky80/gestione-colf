@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .ccnl-search { background: #17181C; border: 1px solid #27282D; border-radius: 12px; padding: 16px 20px; color: #EDEDED; width: 100%; font-size: 15px; transition: all 0.2s; }
+    .ccnl-search:focus { outline: none; border-color: #5E6AD2; box-shadow: 0 0 0 3px rgba(94,106,210,0.15); }
+    .ccnl-articolo { background: #17181C; border: 1px solid #27282D; border-radius: 12px; padding: 20px 24px; margin-bottom: 12px; transition: all 0.2s; display: none; }
+    .ccnl-articolo.visible { display: block; }
+    .ccnl-articolo:hover { border-color: #3A3B40; }
+    .ccnl-numero { color: #5E6AD2; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 2px; }
+    .ccnl-titolo { color: #EDEDED; font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+    .ccnl-contatore { color: #8A8F98; font-size: 13px; margin-top: 8px; }
+    .ccnl-livello { color: #bbb; font-size: 15px; font-weight: 700; margin: 14px 0 6px; padding-left: 4px; }
+    .ccnl-mansione { color: #8A8F98; font-size: 14px; line-height: 1.6; margin: 2px 0 2px 12px; }
+    .ccnl-mansione strong { color: #EDEDED; }
+    .ccnl-paragrafo { color: #8A8F98; font-size: 14px; line-height: 1.6; margin: 4px 0; }
+    .ccnl-elenco { color: #8A8F98; font-size: 14px; line-height: 1.6; margin: 4px 0 4px 20px; padding-left: 20px; }
+    .ccnl-elenco li { margin-bottom: 2px; }
+    .ccnl-elenco-letterale { list-style-type: lower-alpha; }
+    .ccnl-highlight { background: #FFD700; color: #000; font-weight: 500; border-radius: 2px; padding: 0 1px; }
+</style>
+
+{% csrf_token %}
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+    <h2 style="color:#EDEDED; font-weight:700; margin:0;">
+        <i class="bi bi-file-earmark-text" style="color:#5E6AD2; margin-right:10px;"></i> CCNL Lavoro Domestico
+    </h2>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'ccnl_pdf' %}', 0)" class="btn btn-plus-linear" style="text-decoration:none;">
+            <i class="bi bi-download"></i> Scarica PDF
+        </a>
+        <button class="btn btn-plus-linear" style="background:#10b981;" onclick="apriModaleInvioCCNL()">
+            <i class="bi bi-envelope"></i> Invia Email
+        </button>
+    </div>
+</div>
+
+<div style="margin-bottom:20px;">
+    <input type="text" id="ccnlSearch" class="ccnl-search" placeholder="Cerca negli articoli del CCNL... (parola o numero articolo)" autocomplete="off">
+    <div class="ccnl-contatore" id="ccnlContatore">Mostrati 0 / 0 articoli</div>
+</div>
+
+<div id="ccnlLista">
+{% for a in articoli %}
+<div class="ccnl-articolo visible" data-articolo="{{ a.articolo }}" data-titolo="{{ a.titolo|lower }}" data-testo="{{ a.testo_raw|lower }}">
+    <div class="ccnl-numero">ARTICOLO {{ a.articolo }}</div>
+    <div class="ccnl-titolo">{{ a.titolo }}</div>
+    {{ a.html_formattato|safe }}
+</div>
+{% endfor %}
+</div>
+
+{% include 'paghe/_modale_invio_ccnl.html' %}
+
+<script>
+var CSRF_TOKEN = '{{ csrf_token|escapejs }}';
+var ccnlArticoli = document.querySelectorAll('.ccnl-articolo');
+var ccnlSearch = document.getElementById('ccnlSearch');
+var ccnlContatore = document.getElementById('ccnlContatore');
+
+
+function rimuoviHighlight(el) {
+    el.querySelectorAll('.ccnl-highlight').forEach(function(span) {
+        span.replaceWith(span.textContent);
+    });
+}
+
+function applicaHighlight(el, query) {
+    if (!query) return;
+    var escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp(escaped, 'gi');
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    var nodi = [];
+    while (walker.nextNode()) nodi.push(walker.currentNode);
+    nodi.forEach(function(textNode) {
+        var originale = textNode.textContent;
+        if (!regex.test(originale)) return;
+        regex.lastIndex = 0;
+        var frag = document.createDocumentFragment();
+        var lastIdx = 0, match;
+        while ((match = regex.exec(originale)) !== null) {
+            if (match.index > lastIdx)
+                frag.appendChild(document.createTextNode(originale.slice(lastIdx, match.index)));
+            var span = document.createElement('span');
+            span.className = 'ccnl-highlight';
+            span.textContent = match[0];
+            frag.appendChild(span);
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < originale.length)
+            frag.appendChild(document.createTextNode(originale.slice(lastIdx)));
+        textNode.parentNode.replaceChild(frag, textNode);
+    });
+}
+
+function filtraCCNL() {
+    var q = ccnlSearch.value.toLowerCase().trim();
+    var count = 0;
+    ccnlArticoli.forEach(function(el) {
+        rimuoviHighlight(el);
+        el.normalize();
+        var num = el.getAttribute('data-articolo');
+        var titolo = el.getAttribute('data-titolo');
+        var testo = el.getAttribute('data-testo');
+        if (!q || num === q || titolo.indexOf(q) !== -1 || testo.indexOf(q) !== -1) {
+            el.classList.add('visible');
+            count++;
+        } else {
+            el.classList.remove('visible');
+        }
+    });
+    if (q) {
+        ccnlArticoli.forEach(function(el) {
+            if (el.classList.contains('visible')) {
+                applicaHighlight(el, q);
+            }
+        });
+    }
+    ccnlContatore.textContent = 'Mostrati ' + count + ' / ' + ccnlArticoli.length + ' articoli';
+}
+
+ccnlSearch.addEventListener('input', filtraCCNL);
+filtraCCNL();
+
+function apriModaleInvioCCNL() {
+    var modal = new bootstrap.Modal(document.getElementById('modalInvioCCNL'));
+    modal.show();
+}
+</script>
+{% endblock %}

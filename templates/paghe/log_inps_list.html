@@ -1,0 +1,319 @@
+{% extends 'base.html' %}{% load tabelle_tags %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'log_inps' %}">Cronologia</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Cronologia INPS</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+
+<div class="container-fluid p-4">
+
+  <div class="p-4 card-simple" style="margin-bottom:20px;">
+    <div class="d-flex align-items-start gap-3">
+      <div class="flex-grow-1">
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Cronologia operazioni INPS</h4>
+        <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Registro delle operazioni effettuate sulle procedure INPS.</p>
+      </div>
+      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+    </div>
+  </div>
+
+  <div class="p-3" style="background:#17181C;border:1px solid #27282D;border-radius:10px;margin-bottom:20px;">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label class="c-11-mb mb-1">Contratto</label>
+        <select name="contratto_pk" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;">
+          <option value="">Tutti</option>
+          {% for c in contratti %}
+          <option value="{{ c.pk }}" {% if filtro_contratto_pk == c.pk|stringformat:'s' %}selected{% endif %}>{{ c|contratto_option }}</option>
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="c-11-mb mb-1">Tipo operazione</label>
+        <select name="tipo_op" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;">
+          <option value="">Tutti</option>
+          {% for k,v in tipi %}
+          <option value="{{ k }}" {% if filtro_tipo_op == k %}selected{% endif %}>{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="c-11-mb mb-1">Dal</label>
+        <input type="date" name="da_data" class="form-control" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;" value="{{ filtro_da_data }}">
+      </div>
+      <div class="col-md-2">
+        <label class="c-11-mb mb-1">Al</label>
+        <input type="date" name="a_data" class="form-control" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;" value="{{ filtro_a_data }}">
+      </div>
+      <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn" style="background:#5E6AD2;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:600;flex:1;"><i class="bi bi-search me-1"></i>Filtra</button>
+        <a href="{% url 'log_inps' %}" class="btn" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;"><i class="bi bi-x-circle"></i></a>
+      </div>
+    </form>
+  </div>
+
+  <div style="background:#17181C;border:1px solid #27282D;border-radius:10px;overflow:hidden;">
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead>
+          <tr style="border-bottom:1px solid #27282D;background:#1E1F23;">
+            <th style="padding:10px 14px;color:#8A8F98;font-weight:600;text-align:left;white-space:nowrap;">Data</th>
+            <th style="padding:10px 14px;color:#8A8F98;font-weight:600;text-align:left;">Contratto</th>
+            <th style="padding:10px 14px;color:#8A8F98;font-weight:600;text-align:left;">Operazione</th>
+            <th style="padding:10px 14px;color:#8A8F98;font-weight:600;text-align:left;">Dettaglio</th>
+            <th style="padding:10px 14px;color:#8A8F98;font-weight:600;text-align:left;">Utente</th>
+            <th style="padding:10px 14px;color:#8A8F98;font-weight:600;text-align:center;width:80px;">Azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr style="border-bottom:1px solid #1E1F23;">
+            <td style="padding:8px 14px;color:#EDEDED;white-space:nowrap;">{{ log.data_creazione|date:"d/m/Y H:i" }}</td>
+            <td style="padding:8px 14px;color:#EDEDED;">
+              {% if log.contratto.datore %}{{ log.contratto.datore.nome_cognome }}{% endif %} → {% if log.contratto.lavoratore %}{{ log.contratto.lavoratore.nome_cognome }}{% endif %}
+            </td>
+            <td style="padding:8px 14px;">
+              <span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;
+                {% if log.tipo_op == 'APERTURA_ASSUNZIONE' %}background:rgba(94,106,210,0.15);color:#5E6AD2;
+                {% elif log.tipo_op == 'SALVATAGGIO_CODICE' %}background:rgba(16,185,129,0.15);color:#10b981;
+                {% elif log.tipo_op == 'APERTURA_PAGOPA_MANUALE' %}background:rgba(245,158,11,0.15);color:#f59e0b;
+                {% elif log.tipo_op == 'CARICATO_PDF_PAGOPA_MANUALE' %}background:rgba(245,158,11,0.15);color:#f59e0b;
+                {% elif log.tipo_op == 'APERTURA_CESSAZIONE' %}background:rgba(248,113,113,0.15);color:#f87171;
+                {% elif log.tipo_op == 'APERTURA_PAGOPA_AUTO' %}background:rgba(16,185,129,0.15);color:#10b981;
+                {% elif log.tipo_op == 'COMPLETATO_PAGOPA_AUTO' %}background:rgba(52,211,153,0.15);color:#34d399;
+                {% elif log.tipo_op == 'GENERATO_PDF_PAGOPA' %}background:rgba(94,106,210,0.15);color:#5E6AD2;
+                {% else %}background:rgba(255,255,255,0.05);color:#8A8F98;{% endif %}">
+                {{ log.get_tipo_op_display }}
+              </span>
+            </td>
+            <td style="padding:8px 14px;color:#8A8F98;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ log.dettaglio|default:"—" }}</td>
+            <td style="padding:8px 14px;color:#8A8F98;">{{ log.utente|default:"—" }}</td>
+            <td style="padding:8px 14px;text-align:center;white-space:nowrap;">
+              <button class="btn" onclick="mostraDettaglioLog({{ log.pk }})" title="Visualizza dettaglio" style="background:transparent;color:#5E6AD2;border:none;padding:2px 6px;font-size:14px;"><i class="bi bi-eye"></i></button>
+              <button class="btn" onclick="confermaEliminaLog({{ log.pk }})" title="Elimina" style="background:transparent;color:#f87171;border:none;padding:2px 6px;font-size:14px;"><i class="bi bi-trash"></i></button>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" style="padding:30px;text-align:center;color:#5C5F66;font-size:13px;">
+              <i class="bi bi-inbox" style="font-size:24px;display:block;margin-bottom:8px;"></i>
+              Nessuna operazione registrata.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;font-size:12px;">
+    {% if page_obj.has_previous %}
+    <a href="?page=1{% if filtro_contratto_pk %}&contratto_pk={{ filtro_contratto_pk }}{% endif %}{% if filtro_tipo_op %}&tipo_op={{ filtro_tipo_op }}{% endif %}{% if filtro_da_data %}&da_data={{ filtro_da_data }}{% endif %}{% if filtro_a_data %}&a_data={{ filtro_a_data }}{% endif %}" style="padding:4px 10px;background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:6px;text-decoration:none;">&laquo;</a>
+    <a href="?page={{ page_obj.previous_page_number }}{% if filtro_contratto_pk %}&contratto_pk={{ filtro_contratto_pk }}{% endif %}{% if filtro_tipo_op %}&tipo_op={{ filtro_tipo_op }}{% endif %}{% if filtro_da_data %}&da_data={{ filtro_da_data }}{% endif %}{% if filtro_a_data %}&a_data={{ filtro_a_data }}{% endif %}" style="padding:4px 10px;background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:6px;text-decoration:none;">&lsaquo;</a>
+    {% endif %}
+    <span style="padding:4px 10px;color:#EDEDED;font-weight:600;">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if filtro_contratto_pk %}&contratto_pk={{ filtro_contratto_pk }}{% endif %}{% if filtro_tipo_op %}&tipo_op={{ filtro_tipo_op }}{% endif %}{% if filtro_da_data %}&da_data={{ filtro_da_data }}{% endif %}{% if filtro_a_data %}&a_data={{ filtro_a_data }}{% endif %}" style="padding:4px 10px;background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:6px;text-decoration:none;">&rsaquo;</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}{% if filtro_contratto_pk %}&contratto_pk={{ filtro_contratto_pk }}{% endif %}{% if filtro_tipo_op %}&tipo_op={{ filtro_tipo_op }}{% endif %}{% if filtro_da_data %}&da_data={{ filtro_da_data }}{% endif %}{% if filtro_a_data %}&a_data={{ filtro_a_data }}{% endif %}" style="padding:4px 10px;background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:6px;text-decoration:none;">&raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Cronologia INPS</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Qui trovi il registro cronologico di tutte le operazioni effettuate sulle procedure INPS (Iscrizione, Cessazione, PagoPA manuale e automatica). Ogni volta che viene aperta o completata una procedura, viene registrato un log con data, operazione e utente.</p>
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Filtri</b><br>
+        Puoi filtrare per contratto, tipo di operazione e intervallo di date per trovare rapidamente le operazioni di tuo interesse.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Finestra flottante Dettaglio Log (trascinabile + ridimensionabile) -->
+<div id="logDetailFloating" style="display:none;position:fixed;z-index:9999;top:120px;left:120px;width:500px;min-width:320px;min-height:200px;background:#17181C;border:1px solid #27282D;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.6);overflow:hidden;resize:both;">
+  <div id="logDetailHeader" style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1E1F23;border-bottom:1px solid #27282D;border-radius:12px 12px 0 0;cursor:grab;user-select:none;">
+    <i class="bi bi-info-circle" style="color:#5E6AD2;font-size:14px;"></i>
+    <span style="flex:1;font-size:13px;font-weight:700;color:#EDEDED;">Dettaglio operazione</span>
+    <button onclick="_chiudiLogDetail()" style="background:transparent;color:#8A8F98;border:none;padding:2px 6px;font-size:16px;cursor:pointer;line-height:1;" title="Chiudi">&times;</button>
+  </div>
+  <div id="logDetailContent" style="padding:14px;font-size:13px;color:#EDEDED;line-height:1.6;overflow:auto;height:calc(100% - 44px);">
+  </div>
+</div>
+
+<!-- Modale Conferma Eliminazione -->
+<div class="modal fade" id="eliminaLogModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" class="card-simple">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-exclamation-triangle me-2" style="color:#f87171;"></i>Conferma eliminazione</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;">
+        <p>Eliminare questa operazione dalla cronologia INPS?</p>
+        <p style="font-size:11px;color:#5C5F66;">Questa azione non pu&ograve; essere annullata.</p>
+        <div class="d-flex gap-2 justify-content-end mt-3">
+          <button class="btn" data-bs-dismiss="modal" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;">Annulla</button>
+          <button class="btn" id="btnConfermaEliminaLog" style="background:#DC2626;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;" onclick="eseguiEliminaLog()"><i class="bi bi-trash me-1"></i> Elimina</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+{% autoescape off %}
+var logData = {
+  {% for log in logs %}
+  {{ log.pk }}: {
+    data: '{{ log.data_creazione|date:"d/m/Y H:i" }}',
+    contratto: '{% if log.contratto.datore %}{{ log.contratto.datore.nome_cognome }}{% endif %} → {% if log.contratto.lavoratore %}{{ log.contratto.lavoratore.nome_cognome }}{% endif %}',
+    contratto_pk: {{ log.contratto_id|default:"null" }},
+    operazione: '{{ log.get_tipo_op_display }}',
+    dettaglio: '{{ log.dettaglio|default:"—"|escapejs }}',
+    utente: '{{ log.utente|default:"—" }}',
+    tipo_op: '{{ log.tipo_op }}'
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+};
+{% endautoescape %}
+var _logDaEliminare = null;
+var _logDetailDragInit = false;
+
+function mostraDettaglioLog(pk) {
+  var d = logData[pk];
+  if (!d) return;
+  var pdfUrl = _getPdfUrl(d);
+  var pdfBtn = pdfUrl ? '<a href="' + pdfUrl + '" target="_blank" class="btn" style="background:#5E6AD2;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;font-weight:600;text-decoration:none;margin-top:10px;"><i class="bi bi-filetype-pdf me-1"></i> Apri PDF</a>' : '';
+  var content = document.getElementById('logDetailContent');
+  content.innerHTML =
+    '<div class="row mb-2"><span class="col-4" style="color:#8A8F98;font-weight:600;">Data</span><span class="col-8">' + d.data + '</span></div>' +
+    '<div class="row mb-2"><span class="col-4" style="color:#8A8F98;font-weight:600;">Contratto</span><span class="col-8">' + d.contratto + '</span></div>' +
+    '<div class="row mb-2"><span class="col-4" style="color:#8A8F98;font-weight:600;">Operazione</span><span class="col-8"><span class="badge" style="font-size:11px;padding:3px 8px;' + getBadgeStyle(d.tipo_op) + '">' + d.operazione + '</span></span></div>' +
+    '<div class="row mb-2"><span class="col-4" style="color:#8A8F98;font-weight:600;">Dettaglio</span><span class="col-8" style="word-break:break-word;">' + escapeHtml(d.dettaglio) + '</span></div>' +
+    '<div class="row"><span class="col-4" style="color:#8A8F98;font-weight:600;">Utente</span><span class="col-8">' + d.utente + '</span></div>' +
+    pdfBtn;
+  document.getElementById('logDetailFloating').style.display = 'block';
+  _initLogDetailDrag();
+}
+
+function _getPdfUrl(d) {
+  if (!d.contratto_pk || !d.dettaglio) return null;
+  var m = d.dettaglio.match(/(Q[1-4])\s*(\d{4})/);
+  if (!m) return null;
+  var trim = m[1], anno = m[2];
+  // PAGOPA auto: usa ajax_apri_pagopa_pdf
+  if (d.tipo_op === 'COMPLETATO_PAGOPA_AUTO' || d.tipo_op === 'APERTURA_PAGOPA_AUTO' || d.tipo_op === 'GENERATO_PDF_PAGOPA') {
+    return '/ajax/apri-pagopa-pdf/?contratto_pk=' + d.contratto_pk + '&trimestre=' + trim + '&anno=' + anno;
+  }
+  // PAGOPA manuale: apre il PDF piu recente
+  if (d.tipo_op === 'CARICATO_PDF_PAGOPA_MANUALE') {
+    return '/ajax/apri-pagopa-manuale-pdf/?contratto_pk=' + d.contratto_pk + '&trimestre=' + trim + '&anno=' + anno;
+  }
+  return null;
+}
+
+function _chiudiLogDetail() {
+  document.getElementById('logDetailFloating').style.display = 'none';
+}
+
+function _initLogDetailDrag() {
+  if (_logDetailDragInit) return;
+  var header = document.getElementById('logDetailHeader');
+  var panel = document.getElementById('logDetailFloating');
+  if (!header || !panel) return;
+  var offX, offY, isDown = false;
+  header.addEventListener('mousedown', function(e) {
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+    isDown = true;
+    var rect = panel.getBoundingClientRect();
+    offX = e.clientX - rect.left;
+    offY = e.clientY - rect.top;
+    panel.style.cursor = 'grabbing';
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!isDown) return;
+    panel.style.left = (e.clientX - offX) + 'px';
+    panel.style.top = (e.clientY - offY) + 'px';
+    panel.style.right = 'auto';
+  });
+  document.addEventListener('mouseup', function() {
+    isDown = false;
+    panel.style.cursor = '';
+  });
+  _logDetailDragInit = true;
+}
+
+function confermaEliminaLog(pk) {
+  _logDaEliminare = pk;
+  var m = new bootstrap.Modal(document.getElementById('eliminaLogModal'));
+  m.show();
+}
+
+function eseguiEliminaLog() {
+  if (!_logDaEliminare) return;
+  var btn = document.getElementById('btnConfermaEliminaLog');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Eliminazione...';
+  fetch('/ajax/elimina-log-inps/', {
+    method: 'POST',
+    headers: {'X-CSRFToken': getCSRFToken(), 'Content-Type': 'application/json'},
+    body: JSON.stringify({pk: _logDaEliminare}),
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.success) {
+      var modale = bootstrap.Modal.getInstance(document.getElementById('eliminaLogModal'));
+      if (modale) modale.hide();
+      mostraToast('Log eliminato', true);
+      location.reload();
+    } else {
+      mostraToast('Errore: ' + (d.error || 'sconosciuto'), false);
+    }
+  })
+  .catch(function() {
+    mostraToast('Errore di rete durante l\'eliminazione.', false);
+  })
+  .finally(function() {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-trash me-1"></i> Elimina';
+    _logDaEliminare = null;
+  });
+}
+
+function getBadgeStyle(tipo_op) {
+  var m = {
+    'APERTURA_ASSUNZIONE': 'background:rgba(94,106,210,0.15);color:#5E6AD2;',
+    'SALVATAGGIO_CODICE': 'background:rgba(16,185,129,0.15);color:#10b981;',
+    'APERTURA_PAGOPA_MANUALE': 'background:rgba(245,158,11,0.15);color:#f59e0b;',
+    'CARICATO_PDF_PAGOPA_MANUALE': 'background:rgba(245,158,11,0.15);color:#f59e0b;',
+    'APERTURA_CESSAZIONE': 'background:rgba(248,113,113,0.15);color:#f87171;',
+    'APERTURA_PAGOPA_AUTO': 'background:rgba(16,185,129,0.15);color:#10b981;',
+    'COMPLETATO_PAGOPA_AUTO': 'background:rgba(52,211,153,0.15);color:#34d399;',
+    'GENERATO_PDF_PAGOPA': 'background:rgba(94,106,210,0.15);color:#5E6AD2;',
+  };
+  return m[tipo_op] || 'background:rgba(255,255,255,0.05);color:#8A8F98;';
+}
+
+function escapeHtml(t) {
+  if (!t) return '';
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+{% endblock %}

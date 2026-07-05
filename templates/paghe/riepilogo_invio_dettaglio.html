@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}Dettaglio Invio{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'riepilogo_invio_list' %}">Riepilogo Invii</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Dettaglio</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="h3 fw-bold mb-1">DETTAGLIO INVIO</h1>
+        <p class="text-secondary small mb-0">{{ riepilogo.creato_il|date:"d/m/Y H:i" }} — {{ riepilogo.get_mese_display }} {{ riepilogo.anno }}</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        <a href="{% url 'riepilogo_invio_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Indietro
+        </a>
+        {% if riepilogo.archivio_zip_path %}
+        <a href="{% url 'download_riepilogo_zip' riepilogo.pk %}" class="btn btn-success btn-sm">
+            <i class="bi bi-download me-1"></i> Scarica ZIP
+        </a>
+        {% endif %}
+        <button onclick="eliminaInvio({{ riepilogo.pk }})" class="btn btn-danger btn-sm">
+            <i class="bi bi-trash3 me-1"></i> Elimina
+        </button>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
+            <div class="small text-secondary mb-1">Creato da</div>
+            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.creato_da|default:"—" }}</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
+            <div class="small text-secondary mb-1">Periodo</div>
+            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.get_mese_display }} {{ riepilogo.anno }}</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
+            <div class="small text-secondary mb-1">Totale</div>
+            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.totale_contratti }}</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
+            <div class="small text-secondary mb-1">OK</div>
+            <div class="fw-bold" style="color:#10b981;">{{ riepilogo.totale_ok }}</div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
+            <div class="small text-secondary mb-1">Errori</div>
+            <div class="fw-bold" style="color:#dc2626;">{{ riepilogo.totale_errori }}</div>
+        </div>
+    </div>
+    {% if riepilogo.modello_email %}
+    <div class="col-md-1">
+        <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
+            <div class="small text-secondary mb-1">Mail</div>
+            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.modello_email.codice }}</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;">
+    <h6 class="fw-bold mb-3" style="color:#EDEDED;">Dettaglio contratti</h6>
+    <table class="table custom-table">
+        <thead>
+            <tr>
+                <th>Datore</th>
+                <th>Lavoratore</th>
+                <th>Email</th>
+                <th>Stato</th>
+                <th>Stampa</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in riepilogo.dettaglio %}
+            <tr>
+                <td>{{ entry.datore }}</td>
+                <td>{{ entry.lavoratore }}</td>
+                <td class="small">{{ entry.email_destinatario|default:"—" }}</td>
+                <td>
+                    {% if entry.inviato %}
+                    <span style="color:#10b981;font-weight:600;"><i class="bi bi-check-circle me-1"></i> Inviato</span>
+                    {% elif entry.errore %}
+                    <span style="color:#dc2626;font-weight:600;"><i class="bi bi-x-circle me-1"></i> Errore</span>
+                    <br><small class="text-danger">{{ entry.errore }}</small>
+                    {% else %}
+                    <span class="text-secondary"><i class="bi bi-file-pdf me-1"></i> Solo PDF</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if entry.documento_pk %}
+                    <i class="stampa-badge bi {% if entry.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ entry.documento_pk }}" title="{% if entry.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
+                    {% else %}
+                    <span class="text-muted" style="font-size:12px;">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if entry.documento_pk %}
+                    <a href="{% url 'ajax_vedi_documento' entry.documento_pk %}" target="_blank" class="btn btn-sm" style="background:#2563eb;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;text-decoration:none;">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <button class="btn btn-warning btn-sm ms-1" onclick="stampaDocumento({{ entry.documento_pk }}, this)" title="Stampa alla stampante" data-label="Stampa"><i class="bi bi-printer"></i> Stampa</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-secondary py-4"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun dettaglio disponibile</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function eliminaInvio(pk) {
+    if (!confirm('Eliminare questo riepilogo? I PDF rimangono nella cartella documenti.')) return;
+    fetch('/ajax/elimina-riepilogo-invio/' + pk + '/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) window.location.href = '/riepilogo-invio/';
+        else mostraToast('Errore: ' + (d.error || ''), false);
+    }).catch(function() { mostraToast('Errore di rete', false); });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Dettaglio Invio</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Dettaglio Invio</b><br>
+        Questa pagina mostra l'elenco completo dei contratti inclusi in una specifica generazione massiva di buste paga. Per ogni contratto puoi vedere il datore, il lavoratore, l'email a cui è stato inviato e lo stato della spedizione.</p>
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Stati</b><br>
+        <span style="color:#10b981;"><i class="bi bi-check-circle"></i> Inviato</span> — la busta è stata generata e inviata con successo.<br>
+        <span style="color:#dc2626;"><i class="bi bi-x-circle"></i> Errore</span> — si è verificato un problema durante l'invio.<br>
+        <span class="text-secondary"><i class="bi bi-file-pdf"></i> Solo PDF</span> — la busta è stata generata in PDF ma non inviata via email.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

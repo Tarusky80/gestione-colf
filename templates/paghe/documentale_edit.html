@@ -1,0 +1,424 @@
+{% extends 'base.html' %}
+{% load static %}{% load tabelle_tags %}
+{% block title %}{% if is_new %}NUOVO{% else %}MODIFICA{% endif %} — {{ tipo_label }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css">
+<style>
+:root { --tipo-colore: {{ tipo_colore }}; }
+/* --- Dark form controls --- */
+.form-control { background:#09090b !important; color:#e2e8f0 !important; border:1px solid #27282d !important; }
+.form-control:focus { border-color:var(--tipo-colore,#5E6AD2) !important; box-shadow:0 0 0 2px rgba(94,106,210,0.15) !important; }
+.form-control[readonly] { color:#5C5F66 !important; }
+select.form-control option { background:#09090b; color:#e2e8f0; }
+/* --- CKEditor 5 Dark Mode completo --- */
+.ck-editor__editable { background:#1a1a1e !important; color:#e2e8f0 !important; font-family:'Roboto',Arial,sans-serif !important; }
+.ck-editor__editable p { color:#e2e8f0; }
+.ck.ck-editor { border:1px solid #27282d; border-radius:8px; overflow:hidden; }
+.ck-editor__top .ck-toolbar { background:#18181b !important; border-color:#27282d !important; }
+.ck-editor__top .ck-toolbar .ck-button { color:#c0c4cc; }
+.ck-editor__top .ck-toolbar .ck-button:hover { background:rgba(255,255,255,0.08); }
+.ck-editor__top .ck-toolbar .ck-button.ck-on { background:rgba(94,106,210,0.2); color:var(--tipo-colore,#5E6AD2); }
+.ck-editor__top .ck-toolbar .ck-button.ck-button_with-text { color:#e2e8f0; }
+.ck.ck-balloon-panel { background:#1a1a1e !important; border-color:#27282d !important; box-shadow:0 4px 16px rgba(0,0,0,0.4) !important; }
+.ck.ck-dropdown__panel { background:#1a1a1e !important; border-color:#27282d !important; box-shadow:0 4px 16px rgba(0,0,0,0.4) !important; }
+.ck.ck-list { background:#1a1a1e !important; }
+.ck.ck-list__item { color:#e2e8f0 !important; background:transparent !important; }
+.ck.ck-list__item:hover { background:rgba(255,255,255,0.08) !important; }
+.ck.ck-list__item.ck-on { background:rgba(94,106,210,0.2) !important; color:var(--tipo-colore,#5E6AD2) !important; }
+.ck.ck-button.ck-list__button { color:#e2e8f0 !important; }
+.ck.ck-button.ck-list__button:hover { background:rgba(255,255,255,0.08) !important; }
+.ck.ck-button.ck-list__button.ck-on { background:rgba(94,106,210,0.2) !important; color:var(--tipo-colore,#5E6AD2) !important; }
+.ck.ck-form__header { background:#1a1a1e !important; }
+.ck.ck-form__header__label { color:#e2e8f0 !important; }
+.ck.ck-input-text { background:#09090b !important; color:#e2e8f0 !important; border-color:#27282d !important; }
+.ck.ck-labeled-field-view > .ck-label { color:#8A8F98; }
+.ck.ck-switchbutton .ck-button__toggle { background:#333 !important; }
+.ck.ck-switchbutton .ck-button__toggle.ck-on { background:var(--tipo-colore,#5E6AD2) !important; }
+.ck.ck-switchbutton .ck-button__toggle__dot { background:#aaa !important; }
+.ck.ck-color-picker { background:#1a1a1e !important; }
+.ck.ck-color-grid__tile { border-color:#333 !important; }
+.ck.ck-color-grid__tile:hover { border-color:var(--tipo-colore,#5E6AD2) !important; }
+.ck.ck-character-grid { background:#1a1a1e !important; }
+.ck.ck-character-grid__tile { color:#e2e8f0 !important; }
+.ck.ck-character-grid__tile:hover { background:rgba(255,255,255,0.08) !important; }
+.ck.ck-page-break { background:#27282d !important; }
+.ck-source-editing-area { background:#09090b !important; color:#e2e8f0 !important; }
+.ck-editor__top .ck-toolbar .ck-dropdown .ck-dropdown__button .ck-button__label {
+  display: inline-block !important;
+  min-width: 50px;
+  font-size: 12px !important;
+}
+.var { display:inline-block; background:rgba(94,106,210,0.15); border:1px solid rgba(94,106,210,0.25); border-radius:4px; padding:3px 8px; cursor:pointer; color:#c0c4cc; font-size:11px; font-family:monospace; transition:all .15s; white-space:nowrap; user-select:none; }
+.var:hover { background:var(--tipo-colore,#5E6AD2); color:#fff; border-color:var(--tipo-colore,#5E6AD2); transform:translateY(-1px); box-shadow:0 2px 6px rgba(94,106,210,0.3); }
+.var:active { transform:translateY(0); box-shadow:none; }
+.var-header:hover { background:rgba(255,255,255,0.05) !important; }
+.var-gruppo { border-radius:6px; transition:background 0.12s; }
+</style>
+{% endblock %}
+{% block content %}
+{% load static %}
+
+<div style="margin-bottom:20px;">
+
+  <div class="doc-breadcrumb" style="font-size:12px;color:#5C5F66;margin-bottom:10px;">
+    <a href="{% url 'documentale_root' %}" style="color:var(--tipo-colore,#5E6AD2);text-decoration:none;">Modelli</a>
+    <span style="margin:0 6px;color:#3a3b40;">›</span>
+    <a href="{% url 'documentale_list' tipo_corrente %}" style="color:var(--tipo-colore,#5E6AD2);text-decoration:none;">{{ tipo_label }}</a>
+    <span style="margin:0 6px;color:#3a3b40;">›</span>
+    <span style="color:#8A8F98;">{% if is_new %}Nuovo{% else %}{{ modello.codice|default:'Modifica' }}{% endif %}</span>
+  </div>
+
+  <h2 style="margin:0;font-size:22px;font-weight:700;color:#EDEDED;display:flex;align-items:center;gap:10px;">
+    <i class="bi bi-{% if is_new %}plus-circle{% else %}pencil{% endif %}" style="color:var(--tipo-colore,#5E6AD2);"></i>
+    {% if is_new %}Nuovo Modello{% else %}Modifica Modello{% endif %}
+    <span style="font-size:14px;color:#5C5F66;font-weight:400;">{{ modello.titolo|default:'' }}</span>
+    <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="background:transparent;color:#8A8F98;border:1px solid #333;border-radius:50%;width:30px;height:30px;padding:0;font-size:14px;font-weight:700;line-height:1;flex-shrink:0;vertical-align:middle;margin-left:auto;"><i class="bi bi-question-lg"></i></button>
+  </h2>
+</div>
+
+<form id="formModello" onsubmit="salvaModello(event)">
+  <input type="hidden" id="modelloPk" value="{{ modello.pk|default:'' }}">
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-4">
+      <label class="form-label small fw-bold text-secondary">CODICE</label>
+      <input type="text" class="form-control" id="modelloCodice" value="{{ modello.codice|default:'' }}" placeholder="es. CONTRATTO_STANDARD" {% if not is_new %}readonly{% endif %}>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small fw-bold text-secondary">TITOLO</label>
+      <input type="text" class="form-control" id="modelloTitolo" value="{{ modello.titolo|default:'' }}" placeholder="es. Contratto standard">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small fw-bold text-secondary">ANTEPRIMA CON CONTRATTO (opzionale)</label>
+      <select class="form-control" id="previewContratto" onchange="anteprimaHtml()">
+        <option value="">-- Nessuno (solo variabili globali) --</option>
+        {% for c in contratti_preview %}
+        <option value="{{ c.pk }}">{{ c|contratto_option }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mb-3" style="flex-wrap:wrap;">
+    <button type="submit" style="background:var(--tipo-colore,#5E6AD2);color:white;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">
+      <i class="bi bi-check-lg"></i> Salva
+    </button>
+    <button type="button" style="background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;" onclick="anteprimaPdf()">
+      <i class="bi bi-file-pdf"></i> PDF
+    </button>
+    <div style="position:relative; display:inline-block;">
+      <button type="button" id="toggleVars" style="background:rgba(255,255,255,0.05);color:#8A8F98;border:1px solid #27282d;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;" onclick="document.getElementById('varsPanel').classList.toggle('d-none')">
+        <i class="bi bi-code-slash"></i> Variabili
+      </button>
+      <div id="varsPanel" class="d-none" style="position:absolute;top:calc(100% + 4px);right:0;z-index:9999;background:#1e1e22;border:1px solid #27282d;border-radius:8px;padding:8px;width:560px;max-height:480px;overflow-y:auto;font-size:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+        <div style="padding:0 4px 8px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="background:rgba(94,106,210,0.2);color:#9ca3ff;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:600;">CLICCA</span>
+          <span style="color:#8A8F98;font-size:10px;flex:1;">per inserire la variabile nel testo</span>
+          <input type="text" id="varSearch" placeholder="Cerca..." style="background:#09090b;color:#e2e8f0;border:1px solid #27282d;border-radius:6px;padding:4px 8px;font-size:11px;width:140px;outline:none;" oninput="filtraVariabili(this.value)">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px;" id="varsContainer">
+{% for gruppo in variabili %}
+          <div class="var-gruppo" data-categoria="{{ gruppo.categoria|lower }}">
+            <div class="var-header" onclick="toggleCategoria(this)" style="display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:6px;cursor:pointer;user-select:none;transition:background 0.12s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+              <span class="var-arrow" style="font-size:8px;color:#5C5F66;transition:transform 0.15s;">&#9654;</span>
+              <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#9ca3ff;">{{ gruppo.categoria }}</span>
+              <span class="var-count" style="margin-left:auto;font-size:9px;color:#5C5F66;background:rgba(255,255,255,0.04);border-radius:10px;padding:0 7px;">{{ gruppo.items|length }}</span>
+            </div>
+            <div class="var-body" style="display:none;padding:4px 6px 6px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
+{% for item in gruppo.items %}
+                <span class="var" data-var="{{ item.var }}" onclick="inserisciVarCkeditor('{{ item.var }}')" title="{{ item.var }}">{{ item.label }}</span>
+{% endfor %}
+              </div>
+            </div>
+          </div>
+{% endfor %}
+        </div>
+        <div id="varNoResults" style="display:none;padding:20px;text-align:center;color:#5C5F66;font-size:12px;">Nessuna variabile trovata</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-0" style="height:calc(100vh - 280px);min-height:460px;">
+    <div class="col-7" style="display:flex;flex-direction:column;padding-right:10px;">
+      <label class="form-label small fw-bold text-secondary">CORPO TESTO</label>
+      <div id="editorWrapper" style="display:none;flex:1;"></div>
+      <div id="editorStatus" style="font-size:12px;color:#8A8F98;margin-top:4px;"></div>
+      <textarea id="editorInitialContent" style="display:none;">{{ modello.corpo_testo|safe }}</textarea>
+    </div>
+    <div class="col-5" style="display:flex;flex-direction:column;">
+      <label class="form-label small fw-bold text-secondary" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+        ANTEPRIMA
+        <button type="button" style="background:rgba(94,106,210,0.08);color:#5E6AD2;border:1px solid rgba(94,106,210,0.15);border-radius:6px;padding:3px 12px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;" onclick="anteprimaHtml()">
+          <i class="bi bi-arrow-repeat" style="font-size:10px;"></i> Risolvi variabili
+        </button>
+      </label>
+      <div id="anteprimaHtml" class="ck-content" style="background:#fff;padding:20px;border:1px solid #27282d;border-radius:8px;font-size:13px;line-height:1.5;color:#000;overflow-y:auto;flex:1;">
+        <p style="color:#999;text-align:center;margin-top:180px;">Componi il testo e clicca <strong>HTML</strong> o <strong>PDF</strong></p>
+      </div>
+      <iframe id="anteprimaPdfFrame" style="display:none;flex:1;border:1px solid #27282d;border-radius:8px;background:#fff;"></iframe>
+    </div>
+  </div>
+
+  <div class="mb-3" style="margin-top:12px;">
+    <label class="form-label small fw-bold text-secondary">NOTE INTERNE</label>
+    <textarea class="form-control" id="modelloNote" rows="2" placeholder="Note interne..." style="resize:vertical;">{{ modello.note_interne|default:'' }}</textarea>
+  </div>
+</form>
+
+<script type="module">
+import {
+  ClassicEditor,
+  Essentials, Paragraph, Heading, Undo,
+  Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code, CodeBlock,
+  List, TodoList, Link, Table, BlockQuote,
+  Font, FontFamily, FontSize, FontColor, FontBackgroundColor,
+  Highlight, Alignment, Indent, IndentBlock,
+  HorizontalLine, PageBreak,
+  FindAndReplace, SpecialCharacters, RemoveFormat, SourceEditing,
+  Autoformat, PasteFromOffice
+} from 'https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.js';
+
+function initCKEditor() {
+  var wrapper = document.getElementById('editorWrapper');
+  if (!wrapper) return;
+  var edDiv = document.createElement('div');
+  edDiv.innerHTML = document.getElementById('editorInitialContent').value;
+  wrapper.appendChild(edDiv);
+  wrapper.style.display = 'block';
+  ClassicEditor.create(edDiv, {
+    licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE4MTQyMjcxOTksImp0aSI6ImQ3YzE5MjRlLTA3ZDMtNDhiNy04ZjI3LWQ0NThiZjJkYzFkNiIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiXSwiZmVhdHVyZXMiOlsiRFJVUCIsIkUyUCIsIkUyVyJdLCJyZW1vdmVGZWF0dXJlcyI6WyJQQiIsIlJGIiwiU0NIIiwiVENQIiwiVEwiLCJUQ1IiLCJJUiIsIlNVQSIsIkI2NEEiLCJMUCIsIkhFIiwiUkVEIiwiUEZPIiwiV0MiLCJGQVIiLCJCS00iLCJGUEgiLCJNUkUiLCJNRVIiXSwidmMiOiI5NTczZjliZSJ9.Pztuem4P5NBB_okZHUtcYkQJU0E8toFbgXEP2CWgsQskAc85gjxOmdb4kZJkUSNymTuTizmE2w2KiJH4Cleixg',
+    plugins: [Essentials, Paragraph, Heading, Undo, Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code, CodeBlock, List, TodoList, Link, Table, BlockQuote, Font, Highlight, Alignment, Indent, IndentBlock, HorizontalLine, PageBreak, FindAndReplace, SpecialCharacters, RemoveFormat, SourceEditing, Autoformat, PasteFromOffice],
+    toolbar: {
+      items: [
+        'undo','redo','|',
+        'heading','|',
+        'fontSize','fontFamily','fontColor','fontBackgroundColor','|',
+        'bold','italic','underline','strikethrough','subscript','superscript','code','|',
+        'highlight','|',
+        'alignment','|',
+        'bulletedList','numberedList','todoList','|',
+        'outdent','indent','|',
+        'blockQuote','link','insertTable','horizontalLine','pageBreak','|',
+        'findAndReplace','specialCharacters','|',
+        'removeFormat','sourceEditing'
+      ],
+      shouldNotGroupWhenFull: true
+    },
+    heading: { options: [
+      { model:'paragraph', title:'Paragrafo', class:'ck-heading_paragraph' },
+      { model:'heading1', view:'h1', title:'Intestazione 1', class:'ck-heading_h1' },
+      { model:'heading2', view:'h2', title:'Intestazione 2', class:'ck-heading_h2' },
+      { model:'heading3', view:'h3', title:'Intestazione 3', class:'ck-heading_h3' },
+    ]},
+    table: { contentToolbar: ['tableColumn','tableRow','mergeTableCells','tableProperties','tableCellProperties'] },
+    link: { addTargetToExternalLinks: true },
+    fontFamily: {
+      options: [
+        { title: 'Default', model: undefined },
+        { title: 'Arial', model: 'Arial, Helvetica, sans-serif' },
+        { title: 'Comic Sans', model: 'Comic Sans MS, cursive' },
+        { title: 'Courier New', model: 'Courier New, Courier, monospace' },
+        { title: 'Georgia', model: 'Georgia, serif' },
+        { title: 'Helvetica', model: 'Helvetica, Arial, sans-serif' },
+        { title: 'Roboto', model: 'Roboto, sans-serif' },
+        { title: 'Times New Roman', model: 'Times New Roman, Times, serif' },
+        { title: 'Verdana', model: 'Verdana, Geneva, sans-serif' }
+      ],
+      supportAllValues: true
+    },
+    placeholder: 'Scrivi il contenuto del documento qui...',
+  }).then(function(editor) {
+    window.editorInstance = editor;
+    var el = editor.ui.getEditableElement();
+    if (el) {
+      el.style.minHeight = '420px';
+      el.style.padding = '20px';
+      el.focus();
+    }
+    var dataLen = editor.getData().length;
+    document.getElementById('editorStatus').textContent = 'Editor OK (' + dataLen + ' caratteri)';
+    document.getElementById('editorStatus').style.color = '#34C759';
+    // Forza withText sui dropdown che hanno label (fontFamily mostra solo icona altrimenti)
+    editor.ui.view.toolbar.items.forEach(function(item) {
+      if (item.buttonView && item.buttonView.label) {
+        item.buttonView.set('withText', true);
+      }
+    });
+    // Anteprima HTML in tempo reale con debounce + risoluzione variabili
+    var prevEl = document.getElementById('anteprimaHtml');
+    var debounceTimer = null;
+    if (prevEl) {
+      var showRaw = function() {
+        prevEl.innerHTML = editor.getData() || '<p style="color:#999;font-style:italic;">Scrivi qualcosa...</p>';
+      };
+      showRaw();
+      editor.model.document.on('change:data', function() {
+        showRaw();
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+          if (typeof window.anteprimaHtml === 'function') window.anteprimaHtml();
+        }, 800);
+      });
+    }
+  }).catch(function(err) {
+    wrapper.style.display = 'none';
+    document.getElementById('editorStatus').innerHTML = 'Errore: <strong>' + (err.message || err) + '</strong>';
+    document.getElementById('editorStatus').style.color = '#f87171';
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCKEditor);
+} else {
+  initCKEditor();
+}
+</script>
+<script>
+window._getCorpo = function() {
+  var ed = window.editorInstance;
+  return ed ? ed.getData() : '';
+};
+
+window.inserisciVarCkeditor = function(variabile) {
+  var ed = window.editorInstance;
+  if (!ed) return;
+  ed.model.change(function(writer) {
+    var pos = ed.model.document.selection.getFirstPosition();
+    if (!pos) pos = writer.createPositionAt(ed.model.document.getRoot(), 'end');
+    writer.insertText('\x7B\x7B' + variabile + '\x7D\x7D', pos);
+  });
+  ed.editing.view.focus();
+  if (typeof mostraToast === 'function') mostraToast('Inserito: \x7B\x7B' + variabile + '\x7D\x7D', true);
+};
+
+window.salvaModello = function(event) {
+  event.preventDefault();
+  var corpo = window._getCorpo();
+  var pk = document.getElementById('modelloPk').value;
+  var url = pk ? '/ajax/documentale/' + '{{ tipo_corrente }}/' + pk + '/save/' : '/ajax/documentale/' + '{{ tipo_corrente }}/nuovo/save/';
+  fetch(url, {
+    method:'POST',
+    headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/json'},
+    body: JSON.stringify({
+      codice: document.getElementById('modelloCodice').value,
+      titolo: document.getElementById('modelloTitolo').value,
+      corpo_testo: corpo,
+      note_interne: document.getElementById('modelloNote').value,
+    })
+  }).then(function(r){return r.json()}).then(function(d){
+    if (d.ok) { mostraToast('Modello salvato.', true); if (!pk) location.href="{% url 'documentale_list' tipo_corrente %}" + d.pk + '/'; }
+    else mostraToast('Errore: ' + (d.error||'salvataggio fallito'), false);
+  }).catch(function(){ mostraToast('Errore di rete.', false); });
+};
+
+window.anteprimaHtml = function() {
+  var corpo = window._getCorpo();
+  var contrattoPk = document.getElementById('previewContratto').value;
+  fetch('/ajax/documentale-preview/', {
+    method:'POST',
+    headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/json'},
+    body: JSON.stringify({ corpo_testo: corpo, contratto_pk: contrattoPk || null })
+  }).then(function(r){return r.json()}).then(function(d){
+    document.getElementById('anteprimaHtml').innerHTML = d.corpo;
+    document.getElementById('anteprimaHtml').style.display = 'block';
+    document.getElementById('anteprimaPdfFrame').style.display = 'none';
+  });
+};
+
+window.anteprimaPdf = function() {
+  var corpo = window._getCorpo();
+  var contrattoPk = document.getElementById('previewContratto').value;
+  var previewData = {
+    tipo: '{{ tipo_corrente }}',
+    titolo: document.getElementById('modelloTitolo').value,
+    corpo_testo: corpo,
+    contratto_pk: contrattoPk || null,
+    font_family: '{{ modello.font_family|default:"Roboto" }}',
+    font_size: {{ modello.font_size|default:"11" }}
+  };
+  window._ultimaPreviewData = previewData;
+  fetch('/ajax/documentale-preview-pdf/', {
+    method:'POST',
+    headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/json'},
+    body: JSON.stringify(previewData)
+  }).then(function(r){ return r.blob(); }).then(function(blob){
+    var url = URL.createObjectURL(blob);
+    if (typeof apriNelPannello === 'function') {
+      apriNelPannello(url, 0);
+    } else {
+      document.getElementById('anteprimaPdfFrame').src = url;
+      document.getElementById('anteprimaPdfFrame').style.display = 'block';
+      document.getElementById('anteprimaHtml').style.display = 'none';
+    }
+  });
+};
+
+// Accordion + search per pannello variabili
+window.toggleCategoria = function(header) {
+  var body = header.nextElementSibling;
+  var arrow = header.querySelector('.var-arrow');
+  var isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+};
+
+window.filtraVariabili = function(q) {
+  q = q.toLowerCase().trim();
+  var container = document.getElementById('varsContainer');
+  var nessunRisultato = true;
+  container.querySelectorAll('.var-gruppo').forEach(function(gruppo) {
+    var chips = gruppo.querySelectorAll('.var');
+    var matchCount = 0;
+    chips.forEach(function(chip) {
+      var match = chip.textContent.toLowerCase().includes(q) || chip.dataset.var.toLowerCase().includes(q);
+      chip.style.display = match ? '' : 'none';
+      if (match) matchCount++;
+    });
+    if (q === '') {
+      // Reset: collapse all
+      gruppo.querySelector('.var-body').style.display = 'none';
+      gruppo.querySelector('.var-arrow').style.transform = 'rotate(0deg)';
+      gruppo.style.display = '';
+    } else {
+      var hasMatch = matchCount > 0;
+      gruppo.style.display = hasMatch ? '' : 'none';
+      if (hasMatch) {
+        gruppo.querySelector('.var-body').style.display = '';
+        gruppo.querySelector('.var-arrow').style.transform = 'rotate(90deg)';
+      }
+      if (hasMatch) nessunRisultato = false;
+    }
+  });
+  document.getElementById('varNoResults').style.display = (q !== '' && nessunRisultato) ? '' : 'none';
+};
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Modifica Modello
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        Qui puoi creare o modificare un modello documentale. I modelli usano <b>variabili</b> tra doppie graffe (es. <code>{{datore.nome}}</code>) che vengono sostituite con i dati reali al momento della generazione.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> <b>CODICE</b> — identificatore univoco (sola lettura in modifica).<br>
+        <b>2.</b> <b>TITOLO</b> — nome descrittivo del modello.<br>
+        <b>3.</b> Usa l'editor <b>CKEditor</b> per scrivere il contenuto con formattazione ricca.<br>
+        <b>4.</b> Clicca <b>"Variabili"</b> per aprire il pannello con tutte le variabili disponibili. Clicca su una variabile per inserirla nel testo.<br>
+        <b>5.</b> Seleziona un <b>contratto di anteprima</b> per vedere il modello compilato con dati reali.<br>
+        <b>6.</b> Clicca <b>"PDF"</b> per generare un'anteprima PDF del modello.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Variabili disponibili</b><br>
+        Le variabili sono organizzate per categorie (Datore, Lavoratore, Contratto, Calcoli…). Cerca per nome nella barra di ricerca. Le variabili vengono sostituite solo al momento dell'uso dal modello.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

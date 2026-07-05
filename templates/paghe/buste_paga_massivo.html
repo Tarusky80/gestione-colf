@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+{% block title %}Buste Paga Massive{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Buste Paga Massive</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="h3 fw-bold mb-1">BUSTE PAGA MASSIVE
+          <button class="btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">Genera e invia buste paga per più contratti contemporaneamente.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="location.href='{% url 'riepilogo_invio_list' %}'">
+            <i class="bi bi-clock-history me-1"></i> Storico invii
+        </button>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-3">
+        <label class="c-10-up fw-bold mb-1">Mese</label>
+        <select id="selMese" class="form-control bg-input">
+            {% for num, nome in mesi %}
+            <option value="{{ num }}" {% if num == mese_corrente %}selected{% endif %}>{{ nome }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="c-10-up fw-bold mb-1">Anno</label>
+        <select id="selAnno" class="form-control bg-input">
+            {% for a in anni %}
+            <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="c-10-up fw-bold mb-1">Tipo calcolo</label>
+        <select id="selTipoCalcolo" class="form-control bg-input">
+            <option value="STANDARD" selected>STANDARD</option>
+            <option value="CONVIVENTE">CONVIVENTE</option>
+            <option value="NON_CONVIVENTE">NON_CONVIVENTE</option>
+            <option value="CONVIVENTI_CCNL">CONVIVENTI_CCNL</option>
+            <option value="INVERSO">INVERSO</option>
+            <option value="NOTTURNO">NOTTURNO</option>
+            <option value="MALATTIA">MALATTIA</option>
+            <option value="SOSTITUZIONE">SOSTITUZIONE</option>
+            <option value="TFR">TFR</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="c-10-up fw-bold mb-1">Modello Email</label>
+        <select id="selModelloEmail" class="form-control bg-input">
+            <option value="">— Nessuno —</option>
+            {% for m in modelli_email %}
+            <option value="{{ m.pk }}">{{ m.codice }}</option>
+            {% endfor %}
+        </select>
+        <div class="d-flex align-items-center gap-2 mt-2">
+            <label class="tb-toggle" style="position:relative;display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+                <input type="checkbox" id="chkApriTB" checked style="display:none;">
+                <span class="tb-track" style="position:relative;width:36px;height:20px;background:#27282D;border-radius:10px;transition:background .2s;flex-shrink:0;">
+                    <span class="tb-knob" style="position:absolute;top:2px;left:2px;width:16px;height:16px;background:#8A8F98;border-radius:50%;transition:transform .2s,background .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);"></span>
+                </span>
+                <span class="tb-label" style="font-size:12px;color:#8A8F98;transition:color .2s,font-weight .2s;">Thunderbird (con allegato)</span>
+            </label>
+        </div>
+        <style>
+        .tb-toggle input:checked ~ .tb-track { background:#5E6AD2; }
+        .tb-toggle input:checked ~ .tb-track .tb-knob { transform:translateX(16px); background:#fff; }
+        .tb-toggle input:checked ~ .tb-label { color:#5E6AD2 !important; font-weight:600; }
+        </style>
+    </div>
+    <div class="d-flex flex-wrap gap-2 justify-content-end" style="margin-top:8px;">
+        <button type="button" class="btn btn-primary btn-sm" onclick="generaPDF()" id="btnGenera">
+            <i class="bi bi-file-pdf me-1"></i> Solo PDF
+        </button>
+        <button type="button" class="btn btn-success btn-sm" onclick="generaZip()" id="btnZip">
+            <i class="bi bi-archive me-1"></i> Genera ZIP
+        </button>
+        <button type="button" class="btn btn-info btn-sm" onclick="generaEInvia()" id="btnInvia">
+            <i class="bi bi-envelope me-1"></i> Genera e invia
+        </button>
+        <button type="button" class="btn btn-warning btn-sm" onclick="salvaBusteSelezionate()" id="btnSalvaSelezionate">
+            <i class="bi bi-save me-1"></i> SALVA BUSTE SELEZIONATE
+        </button>
+    </div>
+</div>
+
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center gap-2">
+            <input type="checkbox" id="selTutti" onchange="toggleTutti(this)" class="c-checkbox">
+            <label class="c-10-up fw-bold mb-0 small">Seleziona tutti</label>
+        </div>
+        <span id="selCount" class="small text-secondary">0 selezionati</span>
+    </div>
+
+    <table class="table custom-table sortable" id="contrTable">
+        <thead>
+            <tr>
+                <th style="width:32px;"></th>
+                <th>Datore</th>
+                <th>Lavoratore</th>
+                <th>Beneficiario</th>
+                <th>Liv.</th>
+                <th>Ore</th>
+                <th>Budget Mens.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in contratti %}
+            <tr>
+                <td><input type="checkbox" class="selContratto c-checkbox" value="{{ c.pk }}"></td>
+                <td><div class="fw-bold">{{ c.datore.nome_cognome }}</div></td>
+                <td><div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div></td>
+                <td>
+                    {% with progetti=c.progetto.all %}
+                    {% if progetti %}
+                    {% for p in progetti %}<span style="display:inline-block;margin:1px 0;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:500;background:rgba(16,185,129,0.12);color:#10b981;">{{ p.beneficiario.nome_cognome }}</span>{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                    {% endwith %}
+                </td>
+                <td><span style="background:rgba(94,106,210,0.15);color:#9ca3ff;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600;">{{ c.parametri_minimi.livello.codice }}</span></td>
+                <td><span style="color:#10b981;font-weight:700;">{{ c.ore_calcolate }}</span></td>
+                <td>&euro; {{ c.budget_di_partenza|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun contratto attivo</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Progress Modal -->
+<div class="modal fade" id="progressModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-linear">
+            <div class="modal-body text-center p-4">
+                <div class="spinner-border text-light mb-3" role="status"></div>
+                <h6 id="progressLabel" class="fw-bold c-text">Generazione in corso...</h6>
+                <p id="progressDetail" class="small text-secondary mb-0">Attendere prego</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-linear">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold c-text" id="resultTitle">Risultato</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body c-text" id="resultBody" style="max-height:60vh;overflow-y:auto;"></div>
+            <div class="modal-footer border-0" id="resultFooter">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Chiudi</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnInvioEmail" style="display:none;" onclick="inviaEmail()">
+                    <i class="bi bi-envelope me-1"></i> Apri nel client
+                </button>
+                <a id="btnScaricaZip" class="btn btn-success btn-sm" style="display:none;" target="_blank">
+                    <i class="bi bi-download me-1"></i> Scarica ZIP
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var riepilogoPk = null;
+var ultimoRisultato = null;
+
+function toggleTutti(el) {
+    document.querySelectorAll('.selContratto').forEach(function(cb) { cb.checked = el.checked; });
+    aggiornaCount();
+}
+
+function aggiornaCount() {
+    var n = document.querySelectorAll('.selContratto:checked').length;
+    document.getElementById('selCount').textContent = n + ' selezionati';
+}
+
+document.querySelectorAll('.selContratto').forEach(function(cb) {
+    cb.addEventListener('change', aggiornaCount);
+});
+
+function aggiornaLabelToggle() {
+    var label = document.querySelector('.tb-label');
+    var cb = document.getElementById('chkApriTB');
+    if (cb.checked) {
+        label.textContent = 'Thunderbird (con allegato)';
+    } else {
+        label.textContent = 'Mailto (senza allegato)';
+    }
+}
+document.getElementById('chkApriTB').addEventListener('change', aggiornaLabelToggle);
+aggiornaLabelToggle();
+
+function getSelezionati() {
+    var ids = [];
+    document.querySelectorAll('.selContratto:checked').forEach(function(cb) { ids.push(parseInt(cb.value)); });
+    return ids;
+}
+
+function mostraSpinner(label, detail) {
+    document.getElementById('progressLabel').textContent = label || 'Generazione in corso...';
+    document.getElementById('progressDetail').textContent = detail || '';
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('progressModal')).show();
+}
+
+function nascondiSpinner() {
+    var m = bootstrap.Modal.getInstance(document.getElementById('progressModal'));
+    if (m) m.hide();
+}
+
+function mostraRisultato(titolo, html, conInvio, conZip, zipUrl, mailtoLinks) {
+    document.getElementById('resultTitle').textContent = titolo;
+    document.getElementById('resultBody').innerHTML = html;
+    document.getElementById('btnInvioEmail').style.display = conInvio ? 'inline-block' : 'none';
+    var btnZip = document.getElementById('btnScaricaZip');
+    if (conZip && zipUrl) {
+        btnZip.style.display = 'inline-block';
+        btnZip.href = zipUrl;
+    } else {
+        btnZip.style.display = 'none';
+    }
+    if (mailtoLinks && mailtoLinks.length > 0) {
+        var mailtoHtml = '<hr><div class="small"><strong>Apri nel client di posta:</strong><br>';
+        mailtoLinks.forEach(function(link, i) {
+            if (link) mailtoHtml += '<a href="' + link + '" class="btn btn-sm btn-outline-info mt-1" target="_blank"><i class="bi bi-envelope"></i> Apri email #' + (i+1) + '</a> ';
+        });
+        mailtoHtml += '</div>';
+        document.getElementById('resultBody').insertAdjacentHTML('beforeend', mailtoHtml);
+    }
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('resultModal')).show();
+}
+
+function elaboraRisultatoGenerazione(d) {
+    nascondiSpinner();
+    riepilogoPk = d.riepilogo_pk;
+    ultimoRisultato = d;
+    var html = '<div class="text-center mb-3">';
+    html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.totale_ok + '</div>';
+    html += '<div class="small text-secondary">PDF generati</div>';
+    if (d.totale_errori > 0) {
+        html += '<div class="display-6 fw-bold mt-2" style="color:#dc2626;">' + d.totale_errori + '</div>';
+        html += '<div class="small text-secondary">Errori</div>';
+    }
+    html += '</div>';
+
+    if (d.thunderbird_aperto > 0) {
+        html += '<div class="alert alert-success py-2 mb-2 small"><i class="bi bi-envelope me-1"></i> Aperte ' + d.thunderbird_aperto + ' finestre Thunderbird con PDF allegato</div>';
+    }
+    if (d.email_inviate !== null && d.email_inviate !== undefined) {
+        html += '<div class="alert alert-info py-2 mb-2 small"><i class="bi bi-envelope me-1"></i> Email inviate: ' + d.email_inviate + '</div>';
+    }
+
+    if (d.dettaglio) {
+        html += '<hr><div class="small" style="max-height:250px;overflow-y:auto;">';
+        d.dettaglio.forEach(function(e) {
+            var icon = e.errore ? '<i class="bi bi-x-circle" style="color:#dc2626;"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
+            html += '<div class="d-flex align-items-center gap-2 py-1">' + icon;
+            html += ' <span class="flex-grow-1">' + e.datore + ' — ' + e.lavoratore + '</span>';
+            if (!e.errore && e.documento_pk) {
+                html += '<a href="#" onclick="event.preventDefault();apriNelPannello(\'/ajax/vedi-documento/' + e.documento_pk + '/\')" class="btn btn-sm btn-outline-light py-0 px-1 ms-1" title="Apri PDF">👁 APRI PDF</a>';
+                html += '<a href="/ajax/vedi-documento/' + e.documento_pk + '/" target="_blank" class="btn btn-sm btn-outline-light py-0 px-1" title="Scarica PDF">⬇ SCARICA PDF</a>';
+                html += '<button class="btn btn-warning btn-sm ms-1" onclick="stampaDocumento(' + e.documento_pk + ', this)" title="Stampa alla stampante"><i class="bi bi-printer"></i> Stampa</button>';
+            }
+            if (e.errore) html += '<br><small class="text-danger">' + e.errore + '</small>';
+            html += '</div>';
+        });
+        html += '</div>';
+    }
+
+    var zipUrl = d.zip_path ? '/download-riepilogo-zip/' + d.riepilogo_pk + '/' : null;
+    var conInvio = d.totale_ok > 0 && document.getElementById('selModelloEmail').value && d.email_inviate === null;
+    mostraRisultato('Operazione completata', html, conInvio, !!d.zip_path, zipUrl, d.mailto_links);
+}
+
+function generaPDF() {
+    var ids = getSelezionati();
+    if (ids.length === 0) { mostraToast('Seleziona almeno un contratto.', false); return; }
+    mostraSpinner('Generazione PDF in corso...', ids.length + ' contratti in elaborazione');
+    fetch('/ajax/genera-buste-massivo/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({contratti: ids, mese: parseInt(document.getElementById('selMese').value), anno: parseInt(document.getElementById('selAnno').value), azione: 'pdf'})
+    }).then(function(r) { return r.json(); }).then(elaboraRisultatoGenerazione).catch(function(e) {
+        nascondiSpinner();
+        mostraToast('Errore: ' + e.message, false);
+    });
+}
+
+function generaZip() {
+    var ids = getSelezionati();
+    if (ids.length === 0) { mostraToast('Seleziona almeno un contratto.', false); return; }
+    mostraSpinner('Generazione ZIP in corso...', ids.length + ' contratti in elaborazione');
+    fetch('/ajax/genera-buste-massivo/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({contratti: ids, mese: parseInt(document.getElementById('selMese').value), anno: parseInt(document.getElementById('selAnno').value), azione: 'zip'})
+    }).then(function(r) { return r.json(); }).then(elaboraRisultatoGenerazione).catch(function(e) {
+        nascondiSpinner();
+        mostraToast('Errore: ' + e.message, false);
+    });
+}
+
+function generaEInvia() {
+    var ids = getSelezionati();
+    if (ids.length === 0) { mostraToast('Seleziona almeno un contratto.', false); return; }
+    var modelloPk = document.getElementById('selModelloEmail').value;
+    if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+    var apriTB = document.getElementById('chkApriTB').checked;
+    if (!confirm(apriTB ? 'Generare buste paga e aprirle in Thunderbird?' : 'Generare buste paga e preparare i link mailto?')) return;
+    mostraSpinner('Generazione e invio in corso...', ids.length + ' contratti');
+    fetch('/ajax/genera-buste-massivo/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({
+            contratti: ids,
+            mese: parseInt(document.getElementById('selMese').value),
+            anno: parseInt(document.getElementById('selAnno').value),
+            azione: 'pdf',
+            modello_email_pk: parseInt(modelloPk),
+            apri_thunderbird: apriTB
+        })
+    }).then(function(r) { return r.json(); }).then(elaboraRisultatoGenerazione).catch(function(e) {
+        nascondiSpinner();
+        mostraToast('Errore: ' + e.message, false);
+    });
+}
+
+function inviaEmail() {
+    if (!riepilogoPk) { mostraToast('Nessun riepilogo disponibile.', false); return; }
+    var modelloPk = document.getElementById('selModelloEmail').value;
+    if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+    var apriTB = document.getElementById('chkApriTB').checked;
+    if (!confirm(apriTB ? 'Aprire le buste paga in Thunderbird?' : 'Preparare i link mailto?')) return;
+    mostraSpinner(apriTB ? 'Apertura Thunderbird in corso...' : 'Preparazione link email in corso...', '');
+    fetch('/ajax/invia-buste-massivo/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({riepilogo_pk: riepilogoPk, modello_email_pk: parseInt(modelloPk), apri_thunderbird: apriTB})
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        nascondiSpinner();
+        riepilogoPk = null;
+        var html = '<div class="text-center mb-3">';
+        if (d.thunderbird_aperto > 0) {
+            html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.thunderbird_aperto + '</div>';
+            html += '<div class="small text-secondary">Finestre Thunderbird aperte</div>';
+        } else {
+            html += '<div class="small text-secondary">Link mailto pronti per ' + (d.mailto_links ? d.mailto_links.filter(function(x){return x;}).length : 0) + ' destinatari</div>';
+        }
+        html += '</div>';
+        mostraRisultato('Pronto per l\'invio', html, false, false, null, d.mailto_links);
+    }).catch(function(e) {
+        nascondiSpinner();
+        mostraToast('Errore: ' + e.message, false);
+    });
+}
+
+function salvaBusteSelezionate() {
+    var ids = getSelezionati();
+    if (ids.length === 0) { mostraToast('Seleziona almeno un contratto.', false); return; }
+    var btn = document.getElementById('btnSalvaSelezionate');
+    btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Salvataggio...';
+    fetch('/ajax/salva-buste-selezionate/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({
+            contratti: ids,
+            mese: parseInt(document.getElementById('selMese').value),
+            anno: parseInt(document.getElementById('selAnno').value),
+            tipo_calcolo: document.getElementById('selTipoCalcolo').value
+        })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) {
+            _stampaToast(d.salvate + ' buste salvate in archivio.' + (d.errori ? ' Errori: ' + d.errori.join(', ') : ''), true);
+        } else {
+            _stampaToast(d.error || 'Errore salvataggio', false);
+        }
+    }).catch(function(e) {
+        _stampaToast('Errore di rete: ' + e.message, false);
+    }).finally(function() {
+        btn.disabled = false; btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTE SELEZIONATE';
+    });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content modal-linear">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title c-text fs-15 fw-7"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Buste Paga Massive</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body c-muted fs-13" style="line-height:1.6;">
+        <p>Genera e invia buste paga per pi&ugrave; contratti contemporaneamente.</p>
+        <p>Seleziona mese e anno, scegli i contratti spuntandoli e clicca su <strong>"Genera selezionati"</strong>.</p>
+        <p>Puoi anche allegare un modello email prima dell'invio.</p>
+        <p class="mb-0">Lo <strong>Storico invii</strong> tiene traccia di tutte le email inviate.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
