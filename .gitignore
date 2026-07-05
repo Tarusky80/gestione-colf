@@ -19,3 +19,7 @@ drivers/
 BACKUP_*
 PAGHE_COLF_BACKUP/
 PAGHE_COLF_DOCUMENTI_PER_DATORI/
+data/
+logs/
+backup_*/
+*.bak
