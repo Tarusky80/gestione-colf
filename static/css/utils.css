@@ -135,6 +135,10 @@
 .btn-ghost-pink { background: rgba(244,114,182,0.08); border-color: rgba(244,114,182,0.2); color: #ec4899; }
 .btn-ghost-pink:hover { background: rgba(244,114,182,0.15); color: #f472b6; }
 
+/* --- CTA BUTTON (empty-state "Nuovo" sulle liste) --- */
+.btn-new { background: var(--accent-color); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 500; font-size: 14px; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn-new:hover { background: #7B8BF5; color: white; box-shadow: 0 8px 20px rgba(94, 106, 210, 0.5); }
+
 /* --- UPPERCASE LABEL 9px --- */
 .c-9-up { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; }
 .c-9-up-fw { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; font-weight: 700; }

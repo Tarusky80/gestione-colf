@@ -386,7 +386,7 @@ Il risultato include anche l'<b>offset visivo</b> che nasconde i dati sensibili 
 
 {% block extra_js %}
 <script>
-function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+{% include 'paghe/partials/_calcoli_js_helpers.html' %}
 var contrattiList = [];
 var currIdx = -1;
 var _activeInput = null;

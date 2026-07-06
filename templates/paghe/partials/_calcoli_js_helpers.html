@@ -8,13 +8,6 @@ function hexToRgb(hex) {
     var b = parseInt(hex.slice(5, 7), 16);
     return r + ',' + g + ',' + b;
 }
-function getCSRFToken() {
-    var name = 'csrftoken';
-    var value = '; ' + document.cookie;
-    var parts = value.split('; ' + name + '=');
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return '';
-}
 window.aggiornaTfrCalcoli = function() {
     var sep = document.getElementById('rateoTfrSeparato');
     var ant = document.getElementById('rateoAnticipo70');

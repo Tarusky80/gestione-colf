@@ -238,7 +238,7 @@ function mostraRisultato(titolo, html, conInvio, conZip, zipUrl, mailtoLinks) {
     if (mailtoLinks && mailtoLinks.length > 0) {
         var mailtoHtml = '<hr><div class="small"><strong>Apri nel client di posta:</strong><br>';
         mailtoLinks.forEach(function(link, i) {
-            if (link) mailtoHtml += '<a href="' + link + '" class="btn btn-sm btn-outline-info mt-1" target="_blank"><i class="bi bi-envelope"></i> Apri email #' + (i+1) + '</a> ';
+            if (link) mailtoHtml += '<a href="' + link + '" class="btn btn-sm btn-ghost-info mt-1" target="_blank"><i class="bi bi-envelope"></i> Apri email #' + (i+1) + '</a> ';
         });
         mailtoHtml += '</div>';
         document.getElementById('resultBody').insertAdjacentHTML('beforeend', mailtoHtml);
@@ -273,8 +273,8 @@ function elaboraRisultatoGenerazione(d) {
             html += '<div class="d-flex align-items-center gap-2 py-1">' + icon;
             html += ' <span class="flex-grow-1">' + e.datore + ' — ' + e.lavoratore + '</span>';
             if (!e.errore && e.documento_pk) {
-                html += '<a href="#" onclick="event.preventDefault();apriNelPannello(\'/ajax/vedi-documento/' + e.documento_pk + '/\')" class="btn btn-sm btn-outline-light py-0 px-1 ms-1" title="Apri PDF">👁 APRI PDF</a>';
-                html += '<a href="/ajax/vedi-documento/' + e.documento_pk + '/" target="_blank" class="btn btn-sm btn-outline-light py-0 px-1" title="Scarica PDF">⬇ SCARICA PDF</a>';
+                html += '<a href="#" onclick="event.preventDefault();apriNelPannello(\'/ajax/vedi-documento/' + e.documento_pk + '/\')" class="btn btn-sm btn-ghost py-0 px-1 ms-1" title="Apri PDF">👁 APRI PDF</a>';
+                html += '<a href="/ajax/vedi-documento/' + e.documento_pk + '/" target="_blank" class="btn btn-sm btn-ghost py-0 px-1" title="Scarica PDF">⬇ SCARICA PDF</a>';
                 html += '<button class="btn btn-ghost-warning btn-sm ms-1" onclick="stampaDocumento(' + e.documento_pk + ', this)" title="Stampa alla stampante"><i class="bi bi-printer"></i> Stampa</button>';
             }
             if (e.errore) html += '<br><small class="text-danger">' + e.errore + '</small>';

@@ -210,10 +210,10 @@
             </div>
 
             <div class="d-flex gap-3 align-items-center flex-wrap">
-                <button class="btn btn-outline-primary btn-sm" onclick="apriModalCercaSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
+                <button class="btn btn-ghost-primary btn-sm" onclick="apriModalCercaSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
                     <i class="bi bi-search me-1"></i>Cerca esistente
                 </button>
-                <button class="btn btn-outline-success btn-sm" onclick="apriModalNuovoSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
+                <button class="btn btn-ghost-success btn-sm" onclick="apriModalNuovoSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
                     <i class="bi bi-person-plus me-1"></i>Nuovo sostituto
                 </button>
                 <span id="sostitutoSelezionato" style="font-size:13px;color:#8A8F98;display:none;">
@@ -228,7 +228,7 @@
                     <button class="btn btn-ghost-success btn-sm" onclick="calcolaBustaSostituto()" style="border-radius:8px;padding:6px 18px;font-weight:600;">
                         <i class="bi bi-calculator me-1"></i>Calcola Busta Sostituto
                     </button>
-                    <button id="btnPdfSostituto" class="btn btn-outline-danger btn-sm" onclick="scaricaPdfSostituto()" style="border-radius:8px;padding:6px 16px;display:none;">
+                    <button id="btnPdfSostituto" class="btn btn-ghost-danger btn-sm" onclick="scaricaPdfSostituto()" style="border-radius:8px;padding:6px 16px;display:none;">
                         <i class="bi bi-file-pdf me-1"></i>PDF
                     </button>
                     <label style="font-size:10px;color:#8A8F98;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;margin-right:4px;">
@@ -743,13 +743,6 @@ function renderBustaSostituto(d) {
     document.getElementById('bustaSostitutoContent').innerHTML = h;
 }
 
-function getCSRFToken() {
-    var name = 'csrftoken';
-    var value = '; ' + document.cookie;
-    var parts = value.split('; ' + name + '=');
-    if (parts.length === 2) return parts.pop().split(';').shift();
-    return '';
-}
 window.salvaBusta = function() {
     var pk = document.getElementById('btnSalvaBusta').dataset.pk;
     if (!pk) return;

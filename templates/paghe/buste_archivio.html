@@ -183,25 +183,25 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                 <td>
                     <div class="d-flex gap-1 align-items-center flex-nowrap">
                         {% if b.tipo_calcolo == 'STANDARD' or b.tipo_calcolo == 'CONVIVENTE' %}
-                        <a href="{% url 'calcoli_list' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_list' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% elif b.tipo_calcolo == 'NON_CONVIVENTE' or b.tipo_calcolo == 'SOSTITUZIONE' %}
-                        <a href="{% url 'calcoli_non_convivente' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_non_convivente' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %}
-                        <a href="{% url 'calcoli_conviventi_ccnl' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_conviventi_ccnl' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% elif b.tipo_calcolo == 'NOTTURNO' %}
-                        <a href="{% url 'calcoli_notturno' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_notturno' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% elif b.tipo_calcolo == 'MALATTIA' %}
-                        <a href="{% url 'calcoli_malattia' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_malattia' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %}
-                        <a href="{% url 'calcoli_inverso' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_inverso' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% elif b.tipo_calcolo == 'TFR' %}
-                        <a href="{% url 'calcoli_tfr' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_tfr' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% endif %}
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-light btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg" style="color:#10b981;"></i></button>
-                            <button class="btn btn-outline-light btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive" style="color:#5E6AD2;"></i></button>
-                            <button class="btn btn-outline-light btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i></button>
-                            <button class="btn btn-outline-light btn-sm px-2" onclick="eliminaBusta({{ b.pk }})" title="Elimina"><i class="bi bi-trash" style="color:#ef4444;"></i></button>
+                            <button class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg" style="color:#10b981;"></i></button>
+                            <button class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive" style="color:#5E6AD2;"></i></button>
+                            <button class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i></button>
+                            <button class="btn btn-ghost btn-sm px-2" onclick="eliminaBusta({{ b.pk }})" title="Elimina"><i class="bi bi-trash" style="color:#ef4444;"></i></button>
                         </div>
                         <button class="btn btn-sm px-2 btn-ghost-primary" onclick="apriCcnlOcchioBusta({{ b.contratto.pk }}, {{ b.anno }})" title="Vedi parametri CCNL" style="font-size:11px;"><i class="bi bi-eye me-1"></i>CCNL</button>
                         <button class="btn btn-sm px-2 btn-ghost-success" onclick="window.open('{% url 'download_ricevuta_pdf' b.pk %}')" title="Ricevuta pagamento"><i class="bi bi-receipt me-1"></i>RICEVUTA</button>

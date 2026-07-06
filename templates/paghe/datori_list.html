@@ -13,7 +13,7 @@
 {% block content %}
 <div class="mb-4">
     <h1 class="h3 fw-bold mb-1">DATORI DI LAVORO
-      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
       <div class="d-inline-block float-end">
         <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);margin-right:6px;vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
         <a href="{% url 'ajax_esporta_xlsx' 'datori' %}" class="btn btn-sm btn-ghost-primary" style="padding:5px 12px;font-size:11px;margin-left:6px;"><i class="bi bi-download me-1"></i> Export XLSX</a>

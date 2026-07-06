@@ -492,13 +492,6 @@ function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function getCSRFToken() {
-  var name = 'csrftoken';
-  var value = '; ' + document.cookie;
-  var parts = value.split('; ' + name + '=');
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return '';
-}
 window.salvaBusta = function() {
   var pk = document.getElementById('btnSalvaBusta').dataset.pk;
   if (!pk) return;
