@@ -19628,3 +19628,8 @@ INFO 2026-07-06 12:37:51,351 paghe.apps [Setup] Migrazioni OK (nessuna in sospes
 INFO 2026-07-06 12:37:51,351 paghe.apps [Playwright] Controllo pacchetto Python...
 INFO 2026-07-06 12:37:51,353 paghe.apps [Playwright] OK (1.61.0)
 INFO 2026-07-06 12:37:51,353 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-06 12:37:52,846 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-06 12:37:52,944 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-06 12:37:52,945 paghe.apps ============================================================
+INFO 2026-07-06 12:37:52,947 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-06 12:37:52,956 paghe.apps ============================================================
