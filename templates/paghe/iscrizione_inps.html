@@ -102,7 +102,7 @@
           <span class="inps-label" style="min-width:auto;">Cod.INPS</span>
           <input id="v_c_codice_inps" style="background:#09090B;border:1px solid #333;color:#EDEDED;border-radius:4px;padding:2px 6px;font-size:12px;flex:1;min-width:80px;" placeholder="Codice rapporto" value="">
           <button class="incolla-btn" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">INCOLLA</button>
-          <button class="btn btn-sm btn-ghost-success" style="padding:0 10px;font-size:10px;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
+          <button class="btn btn-sm btn-ghost-success salva-codice-btn" style="padding:0 10px;font-size:10px;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
           <span class="salva-feedback" style="font-size:11px;color:#10b981;font-weight:600;display:none;">✓</span>
         </div>
       </div>
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // SALVA — salva codice rapporto via AJAX
-  document.querySelector('.btn-ghost-success') && document.querySelector('.btn-ghost-success').addEventListener('click', function() {
+  document.querySelector('.salva-codice-btn') && document.querySelector('.salva-codice-btn').addEventListener('click', function() {
     var pk = select.value;
     if (!pk) return;
     var inp = document.getElementById('v_c_codice_inps');
