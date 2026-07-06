@@ -1,0 +1,1270 @@
+"""Modulo _pagopa_auto - generato automaticamente da views.py"""
+
+from paghe.views._common_imports import *
+
+from calendar import monthcalendar, SATURDAY
+from paghe.views._helpers import _get_cartella_documenti, _registra_font_pdf
+from paghe.views._inps import _log_inps
+from paghe.views._constants import _pagopa_drivers, _pagopa_screenshots
+import contextlib
+
+logger = logging.getLogger(__name__)
+
+
+
+# --- _get_pagopa_automation ---
+
+def _get_pagopa_automation():
+    """Restituisce il modulo automation in base alla configurazione (Selenium vs Playwright)."""
+    web_config = ServizioWebConfig.get_singleton()
+    if web_config and web_config.use_playwright:
+        from paghe import automation_playwright as _mod
+    else:
+        from paghe import automation as _mod
+    return _mod
+
+
+# --- _avvia_pagopa_driver ---
+
+
+def _avvia_pagopa_driver(request, chromedriver_exe=None, download_dir=None, headless=False, minimized=False):
+    """Avvia Chrome/Chromium per PagoPA e salva il driver in sessione."""
+    web_config = ServizioWebConfig.get_singleton()
+    use_pw = web_config and web_config.use_playwright
+    auto = _get_pagopa_automation()
+
+    # Chiudi eventuale driver precedente
+    if request.user.pk in _pagopa_drivers:
+        try:
+            auto.chiudi_driver(_pagopa_drivers[request.user.pk][0])
+        except Exception:
+            logger.warning("Impossibile chiudere driver PagoPA precedente per user %s", request.user.pk)
+        del _pagopa_drivers[request.user.pk]
+
+    opzioni = get_opzioni()
+    if chromedriver_exe is None and opzioni and not use_pw:
+        chromedriver_exe = opzioni.chromedriver_exe
+
+    if download_dir is None:
+        download_dir = os.path.join(settings.MEDIA_ROOT, 'pagopa')
+    os.makedirs(download_dir, exist_ok=True)
+
+    timeout = web_config.timeout_elementi if web_config else 10
+
+    driver = auto.avvia_driver(
+        chromedriver_exe=chromedriver_exe,
+        headless=headless,
+        minimized=minimized,
+        window_size=(960, 1080),
+        download_dir=download_dir,
+    )
+    _pagopa_drivers[request.user.pk] = (driver, timeout, download_dir, use_pw)
+    return driver, timeout, download_dir
+
+
+# --- _get_pagopa_driver ---
+
+
+def _get_pagopa_driver(request):
+    """Recupera il driver Chrome/Chromium dalla sessione."""
+    data = _pagopa_drivers.get(request.user.pk)
+    if data:
+        return data[0], data[1], data[2]
+    return None, None, None
+
+
+# --- _pulisci_sessione_pagopa ---
+
+
+def _pulisci_sessione_pagopa(request):
+    """Rimuove i dati di sessione PagoPA."""
+    for key in ['pagopa_step', 'pagopa_contratto_pk', 'pagopa_trimestre', 'pagopa_anno']:
+        request.session.pop(key, None)
+
+
+# --- _cattura_e_registra_screenshot ---
+
+def _cattura_e_registra_screenshot(request, step_name=''):
+    """Cattura screenshot + HTML debug della pagina corrente."""
+    data = _pagopa_drivers.get(request.user.pk)
+    if not data:
+        return None
+    driver = data[0]
+    use_pw = data[3] if len(data) > 3 else False
+    try:
+        if use_pw:
+            from paghe.automation_playwright import cattura_screenshot, salva_debug_step
+            shot = cattura_screenshot(driver, step_name)
+            salva_debug_step(driver, step_name)
+        else:
+            from paghe.automation import cattura_screenshot, salva_debug_step
+            shot = cattura_screenshot(driver, step_name)
+            salva_debug_step(driver, step_name)
+    except Exception:
+        logger.exception("Errore in _cattura_e_registra_screenshot")
+        return None
+    if request.user.pk not in _pagopa_screenshots:
+        _pagopa_screenshots[request.user.pk] = []
+    _pagopa_screenshots[request.user.pk].append(shot)
+    return shot
+
+
+# --- _genera_report_pagopa_pdf ---
+
+
+def _genera_report_pagopa_pdf(request, contratto):
+    """Genera un PDF con tutti gli screenshot raccolti durante l'automazione PagoPA.
+
+    Usa ReportLab per creare un report con una pagina per screenshot.
+    Salva il PDF nella cartella documenti del contratto.
+    """
+    shots = _pagopa_screenshots.pop(request.user.pk, [])
+    if not shots:
+        return None
+
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, PageBreak, Spacer
+    from io import BytesIO
+    import PIL
+
+    nome_datore = contratto.datore.nome_cognome.replace(' ', '_').upper() if contratto.datore else 'ND'
+    nome_file = f'Report_PagoPA_{nome_datore}.pdf'
+    cartella = _get_cartella_documenti(contratto)
+    percorso = os.path.join(cartella, nome_file)
+
+    doc = SimpleDocTemplate(percorso, pagesize=A4,
+                            topMargin=15*mm, bottomMargin=10*mm,
+                            leftMargin=10*mm, rightMargin=10*mm)
+    styles = getSampleStyleSheet()
+    style_normal = styles['Normal']
+    style_h = styles['Heading4']
+    style_normal.fontSize = 8
+    style_h.fontSize = 10
+
+    elements = []
+
+    # Titolo
+    elements.append(Paragraph(
+        f'Report PagoPA — {contratto.datore.nome_cognome} → {contratto.lavoratore.nome_cognome}',
+        styles['Title']))
+    elements.append(Paragraph(
+        f'Codice Rapporto: {contratto.codice_rapporto_inps or "ND"} | '
+        f'Trimestre: {request.session.get("pagopa_trimestre", "?")} | '
+        f'{len(shots)} schermate',
+        style_normal))
+    elements.append(Spacer(1, 5*mm))
+
+    a4_w, a4_h = A4
+    margine = 10*mm
+    img_max_w = a4_w - 2 * margine
+    img_max_h = a4_h - 40*mm  # spazio per header + footer
+
+    for i, shot in enumerate(shots):
+        if i > 0:
+            elements.append(PageBreak())
+
+        step_name = shot.get('step_name', f'Step {i+1}')
+        url = shot.get('url', '?')
+        title = shot.get('title', '')
+        ts = shot.get('ts', '')
+        png = shot.get('png', b'')
+
+        elements.append(Paragraph(
+            f'<b>{i+1}. {step_name}</b> &mdash; {ts}',
+            style_h))
+        elements.append(Paragraph(
+            f'<i>{title}</i>',
+            style_normal))
+        elements.append(Paragraph(
+            f'URL: <font size="7">{url}</font>',
+            style_normal))
+        elements.append(Spacer(1, 2*mm))
+
+        if not png:
+            elements.append(Paragraph('[Screenshot non disponibile]', style_normal))
+            continue
+
+        try:
+            pil_img = PIL.Image.open(BytesIO(png))
+            img_w, img_h = pil_img.size
+            ratio = min(img_max_w / img_w, img_max_h / img_h, 1.0)
+            display_w = img_w * ratio
+            display_h = img_h * ratio
+            img = Image(BytesIO(png), width=display_w, height=display_h)
+            elements.append(img)
+        except Exception:
+            logger.exception("Errore in _genera_report_pagopa_pdf")
+            elements.append(Paragraph(f'[Errore elaborazione screenshot: {img_w}x{img_h}]', style_normal))
+
+    try:
+        doc.build(elements)
+        return nome_file
+    except Exception:
+        logger.exception("Errore in _genera_report_pagopa_pdf")
+        return None
+
+
+# --- _get_pagopa_page_info ---
+
+
+def _get_pagopa_page_info(request, driver=None):
+    """Recupera URL e titolo della pagina corrente nel browser PagoPA.
+
+    Returns:
+        tuple: (url, title) — '?' se non disponibile.
+    """
+    if driver is None:
+        data = _pagopa_drivers.get(request.user.pk)
+        if not data:
+            return '?', '?'
+        driver = data[0]
+        use_pw = data[3] if len(data) > 3 else False
+    else:
+        data = _pagopa_drivers.get(request.user.pk)
+        use_pw = data[3] if data and len(data) > 3 else False
+
+    if use_pw:
+        try:
+            from paghe.automation_playwright import _estrai_page as _ep
+            page = _ep(driver)
+            return page.url, page.title()
+        except Exception:
+            logger.exception("Errore in _get_pagopa_page_info")
+            return '?', '?'
+    else:
+        try:
+            return driver.current_url, driver.title
+        except Exception:
+            logger.exception("Errore in _get_pagopa_page_info")
+            return '?', '?'
+
+
+# --- _chiudi_pagopa_driver ---
+
+def _chiudi_pagopa_driver(request):
+    """Chiude e rimuove il driver Chrome/Chromium."""
+    if request.user.pk in _pagopa_drivers:
+        driver = _pagopa_drivers[request.user.pk][0]
+        auto = _get_pagopa_automation()
+        try:
+            auto.chiudi_driver(driver)
+        except Exception:
+            logger.warning("Impossibile chiudere driver in _chiudi_pagopa_driver per user %s", request.user.pk)
+        del _pagopa_drivers[request.user.pk]
+
+
+# --- _calcola_dati_pagopa ---
+
+
+# =============================================================================
+# PAGOPA - Calcolo dati contratto (riutilizza formule field_resolver)
+# =============================================================================
+
+def _calcola_dati_pagopa(contratto, trimestre='Q1', anno=None, ore_override=None, ore_auto=True):
+    """Calcola tutti i dati PagoPA per un contratto.
+
+    Priorità ore_trim: ore_override > (ore_mav_custom DB se ore_auto) > calcolo standard.
+    """
+    from paghe.models import TabellaContributiINPS
+
+    if anno is None:
+        anno = date.today().year
+
+    opzioni = get_opzioni()
+    soglia = float(opzioni.soglia_ore_contributi) if opzioni and opzioni.soglia_ore_contributi else 24.90
+
+    ore_mensili_raw = float(contratto.ore_mensili_calcolate)
+    ore_inps = math.ceil(ore_mensili_raw)
+    ore_sett = float(contratto.ore_settimanali_calcolate)
+
+    # Paga oraria INPS (troncata)
+    paga_base = float(contratto.parametri_minimi.paga_base) if contratto.parametri_minimi else 0
+    tredicesima = float(contratto.parametri_minimi.tredicesima_oraria) if contratto.parametri_minimi else 0
+    paga_oraria_inps = math.floor((paga_base + tredicesima) * 100) / 100
+
+    # Cassa / Ente bilaterale
+    ente = contratto.ente_bilaterale
+    cassa_orario = float(ente.totale) if ente else 0.0
+    codice_cassa = ente.codice if ente else ''
+    descrizione_cassa = ente.descrizione if ente else ''
+
+    # Fascia INPS
+    is_sopra_soglia = ore_sett > soglia
+    if is_sopra_soglia:
+        fascia = TabellaContributiINPS.objects.filter(
+            descrizione__icontains="PIU"
+        ).first()
+    else:
+        soglia_paga_1 = float(opzioni.soglia_paga_1_contributi) if opzioni else 9.61
+        soglia_paga_2 = float(opzioni.soglia_paga_2_contributi) if opzioni else 11.70
+        if paga_oraria_inps <= soglia_paga_1:
+            fascia = TabellaContributiINPS.objects.filter(
+                descrizione="MENO 24H - FINO A 9,61"
+            ).first()
+        elif paga_oraria_inps <= soglia_paga_2:
+            fascia = TabellaContributiINPS.objects.filter(
+                descrizione="MENO 24H - 9,61-11,70"
+            ).first()
+        else:
+            fascia = TabellaContributiINPS.objects.filter(
+                descrizione="MENO 24H - OLTRE 11,70"
+            ).first()
+    aliquota_inps_orario = float(fascia.totale) if fascia else 0.0
+    aliquota_inps_datore_orario = float(fascia.quota_datore) if fascia else 0.0
+    aliquota_inps_lavoratore_orario = float(fascia.quota_lavoratore) if fascia else 0.0
+    fascia_desc = fascia.descrizione if fascia else ('OLTRE soglia' if is_sopra_soglia else 'SOTTO soglia')
+
+    # Moltiplicatore trimestre
+    moltiplicatori = {'Q1': 3, 'Q2': 3, 'Q3': 3, 'Q4': 3}
+    mul = moltiplicatori.get(trimestre, 3)
+
+    # Priorità: ore_override > DB (se ore_auto) > calcolo standard
+    ore_trim = ore_inps * mul
+    ore_mav_custom = contratto.ore_mav_custom
+    ore_override = int(ore_override) if ore_override is not None and ore_override > 0 else None
+    if ore_override is not None:
+        ore_trim = ore_override
+    elif ore_auto and ore_mav_custom is not None and ore_mav_custom > 0:
+        ore_trim = int(ore_mav_custom)
+    imp_cassa_trim = math.floor(cassa_orario * ore_trim * 100) / 100
+    stima_contrib_trim = math.floor(aliquota_inps_orario * ore_trim * 100) / 100
+    inps_quota_datore_trim = math.floor(aliquota_inps_datore_orario * ore_trim * 100) / 100
+    inps_quota_lavoratore_trim = math.floor(aliquota_inps_lavoratore_orario * ore_trim * 100) / 100
+    contrib_totali = math.floor((imp_cassa_trim + stima_contrib_trim) * 100) / 100
+
+    # Quota associativa trimestrale (quota_datore + quota_lavoratore) * ore_trim
+    quota_datore = float(ente.quota_datore) if ente else 0.0
+    quota_lavoratore = float(ente.quota_lavoratore) if ente else 0.0
+    # Nome file
+    nome_datore = contratto.datore.nome_cognome.replace(' ', '_').upper() if contratto.datore else 'ND'
+    nome_lavoratore = contratto.lavoratore.nome_cognome.replace(' ', '_').upper() if contratto.lavoratore else 'ND'
+    cod_rapporto = contratto.codice_rapporto_inps or 'ND'
+    nome_file = f'PAGOPA_{nome_datore}_{nome_lavoratore}_{cod_rapporto}_{trimestre}{anno}.pdf'
+
+    # Trimestre parziale
+    mesi_inizio = {'Q1': 1, 'Q2': 4, 'Q3': 7, 'Q4': 10}
+    inizio_trimestre = date(anno, mesi_inizio[trimestre], 1)
+    is_trimestre_parziale = contratto.data_assunzione > inizio_trimestre
+
+    # Dettaglio trimestri (settimane, stato, corrente)
+    oggi = date.today()
+    trimestre_corrente = f'Q{(oggi.month-1)//3+1}'
+    trimestri_mesi = {'Q1':(1,2,3),'Q2':(4,5,6),'Q3':(7,8,9),'Q4':(10,11,12)}
+    trimestri_dettaglio = {}
+    for q, mesi in trimestri_mesi.items():
+        sett, completi = [], 0
+        for m in mesi:
+            w = sum(1 for _ in monthcalendar(anno, m) if _[SATURDAY] != 0)
+            sett.append(w)
+            if contratto.data_assunzione <= date(anno, m, 1):
+                completi += 1
+        trimestri_dettaglio[q] = {
+            'settimane': sett,
+            'completo': completi == 3,
+            'corrente': q == trimestre_corrente,
+        }
+
+    prog_opt = list(contratto.progetto.all()) if contratto.pk else []
+    contr_opt_parts = []
+    if prog_opt:
+        for i, p in enumerate(prog_opt):
+            tn = p.tipo.nome if p.tipo else '?'
+            if i == 0:
+                bn = p.beneficiario.nome_cognome if p.beneficiario else '?'
+                contr_opt_parts.append(bn + ' [' + tn + ']')
+            else:
+                contr_opt_parts.append('[' + tn + ']')
+    contr_opt_suffix = ' — ' + ' | '.join(contr_opt_parts) if contr_opt_parts else ''
+    contr_opt = (contratto.datore.nome_cognome if contratto.datore else '') + ' \u2192 ' + (contratto.lavoratore.nome_cognome if contratto.lavoratore else '') + contr_opt_suffix
+
+    return {
+        'contratto_pk': contratto.pk,
+        'trimestre': trimestre,
+        'anno': anno,
+
+        # Datore
+        'nome_datore': contratto.datore.nome_cognome if contratto.datore else '',
+        'cf_datore': contratto.datore.codice_fiscale if contratto.datore else '',
+        'indirizzo_datore': contratto.datore.indirizzo if contratto.datore else '',
+        'beneficiario': ', '.join(contratto.progetto.values_list('beneficiario__nome_cognome', flat=True).distinct()) if contratto.progetto.exists() else '',
+        'progetti': ', '.join(f"{p.beneficiario.nome_cognome} - {p.tipo.nome if p.tipo else 'N/D'}" for p in contratto.progetto.all()) if contratto.progetto.exists() else '',
+        'contratto_option': contr_opt,
+
+        # Lavoratore
+        'nome_lavoratore': contratto.lavoratore.nome_cognome if contratto.lavoratore else '',
+        'cf_lavoratore': contratto.lavoratore.codice_fiscale if contratto.lavoratore else '',
+        'codice_rapporto_inps': contratto.codice_rapporto_inps or '',
+        'indirizzo_lavoratore': contratto.lavoratore.indirizzo if contratto.lavoratore else '',
+
+        # Parametri retributivi
+        'ore_mensili': ore_mensili_raw,
+        'ore_settimanali': ore_sett,
+        'ore_inps': ore_inps,
+        'paga_base': paga_base,
+        'tredicesima_oraria': tredicesima,
+        'paga_oraria_inps': paga_oraria_inps,
+
+        # Soglia e fascia
+        'soglia_ore': soglia,
+        'is_sopra_soglia': is_sopra_soglia,
+        'fascia_desc': fascia_desc,
+        'aliquota_inps_orario': aliquota_inps_orario,
+        'aliquota_inps_datore_orario': aliquota_inps_datore_orario,
+        'aliquota_inps_lavoratore_orario': aliquota_inps_lavoratore_orario,
+        'inps_quota_datore_trim': inps_quota_datore_trim,
+        'inps_quota_lavoratore_trim': inps_quota_lavoratore_trim,
+
+        # Ente bilaterale / Cassa
+        'codice_cassa': codice_cassa,
+        'descrizione_cassa': descrizione_cassa,
+        'cassa_orario': cassa_orario,
+        'quota_datore': quota_datore,
+        'quota_lavoratore': quota_lavoratore,
+        'cassa_label': f"{codice_cassa} - {descrizione_cassa}" if codice_cassa and descrizione_cassa else (codice_cassa or descrizione_cassa or ''),
+
+        # Trimestrali
+        'moltiplicatore': mul,
+        'ore_trim': ore_trim,
+        'ore_mav_custom': str(ore_mav_custom) if ore_mav_custom is not None and ore_mav_custom > 0 else '',
+        'ore_override': str(ore_override) if ore_override is not None else '',
+        'imp_cassa_trim': imp_cassa_trim,
+        'stima_contrib_trim': stima_contrib_trim,
+        'contrib_totali': contrib_totali,
+        # Trimestre parziale
+        'trimestre_parziale': is_trimestre_parziale,
+        'trimestri_dettaglio': trimestri_dettaglio,
+        'data_assunzione': contratto.data_assunzione.strftime('%d/%m/%Y') if contratto.data_assunzione else '',
+        'data_inizio_trimestre': inizio_trimestre.strftime('%d/%m/%Y'),
+
+        # File
+        'nome_file': nome_file,
+    }
+
+
+# --- crea_pagopa ---
+@login_required
+@permesso_richiesto('buste.calcola')
+@never_cache
+def crea_pagopa(request):
+    opzioni = get_opzioni()
+    web_config = ServizioWebConfig.get_singleton()
+    contratti = ContrattoAttivo.objects.filter(stato='ATTIVO').select_related(
+        'datore', 'lavoratore', 'parametri_minimi', 'ente_bilaterale'
+    ).prefetch_related('progetto__tipo', 'progetto__beneficiario').order_by('datore__nome_cognome', 'lavoratore__nome_cognome')
+    contratto_pk = request.GET.get('contratto_pk')
+
+    return render(request, 'paghe/crea_pagopa.html', {
+        'opzioni': opzioni,
+        'web_config': web_config,
+        'contratti': contratti,
+        'contratto_pk': contratto_pk,
+    })
+
+
+# --- ajax_carica_dati_pagopa ---
+@login_required
+@permesso_richiesto('buste.calcola')
+def ajax_carica_dati_pagopa(request):
+    """Calcola i dati PagoPA per un contratto."""
+    contratto_pk = request.GET.get('contratto_pk')
+    trimestre = request.GET.get('trimestre', 'Q1')
+    anno = request.GET.get('anno', str(date.today().year))
+    ore_override_raw = request.GET.get('ore_override', '').strip()
+    ore_auto_raw = request.GET.get('ore_auto', '1')
+
+    if not contratto_pk:
+        return JsonResponse({'success': False, 'error': 'Contratto non specificato.'})
+
+    ore_override = None
+    if ore_override_raw:
+        with contextlib.suppress(ValueError, TypeError):
+            ore_override = int(ore_override_raw)
+    ore_auto = ore_auto_raw != '0'
+
+    contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
+    try:
+        dati = _calcola_dati_pagopa(contratto, trimestre, int(anno), ore_override=ore_override, ore_auto=ore_auto)
+        dati['success'] = True
+        return JsonResponse(dati)
+    except Exception as e:
+        logger.exception("Errore in ajax_carica_dati_pagopa")
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+# --- ajax_salva_ore_pagopa ---
+@login_required
+@permesso_richiesto('buste.calcola')
+@require_http_methods(['POST'])
+def ajax_salva_ore_pagopa(request):
+    """Salva o cancella ore_mav_custom su un contratto."""
+    contratto_pk = request.POST.get('contratto_pk')
+    ore_value = request.POST.get('ore', '').strip()
+
+    if not contratto_pk:
+        return JsonResponse({'success': False, 'error': 'Contratto non specificato.'})
+
+    contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
+
+    if ore_value:
+        try:
+            val = int(ore_value)
+            contratto.ore_mav_custom = val if val > 0 else None
+        except (ValueError, TypeError):
+            return JsonResponse({'success': False, 'error': 'Valore non valido, inserire un numero intero.'})
+    else:
+        contratto.ore_mav_custom = None
+
+    contratto.save(update_fields=['ore_mav_custom'])
+
+    return JsonResponse({
+        'success': True,
+        'ore_mav_custom': str(contratto.ore_mav_custom) if contratto.ore_mav_custom is not None else '',
+        'messaggio': 'Ore PAGOPA ' + ('aggiornate a ' + str(contratto.ore_mav_custom) if contratto.ore_mav_custom is not None else 'ripristinate automaticamente'),
+    })
+
+
+# --- ajax_genera_pagopa_pdf ---
+@xframe_options_exempt
+@login_required
+@permesso_richiesto('buste.calcola')
+def ajax_genera_pagopa_pdf(request):
+    """Genera PDF riepilogo PagoPA in stile busta paga (ReportLab)."""
+    import io
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.colors import HexColor
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+
+    _registra_font_pdf()
+    contratto_pk = request.GET.get('contratto_pk')
+    trimestre = request.GET.get('trimestre', 'Q1')
+    anno = request.GET.get('anno', str(date.today().year))
+    ore_override_raw = request.GET.get('ore_override', '').strip()
+    ore_auto_raw = request.GET.get('ore_auto', '1')
+
+    if not contratto_pk:
+        return HttpResponse('Contratto non specificato.', status=400)
+
+    ore_override = None
+    if ore_override_raw:
+        try:
+            ore_override = int(ore_override_raw)
+        except (ValueError, TypeError):
+            logger.warning("Ore override non valido: %s", ore_override_raw)
+    ore_auto = ore_auto_raw != '0'
+
+    contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
+    dati = _calcola_dati_pagopa(contratto, trimestre, int(anno), ore_override=ore_override, ore_auto=ore_auto)
+    dati['nome_file'] = dati['nome_file'].replace('PAGOPA_', 'RIEPILOGO_PAGOPA_', 1)
+    ore_modifica = None
+    if dati.get('ore_override'):
+        ore_modifica = int(dati['ore_override'])
+    elif ore_auto and dati.get('ore_mav_custom'):
+        ore_modifica = int(dati['ore_mav_custom'])
+    opzioni = get_opzioni()
+
+    grigio_scuro = HexColor('#222222')
+    grigio_medio = HexColor('#555555')
+    grigio_label = HexColor('#555555')
+    grigio_footer = HexColor('#777777')
+    grigio_bordo = HexColor('#cccccc')
+    HexColor('#f5f5f5')
+    acciaio = HexColor('#2c5282')
+    HexColor('#dce6f0')
+
+    s_h1 = ParagraphStyle('H1', fontSize=18, leading=22, textColor=grigio_scuro, fontName='Roboto-Bold', spaceAfter=0)
+    ParagraphStyle('H2', fontSize=8, leading=10, textColor=grigio_medio, fontName='Roboto', spaceAfter=6)
+    s_label = ParagraphStyle('label', fontSize=6.5, leading=8, textColor=grigio_label, fontName='Roboto', spaceAfter=0)
+    s_val = ParagraphStyle('val', fontSize=9, leading=12, textColor=grigio_scuro, fontName='Roboto-Bold', spaceAfter=0)
+    s_val_grigio = ParagraphStyle('valg', fontSize=7.5, leading=10, textColor=grigio_medio, fontName='Roboto', spaceAfter=0)
+    s_item_label = ParagraphStyle('iteml', fontSize=8, leading=11, textColor=grigio_scuro, fontName='Roboto', spaceAfter=0)
+    s_item_val = ParagraphStyle('itemv', fontSize=8.5, leading=11, textColor=grigio_scuro, fontName='Roboto-Bold', spaceAfter=0)
+    s_total_label = ParagraphStyle('totlbl', fontSize=9, leading=12, textColor=acciaio, fontName='Roboto-Bold', spaceAfter=0)
+    s_total_val = ParagraphStyle('totval', fontSize=10, leading=12, textColor=grigio_scuro, fontName='Roboto-Bold', spaceAfter=0)
+    ParagraphStyle('netlbl', fontSize=11, leading=14, textColor=acciaio, fontName='Roboto-Bold', spaceAfter=0)
+    ParagraphStyle('netval', fontSize=15, leading=18, textColor=acciaio, fontName='Roboto-Bold', spaceAfter=0)
+    s_sezione = ParagraphStyle('sez', fontSize=7.5, leading=10, textColor=acciaio, fontName='Roboto-Bold', spaceAfter=0)
+    s_std_sub = ParagraphStyle('stdsub', fontSize=7, leading=9, textColor=acciaio, fontName='Roboto-Bold', spaceAfter=0, alignment=TA_LEFT)
+    s_extra = ParagraphStyle('extra', fontSize=7, leading=10, textColor=grigio_medio, fontName='Roboto', spaceAfter=1)
+    ParagraphStyle('footer', fontSize=7, leading=9, textColor=grigio_footer, fontName='Roboto', alignment=TA_CENTER)
+
+    def _fmt_eur(v):
+        return ("\u20ac %s" % ("{:,.2f}".format(v).replace(',', 'X').replace('.', ',').replace('X', '.')))
+
+    def _row(label, value, small=''):
+        l = f"{label} <font size='7' color='#666666'>{small}</font>" if small else label
+        return [Paragraph(l, s_item_label), Paragraph(_fmt_eur(value), s_item_val)]
+
+    def _total_row(label, value):
+        return [Paragraph(f"<b>{label}</b>", s_total_label), Paragraph(f"<b>{_fmt_eur(value)}</b>", s_total_val)]
+
+    def _val_row(label, value, unit=''):
+        suffix = f" <font size='7' color='#666666'>({unit})</font>" if unit else ''
+        return [Paragraph(f"{label}{suffix}", s_item_label), Paragraph(f"{value}", s_item_val)]
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=5*mm, bottomMargin=5*mm, leftMargin=20*mm, rightMargin=20*mm)
+    story = []
+
+    # Header
+    trim_nome = {'Q1': 'Gen-Mar', 'Q2': 'Apr-Giu', 'Q3': 'Lug-Set', 'Q4': 'Ott-Dic'}.get(trimestre, trimestre)
+    header_table = Table([
+        [Paragraph('RIEPILOGO PAGOPA', s_h1),
+         Paragraph(f'Trimestre {trimestre} {anno}', ParagraphStyle('h2right', fontSize=16, leading=20,
+             textColor=grigio_scuro, fontName='Roboto-Bold', alignment=TA_RIGHT))]
+    ], colWidths=[doc.width*0.5, doc.width*0.5])
+    header_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ('LINEBELOW', (0, 0), (-1, -1), 1.5, acciaio),
+        ('LEFTPADDING', (0, 0), (0, 0), 0),
+        ('RIGHTPADDING', (1, 0), (1, 0), 0),
+    ]))
+    story.append(header_table)
+
+    sub_table = Table([[Paragraph(f"{dati['nome_datore']} — {dati['nome_lavoratore']}", s_std_sub)]], colWidths=[doc.width])
+    sub_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+    ]))
+    story.append(sub_table)
+    line_table = Table([['']], colWidths=[doc.width])
+    line_table.setStyle(TableStyle([('LINEBELOW', (0, 0), (-1, 0), 1.5, acciaio)]))
+    story.append(line_table)
+    story.append(Spacer(1, 6))
+
+    # Info table (4-col)
+    sopra_label = 'OLTRE SOGLIA' if dati['is_sopra_soglia'] else 'SOTTO SOGLIA'
+    info_data = [
+        [Paragraph('DATORE', s_label), Paragraph(dati['nome_datore'], s_val),
+         Paragraph('LAVORATORE', s_label), Paragraph(dati['nome_lavoratore'], s_val)],
+        [Paragraph('CF DATORE', s_label), Paragraph(dati['cf_datore'], s_val_grigio),
+         Paragraph('CF LAVORATORE', s_label), Paragraph(dati['cf_lavoratore'], s_val_grigio)],
+        [Paragraph('COD. RAPPORTO INPS', s_label), Paragraph(dati['codice_rapporto_inps'], s_val),
+         Paragraph('CASSA/ENTE', s_label), Paragraph(f"{dati['codice_cassa']} ({dati['descrizione_cassa']})", s_val)],
+        [Paragraph('TRIMESTRE', s_label), Paragraph(f'{trimestre} {anno} ({trim_nome})', s_val),
+         Paragraph('SOGLIA CONTRIBUTI', s_label), Paragraph(f"<b>{sopra_label}</b>  ({dati['soglia_ore']} h/sett)", s_val)],
+    ]
+    info_tbl = Table(info_data, colWidths=[doc.width*0.17, doc.width*0.33, doc.width*0.17, doc.width*0.33])
+    info_tbl.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('LINEBELOW', (0, 0), (-1, 0), 0.5, grigio_bordo),
+        ('LINEBELOW', (0, 1), (-1, 1), 0.5, grigio_bordo),
+        ('LINEBELOW', (0, 2), (-1, 2), 0.5, grigio_bordo),
+        ('LINEBELOW', (0, 3), (-1, 3), 0.5, grigio_bordo),
+    ]))
+    story.append(info_tbl)
+    story.append(Spacer(1, 8))
+
+    # Sezione PARAMETRI RETRIBUTIVI
+    story.append(Paragraph("PARAMETRI RETRIBUTIVI", s_sezione))
+    story.append(Spacer(1, 2))
+    calc_rows = []
+    calc_rows.append(_val_row("Ore mensili", f"{dati['ore_mensili']:.2f} h"))
+    calc_rows.append(_val_row("Ore settimanali", f"{dati['ore_settimanali']:.2f} h"))
+    calc_rows.append(_row("Paga base oraria", dati['paga_base'] + dati['tredicesima_oraria']))
+    calc_rows.append(_val_row("   di cui tredicesima oraria", f"\u20ac {dati['tredicesima_oraria']:.4f}"))
+    calc_rows.append(_row("Paga oraria INPS (troncata)", dati['paga_oraria_inps']))
+    t_calcolo = Table(calc_rows, colWidths=[doc.width*0.35, doc.width*0.15])
+    t_calcolo.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 1),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 1),
+        ('LINEBELOW', (0, 0), (0, len(calc_rows)-1), 0.5, grigio_bordo),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('RIGHTPADDING', (1, 0), (1, -1), 0),
+    ]))
+    story.append(t_calcolo)
+    story.append(Spacer(1, 6))
+
+    # Sezione CONTRIBUTI TRIMESTRALI
+    story.append(Paragraph(f"CONTRIBUTI {trimestre} {anno}", s_sezione))
+    story.append(Spacer(1, 2))
+    ore_std = dati['ore_inps'] * dati['moltiplicatore']
+    rows_contrib = []
+    if ore_modifica and ore_modifica != ore_std:
+        rows_contrib.append(_val_row("Ore trimestrali (std)", f"{ore_std} h"))
+        rows_contrib.append([
+            Paragraph('<b>⚠ Ore modificate</b>', ParagraphStyle('modlbl', fontSize=8, leading=11, textColor=HexColor('#c97a0e'), fontName='Roboto-Bold')),
+            Paragraph(f"<b>{ore_modifica} h</b>", ParagraphStyle('modval', fontSize=8.5, leading=11, textColor=HexColor('#c97a0e'), fontName='Roboto-Bold', alignment=TA_RIGHT))
+        ])
+    else:
+        rows_contrib.append(_val_row("Ore trimestrali", f"{dati['ore_trim']} h"))
+    rows_contrib.append(_row("Quota associativa oraria", dati['cassa_orario']))
+    rows_contrib.append(_row("Quota associativa trim.", dati['imp_cassa_trim']))
+    rows_contrib.append(_row("Aliquota INPS oraria", dati['aliquota_inps_orario']))
+    rows_contrib.append(_row("  di cui quota datore", dati['aliquota_inps_datore_orario']))
+    rows_contrib.append(_row("  di cui quota lavoratore", dati['aliquota_inps_lavoratore_orario']))
+    rows_contrib.append(_row("Stima contributi trim.", dati['stima_contrib_trim']))
+    if dati.get('inps_quota_datore_trim') or dati.get('inps_quota_lavoratore_trim'):
+        rows_contrib.append(_val_row("di cui datore", f"\u20AC {dati['inps_quota_datore_trim']:,.2f}"))
+        rows_contrib.append(_val_row("di cui lavoratore", f"\u20AC {dati['inps_quota_lavoratore_trim']:,.2f}"))
+    rows_contrib.append(['', ''])
+    rows_contrib.append(_total_row("CONTRIBUTI TOTALI", dati['contrib_totali']))
+    t_contrib = Table(rows_contrib, colWidths=[doc.width*0.35, doc.width*0.15])
+    t_contrib.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 1),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 1),
+        ('LINEBELOW', (0, 0), (0, len(rows_contrib)-3), 0.5, grigio_bordo),
+        ('LINEABOVE', (0, len(rows_contrib)-1), (1, len(rows_contrib)-1), 2, acciaio),
+        ('LINEBELOW', (0, len(rows_contrib)-1), (1, len(rows_contrib)-1), 0.5, grigio_bordo),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('RIGHTPADDING', (1, 0), (1, -1), 0),
+    ]))
+    story.append(t_contrib)
+    story.append(Spacer(1, 10))
+
+    # Nota
+    story.append(Paragraph(
+        "<i>* Importo stimato. Questo documento è un riepilogo di lavoro e non sostituisce "
+        "il bollettino ufficiale INPS. Per il pagamento utilizzare la funzione \"Avvia INPS\" "
+        "per generare il bollettino vero sul sito dell'Istituto.</i>",
+        ParagraphStyle('nota', fontSize=6.5, leading=9, textColor=grigio_footer, fontName='Roboto-Italic', spaceAfter=0)))
+    if ore_modifica:
+        story.append(Spacer(1, 2))
+        story.append(Paragraph(
+            "<i><font color='#c97a0e'><b>⚠</b> I valori in arancione includono la personalizzazione MODIFICA ORE PAGOPA.</font></i>",
+            ParagraphStyle('nota_mod', fontSize=6.5, leading=9, textColor=HexColor('#c97a0e'), fontName='Roboto-Italic', spaceAfter=0)))
+    story.append(Spacer(1, 4))
+
+    # Footer
+    story.append(HRFlowable(width='100%', thickness=0.3, color=grigio_bordo, spaceAfter=4))
+    story.append(Paragraph("DATI STUDIO", ParagraphStyle('sezsm', fontSize=7, leading=9, textColor=grigio_scuro, fontName='Roboto-Bold', spaceAfter=0)))
+    story.append(Spacer(1, 2))
+    logo_path = None
+    if opzioni:
+        if opzioni.logo_buste_paga and opzioni.logo_buste_paga.path and os.path.exists(opzioni.logo_buste_paga.path):
+            logo_path = opzioni.logo_buste_paga.path
+        elif opzioni.logo and opzioni.logo.path and os.path.exists(opzioni.logo.path):
+            logo_path = opzioni.logo.path
+        if logo_path:
+            try:
+                logo_img = Image(logo_path, width=120, height=40, hAlign='LEFT')
+                story.append(logo_img)
+            except Exception:
+                logger.warning("Impossibile caricare logo report PagoPA: %s", logo_path)
+        studio_parts = []
+        if opzioni.dati_studio:
+            studio_parts.append(opzioni.dati_studio)
+        if opzioni.telefono_studio:
+            studio_parts.append(f"Tel: {opzioni.telefono_studio}")
+        if opzioni.email_studio:
+            studio_parts.append(f"Mail: {opzioni.email_studio}")
+        if studio_parts:
+            story.append(Paragraph(' | '.join(studio_parts), s_extra))
+    story.append(Spacer(1, 6))
+    story.append(HRFlowable(width='100%', thickness=0.5, color=grigio_scuro, spaceAfter=3))
+    story.append(Paragraph(
+        f"Tutti i diritti riservati: è vietata la riproduzione, anche parziale, dei contenuti. "
+        f"| Stampata il {date.today().strftime('%d/%m/%Y')}",
+        s_extra))
+
+    doc.build(story)
+    pdf_data = buffer.getvalue()
+    buffer.close()
+
+    # Salva su disco
+    cartella = _get_cartella_documenti(contratto)
+    full_path = os.path.join(cartella, dati['nome_file'])
+    with open(full_path, 'wb') as f:
+        f.write(pdf_data)
+
+    # Archivia in DocumentoArchiviato
+    DocumentoArchiviato.objects.create(
+        tipo='RIEPILOGO_PAGOPA',
+        titolo=f"Riepilogo PagoPA {dati['nome_lavoratore']} – {trimestre} {anno}",
+        file_path=full_path, file_size=len(pdf_data), file_name=dati['nome_file'],
+        contratto=contratto, datore=contratto.datore, lavoratore=contratto.lavoratore,
+        creato_da=request.user if request.user.is_authenticated else None,
+    )
+
+    _log_inps('GENERATO_PDF_PAGOPA', contratto, request, dettaglio=f'{trimestre} {anno} — {dati["nome_file"]}')
+    response = HttpResponse(pdf_data, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{dati["nome_file"]}"'
+    return response
+
+
+# --- ajax_apri_pagopa_pdf ---
+@login_required
+@permesso_richiesto('buste.calcola')
+@xframe_options_exempt
+def ajax_apri_pagopa_pdf(request):
+    """Serve il PDF PagoPA già salvato su disco."""
+    contratto_pk = request.GET.get('contratto_pk')
+    trimestre = request.GET.get('trimestre', 'Q1')
+    anno = request.GET.get('anno', str(date.today().year))
+
+    if not contratto_pk:
+        return HttpResponse('Contratto non specificato.', status=400)
+
+    contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
+    dati = _calcola_dati_pagopa(contratto, trimestre, int(anno))
+    cartella = _get_cartella_documenti(contratto)
+    full_path = os.path.join(cartella, dati['nome_file'])
+
+    if not os.path.exists(full_path):
+        return HttpResponse('PDF non trovato. Generalo prima con "Scarica riepilogo PDF" o completando l\'automazione.', status=404)
+
+    response = HttpResponse(open(full_path, 'rb').read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="{dati["nome_file"]}"'
+    return response
+
+
+# --- ajax_cerca_pagopa_doc ---
+@login_required
+@permesso_richiesto('buste.calcola')
+def ajax_cerca_pagopa_doc(request):
+    """Restituisce il PK del DocumentoArchiviato RIEPILOGO_PAGOPA per contratto+trimestre+anno."""
+    contratto_pk = request.GET.get('contratto_pk')
+    trimestre = request.GET.get('trimestre', 'Q1')
+    anno = request.GET.get('anno', str(date.today().year))
+    if not contratto_pk:
+        return JsonResponse({'error': 'Contratto non specificato.'}, status=400)
+    from paghe.models import DocumentoArchiviato
+    from django.db.models import Q
+    doc = DocumentoArchiviato.objects.filter(
+        Q(contratto_id=contratto_pk) & (Q(tipo='PAGOPA') | Q(tipo='RIEPILOGO_PAGOPA')) &
+        Q(titolo__contains=trimestre) & Q(titolo__contains=str(anno))
+    ).order_by('-id').first()
+    if not doc:
+        return JsonResponse({'error': 'Nessun documento PagoPA trovato.'}, status=404)
+
+    from paghe.models import ModelloDocumentale
+    trim_codice = {'Q1': '1°', 'Q2': '2°', 'Q3': '3°', 'Q4': '4°'}
+    tmpl = ModelloDocumentale.objects.filter(
+        tipo='MAIL', codice__contains=trim_codice.get(trimestre, '')
+    ).first()
+
+    return JsonResponse({
+        'doc_pk': doc.pk, 'file_name': doc.file_name,
+        'modello_mail_pk': tmpl.pk if tmpl else None,
+    })
+
+
+# --- ajax_storico_pagopa ---
+@login_required
+@permesso_richiesto('buste.calcola')
+def ajax_storico_pagopa(request):
+    """Restituisce lo storico di tutti i documenti PagoPA per un contratto."""
+    contratto_pk = request.GET.get('contratto_pk')
+    if not contratto_pk:
+        return JsonResponse({'success': False, 'error': 'Contratto non specificato.'}, status=400)
+    from paghe.models import DocumentoArchiviato
+    from django.db.models import Q
+    import os, re
+    docs = DocumentoArchiviato.objects.filter(
+        Q(contratto_id=contratto_pk) & (Q(tipo='PAGOPA') | Q(tipo='RIEPILOGO_PAGOPA'))
+    ).order_by('-creato_il').values('pk', 'tipo', 'titolo', 'file_name', 'file_path', 'creato_il')
+    risultati = []
+    for d in docs:
+        if not d['file_path'] or not os.path.exists(d['file_path']):
+            continue
+        titolo = d['titolo'] or ''
+        m = re.search(r'\b(Q[1-4])\b', titolo)
+        trimestre = m.group(1) if m else 'Q1'
+        anno = ''
+        for a in ['2024', '2025', '2026', '2027', '2028']:
+            if a in titolo:
+                anno = a
+                break
+        risultati.append({
+            'doc_pk': d['pk'],
+            'tipo': d['tipo'],
+            'titolo': titolo,
+            'trimestre': trimestre,
+            'anno': anno,
+            'file_name': d['file_name'],
+            'creato_il': d['creato_il'].strftime('%d/%m/%Y %H:%M') if d['creato_il'] else '',
+        })
+    return JsonResponse({'success': True, 'documenti': risultati})
+
+
+# --- ajax_elimina_pagopa_doc ---
+@login_required
+@permesso_richiesto('buste.calcola')
+@require_http_methods(['POST'])
+def ajax_elimina_pagopa_doc(request):
+    """Elimina un DocumentoArchiviato PagoPA e il file su disco."""
+    import os
+    doc_pk = request.POST.get('doc_pk')
+    if not doc_pk:
+        return JsonResponse({'success': False, 'error': 'doc_pk non specificato.'})
+    from paghe.models import DocumentoArchiviato
+    doc = get_object_or_404(DocumentoArchiviato, pk=doc_pk)
+    if doc.file_path and os.path.exists(doc.file_path):
+        with contextlib.suppress(OSError):
+            os.remove(doc.file_path)
+    titolo = doc.titolo
+    doc.delete()
+    return JsonResponse({'success': True, 'messaggio': f'Documento "{titolo}" eliminato.'})
+
+
+# --- ajax_avvia_pagopa ---
+@login_required
+@permesso_richiesto('buste.calcola')
+@require_http_methods(['POST'])
+def ajax_avvia_pagopa(request):
+
+    """Step 1: Avvia Chrome/Chromium, naviga INPS, compila CF + Rapporto, fermati per CAPTCHA."""
+    contratto_pk = request.POST.get('contratto_pk')
+    trimestre = request.POST.get('trimestre', 'Q1')
+    anno = request.POST.get('anno', str(date.today().year))
+    ore_auto = request.POST.get('ore_auto', '1') != '0'
+    background_mode = request.POST.get('background_mode') == '1'
+    headless_mode = request.POST.get('headless') == '1'
+
+    if not contratto_pk:
+        return JsonResponse({'success': False, 'error': 'Contratto non specificato.'})
+
+    contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
+    web_config = ServizioWebConfig.get_singleton()
+    auto = _get_pagopa_automation()
+
+    # Salva sessione PRIMA di avviare Playwright (evita SynchronousOnlyOperation)
+    request.session['pagopa_step'] = 'captcha'
+    request.session['pagopa_contratto_pk'] = contratto_pk
+    request.session['pagopa_trimestre'] = trimestre
+    request.session['pagopa_anno'] = anno
+    request.session['pagopa_ore_auto'] = ore_auto
+    request.session.save()
+    request.session.modified = False
+
+    try:
+        download_dir = _get_cartella_documenti(contratto)
+        # headless_mode e background_mode sono mutuamente esclusivi (gestito lato client)
+        driver, timeout, _ = _avvia_pagopa_driver(request, download_dir=download_dir,
+            headless=headless_mode, minimized=background_mode)
+    except FileNotFoundError as e:
+        _pulisci_sessione_pagopa(request)
+        return JsonResponse({'success': False, 'error': str(e)})
+    except Exception as e:
+        logger.exception("Errore in ajax_avvia_pagopa")
+        browser_name = 'Playwright' if (web_config and web_config.use_playwright) else 'Chrome'
+        _pulisci_sessione_pagopa(request)
+        return JsonResponse({'success': False, 'error': f'Errore avvio {browser_name}: {e}'})
+
+    # URL INPS PagoPA
+    url = web_config.link_inps_pagopa if web_config and web_config.link_inps_pagopa else None
+    if not url:
+        opzioni = get_opzioni()
+        url = opzioni.link_inps_mav if opzioni else None
+    if not url:
+        _chiudi_pagopa_driver(request)
+        _pulisci_sessione_pagopa(request)
+        return JsonResponse({'success': False, 'error': 'URL PagoPA non configurato.'})
+
+    delay = getattr(web_config, 'delay_pausa', 0.5)
+
+    try:
+        # INPS è lento: usa almeno 30s per il login
+        login_timeout = max(timeout, 30)
+        auto.pagopa_login(driver, url,
+            contratto.datore.codice_fiscale,
+            contratto.codice_rapporto_inps,
+            timeout=login_timeout,
+            delay=delay,
+        )
+    except Exception as e:
+        logger.exception("Errore in ajax_avvia_pagopa")
+        _chiudi_pagopa_driver(request)
+        _pulisci_sessione_pagopa(request)
+        return JsonResponse({'success': False, 'error': f'Errore login INPS: {e}'})
+
+    _log_inps('APERTURA_PAGOPA_AUTO', contratto, request, dettaglio=f'{trimestre} {anno}')
+    captcha_image = None
+    if background_mode or headless_mode:
+        try:
+            from paghe.automation_playwright import cattura_elemento_captcha
+            captcha_image = cattura_elemento_captcha(driver)
+            # Minimizza finestra dopo aver catturato il CAPTGRAPH
+            auto.minimizza_finestra(driver)
+        except Exception:
+            logger.exception("Errore cattura CAPTCHA")
+            captcha_image = None
+    response_data = {
+        'success': True,
+        'step': 'captcha',
+        'message': 'Browser aperto. Risolvi il CAPTGRAPH nella pagina INPS, poi clicca "Prosegui".',
+        'auto_delay_ms': int(max(delay, 0.1) * 1000),
+    }
+    if captcha_image:
+        response_data['captcha_image'] = captcha_image
+        response_data['message'] = 'CAPTCHA acquisito. Finestra minimizzata. Inserisci il codice qui sotto per proseguire.'
+    return JsonResponse(response_data)
+
+
+# --- _captura_logs_auto ---
+
+
+def _captura_logs_auto(view_func):
+    """Decorator: cattura stdout delle funzioni di automazione e lo inietta nella risposta JSON."""
+    import functools
+    @functools.wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        import io as _io, sys as _sys
+        log_capture = _io.StringIO()
+        old_stdout = _sys.stdout
+        _sys.stdout = log_capture
+        try:
+            response = view_func(request, *args, **kwargs)
+        finally:
+            _sys.stdout = old_stdout
+        try:
+            logs = [l for l in log_capture.getvalue().split('\n') if l.strip()]
+            if logs and hasattr(response, 'content'):
+                data = json.loads(response.content.decode('utf-8'))
+                data['logs'] = logs
+                response = JsonResponse(data)
+        except Exception:
+            logger.warning("Impossibile catturare logs in decorator _captura_logs_auto")
+        return response
+    return wrapper
+
+
+# --- ajax_pagopa_prosegui ---
+@login_required
+@permesso_richiesto('buste.calcola')
+@require_http_methods(['POST'])
+@_captura_logs_auto
+def ajax_pagopa_prosegui(request):
+    """Avanza di uno step nell'automazione PagoPA.
+
+    State machine: ogni chiamata esegue un solo step.
+    Il browser rimane APERTO tra uno step e l'altro — chiudere solo via ajax_chiudi_pagopa.
+    """
+    auto = _get_pagopa_automation()
+
+    step = request.session.get('pagopa_step')
+    if not step or step == 'done':
+        return JsonResponse({'success': False, 'error': 'Nessuna automazione in corso.'})
+
+    contratto_pk = request.session.get('pagopa_contratto_pk')
+    trimestre = request.session.get('pagopa_trimestre', 'Q1')
+    anno = request.session.get('pagopa_anno', str(date.today().year))
+
+    if not contratto_pk:
+        return JsonResponse({'success': False, 'error': 'Contratto non trovato in sessione.'})
+
+    contratto = get_object_or_404(ContrattoAttivo, pk=contratto_pk)
+    driver, timeout, download_dir = _get_pagopa_driver(request)
+    if driver is None:
+        web_config = ServizioWebConfig.get_singleton()
+        browser_name = 'Playwright' if (web_config and web_config.use_playwright) else 'Chrome'
+        return JsonResponse({'success': False, 'error': f'Driver {browser_name} non trovato. Riavvia l\'automazione.'})
+
+    web_config = ServizioWebConfig.get_singleton()
+    delay = getattr(web_config, 'delay_pausa', 0.5)
+    background_mode = request.POST.get('background_mode') == '1'
+    headless_mode = request.POST.get('headless') == '1'
+    inline_captcha = background_mode or headless_mode
+
+    try:
+        if step == 'captcha':
+            if inline_captcha:
+                captcha_text = request.POST.get('captcha_text', '').strip()
+                if not captcha_text:
+                    return JsonResponse({'success': False, 'error': 'Inserisci il codice CAPTCHA.'})
+                ok = auto.pagopa_inserisci_captcha(driver, captcha_text, timeout, delay=delay)
+                if not ok:
+                    url, title = _get_pagopa_page_info(request, driver)
+                    return JsonResponse({'success': False, 'error': f'Errore invio CAPTCHA. Pagina: "{title}" — {url}'})
+            else:
+                ok = auto.pagopa_prosegui_dopo_captcha(driver, timeout, delay=delay)
+                if not ok:
+                    url, title = _get_pagopa_page_info(request, driver)
+                    return JsonResponse({'success': False, 'error': f'Timeout attesa Ctrl+Invio. Pagina: "{title}" — {url}. Hai risolto il CAPTGRAPH e premuto Ctrl+Invio nel browser?'})
+            url, title = _get_pagopa_page_info(request, driver)
+            request.session['pagopa_step'] = 'visualizza'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'captcha')
+            return JsonResponse({'success': True, 'step': 'visualizza', 'message': f'CAPTCHA superato. Pagina post-login: "{title}" — {url}', 'url': url, 'title': title, 'step_num': 1, 'step_total': 9})
+
+        elif step == 'visualizza':
+            ok = auto.pagopa_visualizza_bollettino(driver, timeout)
+            url, title = _get_pagopa_page_info(request, driver)
+            if not ok:
+                return JsonResponse({'success': False, 'error': f'Timeout attesa form scelta trimestre. Pagina: "{title}" — {url}'})
+            request.session['pagopa_step'] = 'seleziona_trimestre'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'visualizza')
+            return JsonResponse({'success': True, 'step': 'seleziona_trimestre', 'message': f'Pagina scelta trimestre raggiunta. Pagina: "{title}" — {url}', 'url': url, 'title': title, 'step_num': 2, 'step_total': 9})
+
+        elif step == 'seleziona_trimestre':
+            ok = auto.pagopa_seleziona_trimestre(driver, trimestre, anno, timeout)
+            url, title = _get_pagopa_page_info(request, driver)
+            if not ok:
+                return JsonResponse({'success': False, 'error': f'Errore impostazione trimestre/anno. Pagina: "{title}" — {url}'})
+            request.session['pagopa_step'] = 'conferma_trimestre'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'seleziona_trimestre')
+            return JsonResponse({'success': True, 'step': 'conferma_trimestre', 'message': f'Trimestre {trimestre}/{anno} impostato. Verifica visivamente e clicca Prosegui per inviare.', 'url': url, 'title': title, 'step_num': 3, 'step_total': 9})
+
+        elif step == 'conferma_trimestre':
+            ok = auto.pagopa_conferma_trimestre(driver, timeout)
+            url, title = _get_pagopa_page_info(request, driver)
+            if not ok:
+                return JsonResponse({'success': False, 'error': f'Timeout attesa pagina oreRetribuite dopo invio trimestre. Pagina: "{title}" — {url}'})
+            request.session['pagopa_step'] = 'compila'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'conferma_trimestre')
+            return JsonResponse({'success': True, 'step': 'compila', 'message': f'Trimestre inviato. Pagina ore retribuite: "{title}" — {url}', 'url': url, 'title': title, 'step_num': 4, 'step_total': 9})
+
+        elif step == 'compila':
+            ore_auto = request.session.get('pagopa_ore_auto', True)
+            dati = _calcola_dati_pagopa(contratto, trimestre, int(anno), ore_auto=ore_auto)
+            download_dir = _get_cartella_documenti(contratto)
+            auto.pagopa_compila_bollettino(
+                driver,
+                ore_trim=dati['ore_trim'],
+                paga_oraria=dati['paga_oraria_inps'],
+                codice_associazione=dati['codice_cassa'],
+                quota_trim=dati['imp_cassa_trim'],
+                trimestre=trimestre,
+                anno=anno,
+                timeout=timeout,
+                download_dir=download_dir,
+                nome_file=dati['nome_file'],
+            )
+            url, title = _get_pagopa_page_info(request, driver)
+            request.session['pagopa_step'] = 'avanti'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'compila')
+
+            resp_data = {
+                'success': True, 'step': 'avanti',
+                'message': f'Bollettino compilato: {dati["ore_trim"]}h, paga {dati["paga_oraria_inps"]:.2f} €/h, cassa {dati["codice_cassa"]}. Pagina: "{title}" — {url}',
+                'url': url, 'title': title, 'step_num': 5, 'step_total': 9,
+                'ore': dati['ore_trim'], 'paga': dati['paga_oraria_inps'],
+                'codice_cassa': dati['codice_cassa'],
+            }
+            return JsonResponse(resp_data)
+
+        elif step == 'avanti':
+            ok = auto.pagopa_avanti(driver, timeout, delay=delay)
+            url, title = _get_pagopa_page_info(request, driver)
+            if not ok:
+                return JsonResponse({'success': False, 'error': f'Timeout attesa Conferma modifica. Pagina: "{title}" — {url}'})
+            request.session['pagopa_step'] = 'conferma'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'avanti')
+            return JsonResponse({'success': True, 'step': 'conferma', 'message': f'Cliccato "Avanti". Pagina: "{title}" — {url}', 'url': url, 'title': title, 'step_num': 6, 'step_total': 9})
+
+        elif step == 'conferma':
+            totale_inps = auto.pagopa_conferma_modifica(driver, timeout)
+            url, title = _get_pagopa_page_info(request, driver)
+
+            # Confronto totale INPS vs calcolato
+            ore_auto = request.session.get('pagopa_ore_auto', True)
+            dati = _calcola_dati_pagopa(contratto, trimestre, int(anno), ore_auto=ore_auto)
+            warning = None
+            if totale_inps is not None and dati.get('contrib_totali'):
+                diff = abs(totale_inps - dati['contrib_totali'])
+                if diff > 0.50:
+                    warning = f'Discrepanza totale: calcolato € {dati["contrib_totali"]:.2f}, INPS mostra € {totale_inps:.2f} (diff. € {diff:.2f})'
+                    logger.warning('[PAGOPA] %s', warning)
+
+            request.session['pagopa_step'] = 'stampa'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'conferma')
+
+            resp_data = {
+                'success': True, 'step': 'stampa',
+                'message': f'Cliccato "Conferma modifica". Pagina: "{title}" — {url}',
+                'url': url, 'title': title, 'step_num': 7, 'step_total': 9,
+                'contrib_totali': dati.get('contrib_totali'),
+                'totale_inps': totale_inps,
+            }
+            if warning:
+                resp_data['warning_pagopa'] = warning
+            return JsonResponse(resp_data)
+
+        elif step == 'stampa':
+            ok = auto.pagopa_stampa_avviso(driver, timeout, delay=delay)
+            url, title = _get_pagopa_page_info(request, driver)
+            if not ok:
+                return JsonResponse({'success': False, 'error': f'Timeout attesa Stampa Avviso di Pagamento. Pagina: "{title}" — {url}'})
+            request.session['pagopa_step'] = 'salva'
+            request.session.save()
+            _cattura_e_registra_screenshot(request, 'stampa')
+            return JsonResponse({'success': True, 'step': 'salva', 'message': f'Cliccato "Stampa Avviso di Pagamento". Pagina: "{title}" — {url}', 'url': url, 'title': title, 'step_num': 8, 'step_total': 9})
+
+        elif step == 'salva':
+            ore_auto = request.session.get('pagopa_ore_auto', True)
+            dati = _calcola_dati_pagopa(contratto, trimestre, int(anno), ore_auto=ore_auto)
+            download_dir = _get_cartella_documenti(contratto)
+            nome_file = auto.pagopa_switch_finestra_e_salva(driver, dati['nome_file'], timeout, download_dir)
+            url, title = _get_pagopa_page_info(request, driver)
+            _cattura_e_registra_screenshot(request, 'salva')
+            report_file = _genera_report_pagopa_pdf(request, contratto)
+
+            full_path = os.path.join(download_dir, nome_file)
+            file_size = os.path.getsize(full_path) if os.path.exists(full_path) else 0
+            DocumentoArchiviato.objects.create(
+                tipo='PAGOPA',
+                titolo=f"PagoPA INPS {dati['nome_lavoratore']} – {trimestre} {anno}",
+                file_path=full_path, file_size=file_size, file_name=nome_file,
+                contratto=contratto, datore=contratto.datore, lavoratore=contratto.lavoratore,
+                creato_da=request.user if request.user.is_authenticated else None,
+            )
+
+            _log_inps('COMPLETATO_PAGOPA_AUTO', contratto, request, dettaglio=f'{trimestre} {anno} — {nome_file}')
+            _pulisci_sessione_pagopa(request)
+            request.session.save()
+            msg = f'PAGOPA creato: {nome_file}'
+            if report_file:
+                msg += f' | Report: {report_file}'
+            return JsonResponse({
+                'success': True,
+                'step': 'done',
+                'file': nome_file,
+                'message': f'{msg} (URL: {url}, Titolo: {title})',
+                'url': url, 'title': title,
+                'step_num': 9,
+                'step_total': 9,
+                'report_file': report_file,
+            })
+
+        else:
+            return JsonResponse({'success': False, 'error': f'Step sconosciuto: {step}'})
+
+    except Exception as e:
+        url, title = _get_pagopa_page_info(request, driver)
+        try:
+            _cattura_e_registra_screenshot(request, f'errore_{step}')
+            _genera_report_pagopa_pdf(request, contratto)
+        except Exception:
+            logger.exception("Impossibile catturare screenshot/generare report in step %s", step)
+        return JsonResponse({'success': False, 'error': f'Errore nello step {step}: {e}. Pagina: "{title}" — {url}'})
+
+
+# --- ajax_chiudi_pagopa ---
+@login_required
+@permesso_richiesto('buste.calcola')
+@require_http_methods(['POST'])
+def ajax_chiudi_pagopa(request):
+    """Chiude il driver Chrome PagoPA e pulisce la sessione."""
+    contratto_pk = request.session.get('pagopa_contratto_pk')
+    if contratto_pk:
+        try:
+            contratto = ContrattoAttivo.objects.get(pk=contratto_pk)
+            _cattura_e_registra_screenshot(request, 'chiusura')
+            _genera_report_pagopa_pdf(request, contratto)
+        except Exception:
+            logger.warning("Impossibile generare report PDF in chiusura PagoPA per contratto %s", contratto_pk)
+    _chiudi_pagopa_driver(request)
+    _pagopa_screenshots.pop(request.user.pk, None)
+    for key in ['pagopa_step', 'pagopa_contratto_pk', 'pagopa_trimestre', 'pagopa_anno']:
+        request.session.pop(key, None)
+    return JsonResponse({'success': True})

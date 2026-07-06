@@ -1,0 +1,418 @@
+﻿{% extends 'base.html' %}{% load tabelle_tags %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Certificazione Unica</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<style>
+.radio-card {
+    padding: 12px 18px;
+    border: 1px solid #27282D;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.02);
+    min-width: 100px;
+    text-align: center;
+    user-select: none;
+}
+.radio-card:hover { border-color: #5E6AD2; }
+.radio-card.selected {
+    border-color: #34d399;
+    background: rgba(52,211,153,0.08);
+}
+.radio-card input[type="radio"] { display: none; }
+.radio-card .label-mese { font-size: 13px; font-weight: 600; color: #EDEDED; line-height: 1.2; }
+.radio-card .sotto-tipo { font-size: 9px; color: #8A8F98; margin-top: 2px; }
+.cu-stat-box {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid #27282D;
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-align: center;
+}
+.cu-stat-box .value { font-size: 20px; font-weight: 700; color: #EDEDED; }
+.cu-stat-box .label { font-size: 10px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+.mese-presente { color: #34d399; }
+.mese-assente { color: #6B7280; opacity: 0.5; }
+.btn-tab {
+    background: transparent;
+    border: 1px solid #27282D;
+    color: #8A8F98;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+.btn-tab.active {
+    background: #5E6AD2;
+    border-color: #5E6AD2;
+    color: #fff;
+}
+.btn-tab:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.cu-grid-input {
+    background:transparent;
+    border:none;
+    border-bottom:1px solid #333;
+    color:#EDEDED;
+    text-align:right;
+    font-size:12px;
+    font-family:monospace;
+    width:90px;
+    padding:2px 4px;
+    transition:border-color 0.2s;
+}
+.cu-grid-input:focus { outline:none; border-bottom-color:#5E6AD2; }
+.cu-manuale-input { background:#09090B !important; border:1px solid #27282D !important; color:#EDEDED !important; font-size:14px !important; }
+</style>
+
+<div class="container-fluid p-4">
+
+  <div class="p-4" class="card-simple" style="margin-bottom:20px;">
+    <div class="d-flex align-items-start gap-3">
+      <div class="flex-grow-1">
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-2" style="color:#5E6AD2;"></i>Certificazione Unica — Lavoro Domestico</h4>
+        <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Genera, salva e invia la Certificazione Unica annuale.</p>
+      </div>
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+    </div>
+  </div>
+
+  {# --- Modalità CU --- #}
+  <div class="p-4" class="card-simple" style="margin-bottom:20px;">
+    <div class="d-flex gap-2 align-items-center mb-3">
+      <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Modalità:</span>
+      <button class="btn-tab active" data-mode="1" onclick="setMode(1)"><i class="bi bi-magic me-1"></i> Automatica</button>
+      <button class="btn-tab" data-mode="2" onclick="setMode(2)"><i class="bi bi-pencil me-1"></i> Semi-Automatica (13 mensilità)</button>
+      <button class="btn-tab" data-mode="3" onclick="setMode(3)"><i class="bi bi-hand-index me-1"></i> Manuale</button>
+    </div>
+    <div class="row g-3 align-items-end">
+      <div class="col-md-8">
+        <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
+        <div class="d-flex gap-2 align-items-center">
+          <button class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrev" style="padding:8px 14px;font-size:16px;line-height:1;">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <select id="selContratto" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
+            {% for c in contratti %}
+            <option value="{{ c.pk }}" data-datore="{{ c.datore.nome_cognome }}" data-lavoratore="{{ c.lavoratore.nome_cognome }}">{{ c|contratto_option }}</option>
+            </option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNext" style="padding:8px 14px;font-size:16px;line-height:1;">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+          <span id="contrattoCounter" style="font-size:11px;color:#5C5F66;white-space:nowrap;min-width:50px;text-align:center;"></span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Anno</label>
+        <input type="number" id="selAnno" class="form-control" value="{{ anno_corrente }}" min="{{ anno_iniziale }}" max="{{ anno_corrente }}" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;">
+      </div>
+    </div>
+  </div>
+
+  {# --- Stepper --- #}
+  <div class="p-3" class="card-simple" style="margin-bottom:20px;">
+    <div class="d-flex justify-content-between" id="cuStepper">
+      <div class="stepper-step active" data-step="1">
+        <span class="stepper-circle">1</span>
+        <span class="stepper-label">Seleziona contratto</span>
+      </div>
+      <div class="stepper-step" data-step="2">
+        <span class="stepper-circle">2</span>
+        <span class="stepper-label">Dati annuali</span>
+      </div>
+      <div class="stepper-step" data-step="3">
+        <span class="stepper-circle">3</span>
+        <span class="stepper-label">Verifica dati</span>
+      </div>
+      <div class="stepper-step" data-step="4">
+        <span class="stepper-circle">4</span>
+        <span class="stepper-label">Genera / Invia</span>
+      </div>
+    </div>
+  </div>
+  <style>
+  .stepper-step { display:flex;align-items:center;gap:8px;font-size:12px;color:#5C5F66;flex:1; }
+  .stepper-step.active .stepper-circle, .stepper-step.completed .stepper-circle { background:#5E6AD2;color:#fff; }
+  .stepper-step.active .stepper-label { color:#EDEDED;font-weight:600; }
+  .stepper-step.completed .stepper-label { color:#34d399; }
+  .stepper-circle { width:26px;height:26px;border-radius:50%;background:#27282D;color:#5C5F66;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0; }
+  .stepper-step:not(:last-child)::after { content:'';flex:1;height:1px;background:#27282D;margin:0 10px; }
+  #batchToolbar { display:flex;align-items:center;gap:12px;flex-wrap:wrap; }
+  #batchToolbar .badge-contratto { font-size:11px;background:rgba(94,106,210,0.15);color:#5E6AD2;border:1px solid rgba(94,106,210,0.25);border-radius:6px;padding:4px 12px; }
+  </style>
+
+  {# --- Toolbar batch fissa --- #}
+  <div class="p-3" class="card-simple" style="margin-bottom:20px;">
+    <div id="batchToolbar">
+      <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-collection me-1"></i>Operazioni batch</span>
+      <span id="badgeContrattoCorrente" class="badge-contratto" style="display:none;"></span>
+      <div style="flex:1;"></div>
+      <button onclick="generaBatchPdf()" id="btnBatchPdf" disabled class="btn btn-sm btn-ghost-primary" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-files me-1"></i> Genera PDF selezionati (0)</button>
+      <button onclick="inviaMassivoCu()" id="btnBatchEmail" disabled class="btn btn-sm btn-ghost-info" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-envelope-paper me-1"></i> Invia email selezionati (0)</button>
+      <button onclick="toggleBatchTable()" style="background:transparent;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-list-ul"></i></button>
+    </div>
+    <div id="batchSectionBody" style="display:none;margin-top:10px;">
+      <div style="max-height:200px;overflow-y:auto;border:1px solid #27282D;border-radius:8px;">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;">
+          <thead><tr style="border-bottom:1px solid #27282D;background:rgba(255,255,255,0.02);position:sticky;top:0;">
+            <th style="width:36px;padding:8px;text-align:center;"><input type="checkbox" id="batchSelectAll" onchange="toggleAllBatch(this)" style="accent-color:#5E6AD2;cursor:pointer;"></th>
+            <th style="padding:8px;text-align:left;" class="c-10-up">Datore</th>
+            <th style="padding:8px;text-align:left;" class="c-10-up">Lavoratore</th>
+          </tr></thead>
+          <tbody>
+            {% for c in contratti %}
+            <tr style="border-bottom:1px solid rgba(39,40,45,0.4);">
+              <td style="text-align:center;padding:6px;"><input type="checkbox" class="batch-cb" value="{{ c.pk }}" data-datore="{{ c.datore.nome_cognome }}" data-lavoratore="{{ c.lavoratore.nome_cognome }}" onchange="aggiornaBatchCount()" style="accent-color:#5E6AD2;cursor:pointer;"></td>
+              <td style="padding:6px 8px;color:#EDEDED;">{{ c.datore.nome_cognome }}</td>
+              <td style="padding:6px 8px;color:#EDEDED;">{{ c.lavoratore.nome_cognome }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {# --- Riepilogo CU --- #}
+  <div id="riepilogoContainer" style="display:none;">
+    <div class="p-4" class="card-simple" style="margin-bottom:20px;">
+      <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark-text me-2" style="color:#5E6AD2;"></i>RIEPILOGO ANNUALE</h5>
+
+      <div id="riepilogoBody" style="font-size:13px;color:#EDEDED;"></div>
+
+      <hr style="border-color:#27282D;margin:16px 0;">
+
+      {# Box statistiche #}
+      <div class="row g-3 mb-3" id="statBoxes"></div>
+
+      {# Verifica quadratura #}
+      <div style="margin-top:12px;margin-bottom:12px;">
+        <button class="btn btn-ghost-warning" onclick="verificaQuadratura()" id="btnVerificaCu" style="padding:8px 18px;font-size:12px;">
+          <i class="bi bi-search-check me-1"></i> Verifica quadratura
+        </button>
+        <div id="verificaCuContainer" style="display:none;margin-top:10px;"></div>
+      </div>
+
+      {# Modale quadratura dettaglio #}
+      <div class="modal fade" id="modaleVerificaCu" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content" class="modal-linear">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title fw-bold" style="color:#EDEDED;"><i class="bi bi-search-check me-2" style="color:#f59e0b;"></i>Confronto Dettaglio</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modaleVerificaCuBody"></div>
+          </div>
+        </div>
+      </div>
+
+      {# Dettaglio mensile #}
+      <div id="dettaglioMensileContainer" style="margin-top:12px;"></div>
+
+      {# Riepilogo somme #}
+      <div id="riepilogoSomme" style="margin-top:16px;background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;padding:16px;"></div>
+
+      <hr style="border-color:#27282D;margin:16px 0;">
+
+      {# Azioni #}
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        <button class="btn btn-ghost-primary" onclick="apriAnteprimaCuPdf()" id="btnGeneraPdf" style="padding:10px 24px;font-size:13px;">
+          <i class="bi bi-filetype-pdf me-1"></i> Anteprima PDF
+        </button>
+        <button class="btn btn-ghost-success" onclick="generaCuPdf(true)" id="btnSalvaPdf" style="padding:10px 24px;font-size:13px;">
+          <i class="bi bi-save me-1"></i> Salva PDF
+        </button>
+        <button class="btn btn-ghost-info" onclick="inviaCuEmail()" id="btnInviaEmail" style="padding:10px 24px;font-size:13px;">
+          <i class="bi bi-envelope me-1"></i> Invia Email
+        </button>
+        <select id="cuModelloEmail" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#8A8F98;font-size:12px;border-radius:8px;max-width:220px;">
+          <option value="">Modello email predefinito</option>
+        </select>
+        <button type="button" onclick="toggleStoricoInviiCU()" style="background:rgba(139,92,246,0.1);color:#8b5cf6;border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;">
+          <i class="bi bi-clock-history me-1"></i> Storico invii
+        </button>
+      </div>
+    </div>
+    <div id="storicoInviiCuSection" style="display:none;margin-top:8px;background:#17181C;border:1px solid #27282D;border-radius:10px;padding:12px;">
+      <div style="font-size:11px;font-weight:600;color:#8A8F98;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Storico invii email</div>
+      <div id="storicoInviiCuList" style="font-size:12px;color:#8A8F98;">Caricamento...</div>
+    </div>
+  </div>
+
+  {# --- Avviso mesi mancanti --- #}
+  <div id="avvisoMesiMancanti" class="p-3 mb-3" style="display:none;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;color:#f59e0b;font-size:13px;">
+    <i class="bi bi-exclamation-triangle me-2"></i> <span id="avvisoMesiMancantiTesto"></span>
+  </div>
+</div>
+
+{# Modale invio email CU #}
+<div class="modal fade" id="modaleInvioEmailCu" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold" style="color:#EDEDED;">Invia CU via Email</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modaleInvioEmailCuBody">
+      </div>
+    </div>
+  </div>
+</div>
+
+  {# Modale esito batch PDF #}
+  <div class="modal fade" id="modaleBatchPdf" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" style="color:#EDEDED;"><i class="bi bi-files me-2" style="color:#5E6AD2;"></i>Esito generazione batch</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modaleBatchPdfBody"></div>
+      </div>
+    </div>
+  </div>
+
+  {# Modale anteprima PDF #}
+  <div class="modal fade" id="anteprimaCuModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width:95vw;">
+      <div class="modal-content" class="class="card-dark" style="height:90vh;"">
+        <div class="modal-header border-0 pb-0" style="flex-shrink:0;">
+          <h5 class="modal-title fw-bold" style="color:#EDEDED;"><i class="bi bi-filetype-pdf me-2" style="color:#5E6AD2;"></i>Anteprima Certificazione Unica</h5>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-ghost-success" onclick="salvaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-save me-1"></i> Salva</button>
+            <button class="btn btn-sm btn-ghost-info" onclick="inviaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-envelope me-1"></i> Invia</button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+        </div>
+        <div class="modal-body p-0" style="flex:1;overflow:hidden;">
+          <iframe id="anteprimaCuFrame" style="width:100%;height:100%;border:none;"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# Modale esito invio massivo #}
+  <div class="modal fade" id="modaleMassivoEmail" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" style="color:#EDEDED;"><i class="bi bi-envelope-paper me-2" style="color:#2563eb;"></i>Esito invio massivo</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modaleMassivoEmailBody"></div>
+      </div>
+    </div>
+  </div>
+
+  {# Help Modal #}
+  <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Certificazione Unica
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        La <b>Certificazione Unica (CU)</b> è il documento fiscale che riepiloga tutti i redditi da lavoro dipendente e assimilati corrisposti al lavoratore nell'anno precedente. Deve essere consegnata al lavoratore entro il 31 marzo e trasmessa all'Agenzia delle Entrate entro il 31 ottobre.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Modalità di compilazione</b><br>
+        <b>Automatica</b> — la CU viene generata a partire dalle buste paga già salvate nell'archivio. I mesi senza busta vengono mostrati con importi a zero. Ideale se hai salvato tutte le buste dell'anno.<br>
+        <b>Semi-Automatica</b> — griglia interattiva che ti permette di modificare i dati di ogni mese + 13ª mensilità. Puoi correggere singoli importi prima di generare il PDF.<br>
+        <b>Manuale</b> — inserisci liberamente tutti gli importi annuali. Utile se non hai le buste salvate nell'archivio.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Azioni disponibili</b><br>
+        <b>Genera PDF</b> — crea il documento PDF definitivo e lo salva nella cartella documenti del contratto.<br>
+        <b>Genera PDF selezionati (N)</b> — seleziona più contratti con le checkbox per generare più CU in un colpo solo.<br>
+        <b>Invia massivo</b> — seleziona più contratti e invia le CU via email in blocco.<br>
+        <b>Storico invii</b> — consulta la cronologia degli invii email per ogni contratto e anno.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Nomenclatura PDF</b><br>
+        Il file viene salvato automaticamente come <code>CU_NomeLavoratore_NomeDatore_Anno.pdf</code> nella cartella documenti del contratto.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# --- Modal Semi-Automatica (full-screen) --- #}
+<div class="modal fade" id="semiautoModal" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1E1F23;border:1px solid #333;border-radius:0;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;background:#17181C;flex-shrink:0;">
+        <h5 class="modal-title fw-bold" style="color:#EDEDED;"><i class="bi bi-pencil-square me-2" style="color:#5E6AD2;"></i>Modifica mensilità — <span id="semiautoTitle"></span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead><tr style="border-bottom:1px solid #27282D;background:rgba(255,255,255,0.02);position:sticky;top:0;">
+            <th style="padding:6px 8px;text-align:left;color:#8A8F98;">Mese</th>
+            <th style="padding:6px 8px;text-align:center;color:#8A8F98;width:50px;">Pres.</th>
+            <th style="padding:6px 8px;text-align:right;color:#8A8F98;">Lordo \u20ac</th>
+            <th style="padding:6px 8px;text-align:right;color:#8A8F98;">INPS \u20ac</th>
+            <th style="padding:6px 8px;text-align:right;color:#8A8F98;">Cassa \u20ac</th>
+            <th style="padding:6px 8px;text-align:right;color:#8A8F98;">Netto \u20ac</th>
+            <th style="padding:6px 8px;text-align:right;color:#8A8F98;">TFR \u20ac</th>
+          </tr></thead>
+          <tbody id="semiautoGridBody"></tbody>
+        </table>
+        <hr style="border-color:#27282D;margin:12px 0;">
+        <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
+          <div class="d-flex gap-3 flex-wrap">
+            <div><span style="color:#8A8F98;font-size:11px;">Lordo</span> <b style="color:#EDEDED;" id="saTotLordo">\u20ac 0,00</b></div>
+            <div><span style="color:#8A8F98;font-size:11px;">INPS</span> <b id="saTotInps" style="color:#f87171;">\u20ac 0,00</b></div>
+            <div><span style="color:#8A8F98;font-size:11px;">Cassa</span> <b id="saTotCassa" style="color:#fbbf24;">\u20ac 0,00</b></div>
+            <div><span style="color:#8A8F98;font-size:11px;">Netto</span> <b id="saTotNetto" style="color:#34d399;">\u20ac 0,00</b></div>
+            <div><span style="color:#8A8F98;font-size:11px;">TFR</span> <b id="saTotTfr" style="color:#60a5fa;">\u20ac 0,00</b></div>
+          </div>
+        </div>
+        <div class="row g-3 mt-3">
+          <div class="col-md-6">
+            <label style="font-size:11px;color:#8A8F98;font-weight:600;">Data fine personalizzata <span style="color:#5C5F66;font-weight:400;">(opzionale)</span></label>
+            <input type="date" id="saDataFineCustom" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:6px;padding:8px 12px;font-size:13px;">
+          </div>
+        </div>
+        <div class="row g-3 mt-3">
+          <div class="col-md-6">
+            <label style="font-size:11px;color:#8A8F98;font-weight:600;">Carico familiare</label>
+            <textarea id="saCaricoFamiliare" oninput="anteprimaTestoCu('saCaricoFamiliare','saCaricoFamiliarePrev')" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:6px;font-size:12px;min-height:50px;resize:vertical;"></textarea>
+            <div id="saCaricoFamiliarePrev" style="margin-top:4px;padding:8px 10px;background:#131316;border:1px solid #27282D;border-radius:6px;font-size:12px;color:#8A8F98;line-height:1.5;white-space:pre-wrap;display:none;"></div>
+          </div>
+          <div class="col-md-6">
+            <label style="font-size:11px;color:#8A8F98;font-weight:600;">Presentazione dichiarazione dei redditi</label>
+            <textarea id="saPresentazioneRedditi" oninput="anteprimaTestoCu('saPresentazioneRedditi','saPresentazioneRedditiPrev')" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:6px;font-size:12px;min-height:50px;resize:vertical;"></textarea>
+            <div id="saPresentazioneRedditiPrev" style="margin-top:4px;padding:8px 10px;background:#131316;border:1px solid #27282D;border-radius:6px;font-size:12px;color:#8A8F98;line-height:1.5;white-space:pre-wrap;display:none;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;background:#17181C;flex-shrink:0;">
+        <button type="button" class="btn btn-ghost" data-bs-dismiss="modal" style="padding:8px 18px;font-size:12px;">Annulla</button>
+        <button type="button" class="btn btn-ghost-success" onclick="salvaSemiAuto()" style="padding:8px 20px;font-size:12px;"><i class="bi bi-save me-1"></i> Salva dati</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block search_bar %}
+{% load static %}
+<script>
+window.CU_CONFIG = {
+    csrfToken: '{{ csrf_token }}'
+};
+</script>
+<script src="{% static 'paghe/js/redigere_cu.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,557 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+<style>
+#resultNotturno td, #resultNotturno th { padding: 6px 12px; font-size: 13px; }
+#resultNotturno .totale-row td { font-weight: 700; }
+.toggle-switch { position: relative; display: inline-block; width: 42px; height: 22px; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-switch .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; border: 1px solid #666; border-radius: 22px; transition: 0.3s; width: auto; height: auto; margin-left: 0; }
+.toggle-switch .toggle-slider::after { display: none; }
+.toggle-switch .toggle-slider::before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 1px; background-color: #ccc; border-radius: 50%; transition: 0.3s; }
+.toggle-switch input:checked+.toggle-slider { background-color: rgba(52,211,153,0.3); border-color: #34d399; }
+.toggle-switch input:checked+.toggle-slider::before { transform: translateX(20px); background-color: #34d399; }
+.toggle-item { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+.radio-card { padding: 10px 14px; border: 1px solid #27282D; border-radius: 10px; cursor: pointer; transition: all 0.2s; background: rgba(255,255,255,0.02); }
+.radio-card:hover { border-color: #5E6AD2; }
+.radio-card.selected { border-color: #34d399; background: rgba(52,211,153,0.08); }
+.radio-card input[type="radio"] { display: none; }
+.radio-card .label-tipo { font-size: 13px; font-weight: 600; color: #EDEDED; }
+.radio-card .sotto-tipo { font-size: 10px; color: #8A8F98; }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: #27282D; border-radius: 3px; outline: none; cursor: pointer; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #818cf8; border: 2px solid #5E6AD2; cursor: pointer; }
+input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #818cf8; border: 2px solid #5E6AD2; cursor: pointer; }
+.bar-label { font-size: 11px; color: #EDEDED; font-weight: 500; }
+.bar-track { height: 20px; border-radius: 4px; position: relative; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+.bar-value { font-size: 10px; color: #8A8F98; text-align: right; }
+</style>
+{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Busta Notturno</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1"><i class="bi bi-moon-stars me-2"></i>BUSTA NOTTURNO</h1>
+    <p class="text-secondary small mb-0">Calcolo retribuzione per lavoro notturno (Art. 10-11 CCNL).</p>
+  </div>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm" onclick="vaiContratto()" style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnContratto" disabled>
+            <i class="bi bi-box-arrow-up-right me-1"></i> VAI AL CONTRATTO
+        </button>
+        <button class="btn btn-sm" onclick="apriCcnlOcchio()" style="background:rgba(94,106,210,0.12);color:#818cf8;border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;" id="btnCcnlOcchio" disabled>
+            <i class="bi bi-eye me-1"></i> CCNL
+        </button>
+        <button class="btn btn-sm" onclick="salvaBusta()" style="background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnSalvaBusta" disabled>
+            <i class="bi bi-save me-1"></i> SALVA BUSTA
+        </button>
+        <button class="btn btn-sm" onclick="resetForm()" style="background:transparent;color:#8A8F98;border:1px solid #27282D;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset</button>
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#5E6AD2;border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;text-decoration:none;">
+            <i class="bi bi-journal-text me-1"></i> Archivio Buste
+        </a>
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="background:transparent;color:#8A8F98;border:1px solid #333;border-radius:50%;width:30px;height:30px;padding:0;font-size:14px;font-weight:700;line-height:1;flex-shrink:0;vertical-align:middle;margin-left:8px;"><i class="bi bi-question-lg"></i></button>
+        <button class="btn btn-sm" onclick="downloadPdf()" style="background:rgba(94,106,210,0.15);color:#5E6AD2;border:1px solid rgba(94,106,210,0.25);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnPdf" disabled><i class="bi bi-file-pdf me-1"></i> PDF</button>
+        <button class="btn btn-sm" onclick="stampaBustaCalcolo(this)" style="background:#ffc107;color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnStampa" disabled><i class="bi bi-printer me-1"></i> STAMPA</button>
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background:#17181C;border:1px solid #27282D;border-radius:14px;">
+  <div class="row g-3 align-items-end">
+    <div class="col-md-6">
+      <label class="mb-1 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Contratto</label>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm" onclick="navContratto(-1)" style="background:transparent;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:4px 8px;font-size:12px;line-height:1;">&#9664;</button>
+        <select id="fContratto" class="form-control" onchange="calcola()" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:8px 12px;border-radius:8px;">
+          <option value="">— Seleziona —</option>
+          {% for c in contratti %}
+          <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c.datore.nome_cognome }} — {{ c.lavoratore.nome_cognome }} ({{ c.parametri_minimi.livello.codice|default:"?" }})</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-sm" onclick="navContratto(1)" style="background:transparent;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:4px 8px;font-size:12px;line-height:1;">&#9654;</button>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <label class="mb-1 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Mese</label>
+      <select id="fMese" class="form-control" onchange="calcola()" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:8px 12px;border-radius:8px;">
+        {% for m in mesi_range %}
+        <option value="{{ m|stringformat:'02d' }}" {% if m == mese %}selected{% endif %}>{{ m|stringformat:'02d' }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="mb-1 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Anno</label>
+      <select id="fAnno" class="form-control" onchange="calcola()" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:8px 12px;border-radius:8px;">
+        {% for a in anni_range %}
+        <option value="{{ a }}" {% if a == anno %}selected{% endif %}>{{ a }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="p-3 mb-3" style="background:#17181C;border:1px solid #27282D;border-radius:14px;">
+  <div class="row g-3">
+    <div class="col-12">
+      <label class="mb-2 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Tipo Notturno</label>
+      <div class="d-flex gap-3 flex-wrap">
+        <label class="radio-card selected" id="rc-presenza" onclick="selezionaTipo('presenza')">
+          <input type="radio" name="tipoNotturno" value="presenza" checked>
+          <div class="label-tipo">Presenza Notturna</div>
+          <div class="sotto-tipo">Art. 11 — €811,09/mese <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
+        </label>
+        <label class="radio-card" id="rc-assistenza" onclick="selezionaTipo('assistenza')">
+          <input type="radio" name="tipoNotturno" value="assistenza">
+          <div class="label-tipo">Assistenza Notturna</div>
+          <div class="sotto-tipo">Art. 10 — per livello <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
+        </label>
+        <label class="radio-card" id="rc-a_ore" onclick="selezionaTipo('a_ore')">
+          <input type="radio" name="tipoNotturno" value="a_ore">
+          <div class="label-tipo">A Ore</div>
+          <div class="sotto-tipo">Magg. 20% su paga base</div>
+        </label>
+      </div>
+    </div>
+    <div class="col-md-4" id="oreNotturneContainer" style="display:none;">
+      <label class="mb-1 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Ore Notturne: <input type="number" id="oreNotturneInput" min="0" max="200" step="0.5" value="0" onchange="daInputOre()" style="width:65px;background:#09090B;border:1px solid #27282D;color:#818cf8;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> h</label>
+      <input type="range" id="fOreNotturne" min="0" max="200" step="0.5" value="0" oninput="daSliderOre();calcola()" style="background-color:#09090B;">
+      <div class="d-flex justify-content-between" style="font-size:9px;color:#5C5F66;margin-top:2px;"><span>0 h</span><span>200 h</span>      </div>
+    </div>
+    <div class="col-12" style="margin-top:12px;padding-top:12px;border-top:1px solid #27282D;">
+      <div class="d-flex align-items-center flex-wrap gap-4" style="font-size:11px;color:#8A8F98;">
+        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Ratei Notturni</span>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="rateoTfr" checked onchange="calcola()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">TFR</span> <span style="font-size:9px;">0,3208/h</span>
+        </span>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="rateo13ma" checked onchange="calcola()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">13ª</span> <span style="font-size:9px;">0,3094/h</span>
+        </span>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="rateoFerie" checked onchange="calcola()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">Ferie</span> <span style="font-size:9px;">0,3094/h</span>
+        </span>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="rateoFestivi" checked onchange="calcola()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">Festivi</span> <span style="font-size:9px;">0,3333/h</span>
+        </span>
+      </div>
+    </div>
+    <div id="opzioniNotturneContainer" class="col-12" style="margin-top:12px;padding-top:12px;border-top:1px solid #27282D;display:none;">
+      <div class="d-flex align-items-center flex-wrap gap-4" style="font-size:11px;color:#8A8F98;">
+        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Opzioni Notturne</span>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="straordNott" onchange="toggleStraordNott()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">Straordinario notturno 50%</span>
+          <span style="font-size:9px;">oltre orario normale (art. 15 c.3)</span>
+        </span>
+        <div id="straordNottContainer" style="display:none;width:180px;">
+          <label style="font-size:10px;color:#8A8F98;">Ore: <span id="straordNottDisplay">0</span></label>
+          <input type="range" id="fStraordNott" min="0" max="100" step="0.5" value="0" oninput="aggiornaStraordNott();calcola()">
+        </div>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="festivoNott" onchange="toggleFestivoNott()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">Festivo/domenicale 60%</span>
+          <span style="font-size:9px;">art. 15 c.3</span>
+        </span>
+        <div id="festivoNottContainer" style="display:none;width:180px;">
+          <label style="font-size:10px;color:#8A8F98;">Ore: <span id="festivoNottDisplay">0</span></label>
+          <input type="range" id="fFestivoNott" min="0" max="50" step="1" value="0" oninput="aggiornaFestivoNott();calcola()">
+        </div>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="conviventeNott" onchange="calcola()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">Convivenza</span>
+          <span style="font-size:9px;">solo informativo (le % sono identiche)</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="resultContainer" style="display:none;">
+  <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+  </div>
+  <div id="resultLoading" class="text-center py-5" style="display:none;">
+    <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
+    <div class="mt-2 text-secondary small">Calcolo in corso...</div>
+  </div>
+  <div id="resultContent"></div>
+</div>
+
+<div id="resultEmpty" class="text-center py-5" style="color:#5C5F66;">
+  <i class="bi bi-moon-stars fs-1 d-block mb-3" style="color:#27282D;"></i>
+  <div>Seleziona un contratto per calcolare la busta notturna.</div>
+</div>
+<!-- HELP MODAL -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Busta Notturno</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+Qui puoi calcolare la <b>retribuzione per lavoro notturno</b> dei collaboratori domestici. Il CCNL prevede che il lavoro svolto nella fascia notturna (22:00–06:00, o 20:00–08:00 per la presenza) venga pagato con modalità speciali.<br><br>
+Ci sono <b>3 modalità</b> di calcolo, ognuna pensata per una situazione diversa. Scegli quella che corrisponde al tipo di assistenza notturna che il lavoratore effettua.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Le 3 Modalità — Come scegliere quella giusta</b><br><br>
+<b style="color:#818cf8;">1. Presenza Notturna (Art. 11 CCNL)</b><br>
+— <b>Cos'è:</b> una retribuzione mensile <b>fissa</b> di €811,09 (importo CCNL 2024).<br>
+— <b>Onnicomprensivo:</b> significa che l'importo include già TUTTO: paga base, ratei (TFR, 13ª, Ferie, Festivi), indennità notturne. Non si aggiungono maggiorazioni orarie.<br>
+— <b>Quando si usa:</b> per assistenza notturna <b>continuativa</b> nella fascia 20:00–08:00 (12 ore). Tipico del badante convivente che sta sveglio tutta la notte per assistere un anziano non autosufficiente.<br>
+— <b>Slider ore:</b> non serve, l'importo è fisso.<br><br>
+<b style="color:#818cf8;">2. Assistenza Notturna (Art. 10 CCNL)</b><br>
+— <b>Cos'è:</b> un importo mensile <b>variabile per livello</b> contrattuale (dipende dal livello A, B, C, D, etc.).<br>
+— <b>Onnicomprensivo:</b> anche questo include tutto (paga base, ratei, indennità).<br>
+— <b>Quando si usa:</b> per assistenza a persone <b>non autosufficienti</b> durante la notte, con o senza convivenza.<br>
+— <b>Slider ore:</b> non serve, l'importo è mensile fisso per livello.<br><br>
+<b style="color:#818cf8;">3. A Ore con Maggiorazione 20%</b><br>
+— <b>Cos'è:</b> si prende la <b>paga base oraria</b> del contratto e si moltiplica per <b>1,20</b> (maggiorazione del 20%) e per le <b>ore effettive</b> di lavoro notturno.<br>
+— <b>Non è onnicomprensivo:</b> i ratei (TFR, 13ª, Ferie, Festivi) si calcolano separatamente con i toggle appositi.<br>
+— <b>Quando si usa:</b> per lavoro notturno <b>saltuario</b> o <b>a ore</b>, quando il lavoratore non fa tutte le notti ma solo alcune ore in fascia notturna.<br>
+— <b>Slider ore:</b> USA lo slider (0–200 ore, step 0,5) o digita il numero per impostare le ore notturne del mese.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Opzioni aggiuntive (solo per "A Ore")</b><br>
+Quando scegli la modalità "A Ore", si attivano due opzioni extra:<br><br>
+<b>Straordinario notturno (+50%):</b> se il lavoratore fa ore straordinarie in fascia notturna, si applica una maggiorazione del 50% sulla paga base. Attiva il toggle e usa lo slider per le ore di straordinario notturno.<br><br>
+<b>Festivo/Domenicale (+60%):</b> se il lavoro notturno cade in un giorno festivo o domenicale, si applica una maggiorazione del 60%. Attiva il toggle e imposta le ore festive notturne.<br><br>
+<b>Nota importante:</b> le maggiorazioni si <b>cumulano</b>. Se un'ora è sia notturna (20%) che straordinaria (50%), la maggiorazione totale è 20% + 50% = 70% sulla paga base.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei Notturni</b><br>
+Per ogni rateo (TFR, 13ª, Ferie, Festivi) puoi scegliere se:<br>
+<span style="color:#34d399;">✓ Incluso</span> — pagato in busta ogni mese.<br>
+<span style="color:#f59e0b;">⟳ Accantonato</span> — trattenuto per liquidazione futura.<br><br>
+<b>Nota per le modalità onnicomprensive (Presenza e Assistenza):</b> l'importo fisso include già i ratei, ma puoi comunque regolare i toggle per gestire accantonamenti separati.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Toggle Convivente</b><br>
+Se il lavoratore notturno è <b>convivente</b>, attiva il toggle "Convivente" per includere le indennità di vitto e alloggio nel calcolo. L'indennità viene detratta dal netto.</p>
+
+<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Fasce Orarie del Lavoro Notturno</b><br>
+Secondo il CCNL, il lavoro notturno è quello svolto nella fascia:<br>
+— <b>22:00 – 06:00</b> (per la generalità dei casi).<br>
+— <b>20:00 – 08:00</b> (per la modalità Presenza Notturna Art. 11).<br><br>
+Le ore al di fuori di queste fasce vengono retribuite con la paga base normale.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var contrattiList = [];
+var currIdx = -1;
+var _lastData = null;
+
+(function() {
+  var sel = document.getElementById('fContratto');
+  contrattiList = [];
+  for (var i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value) contrattiList.push(sel.options[i].value);
+  }
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  var sel = document.getElementById('fContratto');
+  if (sel.value) calcola();
+});
+
+window.navContratto = function(dir) {
+  if (contrattiList.length === 0) return;
+  if (currIdx < 0) currIdx = contrattiList.indexOf(document.getElementById('fContratto').value);
+  currIdx += dir;
+  if (currIdx < 0) currIdx = contrattiList.length - 1;
+  if (currIdx >= contrattiList.length) currIdx = 0;
+  document.getElementById('fContratto').value = contrattiList[currIdx];
+  calcola();
+};
+
+window.selezionaTipo = function(tipo) {
+  document.querySelectorAll('.radio-card').forEach(function(el) { el.classList.remove('selected'); });
+  var rc = document.getElementById('rc-' + tipo);
+  if (rc) rc.classList.add('selected');
+  var isOre = tipo === 'a_ore';
+  document.getElementById('oreNotturneContainer').style.display = isOre ? 'block' : 'none';
+  document.getElementById('opzioniNotturneContainer').style.display = isOre ? 'block' : 'none';
+  calcola();
+};
+
+window.resetForm = function() {
+  document.querySelectorAll('.radio-card').forEach(function(el) { el.classList.remove('selected'); });
+  document.getElementById('rc-presenza').classList.add('selected');
+  document.querySelector('input[name="tipoNotturno"][value="presenza"]').checked = true;
+  document.getElementById('oreNotturneContainer').style.display = 'none';
+  document.getElementById('opzioniNotturneContainer').style.display = 'none';
+  document.getElementById('fOreNotturne').value = 0;
+  document.getElementById('oreNotturneInput').value = 0;
+  document.getElementById('rateoTfr').checked = true;
+  document.getElementById('rateo13ma').checked = true;
+  document.getElementById('rateoFerie').checked = true;
+  document.getElementById('rateoFestivi').checked = true;
+  document.getElementById('straordNott').checked = false;
+  document.getElementById('straordNottContainer').style.display = 'none';
+  document.getElementById('fStraordNott').value = 0;
+  document.getElementById('straordNottDisplay').textContent = '0';
+  document.getElementById('festivoNott').checked = false;
+  document.getElementById('festivoNottContainer').style.display = 'none';
+  document.getElementById('fFestivoNott').value = 0;
+  document.getElementById('festivoNottDisplay').textContent = '0';
+  document.getElementById('conviventeNott').checked = false;
+  calcola();
+};
+
+window.daSliderOre = function() {
+  document.getElementById('oreNotturneInput').value = document.getElementById('fOreNotturne').value;
+};
+
+window.daInputOre = function() {
+  var inp = document.getElementById('oreNotturneInput');
+  var v = parseFloat(inp.value);
+  if (isNaN(v) || v < 0) v = 0;
+  if (v > 200) v = 200;
+  var stepped = Math.round(v / 0.5) * 0.5;
+  inp.value = stepped;
+  document.getElementById('fOreNotturne').value = stepped;
+  calcola();
+};
+
+window.toggleStraordNott = function() {
+  document.getElementById('straordNottContainer').style.display = document.getElementById('straordNott').checked ? 'block' : 'none';
+  calcola();
+};
+
+window.aggiornaStraordNott = function() {
+  document.getElementById('straordNottDisplay').textContent = document.getElementById('fStraordNott').value;
+};
+
+window.toggleFestivoNott = function() {
+  document.getElementById('festivoNottContainer').style.display = document.getElementById('festivoNott').checked ? 'block' : 'none';
+  calcola();
+};
+
+window.aggiornaFestivoNott = function() {
+  document.getElementById('festivoNottDisplay').textContent = document.getElementById('fFestivoNott').value;
+};
+
+window.calcola = function() {
+  var pk = document.getElementById('fContratto').value;
+  if (!pk) { mostraVuoto(); document.getElementById('btnContratto').disabled = true; return; }
+  currIdx = contrattiList.indexOf(pk);
+  document.getElementById('resultEmpty').style.display = 'none';
+  document.getElementById('resultContainer').style.display = 'block';
+  document.getElementById('resultLoading').style.display = 'block';
+  document.getElementById('resultContent').innerHTML = '';
+  document.getElementById('btnPdf').disabled = true;
+  document.getElementById('btnContratto').disabled = false;
+  document.getElementById('btnContratto').dataset.pk = pk;
+  document.getElementById('btnSalvaBusta').disabled = false;
+  document.getElementById('btnSalvaBusta').dataset.pk = pk;
+
+  var tipo = document.querySelector('input[name="tipoNotturno"]:checked').value;
+  var ore = document.getElementById('fOreNotturne').value || 0;
+  var params = '?mese=' + document.getElementById('fMese').value + '&anno=' + document.getElementById('fAnno').value
+    + '&tipo_notturno=' + tipo + '&ore_notturne=' + ore
+    + '&rateo_tfr=' + (document.getElementById('rateoTfr').checked ? '1' : '0')
+    + '&rateo_13ma=' + (document.getElementById('rateo13ma').checked ? '1' : '0')
+    + '&rateo_ferie=' + (document.getElementById('rateoFerie').checked ? '1' : '0')
+    + '&rateo_festivi=' + (document.getElementById('rateoFestivi').checked ? '1' : '0')
+    + '&straord_nott=' + (document.getElementById('straordNott').checked ? '1' : '0')
+    + '&ore_straord_nott=' + (document.getElementById('fStraordNott').value || 0)
+    + '&festivo_nott=' + (document.getElementById('festivoNott').checked ? '1' : '0')
+    + '&ore_festive_nott=' + (document.getElementById('fFestivoNott').value || 0)
+    + '&convivente_nott=' + (document.getElementById('conviventeNott').checked ? '1' : '0');
+
+  fetch('/ajax/calcola-busta-notturna/' + pk + '/' + params, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    credentials: 'same-origin'
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    document.getElementById('resultLoading').style.display = 'none';
+    if (d.errore) {
+      document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
+      return;
+    }
+    renderNotturno(d);
+    _lastData = d;
+    document.getElementById('btnPdf').disabled = false;
+    var warn = document.getElementById('bustaEsistenteWarning');
+    if (warn) warn.style.display = d.busta_esistente ? 'block' : 'none';
+  })
+  .catch(function(e) {
+    document.getElementById('resultLoading').style.display = 'none';
+    document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
+  });
+};
+
+function mostraVuoto() {
+  document.getElementById('resultContainer').style.display = 'none';
+  document.getElementById('resultEmpty').style.display = 'block';
+  document.getElementById('btnPdf').disabled = true;
+  document.getElementById('btnSalvaBusta').disabled = true;
+}
+
+function renderNotturno(d) {
+  var lc = d.livello_colore || '#5E6AD2';
+  function hexToRgb(hex) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return r + ',' + g + ',' + b;
+  }
+  var rgb = lc.match(/^#[0-9a-f]{6}$/i) ? hexToRgb(lc) : '94,106,210';
+  var html = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;">';
+
+  // Header contratto
+  html += '<div style="padding:16px 24px;border-bottom:1px solid #27282D;">';
+  html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-moon-stars me-1"></i>Busta Notturna — ' + d.mese_nome + ' ' + d.anno + '</div>';
+  html += '<div class="row g-2 mt-2">';
+  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
+  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
+  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(' + rgb + ',0.2);color:' + lc + ';">' + esc(d.livello) + '</span></div>';
+  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
+  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Ore mensili</span><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + Number(d.ore_settimanali).toFixed(2) + ' h/sett)</span></div>';
+  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Paga base oraria</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
+  html += '<div class="col-md-6 mt-2"><span style="font-size:12px;font-weight:700;color:#818cf8;">' + esc(d.label_tipo) + '</span>';
+  if (d.convivente) html += ' <span style="font-size:10px;color:#8A8F98;margin-left:6px;"><i class="bi bi-house-door"></i> Convivente</span>';
+  html += '</div></div></div>';
+
+  // Dettaglio calcolo
+  html += '<div style="padding:16px 24px;">';
+  html += '<table style="width:100%;border-collapse:collapse;" id="resultNotturno">';
+  html += '<tr><th style="text-align:left;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Componente</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Aliquota</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
+  html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#EDEDED;">' + esc(d.label_tipo) + ' <span style="color:#8A8F98;font-size:11px;">(importo mensile)</span></td><td style="text-align:right;color:#8A8F98;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.04);"></td><td style="text-align:right;font-weight:600;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + Number(d.importo_mensile).toFixed(2) + '</td></tr>';
+  for (var i = 0; i < d.ratei_notturni.length; i++) {
+    var r = d.ratei_notturni[i];
+    html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#EDEDED;">' + esc(r.label) + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + r.orario.toFixed(4) + ' \u00d7 ' + Number(d.ore_mensili).toFixed(2) + 'h)</span></td><td style="text-align:right;color:#8A8F98;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC' + r.orario.toFixed(4) + '/h</td><td style="text-align:right;font-weight:600;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + r.totale.toFixed(2) + '</td></tr>';
+  }
+  html += '<tr class="totale-row"><td style="padding-top:10px;border-top:2px solid rgba(129,140,248,0.3);font-size:14px;color:#818cf8;">TOTALE COMPLESSIVO</td><td style="border-top:2px solid rgba(129,140,248,0.3);"></td><td style="text-align:right;padding-top:10px;border-top:2px solid rgba(129,140,248,0.3);font-size:16px;font-weight:800;color:#818cf8;">\u20AC ' + d.totale_complessivo.toFixed(2) + '</td></tr>';
+  html += '</table>';
+
+  // Grafico a barre
+  var tot = d.totale_complessivo;
+  var voci = [];
+  voci.push({label: d.label_tipo, valore: d.importo_mensile, colore: '#818cf8'});
+  var coloriRatei = ['#34d399', '#f59e0b', '#06b6d4', '#f87171'];
+  for (var bi = 0; bi < d.ratei_notturni.length; bi++) {
+    voci.push({label: d.ratei_notturni[bi].label, valore: d.ratei_notturni[bi].totale, colore: coloriRatei[bi % coloriRatei.length]});
+  }
+  html += '<div style="margin-top:16px;border-top:1px solid #27282D;padding-top:12px;">';
+  html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:8px;"><i class="bi bi-bar-chart me-1"></i>Composizione</div>';
+  for (var bi = 0; bi < voci.length; bi++) {
+    var v = voci[bi];
+    if (v.valore <= 0) continue;
+    var pct = (v.valore / tot * 100).toFixed(1);
+    html += '<div class="d-flex align-items-center gap-2 mb-1">';
+    html += '<span class="bar-label" style="min-width:120px;">' + esc(v.label) + '</span>';
+    html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);">';
+    html += '<div class="bar-fill" style="width:' + pct + '%;background:' + v.colore + ';opacity:0.8;"></div></div>';
+    html += '<span class="bar-value" style="min-width:80px;">\u20AC' + v.valore.toFixed(2) + ' (' + pct + '%)</span>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  html += '</div></div>';
+  document.getElementById('resultContent').innerHTML = html;
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function getCSRFToken() {
+  var name = 'csrftoken';
+  var value = '; ' + document.cookie;
+  var parts = value.split('; ' + name + '=');
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return '';
+}
+window.salvaBusta = function() {
+  var pk = document.getElementById('btnSalvaBusta').dataset.pk;
+  if (!pk) return;
+  var warn = document.getElementById('bustaEsistenteWarning');
+  if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
+    if (!confirm('Busta paga già salvata per questo periodo. Sovrascrivere?')) return;
+  }
+  var btn = document.getElementById('btnSalvaBusta');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> SALVATAGGIO...';
+  var formData = new FormData();
+  formData.append('contratto_pk', pk);
+  formData.append('mese', document.getElementById('fMese').value);
+  formData.append('anno', document.getElementById('fAnno').value);
+  formData.append('tipo_calcolo', 'NOTTURNO');
+  formData.append('csrfmiddlewaretoken', getCSRFToken());
+  fetch('/ajax/salva-busta/', {
+    method: 'POST',
+    body: formData,
+    credentials: 'same-origin',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> SALVATA';
+      setTimeout(function() {
+        btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+        btn.disabled = false;
+      }, 2000);
+        } else {
+            mostraToast(d.errore || 'Errore salvataggio', false);
+            btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+            btn.disabled = false;
+        }
+    }).catch(function(e) {
+        console.error(e);
+        mostraToast('Errore di rete', false);
+        btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+    btn.disabled = false;
+  });
+};
+window.downloadPdf = function() {
+  if (!_lastData) return;
+  var pk = document.getElementById('fContratto').value;
+  if (!pk) return;
+  var params = '?mese=' + document.getElementById('fMese').value + '&anno=' + document.getElementById('fAnno').value
+    + '&tipo_notturno=' + document.querySelector('input[name="tipoNotturno"]:checked').value
+    + '&ore_notturne=' + (document.getElementById('fOreNotturne').value || 0)
+    + '&rateo_tfr=' + (document.getElementById('rateoTfr').checked ? '1' : '0')
+    + '&rateo_13ma=' + (document.getElementById('rateo13ma').checked ? '1' : '0')
+    + '&rateo_ferie=' + (document.getElementById('rateoFerie').checked ? '1' : '0')
+    + '&rateo_festivi=' + (document.getElementById('rateoFestivi').checked ? '1' : '0')
+    + '&straord_nott=' + (document.getElementById('straordNott').checked ? '1' : '0')
+    + '&ore_straord_nott=' + (document.getElementById('fStraordNott').value || 0)
+    + '&festivo_nott=' + (document.getElementById('festivoNott').checked ? '1' : '0')
+    + '&ore_festive_nott=' + (document.getElementById('fFestivoNott').value || 0);
+  apriNelPannello('/ajax/busta-notturna-pdf/' + pk + '/' + params);
+};
+window.vaiContratto = function() {
+  var pk = document.getElementById('btnContratto').dataset.pk;
+  if (pk) loadAjaxForm('/ajax/modifica-contratto/' + pk + '/', 'Modifica Contratto');
+};
+
+window.stampaBustaCalcolo = function(btn) {
+    var pk = document.getElementById('btnPdf').dataset.pk;
+    if (!pk) { mostraToast('Nessuna busta selezionata.', false); return; }
+    var d = window._lastStdData;
+    if (!d || !d.busta_esistente) {
+        mostraToast('Salva prima la busta paga con "SALVA BUSTA".', false);
+        return;
+    }
+    stampaBusta(pk, btn);
+};
+</script>
+{% include 'paghe/_ccnl_occhio_include.html' %}
+{% endblock %}

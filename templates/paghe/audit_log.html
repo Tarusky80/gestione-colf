@@ -1,0 +1,171 @@
+﻿{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Registro Audit</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<style>
+.audit-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;text-transform:uppercase;}
+.audit-creazione{background:rgba(16,185,129,0.12);color:#10b981;}
+.audit-modifica{background:rgba(94,106,210,0.12);color:#5E6AD2;}
+.audit-eliminazione{background:rgba(248,113,113,0.12);color:#f87171;}
+.audit-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;transition:background 0.1s;cursor:pointer;}
+.audit-row:hover{background:rgba(94,106,210,0.04);}
+.audit-row+.audit-row{border-top:1px solid rgba(255,255,255,0.03);}
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold mb-0"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Registro Audit
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+    </h1>
+</div>
+
+<form method="GET" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;padding:16px;background:#17181C;border:1px solid #27282D;border-radius:12px;">
+    <select name="modello" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#EDEDED;padding:6px 10px;font-size:11px;">
+        {% for val, label in MODELLI_CHOICES %}<option value="{{ val }}" {% if modello == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <select name="azione" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#EDEDED;padding:6px 10px;font-size:11px;">
+        {% for val, label in AZIONI_CHOICES %}<option value="{{ val }}" {% if azione == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <select name="utente" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#EDEDED;padding:6px 10px;font-size:11px;">
+        <option value="">Tutti gli utenti</option>
+        {% for u in utenti %}<option value="{{ u.id }}" {% if utente_id == u.id|stringformat:'s' %}selected{% endif %}>{{ u.username }}</option>{% endfor %}
+    </select>
+    <input type="date" name="da" value="{{ da }}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#EDEDED;padding:6px 10px;font-size:11px;">
+    <input type="date" name="a" value="{{ a }}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#EDEDED;padding:6px 10px;font-size:11px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Cerca nei dettagli..." style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#EDEDED;padding:6px 10px;font-size:11px;flex:1;min-width:120px;">
+    <button type="submit" class="btn btn-sm btn-ghost-primary" style="padding:6px 14px;font-size:11px;"><i class="bi bi-funnel me-1"></i>Filtra</button>
+    <a href="{% url 'audit_log' %}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#8A8F98;padding:6px 14px;font-size:11px;text-decoration:none;"><i class="bi bi-x-lg me-1"></i>Resetta</a>
+</form>
+
+<div style="background:#17181C;border:1px solid #27282D;border-radius:12px;overflow:hidden;">
+    {% if page_obj %}
+    <div style="padding:8px 14px;border-bottom:1px solid #27282D;font-size:10px;color:#545;display:flex;justify-content:space-between;">
+        <span>Pagina {{ page_obj.number }} di {{ page_obj.paginator.num_pages }} ({{ page_obj.paginator.count }} eventi)</span>
+        <span>Singola riga per dettagli</span>
+    </div>
+    {% for log in page_obj %}
+    <div class="audit-row" onclick="apriDettaglioAudit({{ log.pk }})">
+        <div style="flex-shrink:0;width:50px;font-size:10px;color:#545;">{{ log.data_ora|date:"d/m" }}<br>{{ log.data_ora|date:"H:i" }}</div>
+        <div class="audit-badge audit-{{ log.azione|lower }}">{{ log.azione|slice:':4' }}</div>
+        <div style="flex-shrink:0;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.04);color:#8A8F98;">{{ log.modello_coinvolto }}</div>
+        <div style="flex:1;min-width:0;font-size:12px;color:#EDEDED;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ log.dettagli }}</div>
+        {% if log.utente %}<div style="flex-shrink:0;font-size:10px;color:#545;"><i class="bi bi-person"></i> {{ log.utente.username }}</div>{% endif %}
+        <div style="flex-shrink:0;font-size:10px;color:#3A3B40;">{% if log.pk_oggetto %}#{{ log.pk_oggetto }}{% endif %}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center py-5" style="color:#545;">
+        <i class="bi bi-journal-text" style="font-size:32px;display:block;margin-bottom:8px;"></i>
+        <div>Nessun evento di audit trovato.</div>
+    </div>
+    {% endif %}
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<div style="display:flex;justify-content:center;gap:4px;margin-top:14px;">
+    {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&modello={{ modello }}&azione={{ azione }}&utente={{ utente_id }}&da={{ da }}&a={{ a }}&q={{ q }}" style="background:#17181C;border:1px solid #27282D;border-radius:6px;color:#EDEDED;padding:6px 12px;font-size:11px;text-decoration:none;">&laquo; Prec.</a>{% endif %}
+    {% for p in page_obj.paginator.page_range %}
+        {% if p >= page_obj.number|add:'-3' and p <= page_obj.number|add:'3' %}
+        <a href="?page={{ p }}&modello={{ modello }}&azione={{ azione }}&utente={{ utente_id }}&da={{ da }}&a={{ a }}&q={{ q }}" style="background:{% if p == page_obj.number %}#5E6AD2{% else %}#17181C{% endif %};border:1px solid #27282D;border-radius:6px;color:{% if p == page_obj.number %}white{% else %}#EDEDED{% endif %};padding:6px 10px;font-size:11px;text-decoration:none;{% if p == page_obj.number %}font-weight:700;{% endif %}">{{ p }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&modello={{ modello }}&azione={{ azione }}&utente={{ utente_id }}&da={{ da }}&a={{ a }}&q={{ q }}" style="background:#17181C;border:1px solid #27282D;border-radius:6px;color:#EDEDED;padding:6px 12px;font-size:11px;text-decoration:none;">Succ. &raquo;</a>{% endif %}
+</div>
+{% endif %}
+
+<div class="modal fade" id="dettaglioModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" class="class="card-alt"">
+            <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+                <h5 class="modal-title" style="font-size:14px;color:#EDEDED;">Dettaglio Evento Audit</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="padding:18px;font-size:12px;color:#ccc;">
+                <div id="dettaglioContent">Caricamento...</div>
+            </div>
+            <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;">
+                <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaAudit()" id="btnEliminaAudit" style="padding:6px 14px;font-size:11px;">
+                    <i class="bi bi-trash3 me-1"></i>Elimina
+                </button>
+                <button type="button" class="btn btn-sm btn-ghost" data-bs-dismiss="modal" style="padding:6px 14px;font-size:11px;">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var _ultimoAuditPk = null;
+
+function eliminaAudit() {
+    if (!_ultimoAuditPk) return;
+    if (!confirm('Eliminare definitivamente questo evento di audit?')) return;
+    fetch('/ajax/audit/elimina/' + _ultimoAuditPk + '/', { method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token }}' } })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if (d.ok) {
+                var modal = bootstrap.Modal.getInstance(document.getElementById('dettaglioModal'));
+                modal.hide();
+                location.reload();
+            }
+        })
+        .catch(function(){ alert('Errore durante l\'eliminazione.'); });
+}
+
+function apriDettaglioAudit(pk) {
+    _ultimoAuditPk = pk;
+    var content = document.getElementById('dettaglioContent');
+    content.textContent = 'Caricamento...';
+    fetch('/ajax/audit/dettaglio/' + pk + '/')
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+            html += '<div><b style="color:#8A8F98;">Data/Ora</b><br>' + d.data_ora + '</div>';
+            html += '<div><b style="color:#8A8F98;">Modello</b><br>' + d.modello + '</div>';
+            html += '<div><b style="color:#8A8F98;">PK Oggetto</b><br>' + d.pk_oggetto + '&nbsp;</div>';
+            html += '<div><b style="color:#8A8F98;">Azione</b><br>' + d.azione + '</div>';
+            html += '<div><b style="color:#8A8F98;">Utente</b><br>' + d.utente + '</div>';
+            html += '<div><b style="color:#8A8F98;">IP</b><br>' + d.ip + '</div>';
+            html += '</div>';
+            if (d.dettagli) html += '<div style="margin-top:12px;"><b style="color:#8A8F98;">Dettagli</b><br>' + d.dettagli + '</div>';
+            if (d.dati_prec) html += '<div style="margin-top:12px;"><b style="color:#f87171;">Dati Precedenti</b><pre style="font-size:10px;background:rgba(248,113,113,0.04);padding:8px;border-radius:6px;max-height:200px;overflow:auto;">' + JSON.stringify(d.dati_prec, null, 2) + '</pre></div>';
+            if (d.dati_succ) html += '<div style="margin-top:8px;"><b style="color:#10b981;">Dati Successivi</b><pre style="font-size:10px;background:rgba(16,185,129,0.04);padding:8px;border-radius:6px;max-height:200px;overflow:auto;">' + JSON.stringify(d.dati_succ, null, 2) + '</pre></div>';
+            content.innerHTML = html;
+            var modal = new bootstrap.Modal(document.getElementById('dettaglioModal'));
+            modal.show();
+        })
+        .catch(function(){ content.textContent = 'Errore nel caricamento dei dettagli.'; });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Registro Audit
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        Il Registro Audit tiene traccia di tutte le <b>modifiche, creazioni ed eliminazioni</b> effettuate sul gestionale. Ogni evento è registrato con utente, data, IP e dettagli delle modifiche.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Usa i filtri in alto per cercare per <b>modello</b>, <b>azione</b>, <b>utente</b>, intervallo di date o testo libero.<br>
+        <b>2.</b> Clicca su una riga per aprire il <b>dettaglio</b> con i valori precedenti e successivi della modifica.<br>
+        <b>3.</b> Le azioni sono colorate: <span style="color:#10b981;">creazione</span>, <span style="color:#5E6AD2;">modifica</span>, <span style="color:#f87171;">eliminazione</span>.<br>
+        <b>4.</b> Usa "Resetta" per rimuovere tutti i filtri e tornare alla vista completa.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Accesso Admin</b><br>
+        Puoi filtrare per "Accesso Admin" per vedere solo gli accessi al pannello di amministrazione di Django. I dati sensibili (password, token) non vengono mai registrati.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

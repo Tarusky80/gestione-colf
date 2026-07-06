@@ -1,0 +1,231 @@
+<form id="dynamicForm" method="POST">
+    {% csrf_token %}
+    <div style="max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 8px;">
+        <div class="fw-bold mb-3" style="font-size: 14px; color: #EDEDED; border-bottom: 1px solid #27282D; padding-bottom: 8px;">Dati Base</div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.livello.label }}</label>
+                {{ form.livello }}
+            </div>
+            <div class="col-md-5">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.descrizione_corta.label }}</label>
+                {{ form.descrizione_corta }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.anno.label }}</label>
+                {{ form.anno }}
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" class="c-10-up">{{ form.descrizione_lunga.label }}</label>
+            {{ form.descrizione_lunga }}
+        </div>
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" class="c-10-up">{{ form.fonte_url.label }}</label>
+            {{ form.fonte_url }}
+        </div>
+
+        <div class="fw-bold mb-3" style="font-size: 14px; color: #EDEDED; border-bottom: 1px solid #27282D; padding-bottom: 8px;">Retribuzione</div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.paga_base.label }}</label>
+                {{ form.paga_base }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.retribuzione_sostituzione.label }}</label>
+                {{ form.retribuzione_sostituzione }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.tfr_orario.label }}</label>
+                {{ form.tfr_orario }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.tredicesima_oraria.label }}</label>
+                {{ form.tredicesima_oraria }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.festivi_orari.label }}</label>
+                {{ form.festivi_orari }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ferie_orarie.label }}</label>
+                {{ form.ferie_orarie }}
+            </div>
+        </div>
+
+        <div class="fw-bold mb-3" style="font-size: 14px; color: #EDEDED; border-bottom: 1px solid #27282D; padding-bottom: 8px;">Indennità</div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_cert_qualita.label }}
+                    <span onclick="copyFieldValue('id_ind_cert_qualita','id_ind_cert_qualita_mensile')" style="display:inline-block; background:#1e1f22; color:#5E6AD2; border:1px solid #5E6AD2; border-radius:4px; padding:1px 8px; font-size:10px; cursor:pointer; margin-left:6px; vertical-align:middle; white-space:nowrap;"><i class="bi bi-arrow-right"></i> Mensile</span>
+                </label>
+                {{ form.ind_cert_qualita }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_assistenza_piu_persone_non_conv.label }}</label>
+                {{ form.ind_assistenza_piu_persone_non_conv }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_minori_6_anni_non_conv.label }}</label>
+                {{ form.ind_minori_6_anni_non_conv }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_piu_persone_qualita.label }}</label>
+                {{ form.ind_piu_persone_qualita }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_minori_qualita.label }}</label>
+                {{ form.ind_minori_qualita }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_assistenza_piu_persone_ft.label }}</label>
+                {{ form.ind_assistenza_piu_persone_ft }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_assistenza_piu_persone_pt.label }}</label>
+                {{ form.ind_assistenza_piu_persone_pt }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_minori_6_anni_ft.label }}
+                    <span onclick="copyFieldValue('id_ind_minori_6_anni_ft','id_ind_minori_6_mensile_ft')" style="display:inline-block; background:#1e1f22; color:#5E6AD2; border:1px solid #5E6AD2; border-radius:4px; padding:1px 8px; font-size:10px; cursor:pointer; margin-left:6px; vertical-align:middle; white-space:nowrap;"><i class="bi bi-arrow-right"></i> Mensile</span>
+                </label>
+                {{ form.ind_minori_6_anni_ft }}
+            </div>
+        </div>
+
+        <div class="fw-bold mb-3" style="font-size: 14px; color: #EDEDED; border-bottom: 1px solid #27282D; padding-bottom: 8px;">Notturno</div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_notturno_assistenza.label }}</label>
+                {{ form.ind_notturno_assistenza }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_notturno_presenza.label }}</label>
+                {{ form.ind_notturno_presenza }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_notturno_base.label }}</label>
+                {{ form.ind_notturno_base }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_notturno_20.label }}</label>
+                {{ form.ind_notturno_20 }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.notturno_tfr.label }}</label>
+                {{ form.notturno_tfr }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.notturno_13ma.label }}</label>
+                {{ form.notturno_13ma }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.notturno_festivi.label }}</label>
+                {{ form.notturno_festivi }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.notturno_ferie.label }}</label>
+                {{ form.notturno_ferie }}
+            </div>
+        </div>
+
+        <div class="fw-bold mb-3" style="font-size: 14px; color: #EDEDED; border-bottom: 1px solid #27282D; padding-bottom: 8px;">Indennità Funzione</div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_funzione_conviventi.label }}
+                    <span onclick="copyFieldValue('id_ind_funzione_conviventi','id_ind_funzione_mensile')" style="display:inline-block; background:#1e1f22; color:#5E6AD2; border:1px solid #5E6AD2; border-radius:4px; padding:1px 8px; font-size:10px; cursor:pointer; margin-left:6px; vertical-align:middle; white-space:nowrap;"><i class="bi bi-arrow-right"></i> Mensile</span>
+                </label>
+                {{ form.ind_funzione_conviventi }}
+            </div>
+        </div>
+
+        <div class="fw-bold mb-3" style="font-size: 14px; color: #EDEDED; border-bottom: 1px solid #27282D; padding-bottom: 8px;">Conviventi</div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.conviventi_ft_54h.label }}</label>
+                {{ form.conviventi_ft_54h }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.conviventi_pt_30h.label }}</label>
+                {{ form.conviventi_pt_30h }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.convivenza_pranzo.label }}</label>
+                {{ form.convivenza_pranzo }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.convivenza_cena.label }}</label>
+                {{ form.convivenza_cena }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.convivenza_alloggio.label }}</label>
+                {{ form.convivenza_alloggio }}
+            </div>
+        </div>
+
+        <div class="fw-bold mb-3" style="font-size: 14px; color: #EDEDED; border-bottom: 1px solid #27282D; padding-bottom: 8px;">Minimi Mensili CCNL / Indennità Mensili</div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.minimo_mensile_ft.label }}</label>
+                {{ form.minimo_mensile_ft }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.minimo_mensile_pt.label }}</label>
+                {{ form.minimo_mensile_pt }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_funzione_mensile.label }}
+                    <span onclick="copyFieldValue('id_ind_funzione_conviventi','id_ind_funzione_mensile')" style="display:inline-block; background:#1e1f22; color:#5E6AD2; border:1px solid #5E6AD2; border-radius:4px; padding:1px 8px; font-size:10px; cursor:pointer; margin-left:6px; vertical-align:middle; white-space:nowrap;"><i class="bi bi-arrow-left"></i> Oraria</span>
+                </label>
+                {{ form.ind_funzione_mensile }}
+            </div>
+            <div class="col-md-3">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_minori_6_mensile_ft.label }}
+                    <span onclick="copyFieldValue('id_ind_minori_6_anni_ft','id_ind_minori_6_mensile_ft')" style="display:inline-block; background:#1e1f22; color:#5E6AD2; border:1px solid #5E6AD2; border-radius:4px; padding:1px 8px; font-size:10px; cursor:pointer; margin-left:6px; vertical-align:middle; white-space:nowrap;"><i class="bi bi-arrow-left"></i> Oraria</span>
+                </label>
+                {{ form.ind_minori_6_mensile_ft }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_minori_6_mensile_pt.label }}</label>
+                {{ form.ind_minori_6_mensile_pt }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_piu_assistiti_mensile.label }}</label>
+                {{ form.ind_piu_assistiti_mensile }}
+            </div>
+            <div class="col-md-3 mt-2">
+                <label class="mb-1 fw-bold" class="c-10-up">{{ form.ind_cert_qualita_mensile.label }}
+                    <span onclick="copyFieldValue('id_ind_cert_qualita','id_ind_cert_qualita_mensile')" style="display:inline-block; background:#1e1f22; color:#5E6AD2; border:1px solid #5E6AD2; border-radius:4px; padding:1px 8px; font-size:10px; cursor:pointer; margin-left:6px; vertical-align:middle; white-space:nowrap;"><i class="bi bi-arrow-left"></i> Oraria</span>
+                </label>
+                {{ form.ind_cert_qualita_mensile }}
+            </div>
+        </div>
+
+        {% for error in form.non_field_errors %}
+            <div class="mb-2 fw-bold" style="font-size: 12px; color: #ff6b6b;">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end gap-2" style="border-top: 1px solid #27282D; padding-top: 20px;">
+        <button type="button" class="btn btn-ghost" data-bs-dismiss="offcanvas" style="padding: 10px 20px; font-size: 13px;">Annulla</button>
+        <button type="submit" class="btn btn-ghost-primary px-4 py-2" id="btnSalvaForm" style="font-size: 13px; padding: 10px 24px;">
+            <i class="bi bi-check2"></i> Salva
+        </button>
+    </div>
+</form>
+
+<script>
+function copyFieldValue(sourceId, targetId) {
+    const src = document.getElementById(sourceId);
+    const tgt = document.getElementById(targetId);
+    if (!src || !tgt) return;
+    tgt.value = src.value;
+    tgt.style.transition = 'box-shadow 0.2s, background 0.2s';
+    tgt.style.boxShadow = '0 0 0 2px #5E6AD2';
+    tgt.style.background = 'rgba(94, 106, 210, 0.15)';
+    setTimeout(() => {
+        tgt.style.boxShadow = '';
+        tgt.style.background = '';
+    }, 800);
+}
+</script>

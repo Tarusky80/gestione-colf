@@ -1,0 +1,89 @@
+﻿<!-- Modal salva composizione -->
+<div class="modal fade" id="salvaCompModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" style="color:#EDEDED;">Salva composizione</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="salvaCompPk" value="">
+                <div class="mb-3">
+                    <label class="mb-1 fw-bold" class="c-10-up">Nome</label>
+                    <input type="text" id="salvaCompNome" class="form-control" placeholder="Es. Pacchetto Assunzione" class="bg-input">
+                </div>
+                <div class="mb-2">
+                    <label class="mb-1 fw-bold" class="c-10-up">Note (opzionale)</label>
+                    <textarea id="salvaCompNote" class="form-control" rows="2" placeholder="Descrizione..." class="bg-input"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-sm btn-ghost" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-sm btn-ghost-primary" onclick="salvaComposizione()" id="btnConfermaSalva"><i class="bi bi-check2 me-1"></i> Salva</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Modal -->
+<div class="modal fade" id="progressModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
+            <div class="modal-body text-center p-4">
+                <div class="spinner-border text-light mb-3" role="status"></div>
+                <h6 id="progressLabel" class="fw-bold" style="color:#EDEDED;">Generazione in corso...</h6>
+                <p id="progressDetail" class="small text-secondary mb-0">Attendere prego</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Result Modal -->
+<div class="modal fade" id="resultModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" style="color:#EDEDED;" id="resultTitle">Risultato</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="resultBody" style="color:#EDEDED;max-height:60vh;overflow-y:auto;"></div>
+            <div class="modal-footer border-0" id="resultFooter">
+                <button type="button" class="btn btn-sm btn-ghost" data-bs-dismiss="modal">Chiudi</button>
+                <a id="btnScaricaZip" class="btn btn-ghost-success btn-sm" style="display:none;" target="_blank"><i class="bi bi-download me-1"></i> Scarica ZIP</a>
+                <button type="button" class="btn btn-ghost-warning btn-sm" id="btnStampaUnico" style="display:none;" onclick="stampaUnico()"><i class="bi bi-printer me-1"></i> Stampa PDF unico</button>
+                <button type="button" class="btn btn-ghost-warning btn-sm" id="btnStampaDiretta" style="display:none;" onclick="stampaDiretta()"><i class="bi bi-printer-fill me-1"></i> Stampa diretta</button>
+                <button type="button" class="btn btn-ghost-info btn-sm" id="btnApriCartella" style="display:none;" onclick="apriCartella()"><i class="bi bi-folder2-open me-1"></i> Apri cartella</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Stampe e Invii
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Da qui puoi generare, stampare e inviare documenti in blocco per uno o più contratti. Seleziona i contratti, scegli il tipo di documento, imposta il periodo e clicca su una delle azioni disponibili.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Azioni disponibili</b><br>
+        <b>Genera PDF</b> — genera i PDF e li salva nella cartella documenti di ogni contratto.<br>
+        <b>Genera ZIP</b> — genera e impacchetta tutti i PDF in un unico archivio ZIP da scaricare.<br>
+        <b>Genera e Stampa</b> — genera un PDF unico e lo apre direttamente nella finestra di stampa del browser.<br>
+        <b>Genera e Invia</b> — genera i PDF e prepara l'invio via email (tramite Thunderbird o link mailto).</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Tipi di documento</b><br>
+        Il tipo di documento determina il contenuto del PDF. Puoi scegliere tra vari formati preconfigurati (buste paga, riepiloghi, ecc.). Per alcuni tipi puoi selezionare un <b>template personalizzato</b> dal menu a tendina.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Periodo e compositore</b><br>
+        Per i documenti che richiedono un periodo, imposta mese e anno di riferimento. Il <b>compositore</b> ti permette di organizzare l'ordine dei documenti nel PDF finale tramite drag & drop.</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tabelle_tags %}
+{% block content %}
+<style>
+    .tab-filtri { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+    .tab-filtri select { background:#17181C; border:1px solid #27282D; border-radius:8px; color:#EDEDED; padding:10px 14px; font-size:13px; cursor:pointer; }
+    .tab-filtri select:focus { outline:none; border-color:#5E6AD2; }
+    .tab-anno { background:#17181C; border:1px solid #27282D; border-radius:12px; padding:20px 24px; margin-bottom:16px; }
+    .tab-anno-titolo { color:#2c5282; font-size:16px; font-weight:700; margin-bottom:8px; }
+    .tab-indennita { color:#8A8F98; font-size:13px; margin-bottom:10px; padding:8px 12px; background:rgba(44,82,130,0.08); border-radius:6px; display:inline-block; }
+    .tab-table-wrapper { overflow-x:auto; }
+    .tab-table { width:100%; border-collapse:collapse; font-size:12px; min-width:900px; }
+    .tab-table th { background:#2c5282; color:white; padding:8px 6px; text-align:center; font-weight:700; font-size:10px; white-space:nowrap; }
+    .tab-table td { padding:6px; text-align:center; border-bottom:1px solid #27282D; color:#C0C4CC; font-size:12px; }
+    .tab-table tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+    .tab-table tr:hover td { background:rgba(94,106,210,0.08); }
+    .tab-livello { color:#EDEDED; font-weight:600; text-align:left !important; padding-left:10px !important; }
+    .tab-empty { color:#545; text-align:center; padding:40px; }
+</style>
+
+{% csrf_token %}
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+    <h2 style="color:#EDEDED; font-weight:700; margin:0;">
+        <i class="bi bi-table" style="color:#2c5282; margin-right:10px;"></i> Tabelle Retributive
+    </h2>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'tabelle_retributive_pdf' %}', 0)" class="btn btn-ghost-primary" style="text-decoration:none;">
+            <i class="bi bi-download"></i> Scarica PDF
+        </a>
+        <button class="btn btn-ghost-success" onclick="apriModaleInvioTabelle()">
+            <i class="bi bi-envelope"></i> Invia Email
+        </button>
+        <a href="{% url 'verifica_ccnl' %}" class="btn btn-ghost-primary" style="text-decoration:none;">
+            <i class="bi bi-search"></i> Verifica con CCNL
+        </a>
+    </div>
+</div>
+
+<div class="tab-filtri">
+    <label style="color:#8A8F98; font-size:13px;">Anno:</label>
+    <select id="tabFiltroAnno" onchange="filtraTabelle()">
+        <option value="">Tutti</option>
+        {% for a in anni %}
+        <option value="{{ a }}" {% if forloop.first %}selected{% endif %}>{{ a }}</option>
+        {% endfor %}
+    </select>
+    <label style="color:#8A8F98; font-size:13px;">Livello:</label>
+    <select id="tabFiltroLivello" onchange="filtraTabelle()">
+        <option value="">Tutti</option>
+        {% for lv in ordine_livelli %}
+        <option value="{{ lv }}">{{ lv }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div id="tabLista">
+{% for anno in anni %}
+{% with data=tabelle_data|get_item:anno %}
+<div class="tab-anno" data-anno="{{ anno }}">
+    <h3 class="tab-anno-titolo">Anno {{ anno }}</h3>
+    <div class="tab-indennita">Indennità giornaliere: Pranzo € {{ data.indennita.pranzo }} | Cena € {{ data.indennita.cena }} | Alloggio € {{ data.indennita.alloggio }} | Totale € {{ data.indennita.totale }}</div>
+    <div class="tab-table-wrapper">
+        <table class="tab-table">
+            <thead>
+                <tr>
+                    <th>Livello</th>
+                    {% for col in colonne_ordine %}
+                    <th>{{ colonne_label|get_item:col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for lv in ordine_livelli %}
+                {% with row=data.livelli|get_item:lv %}
+                <tr class="tab-row" data-livello="{{ lv }}">
+                    <td class="tab-livello">{{ lv }}</td>
+                    {% for col in colonne_ordine %}
+                    <td>{% if row|get_item:col %}{{ row|get_item:col }}{% else %}—{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endwith %}
+{% empty %}
+<div class="tab-empty">
+    <i class="bi bi-table" style="font-size:32px; display:block; margin-bottom:8px;"></i>
+    <div>Nessuna tabella disponibile</div>
+</div>
+{% endfor %}
+</div>
+
+{% include 'paghe/_modale_invio_tabelle.html' %}
+
+<script>
+function filtraTabelle() {
+    var anno = document.getElementById('tabFiltroAnno').value;
+    var livello = document.getElementById('tabFiltroLivello').value.toLowerCase().trim();
+    document.querySelectorAll('.tab-anno').forEach(function(div) {
+        var showAnno = !anno || div.getAttribute('data-anno') === anno;
+        div.style.display = showAnno ? 'block' : 'none';
+    });
+    if (livello) {
+        document.querySelectorAll('.tab-row').forEach(function(row) {
+            var lv = row.getAttribute('data-livello').toLowerCase();
+            row.style.display = lv.indexOf(livello) !== -1 ? '' : 'none';
+        });
+    } else {
+        document.querySelectorAll('.tab-row').forEach(function(row) {
+            row.style.display = '';
+        });
+    }
+}
+
+function apriModaleInvioTabelle() {
+    var modal = new bootstrap.Modal(document.getElementById('modalInvioTabelle'));
+    modal.show();
+}
+</script>
+{% endblock %}

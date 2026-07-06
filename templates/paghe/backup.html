@@ -1,0 +1,313 @@
+﻿{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'backup_page' %}">Sistema</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Backup</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">GESTIONE BACKUP
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">Crea, scarica e ripristina i salvataggi dei dati in formato JSON e ZIP del database.</p>
+    </div>
+</div>
+
+<div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px;">
+    <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
+        <i class="bi bi-cloud-arrow-down" style="margin-right: 6px; color: #5E6AD2;"></i>Nuovo Backup
+    </div>
+    <form id="backupForm" method="POST" onsubmit="eseguiBackup(event)">
+        {% csrf_token %}
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98;">Tipo di backup</label>
+                <div class="d-flex flex-wrap gap-3 mt-2">
+                    {% for val, label in tipi_backup %}
+                    <label class="d-flex align-items-center gap-2" style="cursor: pointer; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); transition: all 0.2s;">
+                        <input type="radio" name="tipo_backup" value="{{ val }}" {% if val == 'COMPLETO' %}checked{% endif %} style="accent-color: #5E6AD2;" onchange="this.closest('label').style.borderColor = this.checked ? '#5E6AD2' : 'rgba(255,255,255,0.08)'">
+                        <span style="font-size: 12px; color: #EDEDED;">{{ label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98;">Note (opzionali)</label>
+                <input type="text" name="note_opzionali" class="form-control" placeholder="Es. Prima del rinnovo..." style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;">
+            </div>
+        </div>
+        <button class="btn btn-sm btn-ghost-primary mt-3" type="submit" id="btnEseguiBackup">
+            <i class="bi bi-cloud-arrow-down me-1"></i> Esegui Backup
+        </button>
+        <button class="btn btn-sm btn-ghost-danger mt-3 ms-2" type="button" onclick="pulisciBackupVecchi()" style="padding: 8px 20px; font-size: 12px;">
+            <i class="bi bi-trash3 me-1"></i> Pulisci backup vecchi (> 6 mesi)
+        </button>
+    </form>
+</div>
+
+<div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px;">
+    <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
+        <i class="bi bi-file-earmark-spreadsheet" style="margin-right: 6px; color: #5E6AD2;"></i>Importa da Excel
+    </div>
+    <form id="importExcelForm" method="POST" enctype="multipart/form-data" onsubmit="importaExcel(event)">
+        {% csrf_token %}
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <input type="file" name="file" accept=".xlsx,.xls" class="form-control" required style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;">
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-sm btn-ghost-success" type="submit" id="btnImportaExcel" style="padding: 8px 20px; font-size: 12px;">
+                    <i class="bi bi-upload me-1"></i> Importa Excel
+                </button>
+            </div>
+        </div>
+    </form>
+    <div class="mt-2 small" style="color:#8A8F98;font-size:10px;">
+        <i class="bi bi-clock-history me-1"></i> Backup automatico ogni giorno alle 03:00.
+        <a href="{% url 'backup_auto' %}" onclick="event.preventDefault();fetch('{% url 'backup_auto' %}').then(r=>r.json()).then(d=>mostraToast(d.message, false))" style="color:#5E6AD2;text-decoration:none;font-weight:600;">Esegui ora</a>
+    </div>
+</div>
+
+<div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px;">
+    <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
+        <i class="bi bi-upload" style="margin-right: 6px; color: #f59e0b;"></i>Ripristina da file JSON
+    </div>
+    <form id="ripristinaJsonForm" method="POST" enctype="multipart/form-data" onsubmit="ripristinaDaJson(event)">
+        {% csrf_token %}
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <input type="file" name="file" accept=".json" class="form-control" required style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;">
+                <div class="help-text" style="font-size:10px;color:#f59e0b;margin-top:4px;">
+                    <i class="bi bi-exclamation-triangle me-1"></i> ATTENZIONE: sovrascrive i dati correnti nel database.
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-sm btn-ghost-warning" type="submit" id="btnRipristinaJson" style="padding: 8px 20px; font-size: 12px;">
+                    <i class="bi bi-upload me-1"></i> Carica e ripristina
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="custom-table-container">
+    <table class="table custom-table sortable" id="backupTable">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Note</th>
+                <th>Dimensione</th>
+                <th>File</th>
+                <th>DB</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for backup in backups %}
+            <tr class="clickable-row" data-type="backup" data-pk="{{ backup.pk }}" data-title="{{ backup.data_creazione|date:'d M Y H:i' }}" data-sub="{{ backup.get_tipo_backup_display }}">
+                <td><div class="fw-bold" style="font-size: 12px;">{{ backup.data_creazione|date:"d M Y H:i" }}</div></td>
+                <td><span style="display:inline-block; padding:2px 10px; border-radius:6px; font-size:11px; font-weight:600; background:rgba(94,106,210,0.15); color:#b0b8ff;">{{ backup.get_tipo_backup_display }}</span></td>
+                <td><div class="text-secondary" style="font-size: 11px;">{{ backup.note_opzionali|default:"—" }}</div></td>
+                <td><div class="text-secondary" style="font-size: 11px;">{{ backup.file_size_display|filesizeformat|default:"—" }}</div></td>
+                <td>
+                    {% if backup.file_json %}
+                        <div class="d-flex gap-2 align-items-center">
+                            <a href="{% url 'scarica_backup_json' backup.pk %}" class="text-info text-decoration-none" style="font-size: 11px;">
+                                <i class="bi bi-filetype-json"></i> Scarica
+                            </a>
+                            <a href="{% url 'esporta_backup_excel' backup.pk %}" class="text-success text-decoration-none" style="font-size: 11px;">
+                                <i class="bi bi-file-earmark-spreadsheet"></i> Excel
+                            </a>
+                        </div>
+                    {% else %}
+                        <span class="text-secondary" style="font-size: 11px;">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if backup.file_db %}
+                        <div class="d-flex gap-2 align-items-center">
+                            <a href="{% url 'scarica_backup_db' backup.pk %}" class="text-info text-decoration-none" style="font-size: 11px;">
+                                <i class="bi bi-database"></i> Scarica DB
+                            </a>
+                            <button onclick="event.stopPropagation(); ripristinaDb({{ backup.pk }}, this)" class="btn btn-sm btn-ghost-warning" style="padding:2px 8px; font-size:11px;">
+                                <i class="bi bi-arrow-clockwise"></i> Ripristina DB
+                            </button>
+                        </div>
+                        <div class="text-secondary" style="font-size:10px;margin-top:2px;">{{ backup.db_size_display }}</div>
+                    {% else %}
+                        <span class="text-secondary" style="font-size: 11px;">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <button onclick="event.stopPropagation(); eliminaBackup({{ backup.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:2px 8px; font-size:11px;">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-secondary py-5">
+                    <i class="bi bi-database-x fs-2 mb-3 d-block text-muted"></i>
+                    Nessun backup presente
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function eseguiBackup(e) {
+    e.preventDefault();
+    var btn = document.getElementById('btnEseguiBackup');
+    var originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>In corso...';
+    btn.disabled = true;
+    var formData = new FormData(document.getElementById('backupForm'));
+    formData.append('azione', 'crea');
+    fetch('/backup/', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (data.message || 'Backup fallito.'), false); btn.innerHTML = originalText; btn.disabled = false; }
+        })
+        .catch(function(error) { mostraToast('Errore di rete: ' + error.message, false); btn.innerHTML = originalText; btn.disabled = false; });
+}
+
+function ripristinaBackup(pk, btn) {
+    if (!confirm('Sei sicuro di voler ripristinare questo backup? I dati correnti verranno sovrascritti.')) return;
+    var originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    btn.disabled = true;
+    var formData = new FormData();
+    formData.append('azione', 'ripristina');
+    formData.append('pk', pk);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/backup/', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) { mostraToast('Database ripristinato con successo!', false); window.location.reload(); }
+            else { mostraToast('Errore: ' + (data.message || 'Ripristino fallito.'), false); btn.innerHTML = originalHtml; btn.disabled = false; }
+        })
+        .catch(function(error) { mostraToast('Errore di rete: ' + error.message, false); btn.innerHTML = originalHtml; btn.disabled = false; });
+}
+
+function eliminaBackup(pk) {
+    if (!confirm('Eliminare definitivamente questo backup?')) return;
+    var formData = new FormData();
+    formData.append('azione', 'elimina');
+    formData.append('pk', pk);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/backup/', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) window.location.reload();
+            else mostraToast('Errore: ' + (data.message || 'Eliminazione fallita.'), false);
+        })
+        .catch(function(error) { mostraToast('Errore di rete: ' + error.message, false); });
+}
+
+function importaExcel(e) {
+    e.preventDefault();
+    var btn = document.getElementById('btnImportaExcel');
+    var originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Importazione...';
+    btn.disabled = true;
+    var formData = new FormData(document.getElementById('importExcelForm'));
+    formData.append('azione', 'importa-excel');
+    fetch('/backup/', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) { mostraToast(data.message, false); window.location.reload(); }
+            else { mostraToast('Errore: ' + (data.message || 'Importazione fallita.'), false); btn.innerHTML = originalText; btn.disabled = false; }
+        })
+        .catch(function(error) { mostraToast('Errore di rete: ' + error.message, false); btn.innerHTML = originalText; btn.disabled = false; });
+}
+
+function ripristinaDaJson(e) {
+    e.preventDefault();
+    if (!confirm('ATTENZIONE: questo ripristino sovrascriverà TUTTI i dati correnti nel database. Continuare?')) return;
+    var btn = document.getElementById('btnRipristinaJson');
+    var originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ripristino in corso...';
+    btn.disabled = true;
+    var formData = new FormData(document.getElementById('ripristinaJsonForm'));
+    fetch('/ajax/ripristina-da-json/', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) { mostraToast(data.message, false); window.location.reload(); }
+            else { mostraToast('Errore: ' + (data.error || 'Ripristino fallito.'), false); btn.innerHTML = originalText; btn.disabled = false; }
+        })
+        .catch(function(error) { mostraToast('Errore di rete: ' + error.message, false); btn.innerHTML = originalText; btn.disabled = false; });
+}
+
+function ripristinaDb(pk, btn) {
+    if (!confirm('Sei sicuro di voler ripristinare il DATABASE da questo backup? I dati correnti verranno sovrascritti. Riavvia il server dopo il ripristino.')) return;
+    var originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+    btn.disabled = true;
+    var formData = new FormData();
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/backup/ripristina-db/' + pk + '/', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) { mostraToast(data.message, false); }
+            else { mostraToast('Errore: ' + (data.message || 'Ripristino DB fallito.'), false); btn.innerHTML = originalHtml; btn.disabled = false; }
+        })
+        .catch(function(error) { mostraToast('Errore di rete: ' + error.message, false); btn.innerHTML = originalHtml; btn.disabled = false; });
+}
+
+function pulisciBackupVecchi() {
+    if (!confirm('Eliminare tutti i backup più vecchi di 6 mesi?')) return;
+    var formData = new FormData();
+    formData.append('azione', 'pulisci');
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/backup/', { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) { mostraToast(data.message, false); window.location.reload(); }
+            else mostraToast('Errore: ' + (data.message || 'Pulizia fallita.'), false);
+        })
+        .catch(function(error) { mostraToast('Errore di rete: ' + error.message, false); });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Gestione Backup
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Qui puoi creare, scaricare e ripristinare i <b>backup</b> del database in formato JSON + ZIP del database SQLite. I backup sono essenziali per la sicurezza dei dati e vengono automaticamente programmati ogni notte alle 03:00.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Scegli il <b>tipo di backup</b>: Completo (tutti i dati), o parziale (solo selezioni specifiche).<br>
+        <b>2.</b> Clicca <b>Crea Backup</b> per generare il salvataggio. Verranno creati sia il file JSON (dati strutturati) sia lo ZIP del database (copia fisica).<br>
+        <b>3.</b> Nella tabella puoi <b>Scaricare</b> il JSON, lo ZIP del DB, o <b>Ripristinare</b> direttamente il DB cliccando "Ripristina DB".<br>
+        <b>4.</b> Usa <b>Pulisci backup vecchi</b> per rimuovere automaticamente quelli più vecchi di 6 mesi.<br>
+        <b>5.</b> <b>Upload e ripristino</b> — carica un file JSON dal tuo computer per ripristinare dati da un backup esterno.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Backup del database (ZIP)</b><br>
+        Ogni backup crea automaticamente una copia del file <code>db.sqlite3</code> tramite l'API <code>sqlite3.backup()</code>, che garantisce una copia consistente anche durante le scritture. Lo ZIP contiene un unico file <code>db.sqlite3</code> pronto per il ripristino. Dopo un ripristino del DB, <b>riavviare il server</b> per sicurezza.</p>
+
+        <p style="margin-bottom:0;margin-top:14px;"><b style="color:#EDEDED;font-size:14px;">Avvertenze</b><br>
+        Il ripristino <b>sovrascrive</b> i dati esistenti nel database. Si consiglia di fare un backup completo prima di qualsiasi ripristino. I backup automatici notturni sono attivati di default e gestiti dallo scheduler integrato (APScheduler).</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var sel = document.getElementById('fContratto');
+    var btn = document.getElementById('btnCcnlOcchio');
+    if (sel && btn) {
+        function toggleBtn() {
+            btn.disabled = !sel.value;
+            btn.dataset.pk = sel.value || '';
+        }
+        sel.addEventListener('change', toggleBtn);
+        toggleBtn();
+    }
+});
+window.apriCcnlOcchio = function() {
+    var pk = document.getElementById('btnCcnlOcchio')?.dataset?.pk;
+    var annoEl = document.getElementById('fAnno');
+    var anno = annoEl ? annoEl.value : new Date().getFullYear();
+    window.apriCcnlOcchioPopup(pk, anno);
+};
+</script>

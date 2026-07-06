@@ -1,0 +1,347 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<style>
+.toggle-vis-knob::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    left: 3px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.toggle-switch input[type="checkbox"]:checked + .toggle-vis-knob::after {
+    transform: translateX(18px);
+}
+</style>
+{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Archivio Buste</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Archivio Buste Paga
+        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button></h1>
+        <p class="text-secondary small mb-0">{{ buste|length }} buste trovate</p>
+    </div>
+    <div style="display:flex;gap:6px;">
+        <a href="{{ request.path }}?{{ request.GET.urlencode }}&export=xlsx" id="btnExportBuste"
+           class="btn btn-sm" title="Scarica Excel"
+           class="class="btn-xlsx"">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Scarica Excel
+        </a>
+        <a href="{% url 'documenti_list' %}" class="btn btn-sm btn-ghost" title="Archivio Documenti">
+            <i class="bi bi-archive me-1"></i>ARCHIVIO DOCUMENTI
+        </a>
+    </div>
+</div>
+<script>
+document.getElementById('btnExportBuste').addEventListener('click', function(e) {
+    e.preventDefault();
+    var params = new URLSearchParams();
+    var form = document.querySelector('.filtri');
+    if (form) {
+        form.querySelectorAll('select[name], input[name]').forEach(function(el) {
+            if (el.value) params.set(el.name, el.value);
+        });
+    }
+    window.location.href = "{% url 'ajax_esporta_xlsx_filtrato' 'buste-paga' %}?" + params.toString();
+});
+</script>
+
+<form method="GET" class="filtri" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:20px;">
+    <div>
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Tipo</label>
+        <select name="tipo" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+            <option value="">Tutti</option>
+            {% for t in tipi_calcolo %}
+            <option value="{{ t }}" {% if filtro_tipo == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Stato</label>
+        <select name="stato" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+            <option value="">Tutti</option>
+            {% for s in stati %}
+            <option value="{{ s }}" {% if filtro_stato == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Datore</label>
+        <input type="text" name="datore" value="{{ filtro_datore }}" placeholder="Cerca datore..." style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;width:180px;">
+    </div>
+    <div>
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Lavoratore</label>
+        <input type="text" name="lavoratore" value="{{ filtro_lavoratore }}" placeholder="Cerca lavoratore..." style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;width:180px;">
+    </div>
+    <div>
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Mese</label>
+        <select name="mese" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+            <option value="">Tutti</option>
+            {% for m in mesi_range %}
+            <option value="{{ m }}" {% if filtro_mese == m|stringformat:'s' %}selected{% endif %}>{{ m|stringformat:"02d" }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Anno</label>
+        <select name="anno" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+            <option value="">Tutti</option>
+            {% for a in anni_range %}
+            <option value="{{ a }}" {% if filtro_anno == a|stringformat:'s' %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" style="padding:7px 14px;border-radius:8px;background:rgba(94,106,210,0.15);color:#5E6AD2;border:1px solid rgba(94,106,210,0.25);font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-funnel me-1"></i> Filtra</button>
+    {% if filtro_tipo or filtro_stato or filtro_datore or filtro_lavoratore or filtro_mese or filtro_anno or filtro_contratto_pk %}
+    <a href="{% url 'buste_archivio' %}" style="padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #27282D;color:#8A8F98;font-size:13px;text-decoration:none;">Cancella filtri</a>
+    {% endif %}
+</form>
+
+{% if filtro_contratto_pk %}
+<div style="padding:8px 14px;margin-bottom:12px;background:rgba(94,106,210,0.1);border:1px solid rgba(94,106,210,0.25);border-radius:10px;color:#5E6AD2;font-size:12px;">
+    <i class="bi bi-funnel-fill me-2"></i> Filtrato per contratto #{{ filtro_contratto_pk }}
+</div>
+{% endif %}
+
+<div class="custom-table-container mb-4">
+    <table class="table custom-table filter-table" id="busteTable">
+        <thead>
+            <tr>
+                <th>Datore</th>
+                <th>Lavoratore</th>
+                <th>Periodo</th>
+                <th>Tipo</th>
+                <th>Budget</th>
+                <th>Ore</th>
+                <th>Lordo</th>
+                <th>Netto</th>
+                <th>PDF</th>
+                <th>Stato</th>
+                <th style="text-align:center;width:90px;">Visibile<br><span style="font-size:10px;color:#5C5F66;font-weight:400;">datore</span></th>
+                <th>Stampa</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in buste %}
+            <tr>
+                <td><div class="fw-bold">{{ b.contratto.datore.nome_cognome }}</div></td>
+                <td><div class="text-secondary">{{ b.contratto.lavoratore.nome_cognome }}</div></td>
+                <td><span class="fw-semibold">{{ b.mese|stringformat:"02d" }}/{{ b.anno }}</span></td>
+                <td><span class="badge bg-opacity-25 px-2 py-1" style="background:{% if b.tipo_calcolo == 'STANDARD' %}rgba(94,106,210,0.15){% elif b.tipo_calcolo == 'CONVIVENTE' %}rgba(16,185,129,0.15){% elif b.tipo_calcolo == 'NON_CONVIVENTE' %}rgba(245,158,11,0.15){% elif b.tipo_calcolo == 'SOSTITUZIONE' %}rgba(139,92,246,0.15){% elif b.tipo_calcolo == 'NOTTURNO' %}rgba(56,189,248,0.15){% elif b.tipo_calcolo == 'MALATTIA' %}rgba(248,113,113,0.15){% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %}rgba(251,191,36,0.15){% elif b.tipo_calcolo == 'TFR' %}rgba(244,114,182,0.15){% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %}rgba(52,211,153,0.15){% else %}rgba(139,92,246,0.15){% endif %};color:{% if b.tipo_calcolo == 'STANDARD' %}#5E6AD2{% elif b.tipo_calcolo == 'CONVIVENTE' %}#10b981{% elif b.tipo_calcolo == 'NON_CONVIVENTE' %}#f59e0b{% elif b.tipo_calcolo == 'SOSTITUZIONE' %}#8b5cf6{% elif b.tipo_calcolo == 'NOTTURNO' %}#38bdf8{% elif b.tipo_calcolo == 'MALATTIA' %}#ef4444{% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %}#fbbf24{% elif b.tipo_calcolo == 'TFR' %}#ec4899{% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %}#34d399{% else %}#8b5cf6{% endif %};">{{ b.tipo_calcolo }}</span></td>
+                <td>&euro; {{ b.budget_mensile|floatformat:0 }}</td>
+                <td>{{ b.ore_mensili|floatformat:0 }}h</td>
+                <td>&euro; {{ b.totale_lordo|floatformat:2 }}</td>
+                <td>&euro; {{ b.netto|floatformat:2 }}</td>
+                <td class="text-center">
+                    {% if b.documento %}
+                    <a href="#" onclick="event.preventDefault();apriNelPannello('/ajax/vedi-documento/{{ b.documento.pk }}/', {{ b.documento.pk }})" class="text-decoration-none" title="Apri PDF"><i class="bi bi-file-pdf" style="color:#ef4444;font-size:18px;"></i></a>
+                    {% else %}
+                    <span class="text-muted" style="font-size:12px;">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if b.stato == 'BOZZA' %}
+                    <span class="badge bg-secondary bg-opacity-25 text-secondary px-2 py-1">Bozza</span>
+                    {% elif b.stato == 'APPROVATA' %}
+                    <span class="badge bg-success bg-opacity-25 text-success px-2 py-1">Approvata</span>
+                    {% elif b.stato == 'ARCHIVIATA' %}
+                    <span class="badge bg-info bg-opacity-25 text-info px-2 py-1">Archiviata</span>
+                    {% endif %}
+                </td>
+                <td class="text-center" style="vertical-align:middle;">
+                    {% if b.documento %}
+                    <div class="toggle-switch" style="display:inline-block;flex-shrink:0;width:42px;height:22px;position:relative;border:none;background:none;padding:0;border-radius:0;">
+                        <input type="checkbox" id="visBusta_{{ b.pk }}" {% if b.documento.visibile_al_datore %}checked{% endif %} onchange="toggleVisibileDatore(this, {{ b.documento.pk }})" style="opacity:0;width:100%;height:100%;position:absolute;top:0;left:0;margin:0;cursor:pointer;z-index:2;">
+                        <span class="toggle-slider toggle-vis-knob" style="position:absolute;inset:0;background:{% if b.documento.visibile_al_datore %}#34C759{% else %}#3a3b40{% endif %};border:none;border-radius:12px;cursor:pointer;transition:background 0.25s ease;z-index:1;"></span>
+                    </div>
+                    {% else %}
+                    <span class="text-muted" style="font-size:12px;">—</span>
+                    {% endif %}
+                </td>
+                <td class="text-center" style="white-space:nowrap;">
+                    {% if b.documento %}
+                    <i class="stampa-badge bi {% if b.documento.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ b.pk }}" title="{% if b.documento.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
+                    {% else %}
+                    <span class="text-muted" style="font-size:12px;">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="d-flex gap-1 align-items-center flex-nowrap">
+                        {% if b.tipo_calcolo == 'STANDARD' or b.tipo_calcolo == 'CONVIVENTE' %}
+                        <a href="{% url 'calcoli_list' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        {% elif b.tipo_calcolo == 'NON_CONVIVENTE' or b.tipo_calcolo == 'SOSTITUZIONE' %}
+                        <a href="{% url 'calcoli_non_convivente' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        {% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %}
+                        <a href="{% url 'calcoli_conviventi_ccnl' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        {% elif b.tipo_calcolo == 'NOTTURNO' %}
+                        <a href="{% url 'calcoli_notturno' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        {% elif b.tipo_calcolo == 'MALATTIA' %}
+                        <a href="{% url 'calcoli_malattia' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        {% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %}
+                        <a href="{% url 'calcoli_inverso' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        {% elif b.tipo_calcolo == 'TFR' %}
+                        <a href="{% url 'calcoli_tfr' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-outline-light btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        {% endif %}
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-light btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg" style="color:#10b981;"></i></button>
+                            <button class="btn btn-outline-light btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive" style="color:#5E6AD2;"></i></button>
+                            <button class="btn btn-outline-light btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i></button>
+                            <button class="btn btn-outline-light btn-sm px-2" onclick="eliminaBusta({{ b.pk }})" title="Elimina"><i class="bi bi-trash" style="color:#ef4444;"></i></button>
+                        </div>
+                        <button class="btn btn-sm px-2 btn-ghost-primary" onclick="apriCcnlOcchioBusta({{ b.contratto.pk }}, {{ b.anno }})" title="Vedi parametri CCNL" style="font-size:11px;"><i class="bi bi-eye me-1"></i>CCNL</button>
+                        <button class="btn btn-sm px-2 btn-ghost-success" onclick="window.open('{% url 'download_ricevuta_pdf' b.pk %}')" title="Ricevuta pagamento"><i class="bi bi-receipt me-1"></i>RICEVUTA</button>
+                        {% if b.documento %}
+                        <button class="btn btn-ghost-warning btn-sm px-2" onclick="stampaBusta({{ b.pk }}, this)" title="Stampa busta alla stampante" data-label="STAMPA BUSTA"><i class="bi bi-printer me-1"></i>STAMPA BUSTA</button>
+                        {% else %}
+                        <button class="btn btn-ghost-success btn-sm px-2" onclick="generaPdfBusta({{ b.pk }}, this)" title="Genera e apri PDF" data-contratto="{{ b.contratto.pk }}" data-mese="{{ b.mese }}" data-anno="{{ b.anno }}"><i class="bi bi-file-earmark-arrow-down me-1"></i>GENERA PDF</button>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="13" class="text-center text-secondary py-5"><i class="bi bi-journal-text fs-2 mb-3 d-block text-muted"></i>Nessuna busta paga trovata.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function cambiaStato(pk, stato) {
+    if (!confirm('Cambiare stato a ' + stato + '?')) return;
+    var btn = event.target.closest('button');
+    btn.disabled = true;
+    fetch('/ajax/cambia-stato-busta/' + pk + '/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        body: new URLSearchParams({stato: stato})
+    }).then(r => r.json()).then(d => {
+        if (d.ok) { mostraToast('Stato cambiato in ' + stato, true); setTimeout(function() { location.reload(); }, 1000); }
+        else mostraToast(d.errore || 'Errore cambio stato', false);
+    }).catch(() => mostraToast('Errore di rete', false)).finally(() => btn.disabled = false);
+}
+function eliminaBusta(pk) {
+    if (!confirm('Eliminare definitivamente questa busta paga?')) return;
+    var btn = event.target.closest('button');
+    btn.disabled = true;
+    fetch('/ajax/elimina-busta/' + pk + '/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    }).then(r => r.json()).then(d => {
+        if (d.ok) { mostraToast('Busta eliminata', true); setTimeout(function() { location.reload(); }, 1000); }
+        else mostraToast(d.errore || 'Errore eliminazione', false);
+    }).catch(() => mostraToast('Errore di rete', false)).finally(() => btn.disabled = false);
+}
+
+function generaPdfBusta(bustaPk, btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>GENERANDO...';
+    
+    fetch('/ajax/genera-pdf-busta/' + bustaPk + '/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.ok) {
+            apriNelPannello(d.file_url, d.documento_pk);
+            
+            const row = btn.closest('tr');
+            const azioniCell = row.querySelector('td:last-child .d-flex');
+            
+            btn.remove();
+            const stampaBtn = document.createElement('button');
+            stampaBtn.className = 'btn btn-ghost-warning btn-sm px-2';
+            stampaBtn.onclick = () => stampaBusta(bustaPk, stampaBtn);
+            stampaBtn.title = 'Stampa busta alla stampante';
+            stampaBtn.innerHTML = '<i class="bi bi-printer me-1"></i>STAMPA BUSTA';
+            azioniCell.appendChild(stampaBtn);
+            
+            const pdfCell = row.querySelector('td:nth-child(9)');
+            pdfCell.innerHTML = `<a href="#" onclick="event.preventDefault();apriNelPannello('${d.file_url}', ${d.documento_pk})" class="text-decoration-none" title="Apri PDF"><i class="bi bi-file-pdf" style="color:#ef4444;font-size:18px;"></i></a>`;
+            
+            const stampaCell = row.querySelector('td:nth-child(11)');
+            stampaCell.innerHTML = `<i class="stampa-badge bi bi-printer text-muted" data-pk="${bustaPk}" title="Non stampato" style="font-size:16px;"></i>`;
+        } else {
+            mostraToast(d.errore || 'Errore generazione PDF', false);
+        }
+    })
+    .catch(() => mostraToast('Errore di rete', false))
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-file-earmark-arrow-down me-1"></i>GENERA PDF';
+    });
+}
+
+function toggleVisibileDatore(el, documentoPk) {
+    var visibile = el.checked;
+    fetch('/ajax/documento-toggle-visibilita-datore/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({documento_pk: documentoPk, visibile: visibile})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (d.success) {
+            var slider = el.nextElementSibling;
+            if (slider && slider.classList.contains('toggle-slider')) {
+                slider.style.background = d.visibile ? '#34C759' : '#3a3b40';
+            }
+        } else {
+            el.checked = !visibile;
+            mostraToast(d.error || 'Errore', false);
+        }
+    })
+    .catch(function(){
+        el.checked = !visibile;
+        mostraToast('Errore di rete.', false);
+    });
+}
+function apriCcnlOcchioBusta(pk, anno) {
+    window.apriCcnlOcchioPopup(pk, anno);
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Buste Paga</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        L'Archivio Buste Paga contiene tutte le buste paga salvate dal pulsante <b>SALVA BUSTA</b> presente nelle pagine di calcolo. Ogni busta è associata a un contratto, un periodo, un tipo di calcolo e un documento PDF.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Filtri</b><br>
+        Puoi filtrare per tipo di calcolo (Standard, Non Convivente, Conviventi CCNL, ecc.), stato (Bozza/Approvata/Archiviata), datore, lavoratore, mese e anno.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Azioni</b><br>
+        <b>VEDI</b> (<i class="bi bi-eye" style="color:#5bc0de;"></i>) — apre la pagina di calcolo corrispondente ricaricando i dati.<br>
+        <b>APPROVA</b> (<i class="bi bi-check-lg" style="color:#10b981;"></i>) — cambia lo stato in "Approvata".<br>
+        <b>ARCHIVIA</b> (<i class="bi bi-archive" style="color:#5E6AD2;"></i>) — cambia lo stato in "Archiviata".<br>
+        <b>BOZZA</b> (<i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i>) — riporta la busta a stato "Bozza".<br>
+        <b>ELIMINA</b> (<i class="bi bi-trash" style="color:#ef4444;"></i>) — elimina definitivamente la busta.<br>
+        <b>VISIBILE DATORE</b> (<span class="toggle-switch" style="display:inline-block;width:28px;height:14px;position:relative;vertical-align:middle;border:none;background:none;padding:0;"><span style="position:absolute;inset:0;background:#5E6AD2;border-radius:7px;"></span></span>) — attiva/disattiva la visibilit&agrave; della busta paga nell'area riservata del datore di lavoro (<b>/datore/</b>).</p>
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">PDF</b><br>
+        Se è presente un documento PDF associato, puoi aprirlo cliccando sull'icona <i class="bi bi-file-pdf" style="color:#ef4444;"></i>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'paghe/_ccnl_occhio_include.html' %}
+{% endblock %}

@@ -1,0 +1,1390 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load tabelle_tags %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-speedometer2 me-2" style="color:#5E6AD2;"></i>Riepilogo Ufficio
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="background:transparent;color:#8A8F98;border:1px solid #333;border-radius:50%;width:30px;height:30px;padding:0;font-size:14px;font-weight:700;line-height:1;flex-shrink:0;vertical-align:middle;margin-left:8px;"><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">
+            <i class="bi bi-person-circle me-1"></i>{{ request.user.get_full_name|default:request.user.username }}
+            <span class="mx-2 opacity-25">|</span>
+            <span id="dashClock"><i class="bi bi-clock me-1"></i>caricamento...</span>
+        </p>
+    </div>
+    <div class="alert-badge-wrap">
+        <div class="alert-badge {% if totale_alert > 0 %}has-alerts{% endif %}" id="alertBadge" onclick="toggleAlertPanel()" title="Alert e scadenze">
+            <i class="bi bi-bell-fill"></i>
+            {% if totale_alert > 0 %}<span class="badge-count" id="alertBadgeCount">{{ totale_alert }}</span>{% endif %}
+        </div>
+        <div class="alert-dropdown" id="alertDropdown" style="background:#1C1C1F;">
+            <div class="alert-dropdown-header">
+                <span><i class="bi bi-bell-fill" style="color:#ff6b6b;margin-right:6px;"></i>Riepilogo rapido</span>
+                <a onclick="closeAlertDropdown();toggleAlertPanel()">Vedi tutti &rarr;</a>
+            </div>
+            <div class="alert-dropdown-body" id="alertDropdownBody">
+                {% if scaduti_count > 0 %}
+                <div class="alert-dropdown-item" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()" style="cursor:pointer;flex-wrap:wrap;">
+                    <span class="dot" style="background:#ff6b6b;"></span>
+                    <span class="al-label" style="font-weight:600;">Scaduti da aggiornare</span>
+                    <span class="al-count" style="color:#ff6b6b;">{{ scaduti_count }}</span>
+                    {% for c in scaduti_items|slice:":3" %}
+                    <div style="width:100%;padding:2px 0 2px 18px;font-size:11px;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
+                    {% endfor %}
+                    {% if scaduti_count > 3 %}<div style="width:100%;padding:2px 0 2px 18px;font-size:10px;color:#8A8F98;">...e altri {{ scaduti_count|add:"-3" }}</div>{% endif %}
+                </div>
+                {% endif %}
+                {% if contratti_in_scadenza > 0 %}
+                <div class="alert-dropdown-item">
+                    <span class="dot" style="background:#f59e0b;"></span>
+                    <span class="al-label">Progetti in scadenza (30gg)</span>
+                    <span class="al-count" style="color:#f59e0b;">{{ contratti_in_scadenza }}</span>
+                </div>
+                {% endif %}
+                {% if nuovi_mese > 0 %}
+                <div class="alert-dropdown-item">
+                    <span class="dot" style="background:#10b981;"></span>
+                    <span class="al-label">Nuovi assunti (mese)</span>
+                    <span class="al-count" style="color:#10b981;">{{ nuovi_mese }}</span>
+                </div>
+                {% endif %}
+                {% if senza_progetto > 0 %}
+                <div class="alert-dropdown-item">
+                    <span class="dot" style="background:#06b6d4;"></span>
+                    <span class="al-label">Senza progetto</span>
+                    <span class="al-count" style="color:#06b6d4;">{{ senza_progetto }}</span>
+                </div>
+                {% endif %}
+                {% if senza_budget_count > 0 %}
+                <div class="alert-dropdown-item" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()" style="cursor:pointer;flex-wrap:wrap;">
+                    <span class="dot" style="background:#fb923c;"></span>
+                    <span class="al-label" style="font-weight:600;">Senza budget</span>
+                    <span class="al-count" style="color:#fb923c;">{{ senza_budget_count }}</span>
+                    {% for c in senza_budget_items|slice:":3" %}
+                    <div style="width:100%;padding:2px 0 2px 18px;font-size:11px;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
+                    {% endfor %}
+                    {% if senza_budget_count > 3 %}<div style="width:100%;padding:2px 0 2px 18px;font-size:10px;color:#8A8F98;">...e altri {{ senza_budget_count|add:"-3" }}</div>{% endif %}
+                </div>
+                {% endif %}
+                {% if patrono_count > 0 %}
+                <div class="alert-dropdown-item">
+                    <span class="dot" style="background:#f59e0b;"></span>
+                    <span class="al-label">Festivit&agrave; patrono</span>
+                    <span class="al-count" style="color:#f59e0b;">{{ patrono_count }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% if totale_alert > 0 %}
+            <div class="alert-dropdown-footer" style="border-top:1px solid #27282D;padding:8px 16px;text-align:center;">
+                <span style="font-size:11px;color:#8A8F98;">{{ totale_alert }} alert attivi</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if totale_attivi %}
+{% with mc=contratti_per_comune.0.count|default:1 %}
+<div class="row g-3 mb-4 mt-2 skeleton">
+    <div class="col-md-3 col-6">
+        <div class="kpi-card" style="background:linear-gradient(135deg,rgba(94,106,210,0.12),rgba(94,106,210,0.04));border:1px solid rgba(94,106,210,0.15);border-radius:12px;padding:14px 16px;">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width:42px;height:42px;border-radius:10px;background:rgba(94,106,210,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="bi bi-file-earmark-check" style="color:#5E6AD2;font-size:20px;"></i></div>
+                <div>
+                    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Contratti Attivi</div>
+                    <div style="font-size:22px;font-weight:800;color:#EDEDED;line-height:1.2;">{{ totale_attivi }}</div>
+                    <div style="font-size:10px;color:#545;">{{ datori_count }} datori · {{ lavoratori_count }} lav.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.04));border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:14px 16px;">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width:42px;height:42px;border-radius:10px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="bi bi-clock-history" style="color:#10b981;font-size:20px;"></i></div>
+                <div>
+                    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Ore / Mese</div>
+                    <div style="font-size:22px;font-weight:800;color:#EDEDED;line-height:1.2;">{{ ore_totali|floatformat:0 }}</div>
+                    <div style="font-size:10px;color:#545;">{{ buste_mese_corrente }} buste · {{ buste_mese_mancanti }} da fare</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04));border:1px solid rgba(245,158,11,0.15);border-radius:12px;padding:14px 16px;">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width:42px;height:42px;border-radius:10px;background:rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="bi bi-calendar-check" style="color:#f59e0b;font-size:20px;"></i></div>
+                <div>
+                    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Prossima Scadenza</div>
+                    <div style="font-size:16px;font-weight:700;color:#EDEDED;line-height:1.2;">{{ prossima_scadenza_label }}</div>
+                    <div style="font-size:10px;color:#545;">{% if prossimi_giorni > 0 %}tra {{ prossimi_giorni }} giorni{% else %}oggi!{% endif %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-card" style="background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(168,85,247,0.04));border:1px solid rgba(168,85,247,0.15);border-radius:12px;padding:14px 16px;">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width:42px;height:42px;border-radius:10px;background:rgba(168,85,247,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="bi bi-archive" style="color:#a855f7;font-size:20px;"></i></div>
+                <div>
+                    <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Buste Archiviate</div>
+                    <div style="font-size:22px;font-weight:800;color:#EDEDED;line-height:1.2;">{{ buste_archiviate_pct }}%</div>
+                    <div style="font-size:10px;color:#545;">&euro; {{ budget_utilizzato|floatformat:0 }} budget usato</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}
+{% endif %}
+
+<div class="row g-4 mb-4">
+    <div class="col-md-9">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="h5 fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Ultimi Contratti</h3>
+            <a href="{% url 'contratti_list' %}" class="btn-outline"><i class="bi bi-arrow-right me-1"></i> Vedi tutti</a>
+        </div>
+        <div class="custom-table-container skeleton skeleton-table">
+            <table class="table custom-table" id="dashboardTable">
+                <thead>
+                    <tr>
+                        <th>Datore</th>
+                        <th>Lavoratore</th>
+                        <th>Progetto</th>
+                        <th>Liv.</th>
+                        <th>Data Ass.</th>
+                        <th>Budg. Mes. &euro;</th>
+                        <th>ORE</th>
+                        <th>Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in contratti %}
+                    {% with progetti=c.progetto.all %}
+                    <tr onclick="event.preventDefault(); loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
+                        <td>
+                            <div class="fw-bold">{{ c.datore.nome_cognome }}</div>
+                            {% if c.datore.email %}<div style="font-size:11px;color:#8A8F98;">{{ c.datore.email }}</div>{% endif %}
+                        </td>
+                        <td>
+                            <div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div>
+                            {% if c.lavoratore.email %}<div style="font-size:11px;color:#8A8F98;">{{ c.lavoratore.email }}</div>{% endif %}
+                        </td>
+                        <td>
+                            {% if progetti %}{% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.tipo.nome|default:"N/D" }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}{% else %}<span class="text-secondary small">—</span>{% endif %}
+                        </td>
+                        <td>{% with colore=c.parametri_minimi.livello.colore|default:'#5E6AD2' %}<span style="background:rgba({{ colore|hex_to_rgb }},0.15); color:{{ colore }}; padding:2px 8px; border-radius:6px; font-size:12px; font-weight:600; white-space:nowrap;">{{ c.parametri_minimi.livello.codice }}</span>{% endwith %}</td>
+                        <td>{{ c.data_assunzione|date:"d/m/y" }}</td>
+                        <td>&euro; {{ c.budget_di_partenza|floatformat:0 }}</td>
+                        <td><span style="color:#10b981; font-weight:700;">{{ c.ore_calcolate }}</span></td>
+                        <td>{% if c.stato == 'ATTIVO' %}<span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-1 rounded-3">Attivo</span>{% else %}<span class="badge bg-secondary bg-opacity-25 px-2 py-1 rounded-3">{{ c.stato }}</span>{% endif %}</td>
+                    </tr>
+                    {% endwith %}
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun contratto registrato</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="link-card">
+            <h4 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#8A8F98;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <i class="bi bi-link-45deg" style="color:#5E6AD2;"></i> Link Utili Settore
+            </h4>
+            <a href="https://www.inps.it/it/it/dettaglio-scheda.it.schede-servizio-strumento.schede-aree-tematiche.accesso-ai-servizi-per-i-lavoratori-domestici-50275.accesso-ai-servizi-per-i-lavoratori-domestici.html" target="_blank" rel="noopener"><i class="bi bi-building" style="color:#5E6AD2;"></i> INPS — Accesso Servizi Domestici</a>
+            <a href="https://www.webcolf.com/exec/isapi.dll/calcolo-online-costo-colf-badanti.html" target="_blank" rel="noopener"><i class="bi bi-calculator" style="color:#10b981;"></i> WebColf — Calcolo Costo Online</a>
+            <a href="https://www.webcolf.com/risorse/paghe-e-contributi-annuali/tabella-paga-minima-colf-badanti.html" target="_blank" rel="noopener"><i class="bi bi-table" style="color:#06b6d4;"></i> WebColf — Tabella Paga Minima</a>
+            <a href="https://www.webcolf.com/risorse/paghe-e-contributi-annuali/contributi-inps.html" target="_blank" rel="noopener"><i class="bi bi-percent" style="color:#ec4899;"></i> WebColf — Contributi INPS</a>
+            <a href="https://lavorodomestico.assindatcolf.it/tabella-retributiva/" target="_blank" rel="noopener"><i class="bi bi-file-earmark-text" style="color:#a855f7;"></i> Assindatcolf — Tabella Retributiva 2026</a>
+            <a href="https://www.colf.info/minimi-contrattuali-colf-badanti-2026.asp" target="_blank" rel="noopener"><i class="bi bi-file-spreadsheet" style="color:#f97316;"></i> Colf.info — Minimi Contrattuali 2026</a>
+            <a href="https://www.cafmcl.it/" target="_blank" rel="noopener"><i class="bi bi-shield-check" style="color:#f59e0b;"></i> CAF MCL</a>
+        </div>
+    </div>
+</div>
+
+<!-- === MAPPA BENEFICIARI === -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="mini-card">
+            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+                <h4 class="mb-0"><i class="bi bi-geo-alt me-1" style="color:#5E6AD2;"></i> Mappa Beneficiari</h4>
+                <div class="d-flex gap-2 align-items-center">
+                    <select id="mapComuneFiltro" class="form-control" style="width:auto;background:#09090B;border:1px solid #27282D;color:#fff;font-size:12px;padding:4px 10px;border-radius:6px;height:32px;">
+                        <option value="">Tutti i comuni</option>
+                        {% for c in comuni_beneficiari %}
+                        <option value="{{ c }}">{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-sm" onclick="caricaMappaDash()" style="background:#5E6AD2;color:white;border:none;border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;height:32px;">🗺️ Carica mappa</button>
+                    <a href="/beneficiari/?view=mappa" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#9ca3ff;border:1px solid rgba(94,106,210,0.15);border-radius:6px;padding:4px 10px;font-size:11px;height:32px;text-decoration:none;display:inline-flex;align-items:center;"><i class="bi bi-box-arrow-up-right me-1"></i> Apri Mappa</a>
+                </div>
+            </div>
+            <div id="mappaContainerDash" style="height:300px;border-radius:10px;background:#0a0a0c;display:none;"></div>
+            <div id="mappaPlaceholderDash" class="text-center py-4" style="color:#545;background:#0f0f12;border:1px solid #1a1a1e;border-radius:10px;">
+                <i class="bi bi-map" style="font-size:28px;display:block;margin-bottom:6px;"></i>
+                <div style="font-size:12px;">Clicca "Carica mappa" per visualizzare</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- === WIDGET AGENDA + DOCUMENTI === -->
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="mini-card skeleton">
+            <h4><i class="bi bi-calendar-event me-1" style="color:#5E6AD2;"></i> Prossimi appuntamenti</h4>
+            {% if agenda_prossimi %}
+                {% for app in agenda_prossimi %}
+                <div class="stat-row d-flex justify-content-between align-items-center py-1">
+                    <span class="label">
+                        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:{% if app.tipo == 'SCADENZA' %}#f59e0b{% elif app.tipo == 'APPUNTAMENTO' %}#5E6AD2{% else %}#34d399{% endif %};"></span>
+                        {{ app.titolo }}
+                    </span>
+                    <span class="value" style="font-size:11px;color:#8A8F98;white-space:nowrap;">{{ app.data|date:"d/m/Y" }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-secondary small py-2">Nessun appuntamento in programma.</div>
+            {% endif %}
+            <a href="{% url 'agenda_page' %}" class="btn btn-sm mt-2" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#8A8F98;padding:4px 10px;font-size:11px;">Vedi agenda completa &rarr;</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="mini-card skeleton">
+            <h4><i class="bi bi-file-earmark-text me-1" style="color:#5E6AD2;"></i> Ultimi documenti</h4>
+            {% if ultimi_documenti %}
+                {% for doc in ultimi_documenti %}
+                <div class="stat-row d-flex justify-content-between align-items-center py-1">
+                    <span class="label" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ doc.titolo|truncatechars:45 }}</span>
+                    <span class="value" style="font-size:11px;color:#8A8F98;white-space:nowrap;">{{ doc.creato_il|date:"d/m/Y" }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-secondary small py-2">Nessun documento recente.</div>
+            {% endif %}
+            <a href="{% url 'documenti_list' %}" class="btn btn-sm mt-2" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#8A8F98;padding:4px 10px;font-size:11px;">Vedi tutti i documenti &rarr;</a>
+        </div>
+    </div>
+</div>
+
+<div class="section-card collapsible" id="statsAccordion">
+    <div onclick="toggleStatsAccordion()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid rgba(255,255,255,0.04);border-radius:8px 8px 0 0;background:rgba(255,255,255,0.02);">
+        <span style="font-size:13px;font-weight:600;color:#a1a1aa;"><i class="bi bi-bar-chart-line me-2"></i> Grafici e Report</span>
+        <span class="collapse-toggle" id="statsToggle"><i class="bi bi-chevron-down"></i></span>
+    </div>
+    <div class="collapse-content" id="statsCollapse" style="display:none;">
+    {% if totale_attivi %}
+    {% with mc=contratti_per_comune.0.count|default:1 %}
+    <div class="row g-4 mb-4 mt-3">
+        <div class="col-md-3 dash-card">
+            <div class="mini-card">
+                <h4><i class="bi bi-geo-alt me-1"></i> Per Comune</h4>
+                <div class="stat-row"><span class="label"><i class="bi bi-file-earmark-check text-success me-1"></i>Contratti Attivi</span><span class="value" style="color:#10b981;">{{ totale_attivi }}</span></div>
+                <div class="stat-row"><span class="label"><i class="bi bi-person-vcard text-primary me-1"></i>Datori</span><span class="value" style="color:#5E6AD2;">{{ datori_count }}</span></div>
+                <div class="stat-row"><span class="label"><i class="bi bi-people text-info me-1"></i>Lavoratori</span><span class="value" style="color:#06b6d4;">{{ lavoratori_count }}</span></div>
+                <div class="stat-row"><span class="label"><i class="bi bi-person-heart text-warning me-1"></i>Beneficiari</span><span class="value" style="color:#f59e0b;">{{ beneficiari_count }}</span></div>
+                <div style="border-top:1px solid rgba(255,255,255,0.06); margin:8px 0 10px 0;"></div>
+                {% for c in contratti_per_comune %}
+                <div class="stat-row"><span class="label">{{ c.datore__comune|default:"N/D" }}</span><span class="value">{{ c.count }}</span></div>
+                <div class="bar-wrap bar-purple"><div class="bar-fill" style="width: {% widthratio c.count mc 100 %}%;"></div></div>
+                {% empty %}<div class="text-secondary small py-2">Nessun dato</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-3 dash-card">
+            <div class="mini-card">
+                <h4><i class="bi bi-pie-chart me-1"></i> Composizione</h4>
+                <div class="section-title">Livello</div>
+                <div class="chart-wrap"><canvas id="chartLivello"></canvas></div>
+                <div class="section-title">Tipologia</div>
+                {% for t in tipi %}
+                <div class="stat-row"><span class="label">{{ t.tipo_contratto|default:"N/D" }}</span><span class="value">{{ t.count }}<span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:4px;">/{{ totale_attivi }}</span></span></div>
+                <div class="bar-wrap"><div class="bar-fill" style="width: {% widthratio t.count totale_attivi 100 %}%; background:#5E6AD2;"></div></div>
+                {% endfor %}
+                <div class="section-title">Conviventi</div>
+                <div class="stat-row"><span class="label">Convivente</span><span class="value">{{ conviventi }}<span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:4px;">/{{ totale_attivi }}</span></span></div>
+                <div class="bar-wrap bar-green"><div class="bar-fill" style="width: {% widthratio conviventi totale_attivi 100 %}%;"></div></div>
+                <div class="stat-row"><span class="label">Non convivente</span><span class="value">{{ non_conviventi }}<span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:4px;">/{{ totale_attivi }}</span></span></div>
+                <div class="bar-wrap bar-pink"><div class="bar-fill" style="width: {% widthratio non_conviventi totale_attivi 100 %}%;"></div></div>
+            </div>
+        </div>
+        <div class="col-md-3 dash-card">
+            <div class="mini-card">
+                <h4><i class="bi bi-cash-stack me-1"></i> Budget</h4>
+                <div class="stat-row"><span class="label">Budget totale</span><span class="value">&euro; {{ budget_totale|floatformat:0 }}</span></div>
+                <div class="stat-row"><span class="label">Media / contratto</span><span class="value">&euro; {{ budget_medio|floatformat:0 }}</span></div>
+                {% if budget_per_tipo %}
+                <div class="section-title">Per progetto</div>
+                <div class="chart-wrap"><canvas id="chartBudget"></canvas></div>
+                {% endif %}
+                {% if contratti_in_scadenza %}
+                <div class="stat-row" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 6px; padding-top: 10px;">
+                    <span class="label text-warning"><i class="bi bi-exclamation-triangle me-1"></i>In scadenza (30gg)</span>
+                    <span class="value text-warning">{{ contratti_in_scadenza }}</span>
+                </div>
+                {% endif %}
+                <div class="stat-row" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 6px; padding-top: 10px;">
+                    <span class="label" style="color:#a855f7;"><i class="bi bi-piggy-bank me-1"></i>TFR proiettato {{ anno_corr }}</span>
+                    <span class="value" style="color:#a855f7;">&euro; {{ tfr_annuale_totale|floatformat:0 }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 dash-card">
+            <div class="mini-card">
+                <h4><i class="bi bi-diagram-3 me-1"></i> Progetti</h4>
+                {% for p in progetti_data %}
+                <div class="stat-row"><span class="label" style="color:{{ p.colore|default:'#10b981' }};">{{ p.nome }}</span><span class="value">{{ p.count }}</span></div>
+                <div class="bar-wrap"><div class="bar-fill" style="width: {% widthratio p.count totale_attivi 100 %}%; background:{{ p.colore|default:'#10b981' }};"></div></div>
+                {% endfor %}
+                <div class="stat-row" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 4px; padding-top: 8px;">
+                    <span class="label" style="color: #8A8F98;">Nessun progetto</span>
+                    <span class="value" style="color: #8A8F98;">{{ senza_progetto }}</span>
+                </div>
+            </div>
+    </div>
+</div>
+{% endwith %}
+{% endif %}
+
+{% if mesi_labels %}
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="mini-card">
+                <h4><i class="bi bi-bar-chart me-1"></i> Assunzioni vs Cessazioni</h4>
+                <div class="chart-wrap" style="height:220px;"><canvas id="chartConfronto"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="mini-card">
+                <h4><i class="bi bi-clock-history me-1"></i> Ore Lavorate / Mese</h4>
+                <div class="chart-wrap" style="height:180px;"><canvas id="chartOreMensili"></canvas></div>
+                <h4 style="margin-top:14px;font-size:13px;color:#a1a1aa;border-top:1px solid #27282D;padding-top:12px;"><i class="bi bi-file-earmark-text me-1"></i> Buste Paga Mese</h4>
+                <div class="d-flex align-items-baseline gap-3 mt-2">
+                    <div>
+                        <div class="display-6 fw-bold" style="color:#5E6AD2;">{{ totale_attivi }}</div>
+                        <div class="small text-secondary">Contratti attivi</div>
+                    </div>
+                    <div>
+                        <div class="display-6 fw-bold" style="color:#10b981;">{{ ore_totali|floatformat:0 }}</div>
+                        <div class="small text-secondary">Ore/mese totali</div>
+                    </div>
+                </div>
+                {% if ore_per_tipo %}
+                <div class="section-title" style="margin-top:14px;">Ore per progetto</div>
+                <div class="chart-wrap" style="height:{{ ore_per_tipo|length|yesno:'120,0' }}px;">
+                    <canvas id="chartOrePerTipo"></canvas>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mini-card">
+                <h4><i class="bi bi-geo-alt me-1"></i> Distribuzione Geografica</h4>
+                <div class="chart-wrap" style="height:180px;"><canvas id="chartGeo"></canvas></div>
+                <h4 style="margin-top:14px;font-size:13px;color:#a1a1aa;border-top:1px solid #27282D;padding-top:12px;"><i class="bi bi-diagram-3 me-1"></i> Stato Progetti</h4>
+                {% widthratio con_progetto totale_attivi 100 as pct_prog %}
+                <div class="mt-2">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span>Con progetto</span>
+                        <span>{{ con_progetto }} / {{ totale_attivi }} ({{ pct_prog }}%)</span>
+                    </div>
+                    <div class="progress" style="height:8px;background:#27282D;">
+                        <div class="progress-bar" style="width:{{ pct_prog }}%;background:#5E6AD2;border-radius:4px;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small mt-2">
+                        <span class="text-danger">Senza progetto: {{ senza_progetto }}</span>
+                        {% if contratti_in_scadenza %}
+                        <span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>{{ contratti_in_scadenza }} in scadenza</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex justify-content-between small mt-2 pt-2" style="border-top:1px solid #27282D;">
+                        <span><i class="bi bi-clock-history me-1" style="color:#dc2626;"></i>{{ scaduti_count }} scaduti</span>
+                        <span><i class="bi bi-currency-euro me-1" style="color:#dc2626;"></i>{{ senza_budget_count }} no budget</span>
+                        <span><i class="bi bi-calendar me-1" style="color:#f59e0b;"></i>{{ trimestre_parziale_count }} trim. parz.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="mini-card">
+                <h4><i class="bi bi-file-earmark-text me-1"></i> Buste &amp; UNIEMENS</h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        {% with tot_buste=buste_bozze|add:buste_approvate|add:buste_archiviate|default:1 %}
+                        <div class="section-title" style="font-size:10px;margin-top:0;">Stato Buste Paga</div>
+                        <div class="stat-row"><span class="label">Bozze</span><span class="value">{{ buste_bozze }}</span></div>
+                        <div class="bar-wrap"><div class="bar-fill" style="width:{% widthratio buste_bozze tot_buste 100 %}%;background:#f59e0b;"></div></div>
+                        <div class="stat-row"><span class="label">Approvate</span><span class="value">{{ buste_approvate }}</span></div>
+                        <div class="bar-wrap"><div class="bar-fill" style="width:{% widthratio buste_approvate tot_buste 100 %}%;background:#5E6AD2;"></div></div>
+                        <div class="stat-row"><span class="label">Archiviate</span><span class="value">{{ buste_archiviate }}</span></div>
+                        <div class="bar-wrap"><div class="bar-fill" style="width:{% widthratio buste_archiviate tot_buste 100 %}%;background:#10b981;"></div></div>
+                        {% endwith %}
+                    </div>
+                    <div class="col-md-4">
+                        <div class="section-title" style="font-size:10px;margin-top:0;">UNIEMENS</div>
+                        <div class="stat-row"><span class="label">Con CU</span><span class="value">{{ contratti_con_cu }}</span></div>
+                        <div class="bar-wrap bar-purple"><div class="bar-fill" style="width:{% widthratio contratti_con_cu totale_attivi 100 %}%;"></div></div>
+                        <div class="stat-row"><span class="label">Senza CU</span><span class="value">{{ contratti_senza_cu }}</span></div>
+                        <div class="bar-wrap bar-pink"><div class="bar-fill" style="width:{% widthratio contratti_senza_cu totale_attivi 100 %}%;"></div></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="section-title" style="font-size:10px;margin-top:0;">Contributi Trimestre</div>
+                        <div class="stat-row"><span class="label">Versati</span><span class="value">{{ contratti_contributi_versati }}</span></div>
+                        <div class="bar-wrap bar-green"><div class="bar-fill" style="width:{% widthratio contratti_contributi_versati totale_attivi 100 %}%;"></div></div>
+                        <div class="stat-row"><span class="label">Da Versare</span><span class="value">{{ contratti_contributi_da_versare }}</span></div>
+                        <div class="bar-wrap"><div class="bar-fill" style="width:{% widthratio contratti_contributi_da_versare totale_attivi 100 %}%;background:#f87171;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    </div>
+</div>
+
+<!-- === PANNELLO ALERT === -->
+<div class="alert-overlay" id="alertOverlay" onclick="closeAlertPanel()"></div>
+<div class="alert-panel" id="alertPanel">
+    <div class="alert-panel-header">
+        <h5><i class="bi bi-bell-fill me-2"></i>Alert e Scadenze</h5>
+        <button class="alert-panel-close" onclick="closeAlertPanel()">&times;</button>
+    </div>
+    <div class="alert-panel-body">
+
+        <!-- === RIEPILOGO RAPIDO === -->
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-speedometer2"></i>
+                    <span class="alert-label">Riepilogo Rapido</span>
+                </div>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-item"><span class="item-label"><i class="bi bi-calendar3 me-1"></i>Periodo</span><span class="item-date"><span id="meseCorrente">{{ mese_corr }}/{{ anno_corr }}</span></span></div>
+                <div class="alert-item"><span class="item-label"><i class="bi bi-person-check me-1"></i>Ultimo accesso</span><span class="item-date" id="lastLoginText">caricamento...</span></div>
+                <div class="alert-item"><span class="item-label"><i class="bi bi-file-earmark-check me-1"></i>Contratti attivi</span><span class="item-date"><strong>{{ totale_attivi }}</strong></span></div>
+                <div class="alert-item"><span class="item-label"><i class="bi bi-person-plus me-1"></i>Nuovi (mese)</span><span class="item-date">{{ nuovi_mese }}</span></div>
+                <div class="alert-item"><span class="item-label"><i class="bi bi-clock me-1"></i>Ore totali/mese</span><span class="item-date"><strong>{{ ore_totali }}</strong> h</span></div>
+                <div class="alert-item"><span class="item-label"><i class="bi bi-cash me-1"></i>Budget mensile</span><span class="item-date">&euro;{{ budget_totale|floatformat:0 }}</span></div>
+                <div class="alert-item"><span class="item-label"><i class="bi bi-check-circle me-1"></i>Anagrafiche complete</span><span class="item-date"><strong>{{ anagrafiche_complete_pct }}%</strong></span></div>
+            </div>
+        </div>
+
+        {% if scaduti_count > 0 %}
+        <div class="alert-card alert-red open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-exclamation-octagon-fill"></i>
+                    <span class="alert-label">Scaduti da aggiornare</span>
+                </div>
+                <span class="alert-card-count">{{ scaduti_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% for c in scaduti_items %}
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                    <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
+                    {% with primo_progetto=c.progetto.all.0 %}
+                    <span class="item-date">Fine: {{ primo_progetto.data_fine|date:"d/m/y"|default:"—" }}</span>
+                    {% endwith %}
+                </div>
+                {% endfor %}
+                {% if scaduti_count > 20 %}<div class="alert-empty">...e altri {{ scaduti_count|add:"-20" }}</div>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if contratti_in_scadenza > 0 %}
+        <div class="alert-card alert-yellow open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span class="alert-label">Progetti in scadenza (30gg)</span>
+                </div>
+                <span class="alert-card-count">{{ contratti_in_scadenza }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-empty">Contratti con progetto in scadenza nei prossimi 30 giorni.</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if contratti_scadenza_30gg_count > 0 %}
+        <div class="alert-card alert-orange open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-clock-fill"></i>
+                    <span class="alert-label">Contratti in scadenza (30gg)</span>
+                </div>
+                <span class="alert-card-count">{{ contratti_scadenza_30gg_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% for c in contratti_scadenza_30gg_items %}
+                <div class="alert-item" style="cursor:pointer;">
+                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="flex:1;display:flex;align-items:center;gap:8px;">
+                        <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
+                        <span class="item-date">Fine: {{ c.data_fine|date:"d/m/y" }}</span>
+                    </div>
+                    <span onclick="event.stopPropagation(); loadAjaxForm('/ajax/rinnova-contratto/{{ c.pk }}/', 'Nuovo Contratto (Rinnovo)')" style="font-size:10px;color:#34d399;cursor:pointer;white-space:nowrap;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);flex-shrink:0;"><i class="bi bi-arrow-repeat me-1"></i> Rinnova</span>
+                </div>
+                {% endfor %}
+                {% if contratti_scadenza_30gg_items|length < contratti_scadenza_30gg_count %}
+                <div class="alert-empty">...e altri {{ contratti_scadenza_30gg_count|add:"-15" }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if contratti_scadenza_60gg_count > 0 and contratti_scadenza_30gg_count == 0 %}
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-clock"></i>
+                    <span class="alert-label">Contratti in scadenza (60gg)</span>
+                </div>
+                <span class="alert-card-count">{{ contratti_scadenza_60gg_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-empty">{{ contratti_scadenza_60gg_count }} contratti scadono nei prossimi 60 giorni.</div>
+            </div>
+        </div>
+        {% endif %}
+        {% if contratti_scadenza_90gg_count > 0 and contratti_scadenza_30gg_count == 0 and contratti_scadenza_60gg_count == 0 %}
+        <div class="alert-card open" style="border-left:3px solid #6b7280;" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-clock-history"></i>
+                    <span class="alert-label">Contratti in scadenza (90gg)</span>
+                </div>
+                <span class="alert-card-count">{{ contratti_scadenza_90gg_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% for c in contratti_scadenza_90gg_items %}
+                <div class="alert-item" style="cursor:pointer;">
+                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="flex:1;display:flex;align-items:center;gap:8px;">
+                        <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
+                        <span class="item-date">Fine: {{ c.data_fine|date:"d/m/y" }}</span>
+                    </div>
+                    <span onclick="event.stopPropagation(); loadAjaxForm('/ajax/rinnova-contratto/{{ c.pk }}/', 'Nuovo Contratto (Rinnovo)')" style="font-size:10px;color:#34d399;cursor:pointer;white-space:nowrap;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);flex-shrink:0;"><i class="bi bi-arrow-repeat me-1"></i> Rinnova</span>
+                </div>
+                {% endfor %}
+                {% if contratti_scadenza_90gg_items|length < contratti_scadenza_90gg_count %}
+                <div class="alert-empty">...e altri {{ contratti_scadenza_90gg_count|add:"-15" }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if nuovi_mese > 0 %}
+        <div class="alert-card alert-green open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-calendar-plus-fill"></i>
+                    <span class="alert-label">Nuovi assunti (mese)</span>
+                </div>
+                <span class="alert-card-count">{{ nuovi_mese }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-empty">{{ nuovi_mese }} contratti attivati questo mese.</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if senza_progetto > 0 %}
+        <div class="alert-card alert-blue open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-diagram-3"></i>
+                    <span class="alert-label">Senza progetto</span>
+                </div>
+                <span class="alert-card-count">{{ senza_progetto }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-empty">{{ senza_progetto }} contratti attivi senza progetto regionale collegato.</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if senza_budget_count > 0 %}
+        <div class="alert-card alert-orange open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-cash-stack"></i>
+                    <span class="alert-label">Senza budget</span>
+                </div>
+                <span class="alert-card-count">{{ senza_budget_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% for c in senza_budget_items %}
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                    <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
+                </div>
+                {% endfor %}
+                {% if senza_budget_count > 20 %}<div class="alert-empty">...e altri {{ senza_budget_count|add:"-20" }}</div>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if datori_incompleti > 0 or lavoratori_incompleti > 0 %}
+        <div class="alert-card alert-purple open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span class="alert-label">Anagrafiche incomplete</span>
+                </div>
+                <span class="alert-card-count">{{ datori_incompleti|add:lavoratori_incompleti }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% if datori_incompleti > 0 %}
+                <div class="alert-item"><span class="item-label">Datori senza dati completi</span><span class="item-date">{{ datori_incompleti }}</span></div>
+                {% endif %}
+                {% if lavoratori_incompleti > 0 %}
+                <div class="alert-item"><span class="item-label">Lavoratori senza dati completi</span><span class="item-date">{{ lavoratori_incompleti }}</span></div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if patrono_count > 0 %}
+        <div class="alert-card alert-yellow open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-building"></i>
+                    <span class="alert-label">Festivit&agrave; patrono (mese)</span>
+                </div>
+                <span class="alert-card-count">{{ patrono_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% for c in contratti_con_patrono %}
+                <div class="alert-item">
+                    <span class="item-label">{{ c.datore }} &rarr; {{ c.lavoratore }}</span>
+                    <span class="item-date">{{ c.patrono }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="alert-card alert-orange open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-hourglass-split"></i>
+                    <span class="alert-label">Prossimo pagamento PagoPA</span>
+                </div>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'" style="cursor:pointer;">
+                    <span class="item-label">Scadenza</span>
+                    <span class="item-date">{{ prossima_scadenza|date:"d/m/Y" }}</span>
+                </div>
+                <div class="alert-item">
+                    <span class="item-label">Conto alla rovescia</span>
+                    <span class="item-date fw-bold" id="countdownPagoPA">{{ prossima_scadenza|timeuntil }}</span>
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'" style="cursor:pointer;">
+                    <span class="item-label"><i class="bi bi-box-arrow-up-right me-1" style="font-size:10px;"></i>Vai a PagoPA</span>
+                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-calendar2-week-fill"></i>
+                    <span class="alert-label">Scadenze trimestrali</span>
+                </div>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-item"><span class="item-label">1&deg; trimestre (Gen-Mar)</span><span class="item-date">10 Aprile</span></div>
+                <div class="alert-item"><span class="item-label">2&deg; trimestre (Apr-Giu)</span><span class="item-date">10 Luglio</span></div>
+                <div class="alert-item"><span class="item-label">3&deg; trimestre (Lug-Set)</span><span class="item-date">10 Ottobre</span></div>
+                <div class="alert-item"><span class="item-label">4&deg; trimestre (Ott-Dic)</span><span class="item-date">10 Gennaio</span></div>
+            </div>
+        </div>
+
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-calendar-event"></i>
+                    <span class="alert-label">Prossime scadenze</span>
+                </div>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% for s in prossime_scadenze %}
+                <div class="alert-item">
+                    <span class="item-label">{{ s.label }}</span>
+                    <span class="item-date" style="color:{% if s.urgenza == 'rossa' %}#f87171{% elif s.urgenza == 'arancione' %}#f59e0b{% else %}#eab308{% endif %};">
+                        {{ s.data|date:"d/m/Y" }} ({{ s.giorni_mancanti }}g)
+                    </span>
+                </div>
+                {% empty %}
+                <div class="alert-empty">Nessuna scadenza in vista.</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if trimestre_parziale_count > 0 %}
+        <div class="alert-card alert-red open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-clock-history"></i>
+                    <span class="alert-label">Trimestre parziale</span>
+                </div>
+                <span class="alert-card-count">{{ trimestre_parziale_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-empty">Assunti dopo il {{ trimestre_parziale_mese|date:"d/m/Y" }} — contributi non dovuti per l'intero trimestre.</div>
+                {% for c in trimestre_parziale_items %}
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                    <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
+                    <span class="item-date">{{ c.data_assunzione|date:"d/m/y" }}</span>
+                </div>
+                {% endfor %}
+                {% if trimestre_parziale_count > 20 %}<div class="alert-empty">...e altri {{ trimestre_parziale_count|add:"-20" }}</div>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if scostamento_count > 0 %}
+        <div class="alert-card alert-red open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <span class="alert-label">Scostamento budget &gt;10%</span>
+                </div>
+                <span class="alert-card-count">{{ scostamento_count }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                {% for item in scostamento_items %}
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ item.contratto.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                    <span class="item-label">{{ item.contratto.datore.nome_cognome }} &rarr; {{ item.contratto.lavoratore.nome_cognome }}</span>
+                    <span class="item-date" style="color:{% if item.eccesso %}#f87171{% else %}#f59e0b{% endif %};">
+                        {{ item.scostamento_pct }}% (€{{ item.costo|floatformat:0 }} vs €{{ item.budget|floatformat:0 }})
+                    </span>
+                </div>
+                {% endfor %}
+                {% if scostamento_count > 20 %}<div class="alert-empty">...e altri {{ scostamento_count|add:"-20" }}</div>{% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if richieste_pendenti > 0 %}
+        <div class="alert-card alert-yellow open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-chat-dots"></i>
+                    <span class="alert-label">Richieste modifica dai datori</span>
+                </div>
+                <span class="alert-card-count">{{ richieste_pendenti }}</span>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-item">
+                    <span class="item-label">
+                        <a href="{% url 'richieste_modifica_list' %}" style="color:#f59e0b;text-decoration:none;font-weight:600;">
+                            Vai alle richieste &rarr;
+                        </a>
+                    </span>
+                    <span class="item-date text-warning">{{ richieste_pendenti }} in attesa</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- === CHECKLIST MENSILE === -->
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-check2-square"></i>
+                    <span class="alert-label">Checklist mensile {{ mese_corr }}/{{ anno_corr }}</span>
+                </div>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <a href="{% url 'checklist_mensile' %}" style="text-decoration:none;display:block;">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div style="font-size:11px;color:#8A8F98;">{{ buste_archiviate_pct }}% buste archiviate</div>
+                        <div style="flex:1;height:4px;background:#27282D;border-radius:2px;">
+                            <div style="width:{{ buste_archiviate_pct }}%;height:100%;background:#5E6AD2;border-radius:2px;"></div>
+                        </div>
+                    </div>
+                    <div style="font-size:11px;color:#8A8F98;">{{ buste_mese_corrente }} buste caricate, {{ buste_mese_mancanti }} da fare</div>
+                    <div style="font-size:11px;color:#5E6AD2;margin-top:4px;">Vai alla Checklist mensile &rarr;</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- === CHECKLIST ANNUALE {{ anno_corr }} === -->
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-calendar-check"></i>
+                    <span class="alert-label">Checklist annuale {{ anno_corr }}</span>
+                </div>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'" style="cursor:pointer;">
+                    <span class="item-label"><i class="bi bi-journal-text me-1" style="font-size:10px;"></i>Buste BOZZA</span>
+                    <span class="item-date{% if buste_bozze > 0 %} text-warning{% else %} text-success{% endif %}">{{ buste_bozze }}</span>
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'" style="cursor:pointer;">
+                    <span class="item-label"><i class="bi bi-journal-check me-1" style="font-size:10px;"></i>Buste APPROVATE</span>
+                    <span class="item-date text-success">{{ buste_approvate }}</span>
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'" style="cursor:pointer;">
+                    <span class="item-label"><i class="bi bi-archive me-1" style="font-size:10px;"></i>Buste ARCHIVIATE</span>
+                    <span class="item-date">{{ buste_archiviate }}</span>
+                </div>
+                <hr class="my-1">
+                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'" style="cursor:pointer;">
+                    <span class="item-label"><i class="bi bi-file-earmark-text me-1" style="font-size:10px;"></i>CU {{ anno_corr }} presenti</span>
+                    <span class="item-date text-success">{{ contratti_con_cu }}</span>
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'" style="cursor:pointer;">
+                    <span class="item-label"><i class="bi bi-file-earmark-x me-1" style="font-size:10px;"></i>CU {{ anno_corr }} mancanti</span>
+                    <span class="item-date{% if contratti_senza_cu > 0 %} text-danger{% else %} text-success{% endif %}">{{ contratti_senza_cu }}</span>
+                </div>
+                <hr class="my-1">
+                <div class="alert-item">
+                    <span class="item-label"><i class="bi bi-cash-coin me-1" style="font-size:10px;"></i>Contributi trim. versati</span>
+                    <span class="item-date text-success">{{ contratti_contributi_versati }}</span>
+                </div>
+                <div class="alert-item">
+                    <span class="item-label"><i class="bi bi-exclamation-circle me-1" style="font-size:10px;"></i>Contributi trim. da versare</span>
+                    <span class="item-date{% if contratti_contributi_da_versare > 0 %} text-warning{% else %} text-success{% endif %}">{{ contratti_contributi_da_versare }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- === AZIONI RAPIDE === -->
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
+            <div class="alert-card-header">
+                <div class="alert-card-header-left">
+                    <i class="bi bi-lightning-fill"></i>
+                    <span class="alert-label">Azioni Rapide</span>
+                </div>
+                <i class="bi bi-chevron-down alert-card-chevron"></i>
+            </div>
+            <div class="alert-card-body">
+                <div class="alert-item" style="cursor:pointer;" onclick="loadAjaxForm('/ajax/nuovo-contratto/', 'Nuovo Contratto')">
+                    <span class="item-label"><i class="bi bi-plus-circle me-1" style="color:#5E6AD2;"></i>Nuovo Contratto</span>
+                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                </div>
+                <div class="alert-item" style="cursor:pointer;" onclick="loadAjaxForm('/ajax/nuovo-datore/', 'Nuovo Datore')">
+                    <span class="item-label"><i class="bi bi-person-plus me-1" style="color:#5E6AD2;"></i>Nuovo Datore</span>
+                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                </div>
+                <div class="alert-item" style="cursor:pointer;" onclick="window.location.href='{% url 'admin:index' %}'">
+                    <span class="item-label"><i class="bi bi-gear me-1" style="color:#5E6AD2;"></i>Dashboard Admin</span>
+                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                </div>
+                <div class="alert-item" style="cursor:pointer;" onclick="window.location.reload()">
+                    <span class="item-label"><i class="bi bi-arrow-clockwise me-1" style="color:#5E6AD2;"></i>Aggiorna pagina</span>
+                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script>
+// === OROLOGIO LIVE ===
+function updateClock() {
+    var now = new Date();
+    var opts = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    document.getElementById('dashClock').innerHTML = '<i class="bi bi-clock me-1"></i>' + now.toLocaleDateString('it-IT', opts);
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// === MESE CORRENTE ===
+(function() {
+    var el = document.getElementById('meseCorrente');
+    if (el) {
+        var parts = el.textContent.trim().split('/');
+        var mesi = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+        el.innerHTML = mesi[parseInt(parts[0])-1] + ' ' + parts[1];
+    }
+})();
+
+// === ULTIMO ACCESSO ===
+(function() {
+    var el = document.getElementById('lastLoginText');
+    if (!el) return;
+    {% if request.user.last_login %}
+    var lastLogin = new Date('{{ request.user.last_login|date:"Y-m-d H:i:s"|safe }}'.replace(' ', 'T') + 'Z');
+    var now = new Date();
+    var diffMs = now - lastLogin;
+    var diffMin = Math.floor(diffMs / 60000);
+    var diffHour = Math.floor(diffMs / 3600000);
+    var diffDay = Math.floor(diffMs / 86400000);
+    var label;
+    if (diffMin < 1) label = 'ora';
+    else if (diffMin < 60) label = diffMin + ' min fa';
+    else if (diffHour < 24) label = diffHour + 'h fa';
+    else if (diffDay < 2) label = 'ieri';
+    else if (diffDay < 7) label = diffDay + 'gg fa';
+    else label = lastLogin.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+    el.textContent = label;
+    {% else %}
+    el.textContent = 'mai';
+    {% endif %}
+})();
+
+// === CONTO ALLA ROVESCIA PAGOPA ===
+(function() {
+    var el = document.getElementById('countdownPagoPA');
+    if (!el) return;
+    {% if prossima_scadenza %}
+    var target = new Date('{{ prossima_scadenza|date:"Y-m-d" }}T23:59:59');
+    var now = new Date();
+    var diff = Math.ceil((target - now) / 86400000);
+    if (diff < 0) el.textContent = 'scaduto!';
+    else if (diff === 0) el.textContent = 'oggi!';
+    else if (diff === 1) el.textContent = '1 giorno';
+    else el.textContent = diff + ' giorni';
+    {% endif %}
+})();
+
+// === ALERT PANEL / DROPDOWN ===
+function toggleAlertPanel() {
+    closeAlertDropdown();
+    var p = document.getElementById('alertPanel');
+    var o = document.getElementById('alertOverlay');
+    p.classList.toggle('show');
+    o.classList.toggle('show');
+    document.body.style.overflow = p.classList.contains('show') ? 'hidden' : '';
+}
+function closeAlertPanel() {
+    document.getElementById('alertPanel').classList.remove('show');
+    document.getElementById('alertOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+}
+function toggleAlertCard(el) { el.classList.toggle('open'); }
+
+// === ALERT DROPDOWN (hover badge) ===
+var ddTimer;
+var badge = document.getElementById('alertBadge');
+var dd = document.getElementById('alertDropdown');
+if (badge && dd) {
+    badge.addEventListener('mouseenter', function() {
+        clearTimeout(ddTimer);
+        dd.classList.add('show');
+    });
+    badge.addEventListener('mouseleave', function() {
+        ddTimer = setTimeout(function() { dd.classList.remove('show'); }, 300);
+    });
+    dd.addEventListener('mouseenter', function() { clearTimeout(ddTimer); });
+    dd.addEventListener('mouseleave', function() {
+        ddTimer = setTimeout(function() { dd.classList.remove('show'); }, 200);
+    });
+}
+function closeAlertDropdown() { if (dd) dd.classList.remove('show'); }
+
+// === ACCORDION STATISTICHE ===
+function toggleStatsAccordion() {
+    var collapse = document.getElementById('statsCollapse');
+    var toggle = document.getElementById('statsToggle');
+    if (collapse.style.display === 'none' || collapse.style.display === '') {
+        collapse.style.display = 'block';
+        toggle.innerHTML = '<i class="bi bi-chevron-up"></i>';
+        localStorage.setItem('dashboardStatsOpen', '1');
+    } else {
+        collapse.style.display = 'none';
+        toggle.innerHTML = '<i class="bi bi-chevron-down"></i>';
+        localStorage.setItem('dashboardStatsOpen', '0');
+    }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('dashboardStatsOpen') === '1') {
+        var collapse = document.getElementById('statsCollapse');
+        var toggle = document.getElementById('statsToggle');
+        collapse.style.display = 'block';
+        toggle.innerHTML = '<i class="bi bi-chevron-up"></i>';
+    }
+});
+
+
+// === CHART.JS ===
+document.addEventListener('DOMContentLoaded', function() {
+    // Doughnut: Livello
+    var ctx1 = document.getElementById('chartLivello');
+    if (ctx1 && typeof Chart !== 'undefined') {
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for l in livelli %}'{{ l.parametri_minimi__livello__codice }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for l in livelli %}{{ l.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [{% for l in livelli %}'{{ l.parametri_minimi__livello__colore|default:"#5E6AD2" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    borderWidth: 0,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#18181B',
+                        titleColor: '#EDEDED',
+                        bodyColor: '#a1a1aa',
+                        borderColor: '#27282D',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        padding: 10,
+                        callbacks: {
+                            label: function(ctx) { return ctx.label + ': ' + ctx.parsed + ' contratti'; }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Helper per grafici line
+    function creaGraficoLine(canvasId, labels, data, color, fill, label) {
+        var ctx = document.getElementById(canvasId);
+        if (!ctx || typeof Chart === 'undefined') return;
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label || '',
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: fill || color + '10',
+                    fill: !!fill,
+                    tension: 0.35,
+                    pointBackgroundColor: color,
+                    pointBorderColor: '#18181B',
+                    pointBorderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#18181B', titleColor: '#EDEDED',
+                        bodyColor: '#a1a1aa', borderColor: '#27282D',
+                        borderWidth: 1, cornerRadius: 8, padding: 8,
+                    }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#8A8F98', font: { size: 9 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#8A8F98', font: { size: 9 }, stepSize: 1 } }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+    }
+
+    var mLabels = [{% for l in mesi_labels %}'{{ l }}'{% if not forloop.last %},{% endif %}{% endfor %}];
+    var mAss = [{% for c in mesi_counts %}{{ c }}{% if not forloop.last %},{% endif %}{% endfor %}];
+    var mCes = [{% for c in cessazioni_counts %}{{ c }}{% if not forloop.last %},{% endif %}{% endfor %}];
+
+    // Confronto — due linee sovrapposte
+    var ctxCf = document.getElementById('chartConfronto');
+    if (ctxCf && typeof Chart !== 'undefined') {
+        new Chart(ctxCf, {
+            type: 'line',
+            data: {
+                labels: mLabels,
+                datasets: [
+                    { label: 'Assunzioni', data: mAss, borderColor: '#5E6AD2', backgroundColor: 'rgba(94, 106, 210, 0.05)', fill: false, tension: 0.35, pointBackgroundColor: '#5E6AD2', pointBorderColor: '#18181B', pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, borderWidth: 2 },
+                    { label: 'Cessazioni', data: mCes, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.05)', fill: false, tension: 0.35, pointBackgroundColor: '#ef4444', pointBorderColor: '#18181B', pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, borderWidth: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#8A8F98', font: { size: 9 }, boxWidth: 10, padding: 8 }, position: 'bottom' },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#8A8F98', font: { size: 9 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#8A8F98', font: { size: 9 }, stepSize: 1 } }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+    }
+
+    // Bar chart: Budget per tipo progetto
+    var ctx2 = document.getElementById('chartBudget');
+    if (ctx2 && typeof Chart !== 'undefined') {
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: [{% for b in budget_per_tipo %}'{{ b.tipo__nome|default:"N/D" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for b in budget_per_tipo %}{{ b.totale|floatformat:0 }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [{% for b in budget_per_tipo %}'{{ b.tipo__colore|default:"#5E6AD2" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    borderRadius: 4,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#18181B',
+                        titleColor: '#EDEDED',
+                        bodyColor: '#a1a1aa',
+                        borderColor: '#27282D',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        padding: 10,
+                        callbacks: {
+                            label: function(ctx) { return '€ ' + Number(ctx.parsed.x).toLocaleString('it-IT'); }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                        ticks: { color: '#8A8F98', font: { size: 10 }, callback: function(v) { return '€' + v; } }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#EDEDED', font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // Ore per tipo progetto
+    var ctxOre = document.getElementById('chartOrePerTipo');
+    if (ctxOre && typeof Chart !== 'undefined') {
+        new Chart(ctxOre, {
+            type: 'bar',
+            data: {
+                labels: [{% for o in ore_per_tipo %}'{{ o.nome }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for o in ore_per_tipo %}{{ o.ore }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [{% for o in ore_per_tipo %}'{{ o.colore }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    borderRadius: 4,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#18181B',
+                        titleColor: '#EDEDED',
+                        bodyColor: '#a1a1aa',
+                        borderColor: '#27282D',
+                        borderWidth: 1,
+                        cornerRadius: 8,
+                        padding: 10,
+                        callbacks: {
+                            label: function(ctx) { return ctx.parsed.x + ' h'; }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                        ticks: { color: '#8A8F98', font: { size: 10 } }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#EDEDED', font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // Bar chart: Ore lavorate per mese
+    var ctxOreMensili = document.getElementById('chartOreMensili');
+    if (ctxOreMensili && typeof Chart !== 'undefined') {
+        new Chart(ctxOreMensili, {
+            type: 'bar',
+            data: {
+                labels: [{% for l in ore_mesi_labels %}'{{ l }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Ore',
+                    data: [{% for d in ore_mesi_data %}{{ d }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(94, 106, 210, 0.6)',
+                    borderColor: '#5E6AD2',
+                    borderWidth: 1,
+                    borderRadius: 3,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#18181B', titleColor: '#EDEDED',
+                        bodyColor: '#a1a1aa', borderColor: '#27282D',
+                        borderWidth: 1, cornerRadius: 8, padding: 8,
+                        callbacks: { label: function(ctx) { return ctx.parsed.y + ' h'; } }
+                    }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#8A8F98', font: { size: 9 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false }, ticks: { color: '#8A8F98', font: { size: 9 } } }
+                }
+            }
+        });
+    }
+
+
+    // Horizontal bar: Distribuzione geografica
+    var ctxGeo = document.getElementById('chartGeo');
+    if (ctxGeo && typeof Chart !== 'undefined') {
+        new Chart(ctxGeo, {
+            type: 'bar',
+            data: {
+                labels: [{% for l in geo_labels %}'{{ l }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for d in geo_data %}{{ d }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                    borderColor: '#10b981',
+                    borderWidth: 1,
+                    borderRadius: 3,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#18181B', titleColor: '#EDEDED',
+                        bodyColor: '#a1a1aa', borderColor: '#27282D',
+                        borderWidth: 1, cornerRadius: 8, padding: 8,
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                        ticks: { color: '#8A8F98', font: { size: 9 }, stepSize: 1 }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#EDEDED', font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+});
+
+// === MAPPA BENEFICIARI ===
+var dashMapInit = false;
+var dashMap = null;
+var dashMarkers = null;
+
+function caricaMappaDash() {
+    var comune = document.getElementById('mapComuneFiltro').value;
+    fetch('/ajax/beneficiari-mappa/?comune=' + encodeURIComponent(comune))
+        .then(function(r){return r.json()})
+        .then(function(data) {
+            if (!dashMapInit) {
+                document.getElementById('mappaPlaceholderDash').style.display = 'none';
+                document.getElementById('mappaContainerDash').style.display = 'block';
+                dashMap = L.map('mappaContainerDash').setView([41.9, 12.5], 5);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap',
+                    maxZoom: 18
+                }).addTo(dashMap);
+                dashMarkers = L.markerClusterGroup(); dashMap.addLayer(dashMarkers);
+                dashMapInit = true;
+                setTimeout(function(){dashMap.invalidateSize()}, 300);
+            } else {
+                dashMarkers.clearLayers();
+            }
+            if (data.length === 0) { dashMap.setView([41.9, 12.5], 5); return; }
+            var bounds = [];
+            data.forEach(function(b) {
+                if (b.lat && b.lng) {
+                    var m = L.marker([b.lat, b.lng]).bindPopup(
+                        '<b>' + b.nome + '</b><br>' + (b.indirizzo||'') + '<br>' + (b.comune||'')
+                    );
+                    dashMarkers.addLayer(m);
+                    bounds.push([b.lat, b.lng]);
+                }
+            });
+            if (bounds.length) dashMap.fitBounds(bounds, {padding:[30,30]});
+        });
+}
+</script>
+
+{% include 'paghe/partials/_dashboard_help_modal.html' %}
+
+<script>
+// === SKELETON LOADER ===
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.querySelectorAll('.skeleton, .skeleton-table').forEach(function(el){
+            el.style.transition = 'opacity 0.25s ease';
+            el.style.opacity = '0';
+        });
+        setTimeout(function() {
+            document.querySelectorAll('.skeleton, .skeleton-table').forEach(function(el){
+                el.classList.remove('skeleton', 'skeleton-table');
+                el.style.opacity = '';
+                el.style.transition = '';
+            });
+        }, 280);
+    }, 500);
+});
+</script>
+{% endblock %}

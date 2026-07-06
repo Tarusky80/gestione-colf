@@ -1,0 +1,1097 @@
+﻿{% extends 'base.html' %}{% load tabelle_tags %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Crea PAGOPA</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+<style>
+  .pm-cb{background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;line-height:22px;height:22px;flex-shrink:0;}
+  .pm-cb:hover{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.08);}
+  .pm-cb.copied{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.15);}
+  .pm-label{color:#8A8F98;font-size:11px;font-weight:600;white-space:nowrap;min-width:65px;flex-shrink:0;}
+  .pm-val{color:#EDEDED;font-size:12px;font-weight:500;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .pm-mcrd{background:#1A1B21;border:1px solid #27282D;border-radius:8px;padding:10px 14px;flex:1;min-width:180px;}
+  .pm-mcrd-title{color:#5E6AD2;font-size:11px;font-weight:700;margin-bottom:6px;border-bottom:1px solid #27282D;padding-bottom:4px;}
+  .pm-row{display:flex;align-items:center;gap:6px;padding:2px 0;}
+  .pm-row+.pm-row{border-top:1px solid #1E1F23;}
+</style>
+<script>
+function inviaEmailPagopa() {
+    if (!_pagopaContrattoPk) return;
+    document.getElementById('modaleInvioEmailPagopaBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-light"></div></div>';
+    var m = new bootstrap.Modal(document.getElementById('modaleInvioEmailPagopa'));
+    m.show();
+    fetch('/ajax/cerca-pagopa-doc/?contratto_pk=' + _pagopaContrattoPk + '&trimestre=' + _pagopaTrimestre + '&anno=' + _pagopaAnno)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (!d.doc_pk) {
+            document.getElementById('modaleInvioEmailPagopaBody').innerHTML = '<div class="p-4" style="color:#f87171;text-align:center;">Nessun documento PagoPA trovato. Completa prima l\'automazione o genera il riepilogo PDF.</div>';
+            return;
+        }
+        _pagopaDocPk = d.doc_pk;
+        var btnStampaPagopa = document.getElementById('btnStampaPagopa');
+        if (btnStampaPagopa) btnStampaPagopa.disabled = false;
+        var url = '/ajax/invia-documento-email/' + d.doc_pk + '/';
+        if (d.modello_mail_pk) {
+            url += '?selected_template=' + d.modello_mail_pk;
+        }
+        fetch(url)
+        .then(function(r){ return r.text(); })
+        .then(function(html){
+            var trimNum = {Q1:'1', Q2:'2', Q3:'3', Q4:'4'}[_pagopaTrimestre];
+            if (trimNum && !d.modello_mail_pk) {
+                var parser = new DOMParser();
+                var docHtml = parser.parseFromString(html, 'text/html');
+                var select = docHtml.getElementById('modelloMail');
+                if (select) {
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].text.indexOf(trimNum + '\u00B0') !== -1 || select.options[i].text.indexOf('MAIL ' + trimNum) !== -1) {
+                            select.options[i].selected = true;
+                            break;
+                        }
+                    }
+                    html = docHtml.body.innerHTML;
+                }
+            }
+            document.getElementById('modaleInvioEmailPagopaBody').innerHTML = html;
+        })
+        .catch(function(){
+            document.getElementById('modaleInvioEmailPagopaBody').innerHTML = '<div class="p-4 text-danger">Errore nel caricamento del form.</div>';
+        });
+    })
+    .catch(function(){
+        document.getElementById('modaleInvioEmailPagopaBody').innerHTML = '<div class="p-4 text-danger">Errore nel recupero del documento.</div>';
+    });
+}
+</script>
+
+{% include 'paghe/partials/_pagopa_email_modal.html' %}
+{% include 'paghe/partials/_pagopa_styles.html' %}
+
+<div class="container-fluid p-4">
+
+  <div class="p-4 card-simple" style="margin-bottom:20px;">
+    <div class="d-flex align-items-start gap-3">
+      <div class="flex-grow-1">
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" style="color:#5E6AD2;"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
+        <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto attivo e il trimestre per generare il riepilogo contributivo o avviare l'automazione sul sito INPS.</p>
+      </div>
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+    </div>
+  </div>
+
+  <!-- RIGA 1: SELEZIONE (sx) + AUTOMAZIONE (dx) -->
+  <div class="row g-3 mb-3">
+
+    <!-- CARD 1 — Selezione Contratto -->
+    <div class="col-md-6">
+      <div class="p-4" class="class="card-dark h-100"">
+        <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-search me-2" style="color:#5E6AD2;"></i>SELEZIONE CONTRATTO</h5>
+        <div class="row g-3">
+          <div class="col-12">
+            <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
+            <div class="d-flex gap-2 align-items-center">
+              <button class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrevContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <select id="selContratto" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
+                {% for c in contratti %}
+                <option value="{{ c.pk }}" data-datore="{{ c.datore.nome_cognome }}" data-lavoratore="{{ c.lavoratore.nome_cognome }}">{{ c|contratto_option }}</option>
+                </option>
+                {% endfor %}
+              </select>
+              <button class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNextContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              <span id="contrattoCounter" style="font-size:11px;color:#5C5F66;white-space:nowrap;min-width:50px;text-align:center;"></span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Anno</label>
+            <input type="number" id="selAnno" class="form-control" min="2020" max="2035" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;">
+          </div>
+          <div class="col-12">
+            <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Trimestre</label>
+            <div class="d-flex gap-3 flex-wrap" id="trimestreRadioGroup">
+              <label class="radio-card" data-trimestre="Q1">
+                <input type="radio" name="trimestre" value="Q1">
+                <div class="label-giornate">TRIMESTRE 1</div>
+                <div class="trim-mesi" id="trim_mesi_Q1"></div>
+                <div class="trim-badge" id="trim_badge_Q1"></div>
+              </label>
+              <label class="radio-card" data-trimestre="Q2">
+                <input type="radio" name="trimestre" value="Q2">
+                <div class="label-giornate">TRIMESTRE 2</div>
+                <div class="trim-mesi" id="trim_mesi_Q2"></div>
+                <div class="trim-badge" id="trim_badge_Q2"></div>
+              </label>
+              <label class="radio-card" data-trimestre="Q3">
+                <input type="radio" name="trimestre" value="Q3">
+                <div class="label-giornate">TRIMESTRE 3</div>
+                <div class="trim-mesi" id="trim_mesi_Q3"></div>
+                <div class="trim-badge" id="trim_badge_Q3"></div>
+              </label>
+              <label class="radio-card" data-trimestre="Q4">
+                <input type="radio" name="trimestre" value="Q4">
+                <div class="label-giornate">TRIMESTRE 4</div>
+                <div class="trim-mesi" id="trim_mesi_Q4"></div>
+                <div class="trim-badge" id="trim_badge_Q4"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 — Automazione INPS -->
+    <div class="col-md-6">
+      <div class="p-4" class="class="card-dark h-100"">
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:0;"><i class="bi bi-robot me-2" style="color:#10b981;"></i>AUTOMAZIONE INPS</h5>
+          <span id="ctrlInvioBadge" style="display:none;margin-left:auto;color:#f87171;font-size:11px;font-weight:700;background:rgba(248,113,113,0.12);padding:6px 12px;border-radius:8px;border:1px solid rgba(248,113,113,0.25);white-space:nowrap;">
+            <i class="bi bi-info-circle me-1"></i> Premi <kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 4px;font-size:10px;">Ctrl</kbd>+<kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 4px;font-size:10px;">Invio</kbd> per proseguire
+          </span>
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+          <button class="btn btn-ghost-success" onclick="avviaPagopa()" id="btnAvvia">
+            <i class="bi bi-robot me-1"></i> Avvia INPS
+          </button>
+          <button class="btn btn-ghost-danger" onclick="chiudiPagopa()" id="btnChiudiFinestra" disabled>
+            <i class="bi bi-x-circle me-1"></i> Chiudi finestra INPS
+          </button>
+        </div>
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
+          <label class="toggle-ore" style="margin-left:0;">
+            <input type="checkbox" id="toggleAutoClose" onchange="localStorage.setItem('pagopa_auto_close', this.checked?'1':'0')" title="Chiude automaticamente Chromium/Playwright quando il PDF PagoPA viene creato">
+            <span class="slider"></span>
+            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">CHIUDI BROWSER</span>
+          </label>
+          <label class="toggle-ore" style="margin-left:0;">
+            <input type="checkbox" id="toggleAutoShowPdf" onchange="localStorage.setItem('pagopa_auto_show_pdf', this.checked?'1':'0')" title="Mostra automaticamente l'anteprima PDF a fine automazione">
+            <span class="slider"></span>
+            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">MOSTRA PDF</span>
+          </label>
+          <label class="toggle-ore" style="margin-left:0;">
+            <input type="checkbox" id="toggleBackgroundMode" onchange="if(this.checked){var nc=document.getElementById('toggleNascondiChromium');if(nc){nc.checked=false;localStorage.setItem('pagopa_nascondi_chromium','0')}}localStorage.setItem('pagopa_background_mode', this.checked?'1':'0')" title="Avvia browser minimizzato (visibile ma in secondo piano) e mostra il CAPTCHA nel CRUD">
+            <span class="slider"></span>
+            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">SFONDO</span>
+          </label>
+          <label class="toggle-ore" style="margin-left:0;">
+            <input type="checkbox" id="toggleNascondiChromium" onchange="var me=this;if(me.checked){var sf=document.getElementById('toggleBackgroundMode');if(sf){sf.checked=false;localStorage.setItem('pagopa_background_mode','0')}var ac=document.getElementById('toggleAutoClose');if(ac){ac.checked=true;localStorage.setItem('pagopa_auto_close','1')}var ap=document.getElementById('toggleAutoShowPdf');if(ap){ap.checked=true;localStorage.setItem('pagopa_auto_show_pdf','1')}}localStorage.setItem('pagopa_nascondi_chromium', me.checked?'1':'0')" title="Esegue Playwright in modalità headless (nessuna finestra), CAPTCHA inline nel CRUD. Forza CHIUDI BROWSER e MOSTRA PDF">
+            <span class="slider"></span>
+            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">RIDUCI CHROMIUM</span>
+          </label>
+        </div>
+        <div id="captchaContainer" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:16px;margin-bottom:12px;">
+          <div style="font-size:11px;color:#f59e0b;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">
+            <i class="bi bi-shield-lock me-1"></i> RISOLVI CAPTGRAPH
+          </div>
+          <div style="margin-bottom:12px;">
+            <img id="captchaImage" style="border:1px solid #3B3C42;border-radius:8px;max-width:100%;background:#fff;" />
+          </div>
+          <div class="d-flex gap-2 align-items-center flex-wrap">
+            <input type="text" id="captchaInput" autocomplete="off" placeholder="Inserisci il codice CAPTGRAPH..." class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:14px;border-radius:8px;padding:10px 14px;max-width:260px;font-weight:600;">
+<button class="btn btn-ghost-success" onclick="inviaCaptcha()" id="btnInviaCaptcha">
+            <i class="bi bi-send me-1"></i> Invia Codice Captcha
+          </button>
+            <span style="font-size:11px;color:#8A8F98;"><i class="bi bi-arrow-repeat me-1"></i> Premi Invio per inviare</span>
+          </div>
+        </div>
+        <div id="automationContainer" style="display:none;">
+          <div class="p-3" style="background:#0D0E10;border:1px solid #27282D;border-radius:10px;">
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+              <h6 style="color:#EDEDED;font-size:12px;margin-bottom:0;"><i class="bi bi-terminal me-2" style="color:#10b981;"></i>CONSOLE AUTOMAZIONE</h6>
+              <button class="btn btn-sm btn-ghost" onclick="pulisciConsole()" style="padding:6px 14px;font-size:11px;margin-left:auto;">
+                <i class="bi bi-eraser me-1"></i> Pulisci
+              </button>
+              <button class="btn btn-sm btn-ghost" onclick="copiaConsole()" id="btnCopiaConsole" style="padding:6px 14px;font-size:11px;">
+                <i class="bi bi-clipboard me-1"></i> Copia
+              </button>
+              <span id="copiaFeedback" style="color:#34d399;font-size:11px;display:none;">âœ… Copiato!</span>
+            </div>
+            <div id="automationLog" style="background:#0D0E10;border:1px solid #27282D;border-radius:8px;padding:12px;font-size:12px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;color:#cccccc;max-height:300px;overflow-y:auto;margin-bottom:12px;line-height:1.6;">
+            </div>
+            <div id="stepActions" style="display:none;">
+              <div style="background:rgba(92,106,210,0.08);border:1px solid rgba(92,106,210,0.3);border-radius:8px;padding:12px;">
+                <p id="stepActionsTitle" style="color:#f59e0b;font-size:13px;margin-bottom:8px;"><i class="bi bi-exclamation-triangle me-2"></i><b>RISOLVI IL CAPTCHA</b></p>
+                <p id="stepActionsDesc" style="color:#8A8F98;font-size:12px;margin-bottom:8px;">
+                  &Egrave; aperta una finestra Chrome con il sito INPS PagoPA.<br>
+                  1. Inserisci manualmente il CAPTCHA nella pagina INPS.<br>
+                  2. Premi <kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Ctrl</kbd>+<kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Invio</kbd> nella finestra Chrome per proseguire.
+                </p>
+                <div style="margin-top:8px;">
+                  <span style="font-size:11px;color:#8A8F98;"><i class="bi bi-arrow-repeat me-1"></i> L&rsquo;automazione procede automaticamente dopo ogni step.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGA 2: RIEPILOGO (full width) -->
+  <div class="row g-3 mb-3">
+    <div class="col-12">
+      <div id="riepilogoContainer" style="display:none;">
+        <div class="p-4" class="card-simple">
+          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-text me-2" style="color:#5E6AD2;"></i>RIEPILOGO CONTRATTUALE</h5>
+          <div class="row g-3" id="riepilogoBody" style="font-size:13px;color:#EDEDED;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGA 3: DOCUMENTI (sx) + MODIFICA ORE (dx) -->
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <div class="p-4" class="class="card-dark h-100"">
+        <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark me-2" style="color:#5E6AD2;"></i>DOCUMENTI</h5>
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-ghost-primary" onclick="scaricaPdfPagopa()" id="btnScaricaPdf">
+            <i class="bi bi-filetype-pdf me-1"></i> Scarica riepilogo PDF
+          </button>
+          <button class="btn btn-ghost-info" onclick="inviaEmailPagopa()" id="btnInviaEmailPagopa">
+            <i class="bi bi-envelope me-1"></i> Invia Email
+          </button>
+          <button class="btn btn-ghost" onclick="apriPdfPagopa()" id="btnApriPdf" disabled>
+            <i class="bi bi-file-earmark-pdf me-1"></i> Apri PDF
+          </button>
+          <button class="btn btn-ghost-warning" onclick="stampaDocumento(_pagopaDocPk, this)" id="btnStampaPagopa" disabled>
+            <i class="bi bi-printer me-1"></i> Stampa PDF
+          </button>
+          <button class="btn btn-ghost" onclick="fetch('/ajax/apri-cartella-documenti/?contratto_pk=' + _pagopaContrattoPk).then(function(r){return r.json()}).then(function(d){if(!d.success){mostraToast(d.error, false)}})">
+            <i class="bi bi-folder-symlink me-1"></i> Apri cartella
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div id="modificaOreContainer" style="display:none;">
+        <div class="p-4" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:14px;height:100%;">
+          <h5 style="color:#f59e0b;font-size:14px;margin-bottom:16px;"><i class="bi bi-pencil me-2" style="color:#f59e0b;"></i>MODIFICA ORE PAGOPA</h5>
+          <div class="d-flex gap-2 align-items-center flex-wrap">
+            <label class="toggle-ore">
+              <input type="checkbox" id="toggleOreAuto" onchange="localStorage.setItem('pagopa_ore_auto', this.checked?'1':'0');caricaDatiPagopa()">
+              <span class="slider"></span>
+              <span style="font-size:11px;color:#8A8F98;white-space:nowrap;">Auto</span>
+            </label>
+            <input type="number" id="orePagopaInput" value="" placeholder="Lascia vuoto per ore calcolate" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;border-radius:8px;padding:8px 12px;max-width:180px;">
+            <span style="font-size:11px;color:#8A8F98;">ore trimestre</span>
+            <button class="btn btn-ghost-warning" onclick="caricaOreModificate()"><i class="bi bi-upload me-1"></i> CARICA ORE MODIFICATE!</button>
+            <button class="btn btn-ghost-info" onclick="salvaOreContratto()"><i class="bi bi-floppy me-1"></i> Salva nel contratto</button>
+            <button class="btn btn-ghost" onclick="resettaOrePagopa()"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina originali</button>
+            <span id="orePagopaStatus" style="font-size:11px;color:#8A8F98;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGA 4: STORICO (full width) -->
+  <div class="row g-3">
+    <div class="col-12">
+      <div id="storicoContainer" style="display:none;">
+        <div class="p-4" class="card-simple">
+          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-clock-history me-2" style="color:#5E6AD2;"></i>STORICO PAGOPA</h5>
+          <div id="storicoBody" style="overflow-x:auto;">
+            <div style="font-size:13px;color:#8A8F98;text-align:center;padding:20px;">Carica i dati del contratto per visualizzare lo storico.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var _pagopaContrattoPk = null;
+var _pagopaTrimestre = 'Q1';
+var _pagopaAnno = 2026;
+var _ultimoPdfUrl = null;
+var _pagopaCaptchaText = '';
+
+function apriPdfPagopa() {
+    if (!_pagopaContrattoPk) return;
+    var url = '/ajax/apri-pagopa-pdf/?contratto_pk=' + _pagopaContrattoPk + '&trimestre=' + _pagopaTrimestre + '&anno=' + _pagopaAnno;
+    _ultimoPdfUrl = url;
+    fetch(url, { method: 'HEAD' })
+        .then(function(r) {
+            if (r.status === 200) {
+                document.getElementById('pdfPreviewFrame').src = url;
+                document.getElementById('pdfPreviewFloating').style.display = 'flex';
+                _initPdfPreviewDrag();
+            } else if (r.status === 404) {
+                document.getElementById('pdfPreviewFrame').srcdoc = '\
+                    <div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;background:#1a1a1e;color:#ccc;">\
+                        <div style="text-align:center;padding:40px;">\
+                            <div style="font-size:48px;margin-bottom:16px;">ðŸ“„</div>\
+                            <h2 style="color:#f87171;font-size:18px;margin-bottom:8px;">PDF PagoPA non trovato</h2>\
+                            <p style="color:#8A8F98;font-size:14px;max-width:320px;line-height:1.5;">\
+                                Completa prima l\'automazione con <b style="color:#34d399;">Avvia INPS</b><br>\
+                                per generare il bollettino PagoPA.<br>\
+                                Poi riprova ad aprire il PDF.\
+                            </p>\
+                        </div>\
+                    </div>';
+                document.getElementById('pdfPreviewFloating').style.display = 'flex';
+                _initPdfPreviewDrag();
+            } else {
+                logPagopa('âŒ Errore recupero PDF PagoPA (HTTP ' + r.status + ')', 'err');
+            }
+        })
+        .catch(function(err) {
+            logPagopa('âŒ Errore di rete recupero PDF PagoPA: ' + err.message, 'err');
+        });
+}
+
+function abilitaApriPdf() {
+    var btn = document.getElementById('btnApriPdf');
+    if (btn) btn.disabled = false;
+}
+
+function verificaPagopaEsistente() {
+    if (!_pagopaContrattoPk) return;
+    var url = '/ajax/apri-pagopa-pdf/?contratto_pk=' + _pagopaContrattoPk + '&trimestre=' + _pagopaTrimestre + '&anno=' + _pagopaAnno;
+    fetch(url, { method: 'HEAD' })
+        .then(function(r) { if (r.status === 200) abilitaApriPdf(); })
+        .catch(function() {});
+}
+
+{% include 'paghe/partials/_pagopa_js_helpers.html' %}
+
+function chiudiPagopa(silent) {
+    if (!silent && !confirm('Chiudere la finestra INPS e interrompere l\'automazione?')) return;
+    return fetch('/ajax/chiudi-pagopa/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': getCSRFToken()},
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.success) {
+            logPagopa('ðŸ›‘ Finestra Chromium chiusa. Playwright arrestato.', 'warn');
+            document.getElementById('stepActions').style.display = 'none';
+            document.getElementById('btnAvvia').disabled = false;
+            document.getElementById('btnChiudiFinestra').disabled = true;
+            (function(){var b1=document.getElementById('ctrlInvioBadge');if(b1)b1.style.display='none';})();
+        } else {
+            logPagopa('âŒ ERRORE chiusura: ' + (d.error || 'sconosciuto'), 'err');
+        }
+        return d;
+    })
+    .catch(function(err) {
+        logPagopa('âŒ ERRORE DI RETE chiusura: ' + err.message, 'err');
+    });
+}
+
+function selezionaTrimestre(val) {
+    document.querySelectorAll('#trimestreRadioGroup .radio-card').forEach(function(el) { el.classList.remove('selected'); });
+    var rc = document.querySelector('#trimestreRadioGroup .radio-card[data-trimestre="' + val + '"]');
+    if (rc) rc.classList.add('selected');
+    document.querySelectorAll('input[name="trimestre"]').forEach(function(el) { el.checked = false; });
+    var input = document.querySelector('input[name="trimestre"][value="' + val + '"]');
+    if (input) input.checked = true;
+    _pagopaTrimestre = val;
+}
+
+function determinaTrimestreDefault() {
+    var oggi = new Date();
+    var m = oggi.getMonth() + 1;
+    var y = oggi.getFullYear();
+
+    var qCorrente, finePrec, qPrec;
+    if (m <= 3)       { qCorrente = 'Q1'; finePrec = new Date(y-1, 11, 31); qPrec = 'Q4'; }
+    else if (m <= 6)  { qCorrente = 'Q2'; finePrec = new Date(y, 2, 31);    qPrec = 'Q1'; }
+    else if (m <= 9)  { qCorrente = 'Q3'; finePrec = new Date(y, 5, 30);    qPrec = 'Q2'; }
+    else              { qCorrente = 'Q4'; finePrec = new Date(y, 8, 30);    qPrec = 'Q3'; }
+
+    var diff = Math.floor((oggi - finePrec) / (1000*60*60*24));
+    if (diff >= 0 && diff <= 10) {
+        if (qCorrente === 'Q1') return {q: 'Q4', anno: y - 1};
+        return {q: qPrec, anno: y};
+    }
+    return {q: qCorrente, anno: y};
+}
+
+function isAutoCarica() {
+    return document.getElementById('toggleAutoCarica').checked;
+}
+
+function navigaContratto(delta) {
+    var sel = document.getElementById('selContratto');
+    var idx = sel.selectedIndex + delta;
+    if (idx < 0) idx = 0;
+    if (idx >= sel.options.length) idx = sel.options.length - 1;
+    sel.selectedIndex = idx;
+    aggiornaCounter();
+    sel.dispatchEvent(new Event('change'));
+}
+
+function aggiornaCounter() {
+    var sel = document.getElementById('selContratto');
+    var counter = document.getElementById('contrattoCounter');
+    if (!counter) return;
+    var idx = sel.selectedIndex;
+    var tot = sel.options.length;
+    var num = idx + 1;
+    counter.textContent = num + ' / ' + tot;
+}
+
+function caricaDatiPagopa(oreOverride) {
+    var pk = document.getElementById('selContratto').value;
+    var trim = document.querySelector('input[name="trimestre"]:checked');
+    var anno = document.getElementById('selAnno').value;
+
+    if (!pk) { return; }
+    if (!trim) { return; }
+
+    var btnApri = document.getElementById('btnApriPdf');
+    if (btnApri) btnApri.disabled = true;
+
+    _pagopaContrattoPk = pk;
+    _pagopaTrimestre = trim.value;
+    _pagopaAnno = anno;
+
+    var oreAuto = localStorage.getItem('pagopa_ore_auto') !== '0';
+    var url = '/ajax/carica-dati-pagopa/?contratto_pk=' + pk + '&trimestre=' + trim.value + '&anno=' + anno + '&ore_auto=' + (oreAuto ? '1' : '0');
+    if (oreOverride !== undefined && oreOverride !== null && oreOverride !== '') {
+        url += '&ore_override=' + encodeURIComponent(oreOverride);
+    }
+
+    fetch(url)
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (!d.success) { return; }
+            _pagopaOreOverride = d.ore_override || '';
+            renderRiepilogo(d);
+            document.getElementById('riepilogoContainer').style.display = 'block';
+            (function(){var b1=document.getElementById('ctrlInvioBadge');if(b1)b1.style.display='inline-block';})();
+            verificaPagopaEsistente();
+            caricaStoricoPagopa();
+            aggiornaColoriTrimestri(d);
+        })
+        .catch(function(err) {});
+}
+
+function aggiornaColoriTrimestri(d) {
+    var mesiNomi = {1:'GEN',2:'FEB',3:'MAR',4:'APR',5:'MAG',6:'GIU',7:'LUG',8:'AGO',9:'SET',10:'OTT',11:'NOV',12:'DIC'};
+    var mesiPerTrim = {Q1:[1,2,3],Q2:[4,5,6],Q3:[7,8,9],Q4:[10,11,12]};
+    var td = d.trimestri_dettaglio || {};
+    Object.keys(td).forEach(function(q) {
+        var info = td[q];
+        var mesiEl = document.getElementById('trim_mesi_' + q);
+        if (mesiEl && info.settimane) {
+            mesiEl.innerHTML = info.settimane.map(function(w,i) {
+                var checks = '';
+                for (var c=0;c<w;c++) checks += '✓';
+                return '<div class="trim-mese"><span class="trim-mese-label">' + mesiNomi[mesiPerTrim[q][i]] + '</span> <span class="trim-mese-sett">' + w + ' (' + checks + ')</span></div>';
+            }).join('');
+        }
+        var badge = document.getElementById('trim_badge_' + q);
+        if (badge) {
+            if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = '✓ COMPLETO'; }
+            else { badge.className = 'trim-badge trim-badge-parziale'; badge.textContent = 'âš  PARZIALE'; }
+        }
+        var card = document.querySelector('#trimestreRadioGroup .radio-card[data-trimestre="' + q + '"]');
+        if (card) {
+            if (info.corrente) { card.style.borderColor = '#f59e0b'; }
+            else { card.style.borderColor = ''; }
+        }
+    });
+}
+
+function renderRiepilogo(d) {
+    var html = '';
+
+    html += '<div class="col-md-6" style="margin-bottom:16px;"><div class="pm-mcrd" style="padding:0;">';
+    html += '<div class="row g-0"><div class="col-6" style="border-right:1px solid #27282D;padding:10px 14px;">';
+    html += '<div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">DATORE DI LAVORO</div>';
+    html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_d_nome">' + escapeHtml(d.nome_datore) + '</span><button class="pm-cb" data-copy="r_d_nome">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_d_cf">' + escapeHtml(d.cf_datore) + '</span><button class="pm-cb" data-copy="r_d_cf">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_d_indirizzo">' + escapeHtml(d.indirizzo_datore || '—') + '</span><button class="pm-cb" data-copy="r_d_indirizzo">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="r_d_beneficiario">' + escapeHtml(d.beneficiario || '—') + '</span><button class="pm-cb" data-copy="r_d_beneficiario">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="r_d_progetti">' + escapeHtml(d.progetti || '—') + '</span><button class="pm-cb" data-copy="r_d_progetti">COPIA</button></div>';
+    html += '</div><div class="col-6" style="padding:10px 14px;">';
+    html += '<div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">LAVORATORE</div>';
+    html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_l_nome">' + escapeHtml(d.nome_lavoratore) + '</span><button class="pm-cb" data-copy="r_l_nome">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_l_cf">' + escapeHtml(d.cf_lavoratore) + '</span><button class="pm-cb" data-copy="r_l_cf">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="r_l_cod_rapporto">' + escapeHtml(d.codice_rapporto_inps || '—') + '</span><button class="pm-cb" data-copy="r_l_cod_rapporto">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_l_indirizzo">' + escapeHtml(d.indirizzo_lavoratore || '—') + '</span><button class="pm-cb" data-copy="r_l_indirizzo">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="r_l_cassa">' + escapeHtml(d.cassa_label || '—') + '</span><button class="pm-cb" data-copy="r_l_cassa">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="r_l_data_assunzione">' + escapeHtml(d.data_assunzione || '—') + '</span><button class="pm-cb" data-copy="r_l_data_assunzione">COPIA</button></div>';
+    html += '</div></div></div></div>';
+
+    html += '<div class="col-12" style="margin-bottom:16px;"><div class="p-4" class="card-simple">';
+    html += '<div class="row g-3">';
+
+    html += '<div class="col-md-6"><div class="pm-mcrd">';
+    html += '<div class="pm-mcrd-title">PARAMETRI RETRIBUTIVI</div>';
+    html += '<table style="width:100%;font-size:12px;">';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore mensili</td><td style="text-align:right;color:#EDEDED;">' + d.ore_mensili.toFixed(2) + ' h</td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore settimanali</td><td style="text-align:right;color:#EDEDED;">' + d.ore_settimanali.toFixed(2) + ' h</td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Paga base oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.paga_base.toFixed(4) + '</td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Tredicesima oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.tredicesima_oraria.toFixed(4) + '</td></tr>';
+    var pagaInpsVal = d.paga_oraria_inps.toFixed(2);
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;border-bottom:1px solid #27282D;">Paga oraria INPS</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;"><b>\u20ac ' + pagaInpsVal + '</b> <span style="color:#5C5F66;font-size:10px;">(troncata)</span> <button onclick="copiaAppunti(\'' + pagaInpsVal + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;padding-top:6px;">Soglia</td><td style="text-align:right;color:#EDEDED;padding-top:6px;">&gt; ' + d.soglia_ore + ' h/sett</td></tr>';
+    var sopraColor = d.is_sopra_soglia ? '#34d399' : '#f87171';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Fascia</td><td style="text-align:right;color:' + sopraColor + ';"><b>' + escapeHtml(d.fascia_desc) + '</b></td></tr>';
+    html += '</table>';
+    html += '</div></div>';
+
+    var trimLabel = {Q1:'Gen-Mar', Q2:'Apr-Giu', Q3:'Lug-Set', Q4:'Ott-Dic'}[_pagopaTrimestre] || _pagopaTrimestre;
+    html += '<div class="col-md-6"><div class="pm-mcrd">';
+    html += '<div class="pm-mcrd-title">QUOTE ' + _pagopaTrimestre + ' ' + _pagopaAnno + ' (' + trimLabel + ')</div>';
+    html += '<table style="width:100%;font-size:12px;">';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore trimestrali</td><td style="text-align:right;color:#EDEDED;">' + d.ore_trim + ' h <button onclick="copiaAppunti(\'' + d.ore_trim + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Quota associativa oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.cassa_orario.toFixed(4) + '</td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Quota associativa trim.</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.imp_cassa_trim.toFixed(2) + '</td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Aliquota INPS oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.aliquota_inps_orario.toFixed(4) + '</td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;border-bottom:1px solid #27282D;">Stima contributi trim.</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;">\u20ac ' + d.stima_contrib_trim.toFixed(2) + '</td></tr>';
+    var contribTotaliVal = d.contrib_totali.toFixed(2);
+    html += '<tr id="contribTotaliRow"><td style="color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">CONTRIBUTI TOTALI</td><td style="text-align:right;color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">\u20ac ' + contribTotaliVal + ' <button onclick="copiaAppunti(\'' + contribTotaliVal + '\', this)" style="background:none;border:none;color:#34d399;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr id="inpsCompareRow" style="display:none;"><td id="inpsCompareLabel" style="color:#8A8F98;font-size:12px;padding:2px 0;">Verifica INPS</td><td id="inpsCompareVal" style="text-align:right;font-size:12px;padding:2px 0;"></td></tr>';
+    html += '</table>';
+    html += '</div></div>';
+
+    html += '</div></div></div>';
+
+    document.getElementById('riepilogoBody').innerHTML = html;
+    document.querySelectorAll('#riepilogoBody .pm-cb').forEach(function(b) {
+        b.addEventListener('click', function() {
+            var id = this.getAttribute('data-copy');
+            var el = document.getElementById(id);
+            if (!el) return;
+            var t = el.getAttribute('data-raw') || el.textContent;
+            if (!t || t === '\u2014') return;
+            navigator.clipboard.writeText(t).then(function() {
+                b.classList.add('copied');
+                var o = b.textContent;
+                b.textContent = '\u2713 COPIATO';
+                setTimeout(function() { b.textContent = o; b.classList.remove('copied'); }, 1200);
+            }).catch(function() {});
+        });
+    });
+    if (d.trimestre_parziale) {
+        var trimLabel = {Q1:'Gen-Mar', Q2:'Apr-Giu', Q3:'Lug-Set', Q4:'Ott-Dic'}[_pagopaTrimestre] || _pagopaTrimestre;
+        var warn = '<div style="margin-top:12px;padding:10px 14px;background:rgba(248,113,113,0.1);border:1px solid #f87171;border-radius:8px;font-size:12px;color:#f87171;font-weight:600;"><i class="bi bi-exclamation-triangle-fill me-2"></i>Attenzione: contratto assunto il <b>' + d.data_assunzione + '</b>, dopo l\'inizio del trimestre ' + _pagopaTrimestre + ' (' + trimLabel + ', ' + d.data_inizio_trimestre + '). I contributi INPS potrebbero non essere dovuti per l\'intero trimestre.</div>';
+        document.getElementById('riepilogoBody').innerHTML += warn;
+    }
+    aggiornaModificaOre(d);
+}
+
+function aggiornaModificaOre(d) {
+    var el = document.getElementById('modificaOreContainer');
+    if (!el) return;
+    el.style.display = 'block';
+    var displayVal = d.ore_override || d.ore_mav_custom;
+    var oreVal = parseInt(displayVal, 10);
+    var hasCustom = displayVal !== '' && oreVal > 0;
+    var input = document.getElementById('orePagopaInput');
+    if (input) {
+        input.value = (displayVal && oreVal > 0 ? displayVal : '');
+        input.style.borderColor = hasCustom ? '#f59e0b' : '#27282D';
+    }
+    var toggle = document.getElementById('toggleOreAuto');
+    if (toggle) {
+        toggle.checked = localStorage.getItem('pagopa_ore_auto') !== '0';
+    }
+}
+
+function caricaOreModificate() {
+    if (!_pagopaContrattoPk) return;
+    var ore = document.getElementById('orePagopaInput').value;
+    var status = document.getElementById('orePagopaStatus');
+    status.style.color = '#8A8F98';
+    status.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Caricamento ore modificate...';
+    caricaDatiPagopa(ore);
+}
+
+function resettaOrePagopa() {
+    if (!_pagopaContrattoPk) return;
+    var status = document.getElementById('orePagopaStatus');
+    status.style.color = '#8A8F98';
+    status.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Ripristino calcolo standard...';
+    caricaDatiPagopa();
+}
+
+function salvaOreContratto() {
+    if (!_pagopaContrattoPk) { mostraToast('Seleziona un contratto', false); return; }
+    var ore = document.getElementById('orePagopaInput').value;
+    var status = document.getElementById('orePagopaStatus');
+    status.style.color = '#8A8F98';
+    status.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Salvataggio in corso...';
+    var formData = new FormData();
+    formData.append('contratto_pk', _pagopaContrattoPk);
+    formData.append('ore', ore);
+    fetch('/ajax/salva-ore-pagopa/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': getCSRFToken()},
+        body: new URLSearchParams(formData)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.success) {
+            status.style.color = '#34d399';
+            status.innerHTML = '<i class="bi bi-check-circle me-1"></i> ' + escapeHtml(d.messaggio);
+            caricaDatiPagopa();
+        } else {
+            status.style.color = '#f87171';
+            status.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i> ' + escapeHtml(d.error || 'Errore sconosciuto');
+        }
+    })
+    .catch(function(err) {
+        status.style.color = '#f87171';
+        status.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i> Errore di rete';
+    });
+}
+
+function caricaStoricoPagopa() {
+    if (!_pagopaContrattoPk) return;
+    var container = document.getElementById('storicoContainer');
+    var body = document.getElementById('storicoBody');
+    if (!container || !body) return;
+    fetch('/ajax/storico-pagopa/?contratto_pk=' + _pagopaContrattoPk)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (!d.success || !d.documenti || !d.documenti.length) {
+            container.style.display = 'none';
+            return;
+        }
+        container.style.display = 'block';
+        var html = '<table style="width:100%;font-size:12px;border-collapse:collapse;">';
+        html += '<thead><tr style="color:#5C5F66;text-transform:uppercase;font-size:10px;letter-spacing:0.05em;">';
+        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Trimestre</th>';
+        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Anno</th>';
+        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Tipo</th>';
+        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Data</th>';
+        html += '<th style="padding:6px 8px;text-align:right;border-bottom:1px solid #27282D;">Scarica</th>';
+        html += '<th style="padding:6px 8px;text-align:center;border-bottom:1px solid #27282D;width:40px;"></th>';
+        html += '</tr></thead><tbody>';
+        for (var i = 0; i < d.documenti.length; i++) {
+            var doc = d.documenti[i];
+            var labelTrim = {Q1:'Gen-Mar', Q2:'Apr-Giu', Q3:'Lug-Set', Q4:'Ott-Dic'}[doc.trimestre] || doc.trimestre;
+            var tipoLabel = doc.tipo === 'RIEPILOGO_PAGOPA' ? 'Riepilogo' : 'Bollettino INPS';
+            html += '<tr style="border-bottom:1px solid #1A1B1E;">';
+            html += '<td style="padding:8px;color:#EDEDED;">' + labelTrim + '</td>';
+            html += '<td style="padding:8px;color:#EDEDED;">' + escapeHtml(doc.anno) + '</td>';
+            html += '<td style="padding:8px;color:#8A8F98;">' + tipoLabel + '</td>';
+            html += '<td style="padding:8px;color:#8A8F98;">' + escapeHtml(doc.creato_il) + '</td>';
+            html += '<td style="padding:8px;text-align:right;"><button onclick="apriPdfStorico(\'' + doc.trimestre + '\',\'' + doc.anno + '\')" style="color:#5E6AD2;background:none;border:none;font-weight:600;cursor:pointer;"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</button></td>';
+            html += '<td style="padding:8px;text-align:center;"><button onclick="eliminaDocStorico(' + doc.doc_pk + ', this)" style="background:none;border:none;color:#f87171;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;" title="Elimina"><i class="bi bi-trash"></i></button></td>';
+            html += '</tr>';
+        }
+        html += '</tbody></table>';
+        body.innerHTML = html;
+    })
+    .catch(function() {
+        container.style.display = 'none';
+    });
+}
+
+function eliminaDocStorico(docPk, btn) {
+    if (!confirm('Eliminare definitivamente questo documento dallo storico?')) return;
+    var row = btn ? btn.closest('tr') : null;
+    var formData = new FormData();
+    formData.append('doc_pk', docPk);
+    fetch('/ajax/elimina-pagopa-doc/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': getCSRFToken()},
+        body: new URLSearchParams(formData)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.success) {
+            if (row) { row.remove(); }
+            mostraToast(d.messaggio || 'Documento eliminato', true);
+        } else {
+            mostraToast(d.error || 'Errore eliminazione', false);
+        }
+    })
+    .catch(function() {
+        mostraToast('Errore di rete', false);
+    });
+}
+
+function apriPdfStorico(trimestre, anno) {
+    if (!_pagopaContrattoPk) return;
+    var url = '/ajax/apri-pagopa-pdf/?contratto_pk=' + _pagopaContrattoPk + '&trimestre=' + trimestre + '&anno=' + anno;
+    _ultimoPdfUrl = url;
+    fetch(url, { method: 'HEAD' })
+    .then(function(r) {
+        if (r.status === 200) {
+            document.getElementById('pdfPreviewFrame').src = url;
+            document.getElementById('pdfPreviewFloating').style.display = 'flex';
+            _initPdfPreviewDrag();
+        } else {
+            mostraToast('PDF non trovato per ' + trimestre + ' ' + anno, false);
+        }
+    })
+    .catch(function() {
+        mostraToast('Errore di rete', false);
+    });
+}
+
+var _pagopaOreOverride = '';
+var _pagopaDocPk = null;
+var _pagopaStep = 'captcha';
+var _pagopaInFlight = false;
+var _pagopaAutoDelay = 600;
+
+function scaricaPdfPagopa() {
+    if (!_pagopaContrattoPk) return;
+    var oreAuto = localStorage.getItem('pagopa_ore_auto') !== '0';
+    var url = '/ajax/genera-pagopa-pdf/?contratto_pk=' + _pagopaContrattoPk + '&trimestre=' + _pagopaTrimestre + '&anno=' + _pagopaAnno + '&ore_auto=' + (oreAuto ? '1' : '0');
+    if (_pagopaOreOverride) {
+        url += '&ore_override=' + encodeURIComponent(_pagopaOreOverride);
+    }
+    _ultimoPdfUrl = url;
+    document.getElementById('pdfPreviewFrame').src = url;
+    document.getElementById('pdfPreviewFloating').style.display = 'flex';
+    _initPdfPreviewDrag();
+    setTimeout(caricaStoricoPagopa, 2000);
+}
+
+function avviaPagopa() {
+    if (!_pagopaContrattoPk) return;
+    document.getElementById('automationContainer').style.display = 'block';
+    document.getElementById('automationLog').innerHTML = '';
+    document.getElementById('stepActions').style.display = 'none';
+    document.getElementById('btnAvvia').disabled = true;
+    document.getElementById('btnAvvia').innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Avvio...';
+
+    _pagopaStep = 'captcha';
+    _pagopaInFlight = false;
+
+    var oreAutoAvvia = localStorage.getItem('pagopa_ore_auto') !== '0';
+
+    logPagopa('Avvio automazione PagoPA...', '');
+    logPagopa('Chrome aperto, finestra visibile. Minimizzazione dopo CAPTGRAPH...', '');
+    fetch('/ajax/avvia-pagopa/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': getCSRFToken(), 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'contratto_pk=' + _pagopaContrattoPk + '&trimestre=' + _pagopaTrimestre + '&anno=' + _pagopaAnno + '&ore_auto=' + (oreAutoAvvia ? '1' : '0') + '&background_mode=' + (localStorage.getItem('pagopa_background_mode') === '1' ? '1' : '0') + '&headless=' + (localStorage.getItem('pagopa_nascondi_chromium') === '1' ? '1' : '0')
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        document.getElementById('btnAvvia').disabled = false;
+        document.getElementById('btnAvvia').innerHTML = '<i class="bi bi-robot me-1"></i> Avvia INPS';
+
+        if (!d.success) {
+            logPagopa('âŒ ERRORE avvio automazione: ' + d.error, 'err');
+            if (d.url) logPagopa('ðŸ“ Pagina: ' + d.url, '');
+            document.getElementById('btnAvvia').disabled = false;
+            document.getElementById('btnAvvia').innerHTML = '<i class="bi bi-robot me-1"></i> Avvia INPS';
+            return;
+        }
+
+        logPagopa('âœ… Chromium avviato (Playwright, finestra 960×1080)', 'ok');
+        logPagopa('ðŸŒ Navigato: ' + (d.url || 'sito INPS PagoPA'), 'ok');
+        logPagopa('ðŸ‘¤ Inseriti CF Datore e Codice Rapporto INPS', 'ok');
+
+        if (d.captcha_image) {
+            document.getElementById('captchaContainer').style.display = 'block';
+            document.getElementById('captchaImage').src = 'data:image/png;base64,' + d.captcha_image;
+            document.getElementById('captchaInput').value = '';
+            document.getElementById('captchaInput').focus();
+            logPagopa('ðŸ” Inserisci il codice CAPTGRAPH mostrato qui sotto e clicca "Invia CAPTCHA"', 'warn');
+            logPagopa('ðŸ’¡ Il browser Chromium è in esecuzione in background.', '');
+        } else {
+            logPagopa('ðŸ” Attesa risoluzione CAPTCHA — premi Ctrl+Invio nella finestra Chromium per proseguire', 'warn');
+            logPagopa('ðŸ’¡ Il browser è in primo piano. Risolvi il CAPTGRAPH e premi Ctrl+Invio.', '');
+            document.getElementById('captchaContainer').style.display = 'none';
+        }
+
+        _pagopaAutoDelay = d.auto_delay_ms || 600;
+
+        document.getElementById('btnChiudiFinestra').disabled = false;
+        (function(){var b1=document.getElementById('ctrlInvioBadge');if(b1)b1.style.display='inline-block';})();
+
+        aggiornaStepActions('captcha', 1, 9, '', false);
+
+        // Auto-avvia attesa Ctrl+Invio in Chrome (solo foreground, nessun toggle inline)
+        var _bgModeAvvia = localStorage.getItem('pagopa_background_mode') === '1';
+        var _headlessModeAvvia = localStorage.getItem('pagopa_nascondi_chromium') === '1';
+        if (!_bgModeAvvia && !_headlessModeAvvia) {
+            setTimeout(function() { proseguiPagopa(); }, 500);
+        }
+    })
+    .catch(function(err) {
+        document.getElementById('btnAvvia').disabled = false;
+        document.getElementById('btnAvvia').innerHTML = '<i class="bi bi-robot me-1"></i> Avvia INPS';
+        logPagopa('âŒ ERRORE DI RETE: ' + err.message + ' (Verifica che il server Django sia in esecuzione)', 'err');
+    });
+}
+
+function inviaCaptcha() {
+    var input = document.getElementById('captchaInput');
+    var btn = document.getElementById('btnInviaCaptcha');
+    if (!input || !btn) return;
+    var testo = input.value.trim();
+    if (!testo) {
+        mostraToast('Inserisci il codice CAPTGRAPH', false);
+        input.focus();
+        return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-arrow-repeat me-1 spinner"></i> Invio...';
+    _pagopaCaptchaText = testo;
+    proseguiPagopa();
+}
+
+function proseguiPagopa() {
+    if (_pagopaInFlight) return;
+    _pagopaInFlight = true;
+
+    logPagopa('Esecuzione step: ' + (_pagopaStepLabels[_pagopaStep] || _pagopaStep) + '...', '');
+
+    var _bgMode = localStorage.getItem('pagopa_background_mode') === '1' ? '1' : '0';
+    var _headlessMode = localStorage.getItem('pagopa_nascondi_chromium') === '1' ? '1' : '0';
+    var _inlineMode = _bgMode === '1' || _headlessMode === '1';
+    var _captchaExtra = '';
+    if (_pagopaStep === 'captcha' && _inlineMode && _pagopaCaptchaText) {
+        _captchaExtra = '&captcha_text=' + encodeURIComponent(_pagopaCaptchaText);
+    }
+    fetch('/ajax/pagopa-prosegui/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': getCSRFToken(), 'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'background_mode=' + _bgMode + '&headless=' + _headlessMode + _captchaExtra
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        _pagopaInFlight = false;
+
+        if (!d.success) {
+            logPagopa('âŒ ERRORE (' + _pagopaStep + '): ' + d.error, 'err');
+            mostraLogsBackend(d);
+            if (d.url && d.title) {
+                logPagopa('ðŸ“„ Pagina browser: "' + d.title + '" — ' + d.url, '');
+            }
+            aggiornaStepActions(_pagopaStep, d.step_num, d.step_total, d.error, false);
+            _pagopaCaptchaText = '';
+            if (document.getElementById('captchaContainer')) document.getElementById('captchaContainer').style.display = 'none';
+            var btnCap = document.getElementById('btnInviaCaptcha');
+            if (btnCap) { btnCap.disabled = false; btnCap.innerHTML = '<i class="bi bi-send me-1"></i> Invia CAPTCHA'; }
+            return;
+        }
+
+        mostraLogsBackend(d);
+        _pagopaCaptchaText = '';
+        if (document.getElementById('captchaContainer')) document.getElementById('captchaContainer').style.display = 'none';
+        var btnCap = document.getElementById('btnInviaCaptcha');
+        if (btnCap) { btnCap.disabled = false; btnCap.innerHTML = '<i class="bi bi-send me-1"></i> Invia CAPTCHA'; }
+
+        var nextStep = d.step;
+        _pagopaStep = nextStep;
+
+        logPagopa('âœ… ' + (d.message || 'Step completato'), 'ok');
+        if (d.url && d.title) {
+            logPagopa('ðŸ“„ Pagina browser: "' + d.title + '"', '');
+            logPagopa('ðŸ”— URL: ' + d.url, '');
+        }
+        if (d.ore !== undefined) {
+            logPagopa('ðŸ“Š Ore trimestre: ' + d.ore + 'h | Paga: ' + d.paga + ' €/h | Cassa: ' + d.codice_cassa, '');
+        }
+        if (d.warning_pagopa) {
+            logPagopa('âš ï¸ ' + d.warning_pagopa, 'warn');
+        }
+        if (d.totale_inps) {
+            logPagopa('ðŸ’° Totale INPS: € ' + d.totale_inps.toFixed(2) + ' | Calcolato: € ' + (d.contrib_totali || 0).toFixed(2), '');
+            var match = Math.abs(d.totale_inps - (d.contrib_totali || 0)) <= 0.50;
+            var row = document.getElementById('inpsCompareRow');
+            var val = document.getElementById('inpsCompareVal');
+            var label = document.getElementById('inpsCompareLabel');
+            if (row && val) {
+                row.style.display = '';
+                if (match) {
+                    val.innerHTML = '<span style="color:#34d399;font-size:14px;font-weight:700;">âœ… OK</span>';
+                    label.style.color = '#34d399';
+                } else {
+                    val.innerHTML = '<span style="color:#f59e0b;font-size:14px;font-weight:700;">âš ï¸ INPS \u20ac ' + d.totale_inps.toFixed(2) + '</span>';
+                    label.style.color = '#f59e0b';
+                }
+            }
+        }
+
+        if (nextStep === 'done') {
+            logPagopa('ðŸ“ PDF salvato: ' + (d.file || ''), 'ok');
+            logPagopa('ðŸ Automazione completata con successo!', 'ok');
+            (function(){var b1=document.getElementById('ctrlInvioBadge');if(b1)b1.style.display='none';})();
+            document.getElementById('stepActions').style.display = 'none';
+
+            _ultimoPdfUrl = '/ajax/apri-pagopa-pdf/?contratto_pk=' + _pagopaContrattoPk +
+                '&trimestre=' + _pagopaTrimestre + '&anno=' + _pagopaAnno;
+            abilitaApriPdf();
+
+            document.getElementById('automationLog').innerHTML +=
+                '<div style="color:#34d399;font-size:14px;font-weight:700;padding-top:8px;border-top:1px solid #27282D;margin-top:8px;">' +
+                '\u2714 PAGOPA CREATO: ' + d.file + '</div>';
+
+            var autoCloseEl = document.getElementById('toggleAutoClose');
+            var autoShowEl = document.getElementById('toggleAutoShowPdf');
+            var closeBrowser = autoCloseEl && autoCloseEl.checked;
+            var showPdf = autoShowEl && autoShowEl.checked;
+
+            if (closeBrowser) {
+                chiudiPagopa(true).then(function(d2) {
+                    if (showPdf && d2 && d2.success) {
+                        setTimeout(function() { apriPdfPagopa(); }, 300);
+                    }
+                });
+            } else if (showPdf) {
+                setTimeout(function() { apriPdfPagopa(); }, 300);
+            }
+            setTimeout(caricaStoricoPagopa, 1000);
+        } else {
+            var nextLabel = _pagopaStepLabels[nextStep] || nextStep;
+            var prog = (d.step_num || '?') + '/' + (d.step_total || '?');
+            logPagopa('âž¡ï¸ Prossimo step [' + prog + ']: ' + nextLabel + ' — esecuzione in ' + (_pagopaAutoDelay / 1000).toFixed(1) + 's...', '');
+            aggiornaStepActions(nextStep, d.step_num, d.step_total, d.message || 'Step completato.', true);
+            if (nextStep !== 'captcha') {
+                setTimeout(function() { proseguiPagopa(); }, _pagopaAutoDelay);
+            }
+        }
+    })
+    .catch(function(err) {
+        _pagopaInFlight = false;
+        logPagopa('âŒ ERRORE DI RETE: ' + err.message + ' (Il server Django potrebbe aver riavviato il thread)', 'err');
+        logPagopa('ðŸ’¡ Ricarica la pagina e riavvia l\'automazione se il problema persiste.', 'warn');
+    });
+}
+
+var _pdfPreviewDragInit = false;
+
+function _initPdfPreviewDrag() {
+    if (_pdfPreviewDragInit) return;
+    var header = document.getElementById('pdfPreviewHeader');
+    var panel = document.getElementById('pdfPreviewFloating');
+    if (!header || !panel) return;
+    var offX, offY, isDown = false;
+    header.addEventListener('mousedown', function(e) {
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+        isDown = true;
+        var rect = panel.getBoundingClientRect();
+        offX = e.clientX - rect.left;
+        offY = e.clientY - rect.top;
+        panel.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mousemove', function(e) {
+        if (!isDown) return;
+        panel.style.left = (e.clientX - offX) + 'px';
+        panel.style.top = (e.clientY - offY) + 'px';
+        panel.style.right = 'auto';
+    });
+    document.addEventListener('mouseup', function() {
+        isDown = false;
+        panel.style.cursor = '';
+    });
+    _pdfPreviewDragInit = true;
+}
+
+function _scaricaPdfDaPreview() {
+    if (_ultimoPdfUrl) window.open(_ultimoPdfUrl, '_blank');
+}
+
+function _chiudiPdfPreview() {
+    document.getElementById('pdfPreviewFloating').style.display = 'none';
+    document.getElementById('pdfPreviewFrame').src = 'about:blank';
+}
+
+// Init: auto-seleziona trimestre e anno, auto-carica
+(function() {
+    var def = determinaTrimestreDefault();
+    selezionaTrimestre(def.q);
+    document.getElementById('selAnno').value = def.anno;
+    _pagopaAnno = def.anno;
+
+    aggiornaCounter();
+
+    // Click handler per radio-card → auto-ricarica
+    document.querySelectorAll('#trimestreRadioGroup .radio-card').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var val = this.querySelector('input').value;
+            selezionaTrimestre(val);
+            caricaDatiPagopa();
+        });
+    });
+
+    // Change anno → auto-ricarica
+    document.getElementById('selAnno').addEventListener('change', function() {
+        caricaDatiPagopa();
+    });
+
+    // Change contratto → auto-ricarica
+    document.getElementById('selContratto').addEventListener('change', function() {
+        aggiornaCounter();
+        caricaDatiPagopa();
+    });
+
+    // Ripristina stato toggle auto-close / auto-show PDF
+    var toggleAutoClose = document.getElementById('toggleAutoClose');
+    if (toggleAutoClose) {
+        toggleAutoClose.checked = localStorage.getItem('pagopa_auto_close') === '1';
+    }
+    var toggleAutoShowPdf = document.getElementById('toggleAutoShowPdf');
+    if (toggleAutoShowPdf) {
+        toggleAutoShowPdf.checked = localStorage.getItem('pagopa_auto_show_pdf') === '1';
+    }
+    var toggleBg = document.getElementById('toggleBackgroundMode');
+    if (toggleBg) {
+        toggleBg.checked = localStorage.getItem('pagopa_background_mode') === '1';
+    }
+    var toggleNc = document.getElementById('toggleNascondiChromium');
+    if (toggleNc) {
+        toggleNc.checked = localStorage.getItem('pagopa_nascondi_chromium') === '1';
+    }
+
+    var captchaInput = document.getElementById('captchaInput');
+    if (captchaInput) {
+        captchaInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                inviaCaptcha();
+            }
+        });
+    }
+
+    // Auto-carica subito (contratto da URL oppure primo)
+    var sel = document.getElementById('selContratto');
+    if (sel.options.length > 0) {
+        var pkSelezionato = '{{ contratto_pk|default:"" }}';
+        if (pkSelezionato) {
+            for (var i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value === pkSelezionato) {
+                    sel.selectedIndex = i;
+                    break;
+                }
+            }
+        } else {
+            sel.selectedIndex = 0;
+        }
+        aggiornaCounter();
+        caricaDatiPagopa();
+        console.log('[PAGOPA] Inizializzato: contratto=' + sel.value + ', trimestre=' + def.q + ', anno=' + def.anno);
+    }
+})();
+// Sincronizza toggle Auto all'avvio
+(function(){
+  var t = document.getElementById('toggleOreAuto');
+  if (t) {
+    if (localStorage.getItem('pagopa_ore_auto') === null) localStorage.setItem('pagopa_ore_auto', '0');
+    t.checked = localStorage.getItem('pagopa_ore_auto') !== '0';
+  }
+})();
+</script>
+
+{% include 'paghe/partials/_pagopa_help_modal.html' %}
+{% endblock %}

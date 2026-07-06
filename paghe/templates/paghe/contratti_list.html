@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contratti - {{ opzioni.nome_programma|default:"GESTIONE PAGHE" }}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --bg-base: #0E0F11; --bg-surface: #17181C; --bg-hover: #1C1C1F; --border-subtle: #27282D; --text-primary: #EDEDED; --text-secondary: #8A8F98; --accent-color: #5E6AD2; }
+        body { background-color: var(--bg-base); color: var(--text-primary); font-family: 'Inter', sans-serif; }
+        .sidebar { background: var(--bg-base); border-right: 1px solid var(--border-subtle); height: 100vh; width: 260px; position: fixed; padding: 15px 12px; display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; }
+        .sidebar-brand { margin-bottom: 25px; }
+        .sidebar-brand img { width: 100%; max-height: 220px; object-fit: contain; }
+        .nav-group-label { color: #505050; font-size: 11px; font-weight: 800; text-transform: uppercase; margin: 20px 0 8px 10px; }
+        .nav-link-custom { color: var(--text-secondary); text-decoration: none; font-size: 14px; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; transition: all 0.25s; }
+        .nav-link-custom:hover, .nav-link-custom.active { color: white; background-color: var(--bg-surface); }
+        .nav-link-custom i { margin-right: 12px; }
+        .sidebar-footer { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border-subtle); }
+        .main-content { margin-left: 260px; padding: 40px; }
+        .header-section { margin-bottom: 40px; }
+        .header-section h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .btn-new { background: var(--accent-color); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 500; transition: all 0.3s; }
+        .btn-new:hover { background: #7B8BF5; box-shadow: 0 8px 20px rgba(94, 106, 210, 0.5); }
+        .table-container { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; }
+        .table { margin: 0; }
+        .table thead { background: var(--bg-base); border-bottom: 1px solid var(--border-subtle); }
+        .table thead th { color: var(--text-secondary); font-weight: 600; font-size: 12px; text-transform: uppercase; padding: 16px; border: none; }
+        .table tbody td { padding: 16px; border: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .table tbody tr:hover { background: var(--bg-hover); }
+        .badge-status { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .badge-active { background: rgba(76, 175, 80, 0.2); color: #4CAF50; }
+        .badge-inactive { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-state-icon { font-size: 48px; opacity: 0.5; margin-bottom: 16px; }
+        .breadcrumb-custom { background: transparent; padding: 0 0 20px 0; margin: 0; }
+        .breadcrumb-custom .breadcrumb-item { color: var(--text-secondary); font-size: 13px; }
+        .breadcrumb-custom .breadcrumb-item a { color: var(--accent-color); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            {% if opzioni.logo %}<img src="{{ opzioni.logo.url }}" alt="Logo">{% endif %}
+        </div>
+        <nav class="flex-grow-1 overflow-auto">
+            <div class="nav-group-label">Menu</div>
+            <a href="{% url 'dashboard' %}" class="nav-link-custom"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+            <div class="nav-group-label">Anagrafiche</div>
+            <a href="{% url 'datori_list' %}" class="nav-link-custom"><i class="bi bi-person-vcard"></i> Datori di Lavoro</a>
+            <a href="{% url 'lavoratori_list' %}" class="nav-link-custom"><i class="bi bi-people"></i> Lavoratori</a>
+            <a href="{% url 'beneficiari_list' %}" class="nav-link-custom"><i class="bi bi-person-heart"></i> Beneficiario</a>
+            <div class="nav-group-label">Operazioni</div>
+            <a href="{% url 'contratti_list' %}" class="nav-link-custom active"><i class="bi bi-file-earmark-plus"></i> Nuova Pratica</a>
+            <a href="/admin/" class="nav-link-custom"><i class="bi bi-calculator"></i> Calcolo Buste</a>
+            <div class="nav-group-label">Sistema</div>
+            <a href="/admin/paghe/gestorebackup/" class="nav-link-custom"><i class="bi bi-database"></i> Backup</a>
+            <a href="/admin/" class="nav-link-custom"><i class="bi bi-gear"></i> Impostazioni</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div style="font-weight: 600; color: white; font-size: 11px; margin-bottom: 4px;">{{ opzioni.nome_programma|upper|default:"GESTIONE PAGHE" }}</div>
+            <div style="font-size: 9px; opacity: 0.75;"><i class="bi bi-info-circle" style="font-size: 8px;"></i> v{{ opzioni.versione_programma|default:"1.1" }}</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <nav aria-label="breadcrumb" class="breadcrumb-custom">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}"><i class="bi bi-house"></i> Home</a></li>
+                <li class="breadcrumb-item active">Pratiche / Contratti</li>
+            </ol>
+        </nav>
+
+        <div class="header-section d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="bi bi-file-earmark-plus"></i> Pratiche / Contratti Attivi</h1>
+                <p>Gestione contratti di lavoro - {{ count }} record</p>
+            </div>
+            <button class="btn-new" onclick="mostraToast('Aggiungi nuovo contratto dal menu principale', false);">
+                <i class="bi bi-plus-lg"></i> Nuovo Contratto
+            </button>
+        </div>
+
+        {% if contratti %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Datore / Lavoratore</th>
+                            <th>Data Inizio</th>
+                            <th>Data Fine</th>
+                            <th>Ore Settimanali</th>
+                            <th>Stato</th>
+                            <th style="text-align: center;">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contratto in contratti %}
+                        <tr>
+                            <td>
+                                <strong style="display: block; margin-bottom: 4px;">{{ contratto.datore.nome_cognome }}</strong>
+                                <span style="font-size: 12px; color: var(--text-secondary);">{{ contratto.lavoratore.nome_cognome }}</span>
+                            </td>
+                            <td>{{ contratto.data_inizio|date:"d/m/Y"|default:"-" }}</td>
+                            <td>{{ contratto.data_fine|date:"d/m/Y"|default:"In corso" }}</td>
+                            <td>{{ contratto.ore_settimanali|default:"-" }}</td>
+                            <td>
+                                <span class="badge-status {% if contratto.stato == 'ATTIVO' %}badge-active{% else %}badge-inactive{% endif %}">
+                                    {{ contratto.stato|default:"SOSPESO" }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="/admin/paghe/contrattolavoro/{{ contratto.pk }}/change/" class="btn btn-sm" style="color: var(--accent-color); background: transparent; border: 1px solid var(--border-subtle); padding: 4px 8px; font-size: 11px; border-radius: 6px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+                <p style="color: var(--text-secondary);">Nessun contratto trovato</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

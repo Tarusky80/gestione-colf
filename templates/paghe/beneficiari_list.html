@@ -1,0 +1,248 @@
+﻿{% extends 'base.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'datori_list' %}">Anagrafiche</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Beneficiari</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">BENEFICIARI
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      <div class="d-inline-block float-end">
+        <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);margin-right:6px;vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
+        <a href="{% url 'ajax_esporta_xlsx' 'beneficiari' %}" class="btn btn-sm btn-ghost-primary" style="padding:5px 12px;font-size:11px;margin-left:6px;"><i class="bi bi-download me-1"></i> Export XLSX</a>
+        <button class="btn btn-sm btn-ghost-success" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalBeneficiari')).show();" style="padding:5px 12px;font-size:11px;margin-left:4px;"><i class="bi bi-upload me-1"></i> Importa</button>
+      </div>
+    </h1>
+    <p class="text-secondary small mb-0">Gestione delle anagrafiche dei beneficiari.</p>
+</div>
+
+<div class="mb-3 d-flex gap-2 align-items-center" id="viewTabs">
+    <button class="btn btn-sm view-tab btn-ghost-primary active-tab" id="tabLista" onclick="mostraVista('lista')" style="padding:5px 14px;font-size:12px;"><i class="bi bi-list-ul me-1"></i> Lista</button>
+    <button class="btn btn-sm view-tab btn-ghost" id="tabMappa" onclick="mostraVista('mappa')" style="padding:5px 14px;font-size:12px;"><i class="bi bi-geo-alt me-1"></i> Mappa</button>
+</div>
+
+<div id="tableView">
+<div class="mb-3 row g-3 align-items-end" style="max-width: 600px;">
+    <div class="col-md-6">
+        <div style="position: relative;">
+            <i class="bi bi-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8A8F98; font-size: 14px;"></i>
+            <input type="text" id="filterBen" class="search-input-main" placeholder="Filtra beneficiari..." onkeyup="filterTable('filterBen', 'benTable', 0, 1);aggiornaConteggio('benTable','fCount')" style="padding: 10px 14px 10px 38px; font-size: 13px; border-radius: 10px;">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label class="mb-1 fw-bold" class="c-10-up">Comune</label>
+        <select id="fComune" class="form-control" onchange="filtraPerComune('fComune', 'benTable')" style="background:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:8px 12px;border-radius:8px;">
+            <option value="">Tutti</option>
+            {% for c in comuni %}
+            <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div class="custom-table-container">
+    <table class="table custom-table sortable" id="benTable">
+        <thead>
+            <tr>
+                <th>Nome e Cognome</th>
+                <th>Codice Fiscale</th>
+                <th>Indirizzo</th>
+                <th>Comune</th>
+                <th>Email</th>
+                <th>Telefono</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for beneficiario in beneficiari %}
+            <tr class="clickable-row" data-type="beneficiario" data-pk="{{ beneficiario.pk }}" data-title="{{ beneficiario.nome_cognome }}" data-sub="{{ beneficiario.codice_fiscale }}" data-comune="{{ beneficiario.comune|default:'' }}" data-email="{{ beneficiario.email|default:'' }}" data-telefono="{{ beneficiario.telefono|default:'' }}">
+                <td><div class="fw-bold">{{ beneficiario.nome_cognome }}</div></td>
+                <td><div class="text-secondary">{{ beneficiario.codice_fiscale }}</div></td>
+                <td>{{ beneficiario.indirizzo|default:"-" }}</td>
+                <td>{{ beneficiario.comune|default:"-" }}</td>
+                <td>{{ beneficiario.email|default:"-" }}</td>
+                <td>{{ beneficiario.telefono|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-secondary py-5">
+                    <i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>
+                    Nessun beneficiario registrato
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+
+<div id="mappaView" style="display:none;">
+    <div class="mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="d-flex gap-2 align-items-center">
+            <select id="mapComuneFiltro" class="form-control" style="width:auto;background:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 12px;border-radius:8px;">
+                <option value="">Tutti i comuni</option>
+                {% for c in comuni %}
+                <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-sm btn-ghost-primary" onclick="caricaMappaBen()"><i class="bi bi-map me-1"></i> Carica mappa</button>
+            <button class="btn btn-sm btn-ghost" title="Aiuto mappa" onclick="mostraAiutoMappa()" style="border-radius:50%;width:30px;height:30px;padding:0;font-size:14px;line-height:1;"><i class="bi bi-question-lg"></i></button>
+        </div>
+        <button class="btn btn-sm btn-ghost-danger" onclick="mostraVista('lista')" style="padding:5px 14px;font-size:12px;"><i class="bi bi-x-lg me-1"></i> Chiudi mappa</button>
+    </div>
+    <div id="mappaContainerBen" style="height:calc(100vh - 280px);border-radius:12px;border:1px solid #27282D;overflow:hidden;"></div>
+    <div id="mappaPlaceholderBen" class="text-center py-5" style="color:#545;background:#17181C;border:1px solid #27282D;border-radius:12px;">
+        <i class="bi bi-map" style="font-size:48px;display:block;margin-bottom:12px;"></i>
+        <div style="font-size:14px;">Clicca "Carica mappa" per visualizzare i beneficiari sulla mappa</div>
+    </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Beneficiari
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Qui trovi l'elenco completo di tutti i <b>beneficiari</b> registrati nel gestionale. I beneficiari sono le persone assistite dal lavoratore, tipicamente anziani o persone non autosufficienti. Ogni riga mostra nome e cognome, codice fiscale, indirizzo, comune, email e telefono.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Vista Lista</b><br>
+        <b>1.</b> <b>Clicca su una riga</b> per aprire il pannello delle azioni rapide: Modifica, Duplica, Elimina, Documenti.<br>
+        <b>2.</b> Usa il <b>campo di ricerca</b> per filtrare in tempo reale per nome o codice fiscale.<br>
+        <b>3.</b> Usa il menu a tendina <b>Comune</b> per filtrare per comune di residenza.<br>
+        <b>4.</b> <b>Export XLSX</b> — scarica l'intero elenco in formato Excel.<br>
+        <b>5.</b> <b>Importa</b> — carica un file XLSX per importare più beneficiari in una volta.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Vista Mappa</b><br>
+        <b>1.</b> Clicca su <b>"Mappa"</b> nella barra in alto per passare alla vista geografica.<br>
+        <b>2.</b> Seleziona un <b>comune</b> dal filtro e clicca <b>"Carica mappa"</b> per visualizzare i beneficiari.<br>
+        <b>3.</b> I marker sono raggruppati: clicca su un gruppo per zoomare, clicca su un marker singolo per vedere nome, indirizzo e un link per aprire la scheda.<br>
+        <b>4.</b> Usa <b>"Chiudi mappa"</b> per tornare alla vista Lista.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Modifica e Duplica</b><br>
+        La modifica apre un pannello laterale (offcanvas) con tutti i campi dell'anagrafica. La duplica crea una copia esatta da modificare. L'eliminazione sposta il record nella pagina "Eliminati" da cui può essere ripristinato.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'paghe/_import_xlsx_modal.html' with tipo='beneficiari' %}
+<script>
+var mappaBenInizializzata = false;
+var mappaBenObj = null;
+var markersBenLayer = null;
+var helpModal = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    aggiornaConteggio('benTable', 'fCount');
+    {% if view_mappa %}
+    mostraVista('mappa');
+    {% endif %}
+});
+
+function mostraVista(vista) {
+    var tabLista = document.getElementById('tabLista');
+    var tabMappa = document.getElementById('tabMappa');
+    var tableView = document.getElementById('tableView');
+    var mappaView = document.getElementById('mappaView');
+
+    if (vista === 'mappa') {
+        tableView.style.display = 'none';
+        mappaView.style.display = 'block';
+        tabLista.style.background = 'transparent';
+        tabLista.style.color = '#8A8F98';
+        tabLista.style.borderColor = '#333';
+        tabMappa.style.background = 'rgba(94,106,210,0.15)';
+        tabMappa.style.color = '#9ca3ff';
+        tabMappa.style.borderColor = 'rgba(94,106,210,0.25)';
+        if (mappaBenInizializzata) {
+            setTimeout(function() { mappaBenObj.invalidateSize(); }, 300);
+        }
+        var params = new URLSearchParams(window.location.search);
+        params.set('view', 'mappa');
+        var newUrl = window.location.pathname + '?' + params.toString();
+        window.history.replaceState({}, '', newUrl);
+    } else {
+        tableView.style.display = 'block';
+        mappaView.style.display = 'none';
+        tabMappa.style.background = 'transparent';
+        tabMappa.style.color = '#8A8F98';
+        tabMappa.style.borderColor = '#333';
+        tabLista.style.background = 'rgba(94,106,210,0.15)';
+        tabLista.style.color = '#9ca3ff';
+        tabLista.style.borderColor = 'rgba(94,106,210,0.25)';
+        var params2 = new URLSearchParams(window.location.search);
+        params2.delete('view');
+        var newUrl2 = window.location.pathname + (params2.toString() ? '?' + params2.toString() : '');
+        window.history.replaceState({}, '', newUrl2);
+    }
+}
+
+function caricaMappaBen() {
+    var comune = document.getElementById('mapComuneFiltro').value;
+    var url = '/ajax/beneficiari-mappa/?comune=' + encodeURIComponent(comune);
+
+    fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+        if (!mappaBenInizializzata) {
+            document.getElementById('mappaPlaceholderBen').style.display = 'none';
+            document.getElementById('mappaContainerBen').style.display = 'block';
+            mappaBenObj = L.map('mappaContainerBen').setView([41.9, 12.5], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
+                maxZoom: 18
+            }).addTo(mappaBenObj);
+            markersBenLayer = L.markerClusterGroup();
+            mappaBenObj.addLayer(markersBenLayer);
+            mappaBenInizializzata = true;
+            setTimeout(function(){ mappaBenObj.invalidateSize(); }, 300);
+        } else {
+            markersBenLayer.clearLayers();
+        }
+
+        if (data.length === 0) {
+            mappaBenObj.setView([41.9, 12.5], 5);
+            return;
+        }
+
+        var bounds = [];
+        data.forEach(function(b) {
+            if (b.lat && b.lng) {
+                var marker = L.marker([b.lat, b.lng]).bindPopup(
+                    '<div style="font-size:13px;font-weight:600;">' + escapeHtml(b.nome) + '</div>' +
+                    '<div style="font-size:11px;color:#666;">' + escapeHtml(b.indirizzo) + '</div>' +
+                    '<div style="font-size:11px;color:#666;">' + escapeHtml(b.comune) + '</div>' +
+                    '<a href="/beneficiari/" style="font-size:11px;color:#5E6AD2;font-weight:600;text-decoration:none;">Apri scheda &rarr;</a>'
+                );
+                markersBenLayer.addLayer(marker);
+                bounds.push([b.lat, b.lng]);
+            }
+        });
+
+        if (bounds.length > 0) {
+            mappaBenObj.fitBounds(bounds, {padding: [30, 30]});
+        }
+    });
+}
+
+function mostraAiutoMappa() {
+    if (!helpModal) {
+        helpModal = new bootstrap.Modal(document.getElementById('helpModal'));
+    }
+    helpModal.show();
+}
+
+function escapeHtml(t) {
+    if (!t) return '';
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+{% endblock %}

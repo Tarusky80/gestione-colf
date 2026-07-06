@@ -1,0 +1,54 @@
+# file: paghe/context_processors.py
+from django.urls import reverse
+from .models import ContrattoAttivo, DatoreLavoro, Lavoratore, Beneficiario, ScorciatoiaTastiera, RichiestaModificaDatore
+from paghe.views._common_imports import get_opzioni
+
+def dashboard_stats(request):
+    ctx = {}
+    if request.path.startswith('/admin/'):
+        ctx.update({
+            'total_attivi': ContrattoAttivo.objects.count(),
+            'datori_count': DatoreLavoro.objects.count(),
+            'lavoratori_count': Lavoratore.objects.count(),
+            'beneficiari_count': Beneficiario.objects.count(),
+            'ultimi_contratti': ContrattoAttivo.objects.select_related('datore', 'lavoratore').order_by('-data_assunzione')[:8],
+        })
+    ctx['richieste_pendenti'] = RichiestaModificaDatore.objects.filter(stato='INVIATA', eliminata=False).count()
+    return ctx
+
+def global_opzioni(request):
+    ctx = {'opzioni': get_opzioni()}
+    ctx['db_profile'] = getattr(request, 'db_profile', 'default')
+    return ctx
+
+
+def shortcut_keys(request):
+    attive = ScorciatoiaTastiera.objects.filter(attiva=True).exclude(tasto__isnull=True).exclude(tasto__exact='')
+    shortcut_map = {}
+    shortcut_badges = {}
+    for s in attive:
+        key = s.tasto.upper()
+        shortcut_map[key] = s.menu_id
+        shortcut_badges[s.menu_id] = key
+    return {
+        'shortcut_map': shortcut_map,
+        'shortcut_badges': shortcut_badges,
+        'shortcut_map_json': __import__('json').dumps(shortcut_map),
+    }
+
+
+def js_urls(request):
+    """Espone URL nominate come oggetto JSON per JavaScript."""
+    urls = {}
+    try:
+        nome_viste = [
+            'dashboard', 'calcoli_list', 'buste_archivio', 'datori_list',
+            'lavoratori_list', 'beneficiari_list', 'contratti_list',
+            'documenti_list', 'stampe_invii', 'liste_list',
+            'impostazioni_page', 'backup_page',
+        ]
+        for nome in nome_viste:
+            urls[nome] = reverse(nome)
+    except Exception:
+        pass
+    return {'js_urls': __import__('json').dumps(urls)}

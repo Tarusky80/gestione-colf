@@ -1,0 +1,822 @@
+{% extends 'base.html' %}
+{% load tabelle_tags %}
+
+{% block extra_css %}
+<style>
+@media print {
+    @page { margin: 15mm 18mm; size: A4 portrait; }
+    * { box-shadow: none !important; text-shadow: none !important; }
+    body { background: white !important; color: #111 !important; font-family: 'Segoe UI', 'Arial', sans-serif !important; }
+    .sidebar, .nav-group-divider, .nav-group, .sidebar-footer,
+    #fContratto, #fMese, #fAnno, #btnPdf, #btnContratto,
+    .navbar, .main-header, footer, .no-print { display: none !important; }
+    .main-content, .container-fluid, .row { margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; float: none !important; }
+    #resultContainer { display: block !important; }
+    #resultContent > div { border: none !important; border-radius: 0 !important; padding: 0 !important; }
+}
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 22px;
+    flex-shrink: 0;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+.toggle-switch .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #555;
+    border: 1px solid #666;
+    border-radius: 22px;
+    transition: 0.3s;
+    width: auto;
+    height: auto;
+    margin-left: 0;
+}
+.toggle-switch .toggle-slider::after {
+    display: none;
+}
+.toggle-switch .toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 1px;
+    background-color: #ccc;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+.toggle-switch input:checked + .toggle-slider {
+    background-color: rgba(52,211,153,0.3);
+    border-color: #34d399;
+}
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+    background-color: #34d399;
+}
+.toggle-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+.inv-input {
+    background-color: #09090B;
+    border: 1px solid #27282D;
+    color: #EDEDED;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    width: 100%;
+    transition: border-color 0.3s;
+}
+.inv-input:focus {
+    outline: none;
+    border-color: #34d399;
+}
+.inv-input.active-input {
+    border-color: #34d399;
+    box-shadow: 0 0 0 2px rgba(52,211,153,0.15);
+}
+.inv-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #8A8F98;
+    font-weight: 700;
+    text-align: center;
+    display: block;
+    margin-bottom: 4px;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Calcolo Inverso</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-arrow-left-right me-2"></i>CALCOLO INVERSO</h1>
+        <p class="text-secondary small mb-0">Inserisci un valore per calcolare tutti gli altri parametri della busta paga.</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm" onclick="salvaBusta()" style="background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnSalvaBusta" disabled>
+            <i class="bi bi-save me-1"></i> SALVA BUSTA
+        </button>
+        <button class="btn btn-sm" onclick="vaiContratto()" style="background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnContratto" disabled>
+            <i class="bi bi-box-arrow-up-right me-1"></i> VAI AL CONTRATTO
+        </button>
+        <button class="btn btn-sm" onclick="apriCcnlOcchio()" style="background:rgba(94,106,210,0.12);color:#818cf8;border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;" id="btnCcnlOcchio" disabled>
+            <i class="bi bi-eye me-1"></i> CCNL
+        </button>
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#5E6AD2;border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;text-decoration:none;">
+            <i class="bi bi-journal-text me-1"></i> Archivio Buste
+        </a>
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="background:transparent;color:#8A8F98;border:1px solid #333;border-radius:50%;width:30px;height:30px;padding:0;font-size:14px;font-weight:700;line-height:1;flex-shrink:0;vertical-align:middle;margin-left:8px;"><i class="bi bi-question-lg"></i></button>
+        <button class="btn btn-sm" onclick="downloadPdf()" style="background:rgba(94,106,210,0.15);color:#5E6AD2;border:1px solid rgba(94,106,210,0.25);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnPdf" disabled>
+            <i class="bi bi-file-pdf me-1"></i> PDF
+        </button>
+        <button class="btn btn-sm" onclick="stampaBustaCalcolo(this)" style="background:#ffc107;color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;" id="btnStampa" disabled>
+            <i class="bi bi-printer me-1"></i> STAMPA
+        </button>
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background:#17181C;border:1px solid #27282D;border-radius:14px;">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="mb-1 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Contratto</label>
+            <select id="fContratto" class="form-control" onchange="selezionaContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#ffffff;font-size:13px;padding:8px 12px;border-radius:8px;">
+                <option value="">— Seleziona un contratto —</option>
+                {% for c in contratti %}
+                <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c.datore.nome_cognome }} — {{ c.lavoratore.nome_cognome }} ({{ c.parametri_minimi.livello.codice|default:"?" }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="mb-1 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Mese</label>
+            <select id="fMese" class="form-control" onchange="selezionaContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#ffffff;font-size:13px;padding:8px 12px;border-radius:8px;">
+                {% for m in mesi_range %}
+                <option value="{{ m|stringformat:'02d' }}" {% if m == mese %}selected{% endif %}>{{ m|stringformat:'02d' }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="mb-1 fw-bold" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;">Anno</label>
+            <select id="fAnno" class="form-control" onchange="selezionaContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#ffffff;font-size:13px;padding:8px 12px;border-radius:8px;">
+                {% for a in anni_range %}
+                <option value="{{ a }}" {% if a == anno %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background:#17181C;border:1px solid #27282D;border-radius:14px;" id="inputContainer">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <span class="inv-label">Ore Mensili</span>
+            <input type="number" id="invOreMensili" class="inv-input" step="0.01" min="0" placeholder="0" onfocus="attivaInput('ore_mensili')" oninput="calcolaInverso()">
+        </div>
+        <div class="col-md-3">
+            <span class="inv-label">Ore Settimanali</span>
+            <input type="number" id="invOreSettimanali" class="inv-input" step="0.01" min="0" placeholder="0" onfocus="attivaInput('ore_settimanali')" oninput="calcolaInverso()">
+        </div>
+        <div class="col-md-3">
+            <span class="inv-label">Lordo (€)</span>
+            <input type="number" id="invLordo" class="inv-input" step="0.01" min="0" placeholder="0,00" onfocus="attivaInput('lordo')" oninput="calcolaInverso()">
+        </div>
+        <div class="col-md-3">
+            <span class="inv-label">Netto (€)</span>
+            <input type="number" id="invNetto" class="inv-input" step="0.01" min="0" placeholder="0,00" onfocus="attivaInput('netto')" oninput="calcolaInverso()">
+        </div>
+    </div>
+</div>
+
+<div class="p-2 mb-3" style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;display:none;" id="controlsContainer">
+    <div class="d-flex align-items-center flex-wrap gap-3" style="font-size:11px;color:#8A8F98;">
+        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Convivenza</span>
+        <span class="toggle-item">
+            <span>Pranzo</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="inclPranzo" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>Cena</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="inclCena" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>Alloggio</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="inclAlloggio" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <div class="d-flex align-items-center gap-1">
+            <span>Giorni:</span>
+            <input type="number" id="giorniConv" value="26" min="1" max="31" onchange="calcolaInverso()" style="width:50px;background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:4px 6px;border-radius:6px;font-size:12px;text-align:center;">
+        </div>
+        <div id="convRiepilogo" style="font-size:10px;color:#5C5F66;font-style:italic;"></div>
+
+        <span style="width:1px;height:20px;background:#27282D;"></span>
+
+        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Indennità</span>
+        <span class="toggle-item">
+            <span>Funzione</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="indFunzione" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>Bambini &lt;6</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="indBambini6" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>Più Assistiti</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="indPiuAssistiti" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>Cert. Qualità</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="indCertQualita" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+
+        <span style="width:1px;height:20px;background:#27282D;"></span>
+
+        <span class="toggle-item">
+            <span>Scatti Anzianità</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggleScatti" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>TFR</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="rateoTfr" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>13ª</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="rateo13ma" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>Ferie</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="rateoFerie" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+        <span class="toggle-item">
+            <span>Festivi</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="rateoFestivi" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+
+        <span style="width:1px;height:20px;background:#27282D;"></span>
+
+        <span class="toggle-item">
+            <span style="color:#8A8F98;">Offusca dati</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="offuscaToggle" onchange="calcolaInverso()">
+                <span class="toggle-slider"></span>
+            </label>
+        </span>
+
+        <button onclick="resetToggles()" title="Ripristina valori contratto" style="background:transparent;border:1px solid #5E6AD2;color:#5E6AD2;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;margin-left:auto;"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+    </div>
+</div>
+
+<div id="resultContainer" style="display:none;">
+    <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+    </div>
+    <div id="resultLoading" class="text-center py-5" style="display:none;">
+        <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
+        <div class="mt-2 text-secondary small">Calcolo in corso...</div>
+    </div>
+    <div id="resultContent"></div>
+</div>
+
+<div id="resultEmpty" class="text-center py-5" style="color:#5C5F66;">
+    <i class="bi bi-arrow-left-right fs-1 d-block mb-3" style="color:#27282D;"></i>
+    <div>Seleziona un contratto e inserisci un valore per iniziare il calcolo.</div>
+</div>
+<!-- HELP MODAL -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Calcolo Inverso</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+Il <b>Calcolo Inverso</b> funziona al contrario delle altre pagine: invece di inserire le ore e vedere quanto viene in busta, tu inserisci <b>UN SOLO valore</b> (ore, lordo, netto o budget) e il sistema calcola automaticamente <b>TUTTI</b> gli altri parametri della busta paga.<br><br>
+<b>Esempi pratici:</b><br>
+— "Quante ore servono per avere un netto di €800?" → inserisci 800 nel campo Netto.<br>
+— "Con un budget di €600, quanto prende il lavoratore?" → inserisci 600 nel campo Budget.<br>
+— "Se lavoro 150 ore al mese, quanto è il netto?" → inserisci 150 nel campo Ore.<br>
+— "Voglio un lordo di €900, quante ore servono?" → inserisci 900 in Lordo.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa — passo passo</b><br>
+<b>1.</b> Scegli un contratto dal menu a tendina. Il sistema carica i dati base (paga oraria, livello, eventuali progetti).<br>
+<b>2.</b> Clicca su <b>UNO</b> dei campi editabili per attivarlo (il campo si illumina):<br>
+&nbsp;&nbsp;— <b>Ore mensili:</b> inserisci le ore che vuoi calcolare.<br>
+&nbsp;&nbsp;— <b>Ore settimanali:</b> alternativa, inserisci le ore a settimana (il sistema calcola le ore mensili).<br>
+&nbsp;&nbsp;— <b>Lordo obiettivo:</b> quanto vuoi che sia il lordo totale.<br>
+&nbsp;&nbsp;— <b>Netto obiettivo:</b> quanto vuoi che il lavoratore riceva in tasca.<br>
+&nbsp;&nbsp;— <b>Budget:</b> quanto budget vuoi usare (se il contratto ha progetti).<br><br>
+<b>3.</b> Inserisci il valore. Gli altri campi si aggiornano automaticamente.<br>
+<b>4.</b> Regola i toggle (ratei, indennità, scatti, vitto/alloggio) per vedere come cambia il risultato.<br>
+<b>5.</b> Leggi il risultato: vedrai la busta paga completa con tutti i parametri calcolati.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Quale campo scegliere?</b><br>
+— <b>Ore mensili / Ore settimanali:</b> se sai quante ore farà lavorare il collaboratore e vuoi sapere quanto costerà (lordo, netto, contributi).<br>
+— <b>Lordo obiettivo:</b> se hai un importo lordo massimo da non superare (es. "non voglio superare €800 di lordo").<br>
+— <b>Netto obiettivo:</b> se il lavoratore chiede un netto specifico (es. "voglio €600 netti"). Il sistema calcola quante ore servono e quanto sarà il costo totale.<br>
+— <b>Budget:</b> se hai un budget fisso da un progetto e vuoi sapere quante ore puoi pagare.<br><br>
+<b>Importante:</b> puoi attivare solo UN campo alla volta. Se cambi campo, il precedente viene disattivato.</p>
+
+<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Regole e Vincoli</b><br>
+Il calcolo inverso rispetta tutte le regole del CCNL:<br>
+— Contributi INPS calcolati sulle ore INPS arrotondate.<br>
+— Prorating sul budget (se attivo) — se il budget non basta, il sistema scala proporzionalmente.<br>
+— Aliquote contributive corrette per fascia oraria (sopra/sotto 24h).<br>
+— Ratei, indennità e scatti applicati secondo le regole contrattuali.<br><br>
+Il risultato include anche l'<b>offset visivo</b> che nasconde i dati sensibili se attivi l'apposito toggle.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var contrattiList = [];
+var currIdx = -1;
+var _activeInput = null;
+var _lastData = null;
+
+(function() {
+    var sel = document.getElementById('fContratto');
+    contrattiList = [];
+    for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value) contrattiList.push(sel.options[i].value);
+    }
+})();
+
+window.attivaInput = function(id) {
+    _activeInput = id;
+    document.querySelectorAll('.inv-input').forEach(function(el) { el.classList.remove('active-input'); });
+    document.getElementById('inv' + id.charAt(0).toUpperCase() + id.slice(1)).classList.add('active-input');
+};
+
+window.selezionaContratto = function() {
+    var sel = document.getElementById('fContratto');
+    var pk = sel.value;
+    if (!pk) {
+        document.getElementById('resultContainer').style.display = 'none';
+        document.getElementById('resultEmpty').style.display = 'block';
+        document.getElementById('btnPdf').disabled = true;
+        document.getElementById('btnSalvaBusta').disabled = true;
+        currIdx = -1;
+        return;
+    }
+    currIdx = contrattiList.indexOf(pk);
+    document.getElementById('resultEmpty').style.display = 'none';
+    document.getElementById('resultContainer').style.display = 'block';
+    document.getElementById('controlsContainer').style.display = 'block';
+    document.getElementById('btnContratto').disabled = false;
+    document.getElementById('btnContratto').dataset.pk = pk;
+    document.getElementById('btnPdf').disabled = true;
+    document.getElementById('btnPdf').dataset.pk = pk;
+    document.getElementById('btnSalvaBusta').disabled = false;
+    document.getElementById('btnSalvaBusta').dataset.pk = pk;
+    _lastData = null;
+
+    fetch('/ajax/calcola-busta-inversa/' + pk + '/?mese=' + document.getElementById('fMese').value + '&anno=' + document.getElementById('fAnno').value, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'same-origin'
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        if (d.errore) return;
+        impostaToggle(d);
+        if (d.solo_flags) {
+            document.getElementById('resultContent').innerHTML = '';
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('resultEmpty').style.display = 'block';
+            return;
+        }
+        aggiornaConvRiepilogo(d);
+    })
+    .catch(function(e) {});
+};
+
+window.calcolaInverso = function() {
+    var pk = document.getElementById('btnPdf').dataset.pk;
+    if (!pk) return;
+
+    var oreMensili = document.getElementById('invOreMensili').value;
+    var oreSett = document.getElementById('invOreSettimanali').value;
+    var lordo = document.getElementById('invLordo').value;
+    var netto = document.getElementById('invNetto').value;
+
+    // Se tutti vuoti, nascondi risultati
+    if (!oreMensili && !oreSett && !lordo && !netto) {
+        document.getElementById('resultContent').innerHTML = '';
+        document.getElementById('resultContainer').style.display = 'none';
+        document.getElementById('resultEmpty').style.display = 'block';
+        return;
+    }
+
+    document.getElementById('resultEmpty').style.display = 'none';
+    document.getElementById('resultContainer').style.display = 'block';
+    document.getElementById('resultLoading').style.display = 'block';
+    document.getElementById('resultContent').innerHTML = '';
+    document.getElementById('btnPdf').disabled = true;
+
+    var params = '?mese=' + document.getElementById('fMese').value + '&anno=' + document.getElementById('fAnno').value;
+    if (oreMensili) params += '&ore_mensili=' + oreMensili;
+    else if (oreSett) params += '&ore_settimanali=' + oreSett;
+    else if (lordo) params += '&lordo=' + lordo;
+    else if (netto) params += '&netto=' + netto;
+
+    var inclPranzo = document.getElementById('inclPranzo').checked ? '1' : '0';
+    var inclCena = document.getElementById('inclCena').checked ? '1' : '0';
+    var inclAlloggio = document.getElementById('inclAlloggio').checked ? '1' : '0';
+    var giorniConv = document.getElementById('giorniConv').value;
+    var indFn = document.getElementById('indFunzione').checked ? '1' : '0';
+    var indB6 = document.getElementById('indBambini6').checked ? '1' : '0';
+    var indPA = document.getElementById('indPiuAssistiti').checked ? '1' : '0';
+    var indCQ = document.getElementById('indCertQualita').checked ? '1' : '0';
+    var scatti = document.getElementById('toggleScatti').checked ? '1' : '0';
+    var rtfr = document.getElementById('rateoTfr').checked ? '1' : '0';
+    var r13ma = document.getElementById('rateo13ma').checked ? '1' : '0';
+    var rferie = document.getElementById('rateoFerie').checked ? '1' : '0';
+    var rfest = document.getElementById('rateoFestivi').checked ? '1' : '0';
+    var offusca = document.getElementById('offuscaToggle').checked ? '1' : '0';
+    params += '&incl_pranzo=' + inclPranzo + '&incl_cena=' + inclCena + '&incl_alloggio=' + inclAlloggio
+        + '&giorni_conv=' + giorniConv
+        + '&ind_funzione=' + indFn + '&ind_bambini_6=' + indB6 + '&ind_piu_assistiti=' + indPA + '&ind_cert_qualita=' + indCQ
+        + '&scatti=' + scatti + '&rateo_tfr=' + rtfr + '&rateo_13ma=' + r13ma + '&rateo_ferie=' + rferie + '&rateo_festivi=' + rfest
+        + '&offusca=' + offusca;
+
+    fetch('/ajax/calcola-busta-inversa/' + pk + '/' + params, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        credentials: 'same-origin'
+    })
+    .then(function(r) {
+        if (!r.ok) throw new Error('Errore server: ' + r.status);
+        return r.json();
+    })
+    .then(function(d) {
+        document.getElementById('resultLoading').style.display = 'none';
+        if (d.errore) {
+            document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
+            return;
+        }
+        renderRisultato(d);
+        _lastData = d;
+        document.getElementById('btnContratto').disabled = false;
+        document.getElementById('btnPdf').disabled = false;
+        var warn = document.getElementById('bustaEsistenteWarning');
+        if (warn) warn.style.display = d.busta_esistente ? 'block' : 'none';
+        aggiornaConvRiepilogo(d);
+    })
+    .catch(function(e) {
+        document.getElementById('resultLoading').style.display = 'none';
+        document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
+    });
+};
+
+window.resetToggles = function() {
+    selezionaContratto();
+};
+
+function impostaToggle(d) {
+    if (!d) return;
+    document.getElementById('inclPranzo').checked = !!d.contratto_paga_pranzo;
+    document.getElementById('inclCena').checked = !!d.contratto_paga_cena;
+    document.getElementById('inclAlloggio').checked = !!d.contratto_paga_alloggio;
+    document.getElementById('indFunzione').checked = !!d.ind_funzione_conviventi;
+    document.getElementById('indBambini6').checked = !!d.ind_minori_6_anni_ft;
+    document.getElementById('indPiuAssistiti').checked = !!d.ind_assistenza_piu_persone_ft;
+    document.getElementById('indCertQualita').checked = !!d.ind_certificazione_qualita;
+    document.getElementById('toggleScatti').checked = !!d.contratto_applica_scatti;
+    document.getElementById('rateo13ma').checked = !!d.contratto_paga_13ma;
+    document.getElementById('rateoFerie').checked = !!d.contratto_paga_ferie;
+    document.getElementById('rateoFestivi').checked = !!d.contratto_paga_festivi;
+}
+
+function aggiornaConvRiepilogo(d) {
+    if (!d) return;
+    var r = d.convivenza_rates || {};
+    var somma = 0, parti = [];
+    if (document.getElementById('inclPranzo').checked) { somma += r.pranzo || 0; parti.push('Pranzo \u20AC' + (r.pranzo || 0).toFixed(2)); }
+    if (document.getElementById('inclCena').checked) { somma += r.cena || 0; parti.push('Cena \u20AC' + (r.cena || 0).toFixed(2)); }
+    if (document.getElementById('inclAlloggio').checked) { somma += r.alloggio || 0; parti.push('Alloggio \u20AC' + (r.alloggio || 0).toFixed(2)); }
+    var gg = parseInt(document.getElementById('giorniConv').value) || 26;
+    if (parti.length > 0) {
+        document.getElementById('convRiepilogo').textContent = parti.join(' + ') + ' = \u20AC' + somma.toFixed(2) + '/gg \u00d7 ' + gg + 'gg = \u20AC' + (somma * gg).toFixed(2);
+    } else {
+        document.getElementById('convRiepilogo').textContent = '';
+    }
+}
+
+function renderRisultato(d) {
+    var html = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;">';
+
+    var inputLabel = '';
+    var inputValore = '';
+    if (d.input_usato === 'ore_mensili') { inputLabel = 'Ore mensili'; inputValore = Number(d.ore_mensili).toFixed(2) + ' h'; }
+    else if (d.input_usato === 'ore_settimanali') { inputLabel = 'Ore settimanali'; inputValore = Number(d.ore_settimanali).toFixed(2) + ' h'; }
+    else if (d.input_usato === 'lordo') { inputLabel = 'Lordo target'; inputValore = '\u20AC' + Number(d.totale_lordo).toFixed(2); }
+    else if (d.input_usato === 'netto') { inputLabel = 'Netto target'; inputValore = '\u20AC' + Number(d.netto).toFixed(2); }
+
+    var sopraSoglia = d.sopra_soglia;
+    var sogliaBadgeBg = sopraSoglia ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)';
+    var sogliaBadgeColor = sopraSoglia ? '#34d399' : '#f87171';
+    var sogliaLabel = sopraSoglia ? 'PI&Ugrave; DI ' + Math.floor(Number(d.soglia_ore)) + ' ORE SETT.' : 'MENO DI ' + Math.floor(Number(d.soglia_ore)) + ' ORE SETT.';
+
+    var sabatiStr = '';
+    for (var si = 0; si < d.num_sabati; si++) sabatiStr += '\u2713';
+
+    // Header info
+    html += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
+    html += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:4px;"><i class="bi bi-arrow-left-right me-1"></i>Calcolo Inverso \u2014 ' + d.mese_nome + ' ' + d.anno + '</div>';
+    html += '<div class="row g-2 mt-2">';
+    html += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
+    html += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
+    var _cH = Math.floor(d.ore_mensili), _cM = Math.floor((d.ore_mensili - _cH) * 60), _cS = Math.floor(((d.ore_mensili - _cH) * 60 - _cM) * 60);
+    var _oreCrono = _cH + 'h ' + String(_cM).padStart(2,'0') + 'm ' + String(_cS).padStart(2,'0') + 's';
+    var _sA = Math.ceil(d.ore_settimanali);
+    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:2px;">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + d.ore_inps + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI ARROTONDATE</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">(INPS: ' + d.ore_inps + ' h)</span></div><div><span style="font-size:12px;font-weight:500;color:#8A8F98;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI DECIMALI</span></div><div><span style="font-size:12px;font-weight:600;color:#06b6d4;">' + _oreCrono + '</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI CRONOMETRO</span></div><div style="border-top:1px solid #27282D;margin:2px 0;"></div><div><span style="font-size:9px;color:#8A8F98;">Ore settimanali</span> <span style="font-size:13px;font-weight:600;color:#10b981;">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
+    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Settimane mensili</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
+    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
+    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga oraria</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h</span></div>';
+    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
+    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo contratto</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.tipo_contratto) + '</span></div>';
+    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo calcolo</span><span style="font-size:13px;font-weight:600;color:#5E6AD2;">' + inputLabel + '</span></div>';
+    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Valore inserito</span><span style="font-size:13px;font-weight:600;color:#f59e0b;">' + inputValore + '</span></div>';
+    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Codice rapporto INPS</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.codice_rapporto_inps) + '</span></div>';
+    html += '</div></div>';
+
+    // Corpo: due colonne
+    html += '<div style="padding:20px 24px;">';
+    html += '<div class="row g-4">';
+    // Colonna sinistra: Retribuzione
+    html += '<div class="col-md-6">';
+    html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#34d399;font-weight:700;margin-bottom:8px;"><i class="bi bi-currency-euro me-1"></i>Retribuzione Lorda</div>';
+
+    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+    html += '<span style="font-size:12px;color:#EDEDED;">Paga base <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
+
+    for (var i = 0; i < d.indennita.length; i++) {
+        var ind = d.indennita[i];
+        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+        html += '<span style="font-size:12px;color:#EDEDED;">' + esc(ind.label) + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+        html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
+    }
+
+    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+    html += '<span style="font-size:12px;color:#EDEDED;">Scatti anzianit\u00e0 <span style="color:#8A8F98;font-size:11px;">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span>';
+    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
+
+    for (var i = 0; i < d.ratei_pagati.length; i++) {
+        var rp = d.ratei_pagati[i];
+        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+        html += '<span style="font-size:12px;color:#EDEDED;">' + esc(rp.label) + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+        html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
+    }
+
+    html += '<div class="d-flex justify-content-between align-items-center py-2 mt-2" style="border-top:2px solid rgba(52,211,153,0.3);">';
+    html += '<span style="font-size:13px;font-weight:700;color:#34d399;">TOTALE LORDO</span>';
+    html += '<span style="font-size:15px;font-weight:800;color:#34d399;">\u20AC ' + d.totale_lordo.toFixed(2) + '</span></div>';
+    html += '</div>'; // fine colonna sinistra
+
+    // Colonna destra: Contributi + Trattenute
+    html += '<div class="col-md-6">';
+    html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;font-weight:700;margin-bottom:8px;"><i class="bi bi-shield me-1"></i>Contributi</div>';
+
+    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+    html += '<span style="font-size:12px;color:#EDEDED;">INPS <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
+    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
+
+    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+    html += '<span style="font-size:12px;color:#EDEDED;">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
+    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
+
+    html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(245,158,11,0.3);">';
+    html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">TOTALE CONTRIBUTI</span>';
+    html += '<span style="font-size:15px;font-weight:800;color:#f59e0b;">\u20AC ' + d.contributi.totale.toFixed(2) + '</span></div>';
+
+    html += '<div style="margin-top:24px;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f87171;font-weight:700;margin-bottom:8px;"><i class="bi bi-dash-circle me-1"></i>Trattenute</div>';
+
+    var convLabel = (d.tipo_calcolo === 'SOSTITUZIONE') ? 'Vitto e alloggio forfettario' : 'Convivenza';
+    var convDett = (d.trattenute.convivenza.dettaglio && d.trattenute.convivenza.dettaglio.length > 0) ? d.trattenute.convivenza.dettaglio.join(', ') : '';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+    html += '<span style="font-size:12px;color:#EDEDED;">' + convLabel + ' <span style="color:#8A8F98;font-size:11px;">(' + esc(convDett) + ')</span></span>';
+    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
+
+    var accNomi = [];
+    for (var ri = 0; ri < d.ratei_pagati.length; ri++) { if (!d.ratei_pagati[ri].incluso && d.ratei_pagati[ri].totale > 0) accNomi.push(d.ratei_pagati[ri].label); }
+    var accNota = accNomi.length > 0 ? '(' + accNomi.join(', ') + ' non pagati)' : '';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+    html += '<span style="font-size:12px;color:#EDEDED;">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span>';
+    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
+
+    html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(248,113,113,0.3);">';
+    html += '<span style="font-size:13px;font-weight:700;color:#f87171;">TOTALE TRATTENUTE</span>';
+    html += '<span style="font-size:15px;font-weight:800;color:#f87171;">\u20AC ' + d.trattenute.totale.toFixed(2) + '</span></div>';
+
+    // Riepilogo
+    html += '<div style="margin-top:20px;padding:16px 0;">';
+    if (d.modalita_tfr && d.modalita_tfr !== 'INCLUSO') {
+        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-top:1px solid rgba(245,158,11,0.3);">';
+        html += '<span style="font-size:11px;color:#f59e0b;font-weight:600;">TFR accumulato</span>';
+        html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">\u20AC ' + Number(d.tfr_accantonato_cumulativo || 0).toFixed(2) + '</span></div>';
+    }
+    html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:1.5px solid #2c5282;padding-top:8px;">';
+    html += '<span style="font-size:16px;font-weight:800;color:#2c5282;">NETTO IN BUSTA</span>';
+    html += '<span style="font-size:20px;font-weight:800;color:#2c5282;">\u20AC ' + d.netto.toFixed(2) + '</span></div>';
+    html += '</div>';
+
+    // Input riepilogo (cosa abbiamo calcolato)
+    html += '<div style="margin-top:12px;padding:10px 12px;background:rgba(94,106,210,0.08);border:1px solid rgba(94,106,210,0.2);border-radius:8px;">';
+    html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5E6AD2;font-weight:700;margin-bottom:4px;">Parametri calcolati</div>';
+    html += '<div style="font-size:11px;color:#EDEDED;line-height:1.6;">';
+    html += 'Ore mensili: <strong>' + Number(d.ore_mensili).toFixed(2) + '</strong> h &nbsp;|&nbsp; ';
+    html += 'Ore settimanali: <strong>' + Number(d.ore_settimanali).toFixed(2) + '</strong> h &nbsp;|&nbsp; ';
+    html += 'Lordo: <strong>\u20AC' + d.totale_lordo.toFixed(2) + '</strong> &nbsp;|&nbsp; ';
+    html += 'Netto: <strong>\u20AC' + d.netto.toFixed(2) + '</strong></div></div>';
+
+    html += '</div></div></div>'; // fine colonne
+
+    // Footer note
+    html += '<div style="padding:16px 24px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;">';
+    html += '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">DATI STUDIO</span>';
+    if (d.dati_studio) { html += '<div style="height:4px;"></div><span style="font-size:10px;color:#8A8F98;">' + esc(d.dati_studio) + '</span>'; }
+    if (d.logo_buste_paga_url) {
+        html += '<img src="' + esc(d.logo_buste_paga_url) + '" style="max-height:50px;max-width:180px;display:block;margin-bottom:4px;" alt="Logo studio">';
+    }
+    html += '<div style="margin-top:18px;padding-top:10px;border-top:1.5px solid #27282D;font-size:8px;color:#5C5F66;text-align:center;">';
+    html += 'Tutti i diritti riservati. | Stampata il ' + new Date().toLocaleDateString('it-IT');
+    html += '</div></div>';
+
+    html += '</div>';
+    document.getElementById('resultContent').innerHTML = html;
+}
+
+function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function hexToRgb(hex) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return r + ',' + g + ',' + b;
+}
+
+function getCSRFToken() {
+    var name = 'csrftoken';
+    var value = '; ' + document.cookie;
+    var parts = value.split('; ' + name + '=');
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return '';
+}
+window.salvaBusta = function() {
+    var pk = document.getElementById('btnSalvaBusta').dataset.pk;
+    if (!pk) return;
+    var warn = document.getElementById('bustaEsistenteWarning');
+    if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
+        if (!confirm('Busta paga già salvata per questo periodo. Sovrascrivere?')) return;
+    }
+    var btn = document.getElementById('btnSalvaBusta');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> SALVATAGGIO...';
+    var formData = new FormData();
+    formData.append('contratto_pk', pk);
+    formData.append('mese', document.getElementById('fMese').value);
+    formData.append('anno', document.getElementById('fAnno').value);
+    formData.append('tipo_calcolo', 'CALCOLO_INVERSO');
+    formData.append('ore_mensili', document.getElementById('invOreMensili').value);
+    formData.append('ore_settimanali', document.getElementById('invOreSettimanali').value);
+    formData.append('lordo_target', document.getElementById('invLordo').value);
+    formData.append('netto_target', document.getElementById('invNetto').value);
+    formData.append('csrfmiddlewaretoken', getCSRFToken());
+    fetch('/ajax/salva-busta/', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) {
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> SALVATA';
+            setTimeout(function() {
+                btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+                btn.disabled = false;
+            }, 2000);
+        } else {
+            mostraToast(d.errore || 'Errore salvataggio', false);
+            btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+            btn.disabled = false;
+        }
+    }).catch(function(e) {
+        console.error(e);
+        mostraToast('Errore di rete', false);
+        btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+        btn.disabled = false;
+    });
+};
+window.vaiContratto = function() {
+    var pk = document.getElementById('btnContratto').dataset.pk;
+    if (pk) loadAjaxForm('/ajax/modifica-contratto/' + pk + '/', 'Modifica Contratto');
+};
+
+window.downloadPdf = function() {
+    var pk = document.getElementById('btnPdf').dataset.pk;
+    if (!pk) return;
+    var mese = document.getElementById('fMese').value;
+    var anno = document.getElementById('fAnno').value;
+    var oreMensili = document.getElementById('invOreMensili').value;
+    var oreSett = document.getElementById('invOreSettimanali').value;
+    var lordo = document.getElementById('invLordo').value;
+    var netto = document.getElementById('invNetto').value;
+
+    var params = '?mese=' + mese + '&anno=' + anno;
+    if (oreMensili) params += '&ore_mensili=' + oreMensili;
+    else if (oreSett) params += '&ore_settimanali=' + oreSett;
+    else if (lordo) params += '&lordo=' + lordo;
+    else if (netto) params += '&netto=' + netto;
+
+    var inclPranzo = document.getElementById('inclPranzo').checked ? '1' : '0';
+    var inclCena = document.getElementById('inclCena').checked ? '1' : '0';
+    var inclAlloggio = document.getElementById('inclAlloggio').checked ? '1' : '0';
+    var giorniConv = document.getElementById('giorniConv').value;
+    var indFn = document.getElementById('indFunzione').checked ? '1' : '0';
+    var indB6 = document.getElementById('indBambini6').checked ? '1' : '0';
+    var indPA = document.getElementById('indPiuAssistiti').checked ? '1' : '0';
+    var indCQ = document.getElementById('indCertQualita').checked ? '1' : '0';
+    var scatti = document.getElementById('toggleScatti').checked ? '1' : '0';
+    var rtfr = document.getElementById('rateoTfr').checked ? '1' : '0';
+    var r13ma = document.getElementById('rateo13ma').checked ? '1' : '0';
+    var rferie = document.getElementById('rateoFerie').checked ? '1' : '0';
+    var rfest = document.getElementById('rateoFestivi').checked ? '1' : '0';
+    var offusca = document.getElementById('offuscaToggle').checked ? '1' : '0';
+    params += '&incl_pranzo=' + inclPranzo + '&incl_cena=' + inclCena + '&incl_alloggio=' + inclAlloggio
+        + '&giorni_conv=' + giorniConv
+        + '&ind_funzione=' + indFn + '&ind_bambini_6=' + indB6 + '&ind_piu_assistiti=' + indPA + '&ind_cert_qualita=' + indCQ
+        + '&scatti=' + scatti + '&rateo_tfr=' + rtfr + '&rateo_13ma=' + r13ma + '&rateo_ferie=' + rferie + '&rateo_festivi=' + rfest
+        + '&offusca=' + offusca;
+
+    apriNelPannello('/ajax/busta-inversa-pdf/' + pk + '/' + params);
+};
+
+window.stampaBustaCalcolo = function(btn) {
+    var pk = document.getElementById('btnPdf').dataset.pk;
+    if (!pk) { mostraToast('Nessuna busta selezionata.', false); return; }
+    var d = window._lastStdData;
+    if (!d || !d.busta_esistente) {
+        mostraToast('Salva prima la busta paga con "SALVA BUSTA".', false);
+        return;
+    }
+    stampaBusta(pk, btn);
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    var sel = document.getElementById('fContratto');
+    if (sel.value) {
+        selezionaContratto();
+    }
+});
+</script>
+{% include 'paghe/_ccnl_occhio_include.html' %}
+{% endblock %}

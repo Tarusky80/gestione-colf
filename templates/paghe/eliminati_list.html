@@ -1,0 +1,368 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block search_bar %}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'datori_list' %}">Anagrafiche</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Eliminati</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-trash3 me-2" style="color:#f87171;"></i> ELIMINATI
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">Record cancellati, ripristinabili singolarmente.</p>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div>
+            <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal"></span></span>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-ghost-primary" onclick="ripristinaTutti()" style="font-size:11px;padding:6px 14px;border-radius:6px;"><i class="bi bi-arrow-repeat me-1"></i> RIPRISTINA TUTTI</button>
+            <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaTutti()" style="font-size:11px;padding:6px 14px;border-radius:6px;"><i class="bi bi-trash3-fill me-1"></i> ELIMINA TUTTI</button>
+        </div>
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+            <div style="position: relative;">
+                <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
+                <input type="text" id="fTesto" class="form-control" placeholder="Tipo, descrizione..." oninput="filteraEliminati()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="mb-1 fw-bold" class="c-10-up">Filtra per tipo</label>
+            <select id="fTipo" class="form-control" onchange="filteraEliminati()" class="bg-input">
+                <option value="">Tutti</option>
+                <option value="datore">Datore</option>
+                <option value="lavoratore">Lavoratore</option>
+                <option value="beneficiario">Beneficiario</option>
+                <option value="contratto">Contratto</option>
+                <option value="progetto">Progetto Regionale</option>
+                <option value="parametro_ccnl">Parametro CCNL</option>
+                <option value="tabella_casse">Tabella Casse</option>
+                <option value="contributi_inps">Contributi INPS</option>
+                <option value="malattia">Malattia</option>
+                <option value="scatti_anzianita">Scatti Anzianità</option>
+                <option value="testo_preimpostato">Testo Preimpostato</option>
+                <option value="tipo_progetto">Tipo Progetto</option>
+                <option value="livello">Livello</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end"></div>
+    </div>
+</div>
+
+<div class="custom-table-container">
+    <table class="table custom-table" id="eliminatiTable">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Descrizione</th>
+                <th>Eliminato il</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in records %}
+            <tr class="clickable-row" data-type="eliminato" data-pk="{{ r.pk }}" data-title="{{ r.descrizione }}" data-sub="{{ r.get_tipo_display }}">
+                <td>
+                    <span class="badge-tipo" data-tipo="{{ r.tipo }}">
+                        {% if r.tipo == 'datore' %}<i class="bi bi-person-vcard me-1"></i>
+                        {% elif r.tipo == 'lavoratore' %}<i class="bi bi-people me-1"></i>
+                        {% elif r.tipo == 'beneficiario' %}<i class="bi bi-person-heart me-1"></i>
+                        {% elif r.tipo == 'contratto' %}<i class="bi bi-file-earmark-text me-1"></i>
+                        {% elif r.tipo == 'progetto' %}<i class="bi bi-diagram-3 me-1"></i>
+                        {% elif r.tipo == 'parametro_ccnl' %}<i class="bi bi-sliders me-1"></i>
+                        {% elif r.tipo == 'tabella_casse' %}<i class="bi bi-cash-stack me-1"></i>
+                        {% elif r.tipo == 'contributi_inps' %}<i class="bi bi-percent me-1"></i>
+                        {% elif r.tipo == 'malattia' %}<i class="bi bi-heart-pulse me-1"></i>
+                        {% elif r.tipo == 'scatti_anzianita' %}<i class="bi bi-arrow-up-circle me-1"></i>
+                        {% elif r.tipo == 'testo_preimpostato' %}<i class="bi bi-file-text me-1"></i>
+                        {% elif r.tipo == 'tipo_progetto' %}<i class="bi bi-tags me-1"></i>
+                        {% elif r.tipo == 'livello' %}<i class="bi bi-layers me-1"></i>
+                        {% endif %}
+                        {{ r.get_tipo_display }}
+                    </span>
+                </td>
+                <td><div class="fw-bold">{{ r.descrizione }}</div></td>
+                <td><div class="text-secondary">{{ r.eliminato_il|date:"d/m/Y H:i" }}</div></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center text-secondary py-5"><i class="bi bi-check-circle fs-2 mb-3 d-block text-muted"></i>Nessun record eliminato</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination-bar mt-3">
+      <span class="pagination-info">{{ page_obj.start_index }}â€“{{ page_obj.end_index }} di {{ page_obj.paginator.count }}</span>
+      <div class="pagination-links">
+        {% if page_obj.has_previous %}
+        <a href="?page=1" class="page-link" title="Prima">&laquo;</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-link" title="Precedente">&lsaquo;</a>
+        {% endif %}
+        {% for i in page_obj.paginator.page_range %}
+          {% if i >= page_obj.number|add:-3 and i <= page_obj.number|add:3 %}
+          <a href="?page={{ i }}" class="page-link{% if i == page_obj.number %} active{% endif %}">{{ i }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-link" title="Successiva">&rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link" title="Ultima">&raquo;</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Offcanvas per vedere dettaglio eliminato -->
+<div class="offcanvas offcanvas-end" id="panelVediEliminato" tabindex="-1">
+    <div class="offcanvas-header d-flex align-items-center" style="background: #17181C; border-bottom: 1px solid #27282D; padding: 24px 36px !important;">
+        <div>
+            <h5 class="text-white fw-bold mb-0">Dettaglio record eliminato</h5>
+            <div class="text-secondary" style="font-size: 11px; margin-top: 2px;" id="vediEliminatoSubtitle">Record eliminato</div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" style="opacity: 0.5;"></button>
+    </div>
+    <div class="offcanvas-body" id="vediEliminatoBody" style="padding: 36px !important; overflow-y: auto;">
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+    .badge-tipo { background: rgba(94,106,210,0.15); color: #5E6AD2; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .badge-tipo[data-tipo="datore"] { background: rgba(52,211,153,0.15); color: #34d399; }
+    .badge-tipo[data-tipo="lavoratore"] { background: rgba(96,165,250,0.15); color: #60a5fa; }
+    .badge-tipo[data-tipo="beneficiario"] { background: rgba(251,191,36,0.15); color: #fbbf24; }
+    .badge-tipo[data-tipo="contratto"] { background: rgba(168,85,247,0.15); color: #a855f7; }
+    #vediEliminatoBody { overflow-y: auto !important; display: block !important; height: auto !important; }
+</style>
+<script>
+function filteraEliminati() {
+    var testo = (document.getElementById('fTesto').value || '').toUpperCase();
+    var tipoFiltro = document.getElementById('fTipo').value;
+    var table = document.getElementById('eliminatiTable');
+    var rows = table.getElementsByTagName('tr');
+    var visibili = 0;
+    for (var i = 1; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName('td');
+        if (!cells || cells.length < 3) continue;
+        var tipo = cells[0].textContent.trim().toUpperCase();
+        var descr = (cells[1].textContent || '').toUpperCase();
+        var matchTesto = !testo || descr.indexOf(testo) !== -1;
+        var matchTipo = !tipoFiltro || tipo.indexOf(tipoFiltro.toUpperCase()) !== -1;
+        var mostra = matchTesto && matchTipo;
+        rows[i].style.display = mostra ? '' : 'none';
+        if (mostra) visibili++;
+    }
+    aggiornaConteggio('eliminatiTable', 'fCount');
+}
+
+window.apriVediEliminato = function(pk) {
+    var LABELS = {
+        'codice_fiscale': 'Codice Fiscale', 'nome_cognome': 'Nome e Cognome',
+        'cognome': 'Cognome', 'nome': 'Nome', 'sesso': 'Sesso',
+        'data_nascita': 'Data Nascita', 'luogo_nascita': 'Luogo Nascita',
+        'provincia_nascita': 'Prov. Nascita', 'comune_nascita': 'Comune Nascita',
+        'indirizzo': 'Indirizzo', 'comune_residenza': 'Comune Residenza',
+        'indirizzo_residenza': 'Indirizzo Residenza', 'cap_residenza': 'CAP',
+        'provincia_residenza': 'Provincia', 'telefono': 'Telefono', 'cellulare': 'Cellulare',
+        'email': 'Email', 'email_pec': 'Email PEC',
+        'cittadinanza': 'Cittadinanza', 'comune_domicilio_fiscale': 'Domicilio Fiscale',
+        'provincia_domicilio_fiscale': 'Prov. Domicilio Fiscale',
+        'iban': 'IBAN', 'iban_beneficiario': 'IBAN Beneficiario',
+        'iban_datore': 'IBAN Datore',
+        'data_assunzione': 'Data Assunzione', 'data_fine': 'Data Fine',
+        'data_cessazione': 'Data Cessazione', 'data_inizio': 'Data Inizio',
+        'tipo_contratto': 'Tipo Contratto', 'tipo_progetto': 'Tipo Progetto',
+        'ore_settimanali': 'Ore Settimanali', 'budget_annuo': 'Budget Annuo',
+        'budget_mensile': 'Budget Mensile', 'budget_totale': 'Budget Totale',
+        'paga_base': 'Paga Base', 'paga_tfr': 'Paga TFR',
+        'paga_13ma': 'Paga 13ª', 'paga_ferie': 'Paga Ferie',
+        'paga_festivi': 'Paga Festivi', 'paga_notturno_tfr': 'Paga Notturna TFR',
+        'paga_notturno_13ma': 'Paga Notturna 13ª',
+        'paga_notturno_festivi': 'Paga Notturna Festivi',
+        'paga_notturno_ferie': 'Paga Notturna Ferie',
+        'paga_pranzo': 'Paga Pranzo', 'paga_cena': 'Paga Cena',
+        'paga_alloggio': 'Paga Alloggio',
+        'applica_scatti': 'Applica Scatti', 'applica_notturno_assistenza': 'Notturno Assistenza',
+        'applica_notturno_presenza': 'Notturno Presenza',
+        'applica_notturno_base': 'Notturno Base', 'applica_notturno_20': 'Notturno 20%',
+        'ind_certificazione_qualita': 'Ind. Certificazione Qualità',
+        'ind_piu_persone_non_conv': 'Ind. Più Persone Non Conviv.',
+        'ind_minori_non_conv': 'Ind. Minori Non Conviv.',
+        'ind_piu_persone_qualita': 'Ind. Più Persone Qualità',
+        'ind_minori_qualita': 'Ind. Minori Qualità',
+        'ind_assistenza_piu_persone_ft': 'Ind. Assistenza Più Pers. FT',
+        'ind_assistenza_piu_persone_pt': 'Ind. Assistenza Più Pers. PT',
+        'ind_minori_6_anni_ft': 'Ind. Minori 6 Anni FT',
+        'ind_funzione_conviventi': 'Ind. Funzione Conviventi',
+        'ind_conviventi_ft_54h': 'Ind. Conviventi FT 54h',
+        'ind_conviventi_pt_30h': 'Ind. Conviventi PT 30h',
+        'stato': 'Stato', 'note': 'Note', 'livello': 'Livello',
+        'ccnl_riferimento': 'CCNL Riferimento', 'tipo': 'Tipo',
+        'attivo': 'Attivo', 'importo': 'Importo',
+        'descrizione': 'Descrizione', 'percentuale': 'Percentuale',
+        'codice': 'Codice', 'costo_mensile': 'Costo Mensile',
+        'costo_annuo': 'Costo Annuo',
+    };
+    var SKIP = ['id', 'pk', 'data_inserimento', 'data_modifica', 'user_id', 'user'];
+    var CURRENCY = /^(budget|paga|costo|importo|ind_|spesa|totale|retta)/;
+
+    function label(key) { return LABELS[key] || key.replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); }); }
+
+    function format(key, val) {
+        if (val === null || val === '' || val === undefined) return null;
+        if (typeof val === 'boolean') return '<span class="badge rounded-pill px-2 py-1" style="font-size:11px;background:' + (val ? 'rgba(52,211,153,0.15)' : 'rgba(142,142,147,0.15)') + ';color:' + (val ? '#34d399' : '#8e8e93') + ';">' + (val ? '<i class="bi bi-check-circle me-1"></i>SI' : '<i class="bi bi-x-circle me-1"></i>NO') + '</span>';
+        var s = String(val);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return '<span style="color:#60a5fa;"><i class="bi bi-calendar3 me-1"></i>' + s.split('-').reverse().join('/') + '</span>';
+        if (/^\d{4}-\d{2}-\d{2}T/.test(s)) return '<span style="color:#60a5fa;"><i class="bi bi-calendar3 me-1"></i>' + s.split('T')[0].split('-').reverse().join('/') + '</span>';
+        if (CURRENCY.test(key) && !isNaN(parseFloat(s)) && isFinite(s)) return '<span style="color:#fbbf24;"><i class="bi bi-currency-euro me-1"></i>' + parseFloat(s).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + '</span>';
+        if (!isNaN(parseFloat(s)) && isFinite(s) && s.indexOf('.') !== -1) return '<span style="color:#a78bfa;">' + parseFloat(s).toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + '</span>';
+        if (s === 'True' || s === 'False') return format(key, s === 'True');
+        // Stato: ATTIVO verde, CESSATO rosso
+        if (key === 'stato') {
+            var sc = s === 'ATTIVO' ? '#34d399' : '#f87171';
+            return '<span class="badge rounded-pill px-3 py-1" style="background:' + sc + '20;color:' + sc + ';font-size:12px;font-weight:600;"><i class="bi bi-circle-fill me-1" style="font-size:8px;"></i>' + s + '</span>';
+        }
+        // Progetto: badge colorato anche singolo
+        if (key === 'progetto' && s.indexOf('€') === -1) {
+            var col = '#2dd4bf';
+            var parts = s.indexOf(', ') !== -1 ? s.split(', ') : [s];
+            return parts.map(function(p) { return '<span class="badge rounded-pill px-3 py-1 me-1" style="background:' + col + '20;color:' + col + ';font-size:12px;font-weight:500;margin-bottom:2px;">' + p.trim() + '</span>'; }).join('');
+        }
+        return s;
+    }
+
+    fetch('/ajax/vedi-eliminato/' + pk + '/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (!d.success) { mostraToast('Errore', false); return; }
+            document.getElementById('vediEliminatoSubtitle').textContent = d.tipo + ' — eliminato il ' + d.eliminato_il;
+            var body = document.getElementById('vediEliminatoBody');
+            var html = '<div class="d-flex align-items-center gap-2 mb-4">';
+            var icona = d.tipo.toLowerCase().indexOf('datore') !== -1 ? 'bi-person-vcard' :
+                d.tipo.toLowerCase().indexOf('lavoratore') !== -1 ? 'bi-people' :
+                d.tipo.toLowerCase().indexOf('beneficiario') !== -1 ? 'bi-person-heart' :
+                d.tipo.toLowerCase().indexOf('contratto') !== -1 ? 'bi-file-earmark-text' : 'bi-trash3';
+            html += '<div style="width:44px;height:44px;border-radius:12px;background:rgba(94,106,210,0.12);display:flex;align-items:center;justify-content:center;"><i class="bi ' + icona + '" style="font-size:20px;color:#5E6AD2;"></i></div>';
+            html += '<div><div class="fw-bold" style="color:#EDEDED;font-size:16px;">' + d.descrizione + '</div><div style="color:#8A8F98;font-size:12px;"><i class="bi bi-clock me-1"></i>' + d.eliminato_il + '</div></div></div>';
+            html += '<div style="border-radius:14px;border:1px solid #27282D;overflow:hidden;">';
+            var i = 0;
+            for (var key in d.dati) {
+                if (SKIP.indexOf(key) !== -1) continue;
+                var f = format(key, d.dati[key]);
+                if (f === null) continue;
+                var bg = (i % 2 === 0) ? '#17181C' : 'transparent';
+                html += '<div style="display:flex;align-items:center;padding:8px 16px;background:' + bg + ';border-bottom:1px solid #27282D;"><div style="flex:0 0 45%;color:#8A8F98;font-size:12px;font-weight:500;">' + label(key) + '</div><div style="flex:1;color:#EDEDED;font-size:13px;">' + f + '</div></div>';
+                i++;
+            }
+            html += '</div>';
+            body.innerHTML = html;
+            var panel = new bootstrap.Offcanvas(document.getElementById('panelVediEliminato'));
+            panel.show();
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); });
+};
+
+window.confermaRipristino = function(pk, btn) {
+    if (!confirm('Ripristinare questo record?')) return;
+    var orig = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; btn.disabled = true; }
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/ajax/ripristina-eliminato/' + pk + '/', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (d.message || 'Operazione fallita'), false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } }
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } });
+};
+
+window.eliminaDefinitivamente = function(pk, btn) {
+    if (!confirm('Eliminare definitivamente questo record? Operazione irreversibile.')) return;
+    var orig = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; btn.disabled = true; }
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/ajax/elimina-eliminato/' + pk + '/', { method:'POST', body:fd, headers:{'X-Requested-With':'XMLHttpRequest'} })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (d.message || ''), false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } }
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } });
+};
+
+function ripristinaTutti() {
+    if (!confirm('Ripristinare TUTTI i record eliminati?')) return;
+    var btns = document.querySelectorAll('.btn-ghost-primary, .btn-ghost-danger');
+    btns.forEach(function(b) { b.disabled = true; });
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/ajax/ripristina-tutti-eliminati/', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (d.message || 'Operazione fallita'), false); btns.forEach(function(b) { b.disabled = false; }); }
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); btns.forEach(function(b) { b.disabled = false; }); });
+}
+
+function eliminaTutti() {
+    if (!confirm('Eliminare DEFINITIVAMENTE TUTTI i record? Operazione IRREVERSIBILE.')) return;
+    var btns = document.querySelectorAll('.btn-ghost-primary, .btn-ghost-danger');
+    btns.forEach(function(b) { b.disabled = true; });
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/ajax/elimina-tutti-eliminati/', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (d.message || 'Operazione fallita'), false); btns.forEach(function(b) { b.disabled = false; }); }
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); btns.forEach(function(b) { b.disabled = false; }); });
+}
+
+document.addEventListener('DOMContentLoaded', filteraEliminati);
+</script>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Eliminati
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Contiene tutti i <b>record eliminati</b> dalle anagrafiche (datori, lavoratori, beneficiari, contratti). I record non vengono cancellati subito dal database, ma spostati qui in modo da poterli eventualmente ripristinare.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per nome, tipo o codice fiscale.<br>
+        <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi (dettaglio del record originale), Ripristina, Elimina definitivamente.<br>
+        <b>3.</b> <b>RIPRISTINA TUTTI</b> — riporta tutti i record eliminati nelle rispettive pagine.<br>
+        <b>4.</b> <b>ELIMINA TUTTI</b> — cancella definitivamente tutti i record (operazione irreversibile).</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
+        L'eliminazione definitiva non può essere annullata. Il ripristino ricrea il record esattamente com'era prima dell'eliminazione.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

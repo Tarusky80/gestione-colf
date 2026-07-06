@@ -1,0 +1,336 @@
+<form id="dynamicForm" method="POST">
+    {% csrf_token %}
+    {% if tipo == 'datore' and datori_pks %}
+    {{ datori_pks|json_script:"nav-data-datore" }}
+    {{ datori_nav_data|json_script:"nav-data-datore-nav" }}
+    {{ datore_pk_attuale|json_script:"nav-data-datore-curr" }}
+    {% endif %}
+    {% if tipo == 'lavoratore' and lavoratori_pks %}
+    {{ lavoratori_pks|json_script:"nav-data-lavoratore" }}
+    {{ lavoratori_nav_data|json_script:"nav-data-lavoratore-nav" }}
+    {{ lavoratore_pk_attuale|json_script:"nav-data-lavoratore-curr" }}
+    {% endif %}
+    {% if tipo == 'beneficiario' and beneficiari_pks %}
+    {{ beneficiari_pks|json_script:"nav-data-beneficiario" }}
+    {{ beneficiari_nav_data|json_script:"nav-data-beneficiario-nav" }}
+    {{ beneficiario_pk_attuale|json_script:"nav-data-beneficiario-curr" }}
+    {% endif %}
+    {% with mn=entity_type|lower %}
+    <div style="max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 8px;">
+
+        {# --- NAVIGAZIONE (box separato) --- #}
+        {% if tipo == 'datore' and datori_pks or tipo == 'lavoratore' and lavoratori_pks or tipo == 'beneficiario' and beneficiari_pks %}
+        <div class="mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 14px 28px;">
+            <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;">
+                <span style="font-size:10px;color:#8A8F98;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;flex-shrink:0;">NAVIGAZIONE:</span>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                {% if tipo == 'datore' and datori_pks %}
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(-1, 'datore')" id="btnPrevDatore" title="Precedente" style="padding:6px 12px;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-left"></i></button>
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(1, 'datore')" id="btnNextDatore" title="Successivo" style="padding:6px 12px;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-right"></i></button>
+                <select id="navDatoreSelect" onchange="navEntityTo(this.value, 'datore')" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;color:#facc15;font-size:13px;font-weight:700;padding:4px 10px;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;"><option value="" style="color:#8A8F98;font-weight:400;">—</option></select>
+                {% endif %}
+                {% if tipo == 'lavoratore' and lavoratori_pks %}
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(-1, 'lavoratore')" id="btnPrevLavoratore" title="Precedente" style="padding:6px 12px;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-left"></i></button>
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(1, 'lavoratore')" id="btnNextLavoratore" title="Successivo" style="padding:6px 12px;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-right"></i></button>
+                <select id="navLavoratoreSelect" onchange="navEntityTo(this.value, 'lavoratore')" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;color:#facc15;font-size:13px;font-weight:700;padding:4px 10px;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;"><option value="" style="color:#8A8F98;font-weight:400;">—</option></select>
+                {% endif %}
+                {% if tipo == 'beneficiario' and beneficiari_pks %}
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(-1, 'beneficiario')" id="btnPrevBeneficiario" title="Precedente" style="padding:6px 12px;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-left"></i></button>
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(1, 'beneficiario')" id="btnNextBeneficiario" title="Successivo" style="padding:6px 12px;font-size:14px;line-height:1.2;"><i class="bi bi-chevron-right"></i></button>
+                <select id="navBeneficiarioSelect" onchange="navEntityTo(this.value, 'beneficiario')" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;color:#facc15;font-size:13px;font-weight:700;padding:4px 10px;max-width:400px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;"><option value="" style="color:#8A8F98;font-weight:400;">—</option></select>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# --- RIEPILOGO --- #}
+        <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px 28px;">
+            <div class="fw-bold d-flex align-items-center" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98; margin-bottom: 18px;">
+                <span><i class="bi bi-info-circle" style="margin-right: 6px; color: #5E6AD2;"></i>Riepilogo</span>
+            </div>
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4 col-12">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Nome e Cognome</div>
+                    <div id="r_nome" style="font-size: 17px; font-weight: 700; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Codice Fiscale</div>
+                    <div id="r_cf" style="font-size: 14px; font-weight: 600; font-family: monospace; color: #EDEDED; letter-spacing: 0.1em;">—</div>
+                </div>
+                <div class="col-md-2 col-3">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Data nascita</div>
+                    <div id="r_data_nascita" style="font-size: 13px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-1 col-3">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Sesso</div>
+                    <div id="r_sesso" style="font-size: 13px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-2 col-4">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Comune nascita</div>
+                    <div id="r_comune_nascita" style="font-size: 13px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-1 col-2">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Prov.</div>
+                    <div id="r_provincia_nascita" style="font-size: 13px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+                <div class="col-md-2 col-6">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Telefono</div>
+                    <div id="r_telefono" style="font-size: 13px; font-weight: 600; color: #EDEDED;">—</div>
+                </div>
+            </div>
+            <div class="row g-3 align-items-center mt-1">
+                <div class="col-md-4 col-12">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Indirizzo</div>
+                    <div id="r_indirizzo" style="font-size: 13px; font-weight: 500; color: #8A8F98;">—</div>
+                </div>
+                <div class="col-md-3 col-12">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Comune</div>
+                    <div id="r_comune" style="font-size: 13px; font-weight: 500; color: #8A8F98;">—</div>
+                </div>
+                <div class="col-md-1 col-3">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Prov.</div>
+                    <div id="r_provincia" style="font-size: 12px; font-weight: 600; color: #8A8F98;">—</div>
+                </div>
+                <div class="col-md-1 col-3">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">CAP</div>
+                    <div id="r_cap" style="font-size: 12px; font-weight: 600; color: #8A8F98;">—</div>
+                </div>
+                <div class="col-md-1 col-3">
+                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Email</div>
+                    <div id="r_email" style="font-size: 11px; font-weight: 600; color: #60a5fa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">—</div>
+                </div>
+                <div class="col-md-2 col-6 d-flex align-items-end justify-content-end pb-1">
+                    <button type="button" class="btn btn-sm btn-ghost w-100" onclick="apriMappe(this)"
+                        style="height:32px;font-size:11px;">
+                        📍 Maps
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {# --- CAMPI COMUNI (nome_cognome + cf + indirizzo + comune + email + telefono) --- #}
+        {% for field in form %}
+            {% if field.name == 'nome_cognome' or field.name == 'nome' or field.name == 'cognome' %}
+            {% elif field.name == 'codice_fiscale' %}
+            <div class="mb-3">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ field.label }}</label>
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    <div style="width: 200px; flex-shrink: 0;">
+                        {{ field }}
+                    </div>
+                    <input type="text" id="cf_data_nascita" class="form-control" readonly
+                        style="width:140px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;cursor:default;height:38px;"
+                        placeholder="gg/mm/aaaa" title="Data nascita">
+                    <input type="text" id="cf_sesso" class="form-control" readonly
+                        style="width:90px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;cursor:default;height:38px;"
+                        placeholder="Sesso" title="Sesso">
+                    <input type="text" id="cf_comune_nascita" class="form-control" readonly
+                        style="width:340px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;cursor:default;height:38px;"
+                        placeholder="Comune" title="Comune di nascita">
+                    <input type="text" id="cf_provincia" class="form-control" readonly
+                        style="width:60px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;cursor:default;height:38px;"
+                        placeholder="PR" title="Provincia">
+                </div>
+                {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {# --- NOME + COGNOME (campi separati dal modello) --- #}
+        <div class="row g-3 mb-3">
+            <div class="col-md-6 col-12">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">Nome</label>
+                {{ form.nome }}
+                {% for error in form.nome.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="col-md-6 col-12">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">Cognome</label>
+                {{ form.cognome }}
+                {% for error in form.cognome.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            </div>
+        </div>
+
+        {# --- INDIRIZZO + COMUNE + PROVINCIA + CAP (tutta la riga) --- #}
+        <div class="row g-3 mb-3">
+            {% for field in form %}
+                {% if field.name == 'indirizzo' %}
+                <div class="col-md-4 col-12">
+                    <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                </div>
+                {% elif field.name == 'comune' %}
+                <div class="col-md-3 col-12">
+                    <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">Comune</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                </div>
+                    <div class="col-md-2 col-4">
+                        <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">Provincia</label>
+                        <input type="text" id="nc_provincia" name="provincia" class="form-control"
+                            style="width:80px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;height:38px;"
+                            placeholder="PR"
+                            {% if 'provincia' in form.fields %}value="{{ form.provincia.value|default:'' }}"{% endif %}>
+                    </div>
+                    <div class="col-md-1 col-4">
+                        <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">CAP</label>
+                        <input type="text" id="nc_cap" name="cap" class="form-control"
+                            style="width:120px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;height:38px;"
+                            placeholder="00000"
+                            {% if 'cap' in form.fields %}value="{{ form.cap.value|default:'' }}"{% endif %}>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="col-md-2 col-12 d-flex align-items-end justify-content-end pb-1">
+                <button type="button" class="btn btn-sm btn-ghost w-100" onclick="apriMappe(this)"
+                    style="height:38px;font-size:12px;">
+                    📍CERCA SU GOOGLE MAPS
+                </button>
+            </div>
+        </div>
+
+        {# --- EMAIL + TELEFONO + PIN INPS + INVIO DIGITALE --- #}
+        <div class="row g-3 mb-3">
+            {% for field in form %}
+                {% if field.name == 'email' %}
+                <div class="col-md-4 col-12">
+                    <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                </div>
+                {% elif field.name == 'telefono' %}
+                <div class="col-md-3 col-12">
+                    <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                </div>
+                {% elif field.name == 'pin_inps' and 'datore' in mn %}
+                <div class="col-md-2 col-12">
+                    <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% if 'datore' in mn %}
+            <div class="col-md-3 col-12 d-flex flex-column justify-content-end pb-1">
+                {% for f2 in form %}
+                    {% if f2.name == 'invio_digitale_documenti' %}
+                    <label class="toggle-switch mb-1" style="white-space: nowrap;">
+                        <input type="hidden" name="{{ f2.name }}" value="false">
+                        <input type="checkbox" name="{{ f2.name }}" value="true" {% if f2.value %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label" style="font-size:10px;">Invio digitale</span>
+                    </label>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {# --- SEZIONE SPECIFICA LAVORATORE --- #}
+        {% if mn == 'lavoratore' %}
+        <div class="row g-3 mb-3">
+            {% for field in form %}
+                {% if field.name == 'ferie_pregresse' or field.name == 'scatti_anzianita_maturati' %}
+                <div class="col-md-6 col-12">
+                    <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# --- VISIBILITÀ OPERATORI (solo datore/lavoratore) --- #}
+        {% if mn != 'beneficiario' %}
+        <div class="row g-3 mb-3">
+            {% for field in form %}
+                {% if field.name == 'visibile_a' %}
+                <div class="col-12">
+                    <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">Visibile agli operatori</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;background:#09090B;border:1px solid #27282D;border-radius:8px;">
+                        {% for choice in field %}
+                        <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:12px;color:#8A8F98;">
+                            {{ choice.tag }}
+                            <span>{{ choice.choice_label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% if field.help_text %}<div style="font-size:11px;color:#545;margin-top:4px;">{{ field.help_text }}</div>{% endif %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# --- CONTRATTI COLLEGATI (datore / lavoratore / beneficiario) --- #}
+        {% if contratti_collegati %}
+        <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px 24px;">
+            <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
+                <i class="bi bi-file-earmark-text" style="margin-right: 6px; color: #5E6AD2;"></i>Contratti collegati
+            </div>
+            {% for c in contratti_collegati %}
+            <div class="d-flex align-items-center justify-content-between" style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <div>
+                    {% if mn == 'beneficiario' %}
+                    <div style="font-size: 13px; font-weight: 600; color: #EDEDED;">{{ c.lavoratore.nome_cognome }}</div>
+                    <div style="font-size: 11px; color: #8A8F98;">{{ c.datore }} &middot; {{ c.data_assunzione|date:"d/m/Y" }}
+                        {% if c.stato == 'ATTIVO' %}<span style="color:#34d399;font-weight:600;">  ● ATTIVO</span>{% else %}<span style="color:#f87171;font-weight:600;">  ● CESSATO</span>{% endif %}
+                    </div>
+                    {% elif mn == 'datorelavoro' %}
+                    <div style="font-size: 13px; font-weight: 600; color: #EDEDED;">{{ c.lavoratore.nome_cognome }}</div>
+                    <div style="font-size: 11px; color: #8A8F98;">{{ c.data_assunzione|date:"d/m/Y" }}
+                        {% if c.stato == 'ATTIVO' %}<span style="color:#34d399;font-weight:600;">  ● ATTIVO</span>{% else %}<span style="color:#f87171;font-weight:600;">  ● CESSATO</span>{% endif %}
+                    </div>
+                    {% elif mn == 'lavoratore' %}
+                    <div style="font-size: 13px; font-weight: 600; color: #EDEDED;">{{ c.datore }}</div>
+                    <div style="font-size: 11px; color: #8A8F98;">{{ c.data_assunzione|date:"d/m/Y" }}
+                        {% if c.stato == 'ATTIVO' %}<span style="color:#34d399;font-weight:600;">  ● ATTIVO</span>{% else %}<span style="color:#f87171;font-weight:600;">  ● CESSATO</span>{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <a href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" class="btn-edit" style="color: #5E6AD2; font-size: 13px; text-decoration: none;">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            </div>
+            {% empty %}
+            <div class="text-secondary" style="font-size: 12px; font-style: italic;">Nessun contratto collegato</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# --- NOTE --- #}
+        {% for field in form %}
+            {% if field.name == 'note_datore' or field.name == 'note_lavoratore' or field.name == 'note_beneficiario' %}
+            <div class="mb-3">
+                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">
+                    <i class="bi bi-sticky" style="margin-right: 6px; color: #5E6AD2;"></i>{{ field.label }}
+                </label>
+                {{ field }}
+                {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+    {% endwith %}
+
+    <div class="mt-4 d-flex justify-content-end gap-2" style="border-top: 1px solid #27282D; padding-top: 20px;">
+        <button type="button" class="btn btn-ghost" data-bs-dismiss="offcanvas" style="padding: 10px 20px; font-size: 13px;">Annulla</button>
+        {% if instance.pk %}
+        <button type="button" onclick="apriDuplicaAnagrafica('{{ tipo }}', {{ instance.pk }})" style="display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;color:#34d399;cursor:pointer;">
+            <i class="bi bi-copy"></i> Copia
+        </button>
+        <button type="button" onclick="confermaEliminaAnagrafica('{{ tipo }}', {{ instance.pk }})" style="display:inline-flex;align-items:center;gap:6px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:9px 16px;font-size:12px;font-weight:600;color:#f87171;cursor:pointer;">
+            <i class="bi bi-trash3"></i> Elimina
+        </button>
+        {% endif %}
+        <button type="submit" class="btn btn-ghost-primary px-4 py-2" id="btnSalvaForm" style="font-size: 13px; padding: 10px 24px;">
+            <i class="bi bi-check2"></i> Salva Dati
+        </button>
+    </div>
+</form>

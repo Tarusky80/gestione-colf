@@ -1,0 +1,128 @@
+﻿{% extends 'base.html' %}
+{% block extra_css %}
+<style>
+@media print {
+    @page { margin: 15mm 18mm; size: A4 portrait; }
+    * { box-shadow: none !important; text-shadow: none !important; }
+    body { background: white !important; color: #111 !important; }
+    .sidebar, .nav-group-divider, .nav-group, .sidebar-footer,
+    .navbar, .main-header, footer, .no-print { display: none !important; }
+    .main-content, .container-fluid, .row, .col-md-6, .col-md-3 { margin: 0 !important; padding: 0 !important; max-width: 100% !important; width: 100% !important; float: none !important; }
+    #anteprimaContainer { display: block !important; }
+    #anteprimaContent { border: none !important; border-radius: 0 !important; padding: 0 !important; }
+    #anteprimaContent [style*="background:#17181C"] { background: white !important; border: none !important; }
+    #anteprimaContent [style*="color:#5C5F66"] { color: #666 !important; }
+    #anteprimaContent [style*="color:#8A8F98"] { color: #666 !important; }
+    #anteprimaContent [style*="color:#EDEDED"] { color: #111 !important; }
+    #anteprimaContent img { max-width: 100% !important; }
+}
+.contratto-corpo h1, .contratto-corpo h2, .contratto-corpo h3 { color: #EDEDED; }
+.contratto-corpo p { margin-bottom: 8px; line-height: 1.7; }
+.contratto-corpo ul, .contratto-corpo ol { padding-left: 20px; }
+.contratto-corpo li { margin-bottom: 4px; }
+.contratto-corpo strong { color: #EDEDED; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+    <div>
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-file-earmark-text me-2"></i>ANTEPRIMA CONTRATTO</h1>
+        <p class="text-secondary small mb-0">{{ contratto.datore.nome_cognome }} — {{ contratto.lavoratore.nome_cognome }}</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-ghost-success" onclick="window.print()" style="padding:8px 16px;font-size:12px;">
+            <i class="bi bi-printer me-1"></i> STAMPA
+        </button>
+        <button onclick="generaPdfContratto({{ contratto.pk }}{% if testo.pk %}, {{ testo.pk }}{% endif %})" class="btn btn-sm btn-ghost-primary" style="padding:8px 16px;font-size:12px;">
+            <i class="bi bi-file-pdf me-1"></i> PDF
+        </button>
+        <a href="{% url 'crea_pagopa' %}?contratto_pk={{ contratto.pk }}" class="btn btn-sm btn-ghost-primary" style="padding:8px 16px;font-size:12px;">
+            <i class="bi bi-credit-card-2-front me-1"></i> PAGOPA
+        </a>
+    </div>
+</div>
+
+<div id="anteprimaContainer">
+    <div id="anteprimaContent" class="class="card-dark" style="overflow:hidden;"">
+        <div style="padding:24px 28px;">
+
+            <div style="text-align:center;margin-bottom:4px;">
+                <h1 class="fw-bold" style="font-size:16px;margin-bottom:2px;color:#EDEDED;">CONTRATTO DI LAVORO DOMESTICO TRA {{ contratto.datore.nome_cognome }} E {{ contratto.lavoratore.nome_cognome }} PER ASSISTENZA {{ nome_beneficiario }}</h1>
+            </div>
+
+            <hr style="border:none;border-top:1px solid #27282D;margin:14px 0;">
+
+            <div class="contratto-corpo" style="font-size:12px;color:#8A8F98;line-height:1.7;">
+                {{ corpo_risolto|safe }}
+            </div>
+
+            <hr style="border:none;border-top:1px solid #27282D;margin:18px 0;">
+
+            <div style="margin-top:8px;font-size:12px;color:#EDEDED;">
+                Luogo e data, {{ contratto.datore.comune|default:'_______________' }}, {% now "d/m/Y" %}
+            </div>
+            <div style="margin-top:20px;display:flex;justify-content:space-between;font-size:11px;color:#8A8F98;line-height:1.6;">
+                <div style="text-align:center;">
+                    <div style="font-size:12px;color:#EDEDED;margin-bottom:4px;">FIRMA DEL DATORE DI LAVORO</div>
+                    <span style="border-bottom:1px solid #8A8F98;display:inline-block;width:220px;">&nbsp;</span>
+                    <div style="font-size:10px;color:#5C5F66;margin-top:4px;">({{ contratto.datore.nome_cognome }})</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-size:12px;color:#EDEDED;margin-bottom:4px;">FIRMA DEL LAVORATORE</div>
+                    <span style="border-bottom:1px solid #8A8F98;display:inline-block;width:220px;">&nbsp;</span>
+                    <div style="font-size:10px;color:#5C5F66;margin-top:4px;">({{ contratto.lavoratore.nome_cognome }})</div>
+                </div>
+            </div>
+
+            <div style="margin-top:24px;">
+                {% if opzioni and opzioni.logo_buste_paga %}
+                <div style="margin-bottom:4px;">
+                    <img src="{{ opzioni.logo_buste_paga.url }}" style="max-height:30px;max-width:120px;" alt="Logo studio">
+                </div>
+                {% endif %}
+                {% if opzioni %}
+                <div style="font-size:8px;color:#5C5F66;">
+                    {% if opzioni.dati_studio %}{{ opzioni.dati_studio }}{% endif %}
+                    {% if opzioni.telefono_studio %} | Tel: {{ opzioni.telefono_studio }}{% endif %}
+                    {% if opzioni.email_studio %} | Mail: {{ opzioni.email_studio }}{% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            {% if testo.note_interne %}
+            <div style="margin-top:16px;padding:8px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:8px;font-size:10px;color:#f59e0b;">
+                <strong>Note interne:</strong> {{ testo.note_interne }}
+            </div>
+            {% endif %}
+
+            <div style="margin-top:20px;padding-top:12px;border-top:1.5px solid #27282D;font-size:8px;color:#5C5F66;text-align:center;">
+                Tutti i diritti riservati: &egrave; vietata la riproduzione, anche parziale, dei contenuti. | Stampata il {% now "d/m/Y" %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function generaPdfContratto(contrattoPk, testoPk) {
+    var url = '/ajax/genera-contratto-pdf/' + contrattoPk + '/';
+    var body = {};
+    if (testoPk) body.testo = testoPk;
+    fetch(url, {method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'}, body:JSON.stringify(body)})
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+            if (data.ok) {
+                apriNelPannello(data.url, data.pk);
+            } else {
+                alert('Errore: ' + data.errore);
+            }
+        })
+        .catch(function(err){
+            alert('Errore generazione PDF: ' + err);
+        });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,324 @@
+﻿{% extends 'base.html' %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'iscrizione_inps' %}">Procedure Web</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Configurazioni Servizi Web</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="container-fluid p-4">
+  <h4 class="mb-4" style="color:#EDEDED;"><i class="bi bi-gear-wide-connected me-2"></i>Configurazioni Servizi Web
+    <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+  </h4>
+
+  <div class="row g-4">
+    <!-- Chromedriver -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-browser-chrome me-2"></i>Chromedriver</h6>
+        <form method="post" class="mb-3">
+          {% csrf_token %}
+          <div class="d-flex gap-2 align-items-center">
+            <input type="text" name="chromedriver_exe" value="{{ driver_path }}" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;padding:6px 10px;flex:1;">
+            <button type="submit" class="btn btn-sm btn-ghost-primary" style="padding:6px 14px;font-size:12px;white-space:nowrap;"><i class="bi bi-check-lg"></i></button>
+          </div>
+        </form>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          File presente:
+          {% if driver_exists %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> SI</span>
+          {% else %}
+            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> NO</span>
+          {% endif %}
+        </div>
+        {% if driver_version %}
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Versione: <span style="color:#EDEDED;">{{ driver_version }}</span>
+        </div>
+        {% endif %}
+        {% if compatible is not None %}
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Compatibilità Chrome:
+          {% if compatible %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Compatibile</span>
+          {% else %}
+            <span style="color:#fbbf24;"><i class="bi bi-exclamation-triangle-fill"></i> Versioni diverse</span>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Chrome Browser -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-google me-2"></i>Google Chrome</h6>
+        {% if chrome_version %}
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Versione: <span style="color:#EDEDED;">{{ chrome_version }}</span>
+        </div>
+        <div style="font-size:12px;color:#8A8F98;">
+          Stato:
+          <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Installato</span>
+        </div>
+        {% else %}
+        <div style="font-size:12px;color:#f87171;">
+          <i class="bi bi-x-circle-fill"></i> Chrome non rilevato
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Selenium -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-box-seam me-2"></i>Selenium</h6>
+        {% if selenium_versione %}
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Versione: <span style="color:#EDEDED;">{{ selenium_versione }}</span>
+        </div>
+        <div style="font-size:12px;color:#8A8F98;">
+          Stato:
+          <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Installato</span>
+        </div>
+        {% else %}
+        <div style="font-size:12px;color:#f87171;">
+          <i class="bi bi-x-circle-fill"></i> Selenium non installato
+        </div>
+        <div style="font-size:11px;color:#8A8F98;margin-top:6px;">Esegui: <code style="background:#27282D;padding:2px 6px;border-radius:4px;color:#f59e0b;">pip install selenium</code></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Playwright -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-mask me-2"></i>Playwright</h6>
+        {% if playwright_versione %}
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Versione: <span style="color:#EDEDED;">{{ playwright_versione }}</span>
+        </div>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Chromium:
+          {% if playwright_chromium_ok %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Installato</span>
+            <span style="color:#8A8F98;font-size:11px;">({{ playwright_chromium_path }})</span>
+          {% else %}
+            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non installato</span>
+          {% endif %}
+        </div>
+        <div style="font-size:11px;color:#8A8F98;margin-top:6px;">
+          Esegui: <code style="background:#27282D;padding:2px 6px;border-radius:4px;color:#f59e0b;">playwright install chromium</code>
+        </div>
+        {% else %}
+        <div style="font-size:12px;color:#f87171;">
+          <i class="bi bi-x-circle-fill"></i> Playwright non installato
+        </div>
+        <div style="font-size:11px;color:#8A8F98;margin-top:6px;">Esegui: <code style="background:#27282D;padding:2px 6px;border-radius:4px;color:#f59e0b;">pip install playwright</code></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Collegamenti INPS -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-link-45deg me-2"></i>Collegamenti INPS</h6>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Iscrizione:
+          {% if link_iscrizione_ok is None %}
+            <span style="color:#8A8F98;">—</span>
+          {% elif link_iscrizione_ok %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+          {% else %}
+            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+          {% endif %}
+        </div>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Cessazione:
+          {% if link_cessazione_ok is None %}
+            <span style="color:#8A8F98;">—</span>
+          {% elif link_cessazione_ok %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+          {% else %}
+            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+          {% endif %}
+        </div>
+        <div style="font-size:12px;color:#8A8F98;">
+          PAGOPA:
+          {% if link_pagopa_ok is None %}
+            <span style="color:#8A8F98;">—</span>
+          {% elif link_pagopa_ok %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+          {% else %}
+            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-2">
+    <!-- Automazione (Selenium / Playwright) -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-robot me-2"></i>Automazione</h6>
+        <form method="post" action="{% url 'configurazioni_servizi' %}" class="mb-2">
+          {% csrf_token %}
+          <div class="d-flex gap-2 align-items-center flex-wrap" style="margin-bottom:8px;">
+            <span style="font-size:12px;color:#8A8F98;white-space:nowrap;">Pausa azioni:</span>
+            <input type="number" step="0.1" min="0" max="10" name="delay_pausa" value="{{ web_config.delay_pausa|default:0.5|stringformat:'g' }}" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;padding:4px 8px;width:70px;">
+            <span style="font-size:11px;color:#8A8F98;">sec</span>
+            <span style="font-size:12px;color:#8A8F98;white-space:nowrap;margin-left:8px;">Timeout:</span>
+            <input type="number" step="1" min="1" max="120" name="timeout_elementi" value="{{ web_config.timeout_elementi|default:'10' }}" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;padding:4px 8px;width:60px;">
+            <span style="font-size:11px;color:#8A8F98;">sec</span>
+            <button type="submit" class="btn btn-sm btn-ghost-primary" style="padding:4px 12px;font-size:11px;"><i class="bi bi-check-lg"></i></button>
+          </div>
+        </form>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Motore:
+          <form method="post" action="{% url 'configurazioni_servizi' %}" style="display:inline-block;margin-left:6px;">
+            {% csrf_token %}
+            <input type="hidden" name="use_playwright" value="{% if web_config.use_playwright %}0{% else %}1{% endif %}">
+            <button type="submit" class="btn btn-sm {% if web_config.use_playwright %}btn-ghost-primary{% else %}btn-ghost{% endif %}" style="padding:2px 10px;border-radius:20px;font-size:11px;">
+              {% if web_config.use_playwright %}
+                <i class="bi bi-mask me-1"></i> Playwright
+              {% else %}
+                <i class="bi bi-browser-chrome me-1"></i> Selenium (Chrome)
+              {% endif %}
+            </button>
+          </form>
+        </div>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Headless:
+          {% if web_config.headless %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Attivo</span>
+          {% else %}
+            <span style="color:#8A8F98;"><i class="bi bi-circle"></i> Disattivo</span>
+          {% endif %}
+        </div>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+          Profilo Chrome:
+          {% if web_config.chrome_user_data_dir %}
+            <span style="color:#EDEDED;">{{ web_config.chrome_user_data_dir }}</span>
+          {% else %}
+            <span style="color:#8A8F98;"><i>— default temporaneo</i></span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Collegamento Cessazione -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-link me-2"></i>Link Cessazione INPS</h6>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
+          {{ web_config.link_inps_cessazione|default:"—" }}
+        </div>
+        <div style="font-size:12px;color:#8A8F98;">
+          Raggiungibilità:
+          {% if link_cessazione_ok is None %}
+            <span style="color:#8A8F98;">—</span>
+          {% elif link_cessazione_ok %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+          {% else %}
+            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Collegamento PagoPA -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-credit-card-2-front me-2"></i>Link PagoPA INPS</h6>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
+          {{ web_config.link_inps_pagopa|default:"—" }}
+        </div>
+        <div style="font-size:12px;color:#8A8F98;">
+          Raggiungibilità:
+          {% if link_pagopa_ok is None %}
+            <span style="color:#8A8F98;">—</span>
+          {% elif link_pagopa_ok %}
+            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+          {% else %}
+            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Cartelle Documenti -->
+    <div class="col-md-6">
+      <div class="p-3" class="card-alt-12">
+        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-folder2-open me-2"></i>Cartelle Documenti</h6>
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">
+          Documenti (PagoPA, buste, TFR):
+          <div style="color:#EDEDED;word-break:break-all;margin-top:2px;">{{ cartella_documenti }}</div>
+          <div class="d-flex align-items-center gap-2" style="margin-top:4px;">
+            {% if cartella_documenti_esiste %}
+              <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Presente</span>
+              <button class="btn btn-sm btn-ghost" onclick="fetch('/ajax/apri-cartella-documenti/').then(function(r){return r.json()}).then(function(d){if(!d.success){mostraToast(d.error, false)}})" style="padding:4px 12px;font-size:11px;">
+                <i class="bi bi-folder-symlink me-1"></i> Apri cartella
+              </button>
+            {% else %}
+              <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non trovata</span>
+            {% endif %}
+          </div>
+        </div>
+        <div style="font-size:12px;color:#8A8F98;">
+          Sottocartella SCREENSHOT:
+          <div style="color:#EDEDED;word-break:break-all;margin-top:2px;">{{ cartella_screenshot }}</div>
+          <div style="margin-top:2px;">
+            {% if cartella_screenshot_esiste %}
+              <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Presente</span>
+            {% else %}
+              <span style="color:#8A8F98;"><i class="bi bi-circle"></i> Verrà creata al primo screenshot</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 p-3" style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:12px;">
+    <p style="font-size:11px;color:#8A8F98;margin:0;">
+      <i class="bi bi-info-circle me-1"></i>
+      I percorsi e le versioni sono letti dal sistema all'apertura di questa pagina.
+      Le impostazioni di automazione sono modificabili dall'<a href="{% url 'admin:paghe_serviziowebconfig_change' web_config.pk %}" style="color:#5E6AD2;">admin</a>.
+    </p>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Configurazioni Servizi Web
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Configurazioni per i <b>servizi web</b> utilizzati dalle procedure automatizzate: Chromedriver (Selenium), Playwright, login INPS e opzioni di automazione.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sezioni</b><br>
+        <b>Chromedriver</b> — percorso dell'eseguibile chromedriver.exe per l'automazione Selenium.<br>
+        <b>Playwright</b> — percorso del browser Chromium installato da Playwright.<br>
+        <b>Login INPS</b> — username, password, PIN e codice fiscale per l'accesso automatizzato al sito INPS.<br>
+        <b>Automazione</b> — scegli il motore (Playwright o Selenium), imposta i delay tra le operazioni e la risoluzione dello schermo.<br>
+        <b>Link INPS</b> — URL di riferimento per le procedure di iscrizione/cessazione e PagoPA.<br>
+        <b>Cartelle</b> — percorsi delle cartella PDF e screenshot generati dalle automationi.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Dove si modificano</b><br>
+        Alcune impostazioni sensibili (login, PIN) sono modificabili solo dall'<b>admin Django</b> cliccando il link in fondo alla pagina.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

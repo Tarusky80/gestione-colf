@@ -1,0 +1,27 @@
+<form id="dynamicForm" method="POST">
+    {% csrf_token %}
+    <div style="max-height: 70vh; overflow-y: auto; overflow-x: hidden; padding-right: 8px;">
+        {% for field in form %}
+        <div class="mb-3">
+            <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ field.label }}</label>
+            {% if field.name == 'colore' %}
+            <div class="d-flex align-items-center gap-2">
+                {{ field }}
+                <span id="coloreHex" style="font-size:13px;color:#8A8F98;font-family:monospace;">{{ field.value|default:'#10b981' }}</span>
+            </div>
+            {% else %}
+            {{ field }}
+            {% endif %}
+            {% if field.help_text %}<div class="mt-1 text-secondary" style="font-size: 10px;">{{ field.help_text }}</div>{% endif %}
+            {% for error in field.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end gap-2" style="border-top: 1px solid #27282D; padding-top: 20px;">
+        <button type="button" class="btn btn-ghost" data-bs-dismiss="offcanvas" style="padding: 10px 20px; font-size: 13px;">Annulla</button>
+        <button type="submit" class="btn btn-ghost-primary px-4 py-2" id="btnSalvaForm" style="font-size: 13px; padding: 10px 24px;">
+            <i class="bi bi-check2"></i> Salva
+        </button>
+    </div>
+</form>

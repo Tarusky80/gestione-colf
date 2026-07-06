@@ -1,0 +1,800 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% load tabelle_tags %}
+{% block search_bar %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.toggle-vis-knob::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    left: 3px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+.toggle-switch input[type="checkbox"]:checked + .toggle-vis-knob::after {
+    transform: translateX(18px);
+}
+.doc-page { max-width: 1400px; margin: 0 auto; }
+.doc-page .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+.doc-page .filtri { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; align-items:end; }
+.doc-page .filtri select, .doc-page .filtri input, .doc-page .filtri button { padding:7px 12px; border-radius:6px; background:#09090B; border:1px solid #27282D; color:#EDEDED; font-size:13px; }
+.doc-page .filtri button { background:#5E6AD2; color:#fff; border:none; cursor:pointer; font-weight:600; }
+.doc-page .filtri button:hover { opacity:0.85; }
+.doc-page .filtri label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.3px; color:#8A8F98; display:block; margin-bottom:2px; }
+.doc-page table { width:100%; border-collapse:collapse; }
+.doc-page th { text-align:left; padding:10px 12px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; color:#8A8F98; background:#16162a; border-bottom:1px solid #27282D; }
+.doc-page td { padding:10px 12px; font-size:13px; border-bottom:1px solid rgba(255,255,255,0.04); }
+.doc-page tr:hover td { background:rgba(96,165,250,0.04); }
+.doc-page .badge-tipo { font-size:10px; font-weight:600; padding:2px 10px; border-radius:20px; white-space:nowrap; }
+.doc-page .badge-inviato { font-size:10px; padding:2px 8px; border-radius:20px; }
+.doc-page .azioni { display:flex; gap:4px; }
+.doc-page .azioni a, .doc-page .azioni button { padding:5px 10px; border-radius:5px; border:none; font-size:12px; cursor:pointer; text-decoration:none; color:#fff; transition:opacity 0.1s; }
+.doc-page .azioni a:hover, .doc-page .azioni button:hover { opacity:0.8; }
+.doc-page .check-col { width:36px; text-align:center; }
+.doc-page .empty { text-align:center; padding:60px 20px; color:#8A8F98; }
+.doc-page .empty i { font-size:40px; display:block; margin-bottom:12px; opacity:0.3; }
+.doc-massivo-bar { display:none; background:#16162a; border:1px solid #27282D; border-radius:10px; padding:14px 18px; margin-bottom:16px; align-items:center; gap:12px; flex-wrap:wrap; }
+.doc-massivo-bar.visible { display:flex; }
+.doc-massivo-bar span { font-size:13px; font-weight:600; color:#8A8F98; }
+.doc-massivo-bar button { padding:7px 16px; border-radius:6px; border:none; font-size:12px; font-weight:600; cursor:pointer; color:#fff; transition:opacity 0.1s; }
+.doc-massivo-bar button:hover { opacity:0.85; }
+.pagination-bar { display:flex; align-items:center; justify-content:space-between; margin-top:20px; padding:12px 16px; background:#16162a; border:1px solid #27282D; border-radius:10px; }
+.pagination-info { font-size:13px; color:#8A8F98; }
+.pagination-links { display:flex; gap:4px; }
+.pagination-links .page-link { padding:6px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#e2e8f0; background:#09090B; border:1px solid #27282D; text-decoration:none; transition:all 0.15s; }
+.pagination-links .page-link:hover { background:#5E6AD2; border-color:#5E6AD2; }
+.pagination-links .page-link.active { background:#5E6AD2; border-color:#5E6AD2; color:#fff; }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Archivio Documenti</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="doc-page">
+  <div class="page-header">
+    <div>
+      <h1 class="h3 fw-bold mb-1">ARCHIVIO DOCUMENTI
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      </h1>
+      <p class="text-secondary small mb-0">Documenti generati, archiviati e inviati.</p>
+    </div>
+    <button class="btn btn-ghost-primary" onclick="apriNuovoDocumento()"><i class="bi bi-plus-lg"></i> Nuovo Documento</button>
+  </div>
+
+  <form method="GET" class="filtri">
+    <div>
+      <label>Tipo</label>
+      <select name="tipo">
+        <option value="">Tutti</option>
+        {% for k,v in tipi_documento %}
+        <option value="{{ k }}" {% if filtro_tipo == k %}selected{% endif %}>{{ v }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Datore</label>
+      <input type="text" name="datore" value="{{ filtro_datore }}" placeholder="Cerca datore...">
+    </div>
+    <div>
+      <label>Da data</label>
+      <input type="date" name="da" value="{{ filtro_da }}">
+    </div>
+    <div>
+      <label>A data</label>
+      <input type="date" name="a" value="{{ filtro_a }}">
+    </div>
+    <div>
+      <label>Inviato</label>
+      <select name="inviato">
+        <option value="">Tutti</option>
+        <option value="si" {% if filtro_inviato == 'si' %}selected{% endif %}>Si</option>
+        <option value="no" {% if filtro_inviato == 'no' %}selected{% endif %}>No</option>
+      </select>
+    </div>
+    <button type="submit"><i class="bi bi-funnel"></i> Filtra</button>
+    {% if filtro_tipo or filtro_datore or filtro_da or filtro_a or filtro_inviato or filtro_contratto_pk or filtro_datore_pk or filtro_lavoratore_pk or filtro_beneficiario_pk %}
+    <a href="{% url 'documenti_list' %}" style="padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #27282D;color:#8A8F98;font-size:13px;text-decoration:none;">Cancella filtri</a>
+    {% endif %}
+  </form>
+
+  {% if filtro_contratto_pk or filtro_datore_pk or filtro_lavoratore_pk or filtro_beneficiario_pk %}
+  <div style="background:rgba(94,106,210,0.1);border:1px solid rgba(94,106,210,0.2);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:13px;color:#9ca3ff;">
+    <i class="bi bi-funnel"></i> Filtro attivo:
+    {% if filtro_contratto_pk %}contratto #{{ filtro_contratto_pk }}{% endif %}
+    {% if filtro_datore_pk %}datore #{{ filtro_datore_pk }}{% endif %}
+    {% if filtro_lavoratore_pk %}lavoratore #{{ filtro_lavoratore_pk }}{% endif %}
+    {% if filtro_beneficiario_pk %}beneficiario #{{ filtro_beneficiario_pk }}{% endif %}
+    — <a href="{% url 'documenti_list' %}" style="color:#fff;text-decoration:underline;">Rimuovi filtro</a>
+  </div>
+  {% endif %}
+
+  <div class="doc-massivo-bar" id="massivoBar">
+    <span id="massivoCount">0 documenti selezionati</span>
+    <button class="btn btn-ghost-info" onclick="apriInvioMassivo()"><i class="bi bi-envelope"></i> Invia Email Massivo</button>
+    <button class="btn btn-ghost-primary" onclick="apriInvioRaggruppato()"><i class="bi bi-envelope-paper"></i> Allega in una mail</button>
+    <button class="btn btn-ghost-warning" id="btnStampaMassiva" onclick="stampaDocumentoMassiva()"><i class="bi bi-printer"></i> Stampa selezionati</button>
+    <button class="btn btn-ghost-danger" onclick="deselezionaTutti()">Deseleziona</button>
+    <button class="btn btn-ghost-danger" onclick="eliminaMassivo()"><i class="bi bi-trash3"></i> Elimina selezionati</button>
+  </div>
+
+    <table class="table custom-table sortable" id="documentiTable">
+    <thead>
+      <tr>
+        <th class="check-col"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
+        <th>Tipo</th>
+        <th>Titolo</th>
+        <th>Datore / Contratto</th>
+        <th>Progetto</th>
+        <th>Beneficiario</th>
+        <th>File</th>
+        <th>Stampa</th>
+        <th>Creato</th>
+        <th>Email</th>
+        <th style="text-align:center;width:90px;">Visibile<br><span style="font-size:10px;color:#5C5F66;font-weight:400;">datore</span></th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in documenti %}
+      <tr class="clickable-row" data-type="documento" data-pk="{{ d.pk }}" data-has-contratto="{% if d.contratto %}1{% else %}0{% endif %}" data-title="{{ d.get_tipo_display }}: {{ d.titolo }}" data-sub="{% if d.datore %}{{ d.datore.nome_cognome }}{% elif d.contratto %}{{ d.contratto.datore.nome_cognome }} → {{ d.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}"{% if d.datore and d.datore.email %} data-email="{{ d.datore.email }}"{% elif d.contratto and d.contratto.datore.email %} data-email="{{ d.contratto.datore.email }}"{% endif %} data-creato="{{ d.creato_il|date:'d/m/Y H:i' }}" data-file-size="{{ d.file_size|filesizeformat }}">
+        <td class="check-col"><input type="checkbox" class="docCheck" value="{{ d.pk }}" onchange="aggiornaMassivoBar()"></td>
+        <td><span class="badge-tipo" style="background:rgba({% with c=tipo_colori|get_item:d.tipo|default:'#60a5fa' %}{{ c|hex_to_rgb }}{% endwith %},0.12);color:{{ tipo_colori|get_item:d.tipo|default:'#60a5fa' }};">{{ d.get_tipo_display }}</span></td>
+        <td><strong>{{ d.titolo }}</strong>{% if d.note %}<br><span style="font-size:11px;color:#8A8F98;">{{ d.note|truncatechars:40 }}</span>{% endif %}</td>
+        <td>
+          {% if d.datore %}{{ d.datore.nome_cognome }}{% if d.datore.email %}<br><span style="font-size:11px;color:#8A8F98;">{{ d.datore.email }}</span>{% endif %}{% elif d.contratto %}{{ d.contratto.datore.nome_cognome }}{% if d.contratto.datore.email %}<br><span style="font-size:11px;color:#8A8F98;">{{ d.contratto.datore.email }}</span>{% endif %} &rarr; {{ d.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}
+        </td>
+        <td style="font-size:12px;color:#8A8F98;">
+          {% if d.contratto %}{% for p in d.contratto.progetto.all %}<span class="badge-tipo" style="background:rgba(45,212,191,0.12);color:#2dd4bf;font-size:10px;margin-right:2px;">{{ p.tipo.nome }}</span>{% empty %}-{% endfor %}{% else %}-{% endif %}
+        </td>
+        <td style="font-size:12px;color:#8A8F98;">
+          {% if d.contratto and d.contratto.progetto.all.0 %}{{ d.contratto.progetto.all.0.beneficiario.nome_cognome }}{% else %}-{% endif %}
+        </td>
+        <td style="font-size:12px;color:#8A8F98;">{{ d.file_name|truncatechars:30 }}<br>{% if d.file_size > 1024 %}{{ d.file_size|filesizeformat }}{% else %}{{ d.file_size }} bytes{% endif %}</td>
+        <td class="text-center">
+          <i class="stampa-badge bi {% if d.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ d.pk }}" title="{% if d.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
+        </td>
+        <td style="font-size:12px;white-space:nowrap;">{{ d.creato_il|date:"d/m/Y H:i" }}</td>
+        <td>
+          {% if d.inviato %}
+          <span class="badge-inviato" style="background:rgba(16,185,129,0.12);color:#10b981;">Inviato</span><br><span style="font-size:11px;color:#8A8F98;">{{ d.email_destinatario }}</span>
+          {% else %}
+          <span class="badge-inviato" style="background:rgba(100,100,100,0.12);color:#94a3b8;">Non inviato</span>
+          {% endif %}
+        </td>
+        <td class="text-center" style="vertical-align:middle;">
+          <div class="toggle-switch" style="display:inline-block;flex-shrink:0;width:42px;height:22px;position:relative;border:none;background:none;padding:0;border-radius:0;">
+            <input type="checkbox" id="visDoc_{{ d.pk }}" {% if d.visibile_al_datore %}checked{% endif %} onchange="toggleVisibileDatore(this, {{ d.pk }})" style="opacity:0;width:100%;height:100%;position:absolute;top:0;left:0;margin:0;cursor:pointer;z-index:2;">
+            <span class="toggle-slider toggle-vis-knob" style="position:absolute;inset:0;background:{% if d.visibile_al_datore %}#34C759{% else %}#3a3b40{% endif %};border:none;border-radius:12px;cursor:pointer;transition:background 0.25s ease;z-index:1;"></span>
+          </div>
+        </td>
+        <td>
+          <button class="btn btn-ghost-warning btn-sm px-2" onclick="stampaDocumento({{ d.pk }}, this)" title="Stampa documento" data-label="Stampa"><i class="bi bi-printer"></i> Stampa</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="12">
+        <div class="empty">
+          <i class="bi bi-file-earmark-pdf"></i>
+          <p>Nessun documento archiviato. <button class="btn btn-sm btn-ghost-primary" onclick="apriNuovoDocumento()">Crea il primo documento</button></p>
+        </div>
+      </td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Paginazione -->
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="pagination-bar">
+  <span class="pagination-info">{{ page_obj.start_index }}â€“{{ page_obj.end_index }} di {{ page_obj.paginator.count }}</span>
+  <div class="pagination-links">
+    {% if page_obj.has_previous %}
+    <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page=1" class="page-link" title="Prima">&laquo;</a>
+    <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" class="page-link" title="Precedente">&lsaquo;</a>
+    {% endif %}
+    {% for i in page_obj.paginator.page_range %}
+      {% if i >= page_obj.number|add:-3 and i <= page_obj.number|add:3 %}
+      <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ i }}" class="page-link{% if i == page_obj.number %} active{% endif %}">{{ i }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" class="page-link" title="Successiva">&rsaquo;</a>
+    <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}" class="page-link" title="Ultima">&raquo;</a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Modale Nuovo Documento -->
+<div class="modal fade" id="modaleNuovoDocumento" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Nuovo Documento</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modaleNuovoDocumentoBody">
+        <div class="text-center py-5"><div class="spinner-border text-light"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale Invio Email -->
+<div class="modal fade" id="modaleInvioEmail" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Invia Documento via Email</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modaleInvioEmailBody">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale Invio Massivo -->
+<div class="modal fade" id="modaleInvioMassivo" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Invio Massivo Email</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modaleInvioMassivoBody">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale Invio Raggruppato -->
+<div class="modal fade" id="modaleInvioRaggruppato" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Allega in una mail</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modaleInvioRaggruppatoBody">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale Collega Contratto -->
+<div class="modal fade" id="modaleCollegaContratto" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Collega Documento a Contratto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modaleCollegaContrattoBody">
+        <div class="mb-3">
+          <label class="form-label small text-secondary">Cerca contratto (datore o lavoratore)</label>
+          <input type="text" id="collegaContrattoSearch" class="form-control" placeholder="Digita per cercare..." oninput="cercaContrattoCollega(this.value)">
+          <input type="hidden" id="collegaContrattoPk" value="">
+          <input type="hidden" id="collegaDocumentoPk" value="">
+        </div>
+        <div id="collegaContrattoResults" style="max-height:250px;overflow-y:auto;"></div>
+        <div class="mt-3 text-end">
+          <button class="btn btn-sm btn-ghost-warning" onclick="confermaCollegaContratto()" disabled id="collegaConfermaBtn"><i class="bi bi-link-45deg"></i> Collega</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var eliminaPk = null;
+
+function apriCollegaContratto(pk) {
+  document.getElementById('collegaDocumentoPk').value = pk;
+  document.getElementById('collegaContrattoSearch').value = '';
+  document.getElementById('collegaContrattoPk').value = '';
+  document.getElementById('collegaContrattoResults').innerHTML = '';
+  document.getElementById('collegaConfermaBtn').disabled = true;
+  new bootstrap.Modal(document.getElementById('modaleCollegaContratto')).show();
+}
+
+function cercaContrattoCollega(q) {
+  if (q.length < 2) { document.getElementById('collegaContrattoResults').innerHTML = ''; return; }
+  document.getElementById('collegaContrattoPk').value = '';
+  document.getElementById('collegaConfermaBtn').disabled = true;
+  fetch('/ajax/cerca-contratti-copia/?q=' + encodeURIComponent(q))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var html = '';
+      if (d.contratti && d.contratti.length) {
+        d.contratti.forEach(function(c) {
+          html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaContrattoCollega(' + c.pk + ',\'' + c.datore.replace(/'/g,"\\'") + ' - ' + c.lavoratore.replace(/'/g,"\\'") + '\')">';
+          html += '<strong style="color:#EDEDED;">' + c.datore + ' &rarr; ' + c.lavoratore + '</strong>';
+          html += '<br><small style="color:#8A8F98;">#' + c.pk + ' ' + (c.codice_rapporto_inps || '') + '</small>';
+          html += '</div>';
+        });
+      } else {
+        html = '<div class="text-secondary small py-3 text-center">Nessun contratto trovato</div>';
+      }
+      document.getElementById('collegaContrattoResults').innerHTML = html;
+    }).catch(function() {
+      document.getElementById('collegaContrattoResults').innerHTML = '<div class="text-danger small py-3 text-center">Errore ricerca</div>';
+    });
+}
+
+function selezionaContrattoCollega(pk, label) {
+  document.getElementById('collegaContrattoPk').value = pk;
+  document.getElementById('collegaContrattoSearch').value = label;
+  document.getElementById('collegaContrattoResults').innerHTML = '';
+  document.getElementById('collegaConfermaBtn').disabled = false;
+}
+
+function confermaCollegaContratto() {
+  var docPk = document.getElementById('collegaDocumentoPk').value;
+  var contrPk = document.getElementById('collegaContrattoPk').value;
+  if (!docPk || !contrPk) return;
+  var btn = document.getElementById('collegaConfermaBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+  fetch('/ajax/collega-documento-contratto/' + docPk + '/', {
+    method: 'POST',
+    headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json'},
+    body: JSON.stringify({contratto_pk: parseInt(contrPk)})
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) { location.reload(); }
+    else { mostraToast(d.error || 'Errore', false); btn.disabled = false; btn.innerHTML = '<i class="bi bi-link-45deg"></i> Collega'; }
+  }).catch(function(e) {
+    mostraToast('Errore: ' + e.message, false);
+    btn.disabled = false; btn.innerHTML = '<i class="bi bi-link-45deg"></i> Collega';
+  });
+}
+
+function apriCartellaDocumento(pk) {
+  var btn = event && event.target ? event.target.closest('button') : null;
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+  fetch('/ajax/apri-cartella-documento/' + pk + '/', {
+    method: 'GET',
+    headers: {'X-Requested-With': 'XMLHttpRequest'}
+  }).then(function(r) {
+    if (!r.ok) { return r.json().then(function(d) { throw new Error(d.error || 'Errore server (' + r.status + ')'); }); }
+    return r.json();
+  }).then(function(d) {
+    if (!d.success) { mostraToast(d.error || 'Errore', false); }
+  }).catch(function(e) {
+    mostraToast('Impossibile aprire la cartella: ' + e.message, false);
+  }).finally(function() {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-folder2-open"></i>'; }
+  });
+}
+
+function apriNuovoDocumento() {
+  try {
+    var el = document.getElementById('modaleNuovoDocumento');
+    if (!el) { mostraToast('Errore: modale non trovato.', false); return; }
+    if (typeof bootstrap === 'undefined') { mostraToast('Errore: Bootstrap JS non caricato.', false); return; }
+    var m = new bootstrap.Modal(el);
+    document.getElementById('modaleNuovoDocumentoBody').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-light"></div></div>';
+    m.show();
+    fetch('/ajax/nuovo-documento/').then(function(r) { return r.text(); }).then(function(html) {
+      document.getElementById('modaleNuovoDocumentoBody').innerHTML = html;
+      if (window._initUploadForm) window._initUploadForm();
+    }).catch(function() { document.getElementById('modaleNuovoDocumentoBody').innerHTML = '<div class="text-center py-4 text-danger">Errore di caricamento.</div>'; });
+  } catch(e) { mostraToast('Errore: ' + e.message, false); }
+}
+
+window._cercaInvioHandler = function(q) {
+  var container = document.getElementById('cercaEmailInvioResults');
+  if (!container) return;
+  if (q.length < 2) { container.innerHTML = ''; return; }
+  fetch('/ajax/cerca-email/?q=' + encodeURIComponent(q))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      container.innerHTML = '';
+      (d.results || []).forEach(function(r) {
+        var div = document.createElement('div');
+        div.className = 'list-group-item';
+        div.setAttribute('data-ei', r.email);
+        div.style.cssText = 'padding:8px 12px;cursor:pointer;border-bottom:1px solid #27272a;font-size:13px;color:#EDEDED;background:#09090b;';
+        div.onmouseover = function(){this.style.background='#1C1C1F';};
+        div.onmouseout = function(){this.style.background='#09090b';};
+        div.onclick = function(){
+          document.getElementById('emailDestinatario').value = r.email;
+          container.innerHTML = '';
+        };
+        div.textContent = r.label + ' <' + r.email + '>';
+        container.appendChild(div);
+      });
+    })
+    .catch(function() {});
+};
+document.addEventListener('click', function(e) {
+  var t = e.target.closest('[data-ei]');
+  if (t) {
+    var email = t.getAttribute('data-ei');
+    var inp = document.getElementById('emailDestinatario');
+    if (inp && email) inp.value = email;
+    var cont = document.getElementById('cercaEmailInvioResults');
+    if (cont) cont.innerHTML = '';
+  }
+});
+
+function apriInvioDocumento(pk) {
+  var m = new bootstrap.Modal(document.getElementById('modaleInvioEmail'));
+  document.getElementById('modaleInvioEmailBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-light"></div></div>';
+  m.show();
+  fetch('/ajax/invia-documento-email/' + pk + '/', { method:'GET' })
+    .then(function(r) { return r.text(); })
+    .then(function(html) {
+      document.getElementById('modaleInvioEmailBody').innerHTML = html;
+    })
+    .catch(function() {
+      document.getElementById('modaleInvioEmailBody').innerHTML = '<div class="p-4 text-danger">Errore nel caricamento del form.</div>';
+    });
+}
+
+function anteprimaEmail(pk) {
+  var modelloPk = document.getElementById('modelloMail')?.value;
+  if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+  var frame = document.getElementById('emailPreviewFrame');
+  if (!frame) {
+    frame = document.createElement('div');
+    frame.id = 'emailPreviewFrame';
+    frame.innerHTML =
+      '<div id="emailPreviewTitle" style="cursor:grab;display:flex;align-items:center;justify-content:space-between;background:#18181B;padding:12px 16px;border-radius:12px 12px 0 0;border-bottom:1px solid #27282D;user-select:none;">' +
+        '<span style="font-size:13px;font-weight:600;color:#EDEDED;"><i class="bi bi-envelope-paper" style="margin-right:8px;color:#5E6AD2;"></i>Anteprima Email</span>' +
+        '<button onclick="document.getElementById(\'emailPreviewFrame\').style.display=\'none\'" style="background:none;border:none;color:#8A8F98;font-size:18px;cursor:pointer;padding:0;line-height:1;">\u00d7</button>' +
+      '</div>' +
+      '<div id="emailPreviewSubject" style="padding:12px 16px;background:#121214;border-bottom:1px solid #27282D;font-size:13px;font-weight:600;color:#fafafa;"></div>' +
+      '<div id="emailPreviewBody" style="padding:16px;overflow-y:auto;max-height:65vh;background:#09090B;border-radius:0 0 12px 12px;font-size:13px;color:#d4d4d8;line-height:1.6;"></div>';
+    frame.style.cssText = 'position:fixed;top:80px;right:24px;width:560px;background:#18181B;border:1px solid #27282D;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:10050;display:none;font-family:inherit;';
+    document.body.appendChild(frame);
+    var titleBar = document.getElementById('emailPreviewTitle');
+    var dragObj = null;
+    titleBar.addEventListener('mousedown', function(e) {
+      if (e.target.tagName === 'BUTTON') return;
+      var r = frame.getBoundingClientRect();
+      dragObj = { offsetX: e.clientX - r.left, offsetY: e.clientY - r.top };
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragObj) return;
+      var newLeft = e.clientX - dragObj.offsetX;
+      var newTop = e.clientY - dragObj.offsetY;
+      newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - frame.offsetWidth));
+      newTop = Math.max(0, Math.min(newTop, window.innerHeight - frame.offsetHeight));
+      frame.style.left = newLeft + 'px';
+      frame.style.top = newTop + 'px';
+      frame.style.right = 'auto';
+      frame.style.bottom = 'auto';
+    });
+    document.addEventListener('mouseup', function() { dragObj = null; });
+  }
+  document.getElementById('emailPreviewSubject').textContent = 'Caricamento...';
+  document.getElementById('emailPreviewBody').textContent = '';
+  frame.style.display = 'flex';
+  frame.style.flexDirection = 'column';
+  fetch('/ajax/anteprima-email/' + pk + '/?modello_mail_pk=' + modelloPk)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      document.getElementById('emailPreviewSubject').innerHTML = d.oggetto || '(nessun oggetto)';
+      document.getElementById('emailPreviewBody').innerHTML = d.corpo || '(nessun corpo)';
+    })
+    .catch(function() {
+      document.getElementById('emailPreviewBody').textContent = 'Errore nel caricamento dell\'anteprima.';
+      mostraToast('Errore caricamento anteprima.', false);
+    });
+}
+
+function toggleAll(cb) {
+  document.querySelectorAll('.docCheck').forEach(function(c) { c.checked = cb.checked; });
+  aggiornaMassivoBar();
+}
+function aggiornaMassivoBar() {
+  var checks = document.querySelectorAll('.docCheck:checked');
+  var bar = document.getElementById('massivoBar');
+  var count = document.getElementById('massivoCount');
+  if (checks.length > 0) {
+    bar.classList.add('visible');
+    count.textContent = checks.length + ' documenti selezionati';
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+function deselezionaTutti() {
+  document.querySelectorAll('.docCheck').forEach(function(c) { c.checked = false; });
+  aggiornaMassivoBar();
+}
+function eliminaMassivo() {
+  var checks = document.querySelectorAll('.docCheck:checked');
+  var pks = Array.from(checks).map(function(c) { return c.value; });
+  if (pks.length === 0) return;
+  if (!confirm('Eliminare definitivamente ' + pks.length + ' documenti? I file verranno cancellati dal disco.')) return;
+  var bar = document.getElementById('massivoBar');
+  bar.innerHTML = '<div class="text-center py-2"><span class="spinner-border spinner-border-sm me-2"></span>Eliminazione in corso...</div>';
+  Promise.all(pks.map(function(pk) {
+    return fetch('/ajax/elimina-documento/' + pk + '/', { method:'POST', headers:{'X-CSRFToken':'{{ csrf_token }}'} });
+  })).then(function() { location.reload(); }).catch(function() { mostraToast('Errore durante l\'eliminazione.', false); location.reload(); });
+}
+function apriInvioMassivo() {
+  var checks = document.querySelectorAll('.docCheck:checked');
+  var pks = Array.from(checks).map(function(c) { return c.value; });
+  if (pks.length === 0) return;
+  var m = new bootstrap.Modal(document.getElementById('modaleInvioMassivo'));
+  document.getElementById('modaleInvioMassivoBody').innerHTML = '<div class="p-4"><form id="formInvioMassivo" onsubmit="inviaMassivo(event)"><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Modello Email</label><select class="form-control" id="modelloMailMassivo" required style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"><option value="">Caricamento...</option></select></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Destinatari</label><p class="small" style="color:#8A8F98;">Verrano inviati ai datori/lavoratori associati a ' + pks.length + ' documenti.</p></div><button type="submit" class="btn btn-ghost-primary" style="padding:10px;font-size:13px;width:100%;"><i class="bi bi-send"></i> Invia a ' + pks.length + ' documenti</button></form><div id="massivoProgress" class="mt-3"></div></div>';
+  m.show();
+  fetch('/ajax/modelli-email/').then(function(r) { return r.json(); }).then(function(modelli) {
+    var sel = document.getElementById('modelloMailMassivo');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">-- Seleziona --</option>';
+    modelli.forEach(function(m) {
+      sel.innerHTML += '<option value="' + m.pk + '">' + (m.codice || '') + (m.codice && m.oggetto_titolo ? ' - ' : '') + (m.oggetto_titolo || 'Modello #' + m.pk) + '</option>';
+    });
+  });
+}
+function apriInvioRaggruppato() {
+  var checks = document.querySelectorAll('.docCheck:checked');
+  var pks = Array.from(checks).map(function(c) { return c.value; });
+  if (pks.length === 0) return;
+  var firstEmail = checks[0].closest('tr')?.getAttribute('data-email') || '';
+  var m = new bootstrap.Modal(document.getElementById('modaleInvioRaggruppato'));
+  var namesHtml = '';
+  checks.forEach(function(c) {
+    var label = c.closest('tr')?.querySelector('td:nth-child(3)')?.textContent?.trim() || 'doc #' + c.value;
+    namesHtml += '<div style="padding:3px 0;font-size:12px;color:#d4d4d8;"><i class="bi bi-file-earmark" style="color:#6b7280;margin-right:6px;"></i>' + label + '</div>';
+  });
+  document.getElementById('modaleInvioRaggruppatoBody').innerHTML = '<div class="p-4"><form id="formInvioRaggruppato" onsubmit="inviaRaggruppato(event)" novalidate><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Destinatario</label><input type="email" class="form-control" id="emailDestRaggruppato" value="' + firstEmail + '" required style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Cerca email</label><input type="text" class="form-control" id="cercaEmailRaggruppato" placeholder="Digita per cercare..." style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"><div id="cercaEmailRaggruppatoResults" style="max-height:200px;overflow-y:auto;margin-top:4px;"></div></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Modello Email</label><select class="form-control" id="modelloMailRaggruppato" required style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"><option value="">Caricamento...</option></select></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">File selezionati (' + pks.length + ')</label>' + namesHtml + '</div><button type="submit" class="btn btn-ghost-primary" style="padding:10px;font-size:13px;width:100%;"><i class="bi bi-envelope-paper"></i> Allega e invia</button></form><div id="raggruppatoProgress" class="mt-3"></div></div>';
+  m.show();
+  var inp = document.getElementById('cercaEmailRaggruppato');
+  if (inp) {
+    inp.removeEventListener('input', window._cercaEmailHandler);
+    window._cercaEmailHandler = function() { cercaEmailRaggruppato(inp.value); };
+    inp.addEventListener('input', window._cercaEmailHandler);
+  }
+  fetch('/ajax/modelli-email/').then(function(r) { return r.json(); }).then(function(modelli) {
+    var sel = document.getElementById('modelloMailRaggruppato');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">-- Seleziona --</option>';
+    modelli.forEach(function(m) {
+      sel.innerHTML += '<option value="' + m.pk + '">' + (m.codice || '') + (m.codice && m.oggetto_titolo ? ' - ' : '') + (m.oggetto_titolo || 'Modello #' + m.pk) + '</option>';
+    });
+  });
+}
+function cercaEmailRaggruppato(q) {
+  var destField = document.getElementById('emailDestRaggruppato');
+  var resultsDiv = document.getElementById('cercaEmailRaggruppatoResults');
+  if (q.length < 2) { resultsDiv.innerHTML = ''; return; }
+  fetch('/ajax/cerca-email/?q=' + encodeURIComponent(q))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var html = '';
+      if (d.results && d.results.length) {
+        d.results.forEach(function(r) {
+          html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaEmailRaggruppato(\'' + r.email.replace(/'/g,"\\'") + '\',\'' + r.label.replace(/'/g,"\\'") + '\')">';
+          html += '<strong style="color:#EDEDED;font-size:12px;">' + r.label + '</strong>';
+          html += '</div>';
+        });
+      } else {
+        html = '<div class="text-secondary small py-2 text-center" style="color:#8A8F98;">Nessun risultato</div>';
+      }
+      resultsDiv.innerHTML = html;
+    }).catch(function() {
+      resultsDiv.innerHTML = '<div class="text-danger small py-2 text-center">Errore ricerca</div>';
+    });
+}
+function selezionaEmailRaggruppato(email, label) {
+  document.getElementById('emailDestRaggruppato').value = email;
+  document.getElementById('cercaEmailRaggruppatoResults').innerHTML = '';
+  document.getElementById('cercaEmailRaggruppato').value = label;
+}
+function inviaRaggruppato(event) {
+  event.preventDefault();
+  var checks = document.querySelectorAll('.docCheck:checked');
+  var pks = Array.from(checks).map(function(c) { return c.value; });
+  var dest = document.getElementById('emailDestRaggruppato')?.value;
+  var modelloPk = document.getElementById('modelloMailRaggruppato')?.value;
+  if (!dest) return mostraToast('Inserisci un destinatario.', false);
+  if (!modelloPk) return mostraToast('Seleziona un modello email.', false);
+  document.getElementById('formInvioRaggruppato').querySelector('button').disabled = true;
+  document.getElementById('raggruppatoProgress').innerHTML = '<div class="text-center py-3"><div class="spinner-border text-light"></div><p class="small" style="color:#8A8F98;">Invio in corso...</p></div>';
+  fetch('/ajax/invia-email-raggruppata/', {
+    method:'POST',
+    headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/json'},
+    body:JSON.stringify({pks:pks, destinatario:dest, modello_mail_pk:modelloPk})
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      document.getElementById('raggruppatoProgress').innerHTML = '<div class="alert alert-success mb-0" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#10b981;">' + d.msg + '</div>';
+      setTimeout(function() { location.reload(); }, 2000);
+    } else { mostraToast(d.error, false); document.getElementById('formInvioRaggruppato').querySelector('button').disabled = false; }
+  }).catch(function() { mostraToast('Errore di rete.', false); document.getElementById('formInvioRaggruppato').querySelector('button').disabled = false; });
+}
+function inviaSingolo(event, pk) {
+  event.preventDefault();
+  var dest = document.getElementById('emailDestinatario')?.value;
+  var modelloPk = document.getElementById('modelloMail')?.value;
+  if (!dest) return mostraToast('Inserisci un destinatario.', false);
+  if (!modelloPk) return mostraToast('Seleziona un modello email.', false);
+  fetch('/ajax/invia-documento-email/' + pk + '/', {
+    method:'POST',
+    headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/json'},
+    body:JSON.stringify({destinatario:dest, modello_mail_pk:modelloPk})
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) { location.reload(); } else { mostraToast(d.error, false); }
+  }).catch(function() { mostraToast('Errore di rete durante l\'invio.', false); });
+}
+function inviaMassivo(event) {
+  event.preventDefault();
+  var checks = document.querySelectorAll('.docCheck:checked');
+  var pks = Array.from(checks).map(function(c) { return c.value; });
+  var modelloPk = document.getElementById('modelloMailMassivo')?.value;
+  if (!modelloPk) return mostraToast('Seleziona un modello email.', false);
+  document.getElementById('formInvioMassivo').querySelector('button').disabled = true;
+  document.getElementById('massivoProgress').innerHTML = '<div class="text-center py-3"><div class="spinner-border text-light"></div><p class="small text-secondary mt-2">Invio in corso...</p></div>';
+  fetch('/ajax/invia-massivo-email/', {
+    method:'POST',
+    headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/json'},
+    body:JSON.stringify({pks:pks, modello_mail_pk:modelloPk})
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      var html = '<div class="alert alert-success mb-0">Inviato ' + d.totale + ' email.</div>';
+      d.risultati.forEach(function(r) {
+        html += '<div class="small ' + (r.ok ? 'text-success' : 'text-danger') + ' mt-1">' + (r.ok ? 'OK ' : 'ERR ') + r.destinatario + (r.error ? ': ' + r.error : '') + '</div>';
+      });
+      document.getElementById('massivoProgress').innerHTML = html;
+      setTimeout(function() { location.reload(); }, 2000);
+    } else { mostraToast(d.error, false); document.getElementById('formInvioMassivo').querySelector('button').disabled = false; }
+  }).catch(function() { mostraToast('Errore di rete.', false); document.getElementById('formInvioMassivo').querySelector('button').disabled = false; });
+}
+
+function _initUploadForm() {
+  var el = document.getElementById('docFile');
+  if (el) el.addEventListener('change', function() {
+    var info = document.getElementById('docInfoFile');
+    var nameEl = document.getElementById('docInfoFileName');
+    var sizeEl = document.getElementById('docInfoFileSize');
+    if (this.files && this.files[0]) {
+      nameEl.textContent = this.files[0].name;
+      var size = this.files[0].size;
+      if (size < 1024) sizeEl.textContent = size + ' B';
+      else if (size < 1048576) sizeEl.textContent = (size / 1024).toFixed(1) + ' KB';
+      else sizeEl.textContent = (size / 1048576).toFixed(1) + ' MB';
+      info.style.display = 'block';
+    } else {
+      info.style.display = 'none';
+    }
+  });
+}
+
+window.caricaDocumento = function(event) {
+  event.preventDefault();
+  var btn = document.getElementById('btnCarica');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Caricamento...';
+  var fd = new FormData();
+  fd.append('tipo', document.getElementById('docTipo').value);
+  fd.append('titolo', document.getElementById('docTitolo').value);
+  fd.append('contratto_pk', document.getElementById('docContrattoPk').value || '');
+  fd.append('note', document.getElementById('docNote').value);
+  var fileInput = document.getElementById('docFile');
+  if (fileInput.files && fileInput.files[0]) fd.append('file', fileInput.files[0]);
+  fetch('/ajax/carica-documento/', {
+    method:'POST',
+    body: fd,
+    headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCSRFToken() }
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      var m = bootstrap.Modal.getInstance(document.getElementById('modaleNuovoDocumento'));
+      if (m) m.hide();
+      window.location.reload();
+    } else {
+      mostraToast(d.error || 'Errore durante il caricamento', false);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-upload"></i> Carica Documento';
+    }
+  }).catch(function() {
+    mostraToast('Errore di rete.', false);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-upload"></i> Carica Documento';
+  });
+};
+
+window.cercaContratto = function(q) {
+  if (q.length < 2) { document.getElementById('docContrattoResults').style.display = 'none'; return; }
+  fetch('/ajax/cerca-contratti-copia/?q=' + encodeURIComponent(q))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var div = document.getElementById('docContrattoResults');
+      if (d.results && d.results.length > 0) {
+        div.innerHTML = '';
+        d.results.forEach(function(r) {
+          var a = document.createElement('a');
+          a.className = 'list-group-item list-group-item-action';
+          a.style.cssText = 'background:#1e1e36;color:#e2e8f0;border:1px solid #2d2d4a;padding:6px 10px;font-size:12px;cursor:pointer;';
+          var label = r.datore + ' \u2192 ' + r.lavoratore + ' (' + r.tipo_contratto + ')';
+          a.textContent = label;
+          a.onclick = function() {
+            document.getElementById('docContrattoSearch').value = label;
+            document.getElementById('docContrattoPk').value = r.pk;
+            div.style.display = 'none';
+          };
+          div.appendChild(a);
+        });
+        div.style.display = 'block';
+      } else {
+        div.style.display = 'none';
+      }
+    });
+};
+
+function toggleVisibileDatore(el, documentoPk) {
+    var visibile = el.checked;
+    fetch('/ajax/documento-toggle-visibilita-datore/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({documento_pk: documentoPk, visibile: visibile})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (d.success) {
+            var slider = el.nextElementSibling;
+            if (slider && slider.classList.contains('toggle-slider')) {
+                slider.style.background = d.visibile ? '#34C759' : '#3a3b40';
+            }
+        } else {
+            el.checked = !visibile;
+            mostraToast(d.error || 'Errore', false);
+        }
+    })
+    .catch(function(){
+        el.checked = !visibile;
+        mostraToast('Errore di rete.', false);
+    });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Documenti
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Archivio centrale di tutti i <b>documenti PDF</b> generati dal gestionale: buste paga, certificazioni uniche, ricevute, lettere, PagoPA, ecc. Ogni documento è associato a un contratto e ha un tipo specifico.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Usa i <b>filtri</b> in alto per cercare per tipo documento, contratto, datore, lavoratore, periodo (da/a) o stato invio.<br>
+        <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi, Scarica, Stampa, Apri cartella, Collega contratto, Invia Email, Elimina.<br>
+        <b>3.</b> Seleziona più documenti con le <b>checkbox</b> per azioni massive: Invio email massivo, Download ZIP.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Stati del documento</b><br>
+        Ogni documento può avere uno stato: <b>Inviato</b> (spedito via email), <b>Stampato</b>, <b>Non inviato</b> (solo generato). I badge colore aiutano a identificare rapidamente lo stato.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Visibile al datore</b><br>
+        La colonna <b>VISIBILE</b> con il toggle verde permette di rendere il documento accessibile al datore di lavoro nella sua area riservata (<b>/datore/</b>). Attiva il toggle per i documenti che il datore deve poter scaricare autonomamente.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Collega Contratto</b><br>
+        Se un documento non è ancora associato a un contratto (es. caricato manualmente), puoi collegarlo usando l'apposita funzione dal pannello azioni.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

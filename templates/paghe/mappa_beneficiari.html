@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <h1 class="h4 fw-bold mb-0"><i class="bi bi-geo-alt me-2" style="color:#5E6AD2;"></i>Mappa Beneficiari</h1>
+    <div class="d-flex gap-2 align-items-center">
+        <select id="mapComuneFiltro" class="form-control" style="width:auto;background:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 12px;border-radius:8px;">
+            <option value="">Tutti i comuni</option>
+            {% for c in comuni_beneficiari %}
+            <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-sm btn-ghost-primary" onclick="caricaMappa()">🗺️ Carica mappa</button>
+    </div>
+</div>
+<div id="mappaContainer" style="height:calc(100vh - 200px);border-radius:12px;border:1px solid #27282D;overflow:hidden;"></div>
+<div id="mappaPlaceholder" class="text-center py-5" style="color:#545;background:#17181C;border:1px solid #27282D;border-radius:12px;">
+    <i class="bi bi-map" style="font-size:48px;display:block;margin-bottom:12px;"></i>
+    <div style="font-size:14px;">Clicca "Carica mappa" per visualizzare i beneficiari sulla mappa</div>
+</div>
+<script>
+var mappaInizializzata = false;
+var mappaObj = null;
+var markersLayer = null;
+
+function caricaMappa() {
+    var comune = document.getElementById('mapComuneFiltro').value;
+    var url = '/ajax/beneficiari-mappa/?comune=' + encodeURIComponent(comune);
+
+    fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+        if (!mappaInizializzata) {
+            document.getElementById('mappaPlaceholder').style.display = 'none';
+            document.getElementById('mappaContainer').style.display = 'block';
+            mappaObj = L.map('mappaContainer').setView([41.9, 12.5], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>',
+                maxZoom: 18
+            }).addTo(mappaObj);
+            markersLayer = L.markerClusterGroup(); mappaObj.addLayer(markersLayer);
+            mappaInizializzata = true;
+            setTimeout(function(){ mappaObj.invalidateSize(); }, 300);
+        } else {
+            markersLayer.clearLayers();
+        }
+
+        if (data.length === 0) {
+            mappaObj.setView([41.9, 12.5], 5);
+            return;
+        }
+
+        var bounds = [];
+        data.forEach(function(b) {
+            if (b.lat && b.lng) {
+                var marker = L.marker([b.lat, b.lng]).bindPopup(
+                    '<div style="font-size:13px;font-weight:600;">' + escapeHtml(b.nome) + '</div>' +
+                    '<div style="font-size:11px;color:#666;">' + escapeHtml(b.indirizzo) + '</div>' +
+                    '<div style="font-size:11px;color:#666;">' + escapeHtml(b.comune) + '</div>' +
+                    '<a href="/beneficiari/" style="font-size:11px;color:#5E6AD2;font-weight:600;text-decoration:none;">Apri scheda &rarr;</a>'
+                );
+                markersLayer.addLayer(marker);
+                bounds.push([b.lat, b.lng]);
+            }
+        });
+
+        if (bounds.length > 0) {
+            mappaObj.fitBounds(bounds, {padding: [30, 30]});
+        }
+    });
+}
+
+function escapeHtml(t) {
+    if (!t) return '';
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+{% endblock %}

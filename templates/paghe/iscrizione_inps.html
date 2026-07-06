@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'iscrizione_inps' %}">Procedure Web</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Iscrizione INPS</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+{{ contratti_data|json_script:"inps-contratti-data" }}
+<style>
+  html,body{height:100%;}
+  .inps-page{min-height:100vh;display:flex;flex-direction:column;background:#131418;}
+  .inps-top{background:#17181C;border:1px solid #27282D;border-radius:10px;margin:12px 24px 0;padding:14px 20px;flex-shrink:0;
+    background:linear-gradient(135deg,#17181C 0%,#1A1B21 100%);}
+  .inps-intro{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+  .inps-intro-inner{text-align:center;max-width:460px;}
+  .inps-intro-icon{font-size:56px;color:#27282D;margin-bottom:16px;display:block;}
+  .inps-intro-icon .bi{background:rgba(94,106,210,.08);padding:16px;border-radius:16px;}
+  .inps-intro h2{color:#EDEDED;font-size:18px;font-weight:700;margin-bottom:8px;}
+  .inps-intro p{color:#8A8F98;font-size:13px;line-height:1.7;margin-bottom:20px;}
+
+  .inps-cb{background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;transition:all .15s;white-space:nowrap;line-height:22px;height:22px;flex-shrink:0;}
+  .inps-cb:hover{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.08);}
+  .inps-cb.copied{border-color:#10b981;color:#10b981;background:rgba(16,185,129,.15);}
+  .inps-label{color:#8A8F98;font-size:11px;font-weight:600;white-space:nowrap;min-width:65px;flex-shrink:0;}
+  .inps-val{color:#EDEDED;font-size:12px;font-weight:500;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .inps-fields{display:none;flex-wrap:wrap;gap:10px;padding:8px 0 4px 0;}
+  .inps-mcrd{background:#1A1B21;border:1px solid #27282D;border-radius:8px;padding:10px 14px;flex:1;min-width:180px;}
+  .inps-mcrd-title{color:#5E6AD2;font-size:11px;font-weight:700;margin-bottom:6px;border-bottom:1px solid #27282D;padding-bottom:4px;}
+  .inps-row{display:flex;align-items:center;gap:6px;padding:2px 0;}
+  .inps-row+.inps-row{border-top:1px solid #1E1F23;}
+
+  .inps-steps{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+  .inps-step{display:flex;align-items:center;gap:10px;background:#1A1B21;border:1px solid #27282D;border-radius:10px;padding:10px 16px;font-size:12px;text-align:left;}
+  .inps-step-num{width:26px;height:26px;border-radius:50%;background:#5E6AD2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .inps-step-text{color:#8A8F98;line-height:1.4;white-space:nowrap;}
+  .inps-step-text strong{color:#EDEDED;font-weight:600;}
+
+  .inps-preview{background:#1A1B21;border:1px solid #27282D;border-radius:10px;margin:16px 24px;padding:14px 18px;display:none;flex:1;}
+  .inps-preview-row{display:flex;gap:24px;flex-wrap:wrap;flex:1;}
+  .inps-preview-col{flex:1;min-width:180px;}
+  .inps-preview-col .title{color:#5E6AD2;font-size:11px;font-weight:700;margin-bottom:6px;border-bottom:1px solid #27282D;padding-bottom:4px;}
+  .inps-preview-item{display:flex;justify-content:space-between;gap:8px;padding:2px 0;font-size:12px;}
+  .inps-preview-item .l{color:#8A8F98;}
+  .inps-preview-item .v{color:#EDEDED;font-weight:500;text-align:right;}
+</style>
+
+<div class="inps-page">
+
+  <div class="inps-top">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <div style="color:#EDEDED;font-size:15px;font-weight:700;white-space:nowrap;display:flex;align-items:center;gap:8px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#5E6AD2;display:inline-block;"></span>
+        Iscrizione INPS
+      </div>
+      <select id="contrattoSelect" style="background:#1E1F23;border:1px solid #333;color:#EDEDED;border-radius:6px;padding:5px 12px;font-size:12px;width:calc(400px + 6cm);">
+        <option value="">— Seleziona contratto —</option>
+        {% for c in contratti_data %}
+        <option value="{{ c.pk }}">{{ c.contratto_option }}</option>
+        {% endfor %}
+      </select>
+      <div class="d-flex gap-2">
+        <button id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+          <i class="bi bi-window-stack"></i>APRI POPUP DATI
+        </button>
+        <a id="openInpsBtn" href="{{ opzioni.link_inps_iscrizione }}" target="_blank" rel="noopener" class="btn btn-ghost-primary" style="white-space:nowrap;display:flex;align-items:center;gap:6px;">
+          <i class="bi bi-box-arrow-up-right"></i>APRI SITO INPS
+        </a>
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+      </div>
+    </div>
+    <div id="inpsFields" class="inps-fields">
+      <div class="inps-mcrd">
+        <div class="inps-mcrd-title">DATORE DI LAVORO</div>
+        <div class="inps-row"><span class="inps-label">Cognome</span><span class="inps-val" id="v_d_cognome">—</span><button class="inps-cb" data-copy="v_d_cognome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Nome</span><span class="inps-val" id="v_d_nome">—</span><button class="inps-cb" data-copy="v_d_nome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Indirizzo</span><span class="inps-val" id="v_d_indirizzo">—</span><button class="inps-cb" data-copy="v_d_indirizzo">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Comune</span><span class="inps-val" id="v_d_comune">—</span><button class="inps-cb" data-copy="v_d_comune">COPIA</button></div>
+      </div>
+      <div class="inps-mcrd">
+        <div class="inps-mcrd-title">LAVORATORE</div>
+        <div class="inps-row"><span class="inps-label">CF</span><span class="inps-val" id="v_l_cf">—</span><button class="inps-cb" data-copy="v_l_cf">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Cognome</span><span class="inps-val" id="v_l_cognome">—</span><button class="inps-cb" data-copy="v_l_cognome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Nome</span><span class="inps-val" id="v_l_nome">—</span><button class="inps-cb" data-copy="v_l_nome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Data nascita</span><span class="inps-val" id="v_l_data_nascita">—</span><button class="inps-cb" data-copy="v_l_data_nascita">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Sesso</span><span class="inps-val" id="v_l_sesso">—</span><button class="inps-cb" data-copy="v_l_sesso">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Indirizzo</span><span class="inps-val" id="v_l_indirizzo">—</span><button class="inps-cb" data-copy="v_l_indirizzo">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Comune</span><span class="inps-val" id="v_l_comune">—</span><button class="inps-cb" data-copy="v_l_comune">COPIA</button></div>
+      </div>
+      <div class="inps-mcrd">
+        <div class="inps-mcrd-title">CONTRATTO</div>
+        <div class="inps-row"><span class="inps-label">Tipo</span><span class="inps-val" id="v_c_tipo">—</span><button class="inps-cb" data-copy="v_c_tipo">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Assunzione</span><span class="inps-val" id="v_c_data_ass">—</span><button class="inps-cb" data-copy="v_c_data_ass">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Data fine</span><span class="inps-val" id="v_c_data_fine">—</span><button class="inps-cb" data-copy="v_c_data_fine">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Ore/sett</span><span class="inps-val" id="v_c_ore">—</span><button class="inps-cb" data-copy="v_c_ore">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Paga INPS</span><span class="inps-val" id="v_c_paga">—</span><button class="inps-cb" data-copy="v_c_paga">COPIA</button></div>
+        <div class="inps-row" style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;">
+          <span class="inps-label" style="min-width:auto;">Cod.INPS</span>
+          <input id="v_c_codice_inps" style="background:#09090B;border:1px solid #333;color:#EDEDED;border-radius:4px;padding:2px 6px;font-size:12px;flex:1;min-width:80px;" placeholder="Codice rapporto" value="">
+          <button class="incolla-btn" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">INCOLLA</button>
+          <button class="btn btn-sm btn-ghost-success" style="padding:0 10px;font-size:10px;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
+          <span class="salva-feedback" style="font-size:11px;color:#10b981;font-weight:600;display:none;">✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="inpsIntro" class="inps-intro">
+    <div class="inps-intro-inner">
+      <span class="inps-intro-icon"><i class="bi bi-file-earmark-plus"></i></span>
+      <h2>Procedura di Iscrizione INPS</h2>
+      <p>Seleziona un contratto, poi apri il popup con i dati precompilati e il sito INPS. Copia i campi uno per uno.</p>
+      <div class="inps-steps">
+        <div class="inps-step">
+          <span class="inps-step-num">1</span>
+          <div class="inps-step-text">Seleziona un <strong>contratto</strong></div>
+        </div>
+        <div class="inps-step">
+          <span class="inps-step-num">2</span>
+          <div class="inps-step-text"><strong style="color:#10b981;">APRI POPUP DATI</strong> per copiare</div>
+        </div>
+        <div class="inps-step">
+          <span class="inps-step-num">3</span>
+          <div class="inps-step-text"><strong style="color:#5E6AD2;">APRI SITO INPS</strong> per compilare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="inpsPreview" class="inps-preview" style="display:none;">
+    <div class="inps-preview-row">
+      <div class="inps-preview-col">
+        <div class="title">DATORE</div>
+        <div class="inps-preview-item"><span class="l">Cognome</span><span class="v" id="pv_d_cognome">—</span></div>
+        <div class="inps-preview-item"><span class="l">Nome</span><span class="v" id="pv_d_nome">—</span></div>
+        <div class="inps-preview-item"><span class="l">Indirizzo</span><span class="v" id="pv_d_indirizzo">—</span></div>
+        <div class="inps-preview-item"><span class="l">Comune</span><span class="v" id="pv_d_comune">—</span></div>
+      </div>
+      <div class="inps-preview-col">
+        <div class="title">LAVORATORE</div>
+        <div class="inps-preview-item"><span class="l">CF</span><span class="v" id="pv_l_cf">—</span></div>
+        <div class="inps-preview-item"><span class="l">Cognome</span><span class="v" id="pv_l_cognome">—</span></div>
+        <div class="inps-preview-item"><span class="l">Nome</span><span class="v" id="pv_l_nome">—</span></div>
+        <div class="inps-preview-item"><span class="l">Data nascita</span><span class="v" id="pv_l_data">—</span></div>
+        <div class="inps-preview-item"><span class="l">Sesso</span><span class="v" id="pv_l_sesso">—</span></div>
+      </div>
+      <div class="inps-preview-col">
+        <div class="title">CONTRATTO</div>
+        <div class="inps-preview-item"><span class="l">Tipo</span><span class="v" id="pv_c_tipo">—</span></div>
+        <div class="inps-preview-item"><span class="l">Assunzione</span><span class="v" id="pv_c_data_ass">—</span></div>
+        <div class="inps-preview-item"><span class="l">Data fine</span><span class="v" id="pv_c_data_fine">—</span></div>
+        <div class="inps-preview-item"><span class="l">Ore/sett</span><span class="v" id="pv_c_ore">—</span></div>
+        <div class="inps-preview-item"><span class="l">Paga INPS</span><span class="v" id="pv_c_paga">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Iscrizione INPS</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
+        <p>Seleziona un contratto, poi usa i pulsanti per gestire l'iscrizione INPS:</p>
+        <ul>
+          <li><strong style="color:#10b981;">APRI POPUP DATI</strong> — apre una finestra con tutti i dati precompilati e i pulsanti COPIA</li>
+          <li><strong style="color:#5E6AD2;">APRI SITO INPS</strong> — apre il portale INPS in una nuova scheda</li>
+        </ul>
+        <p class="mb-0">Puoi anche copiare i dati direttamente dalla barra qui sopra usando il pulsante <strong>C</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var data = JSON.parse(document.getElementById('inps-contratti-data').textContent);
+  var select = document.getElementById('contrattoSelect');
+  var fields = document.getElementById('inpsFields');
+  var intro = document.getElementById('inpsIntro');
+  var preview = document.getElementById('inpsPreview');
+  var popupBtn = document.getElementById('openPopupBtn');
+
+  function sv(id, val) { var el = document.getElementById(id); if (el) el.textContent = val || '\u2014'; }
+
+  function popola(pk) {
+    var c = data.find(function(d) { return d.pk == pk; });
+    if (!c) {
+      fields.style.display = 'none';
+      intro.style.display = 'flex';
+      preview.style.display = 'none';
+      return;
+    }
+    fields.style.display = 'flex';
+    intro.style.display = 'none';
+    preview.style.display = 'flex';
+
+    sv('v_d_cognome', c.datore.cognome);
+    sv('v_d_nome', c.datore.nome);
+    sv('v_d_indirizzo', c.datore.indirizzo);
+    sv('v_d_comune', c.datore.comune);
+    sv('v_l_cf', c.lavoratore.cf);
+    sv('v_l_cognome', c.lavoratore.cognome);
+    sv('v_l_nome', c.lavoratore.nome);
+    sv('v_l_data_nascita', c.lavoratore.data_nascita);
+    sv('v_l_sesso', c.lavoratore.sesso);
+    sv('v_l_indirizzo', c.lavoratore.indirizzo);
+    sv('v_l_comune', c.lavoratore.comune);
+    sv('v_c_tipo', c.contratto.tipo);
+    sv('v_c_data_ass', c.contratto.data_assunzione);
+    sv('v_c_data_fine', c.contratto.data_fine);
+    sv('v_c_ore', c.contratto.ore_settimanali);
+    sv('v_c_paga', c.contratto.paga_inps ? '\u20AC ' + c.contratto.paga_inps + '/h' : '\u2014');
+    var ci = document.getElementById('v_c_codice_inps');
+    if (ci) ci.value = c.contratto.codice_rapporto_inps || '';
+
+    sv('pv_d_cognome', c.datore.cognome);
+    sv('pv_d_nome', c.datore.nome);
+    sv('pv_d_indirizzo', c.datore.indirizzo);
+    sv('pv_d_comune', c.datore.comune);
+    sv('pv_l_cf', c.lavoratore.cf);
+    sv('pv_l_cognome', c.lavoratore.cognome);
+    sv('pv_l_nome', c.lavoratore.nome);
+    sv('pv_l_data', c.lavoratore.data_nascita);
+    sv('pv_l_sesso', c.lavoratore.sesso);
+    sv('pv_c_tipo', c.contratto.tipo);
+    sv('pv_c_data_ass', c.contratto.data_assunzione);
+    sv('pv_c_data_fine', c.contratto.data_fine);
+    sv('pv_c_ore', c.contratto.ore_settimanali);
+    sv('pv_c_paga', c.contratto.paga_inps ? '\u20AC ' + c.contratto.paga_inps + '/h' : '\u2014');
+  }
+
+  select.addEventListener('change', function() { popola(this.value); });
+  {% if contratto_pk %}
+  select.value = '{{ contratto_pk }}';
+  popola(select.value);
+  {% else %}
+  if (select.value) popola(select.value);
+  {% endif %}
+
+  popupBtn.addEventListener('click', function() {
+    var pk = select.value;
+    if (!pk) return;
+    var url = '{% url "iscrizione_inps_popup" 0 %}'.replace('0', pk);
+    window.open(url, '_blank', 'width=520,height=800,scrollbars=yes,resizable=yes');
+  });
+
+  // INCOLLA — incolla dagli appunti nel campo codice rapporto
+  document.querySelector('.incolla-btn') && document.querySelector('.incolla-btn').addEventListener('click', function() {
+    navigator.clipboard.readText().then(function(t) {
+      var inp = document.getElementById('v_c_codice_inps');
+      if (inp) inp.value = t;
+    }).catch(function() {});
+  });
+
+  // SALVA — salva codice rapporto via AJAX
+  document.querySelector('.btn-ghost-success') && document.querySelector('.btn-ghost-success').addEventListener('click', function() {
+    var pk = select.value;
+    if (!pk) return;
+    var inp = document.getElementById('v_c_codice_inps');
+    if (!inp) return;
+    var codice = inp.value.trim();
+    var fb = document.querySelector('.salva-feedback');
+    var btn = this;
+    btn.textContent = '...';
+    fetch('{% url "ajax_salva_codice_rapporto_inps" %}', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+      body: JSON.stringify({pk: parseInt(pk), codice: codice})
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      btn.textContent = 'SALVA';
+      if (d.ok) {
+        if (fb) fb.style.display = 'inline';
+        if (fb) fb.textContent = '\u2713';
+        setTimeout(function() { if (fb) fb.style.display = 'none'; }, 2000);
+      }
+    }).catch(function() { btn.textContent = 'SALVA'; });
+  });
+
+  document.querySelectorAll('.inps-cb').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var targetId = this.getAttribute('data-copy');
+      var el = document.getElementById(targetId);
+      if (!el) return;
+      var text = el.textContent;
+      if (text === '\u2014' || !text) return;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.classList.add('copied');
+        var orig = btn.textContent;
+        btn.textContent = '\u2713';
+        setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 900);
+      }).catch(function() {});
+    });
+  });
+});
+</script>
+{% endblock %}

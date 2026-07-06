@@ -1,0 +1,122 @@
+﻿{% extends 'base.html' %}
+{% block title %}Riepilogo Invii{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'stampe_invii' %}">Documenti</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Riepilogo Invii</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="h3 fw-bold mb-1">RIEPILOGO INVII</h1>
+        <p class="text-secondary small mb-0">Storico delle generazioni massive di buste paga.</p>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        <a href="{% url 'stampe_invii' %}" class="btn btn-sm btn-ghost">
+            <i class="bi bi-arrow-left me-1"></i> TORNA A STAMPE E INVII
+        </a>
+        <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaTuttiInvio()" style="font-size:11px;padding:6px 14px;border-radius:6px;"><i class="bi bi-trash3-fill me-1"></i> ELIMINA TUTTI</button>
+    </div>
+</div>
+
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;">
+    <table class="table custom-table sortable">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Creato da</th>
+                <th>Periodo</th>
+                <th>Modello Email</th>
+                <th>Totale</th>
+                <th>OK</th>
+                <th>Errori</th>
+                <th>ZIP</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in riepiloghi %}
+            <tr>
+                <td>{{ r.creato_il|date:"d/m/Y H:i" }}</td>
+                <td>{{ r.creato_da|default:"—" }}</td>
+                <td>{{ r.get_mese_display }} {{ r.anno }}</td>
+                <td>{{ r.modello_email.codice|default:"—" }}</td>
+                <td>{{ r.totale_contratti }}</td>
+                <td><span style="color:#10b981;font-weight:600;">{{ r.totale_ok }}</span></td>
+                <td>{% if r.totale_errori > 0 %}<span style="color:#dc2626;font-weight:600;">{{ r.totale_errori }}</span>{% else %}0{% endif %}</td>
+                <td>
+                    {% if r.archivio_zip_path %}
+                    <a href="{% url 'download_riepilogo_zip' r.pk %}" class="btn btn-sm btn-ghost-success" style="padding:3px 10px;font-size:11px;text-decoration:none;">
+                        <i class="bi bi-download"></i>
+                    </a>
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'riepilogo_invio_dettaglio' r.pk %}" class="btn btn-sm btn-ghost-info" style="padding:3px 10px;font-size:11px;text-decoration:none;">
+                        <i class="bi bi-eye"></i> Dettaglio
+                    </a>
+                    <button onclick="eliminaInvio({{ r.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:3px 10px;font-size:11px;">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-3 d-block text-muted"></i>Nessun invio effettuato</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function eliminaInvio(pk) {
+    if (!confirm('Eliminare questo riepilogo? I PDF rimangono nella cartella documenti.')) return;
+    fetch('/ajax/elimina-riepilogo-invio/' + pk + '/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) location.reload();
+        else mostraToast('Errore: ' + (d.error || ''), false);
+    }).catch(function() { mostraToast('Errore di rete', false); });
+}
+
+function eliminaTuttiInvio() {
+    if (!confirm('Eliminare DEFINITIVAMENTE TUTTI i riepiloghi invio? Operazione IRREVERSIBILE.')) return;
+    var btn = document.querySelector('.btn-ghost-danger');
+    var orig = btn ? btn.innerHTML : '';
+    if (btn) { btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; btn.disabled = true; }
+    fetch('/ajax/elimina-tutti-riepilogo-invio/', {
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'}
+    }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) location.reload();
+        else { mostraToast('Errore: ' + (d.error || ''), false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } }
+    }).catch(function(e) { mostraToast('Errore: ' + e.message, false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Riepilogo Invii</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Qui trovi lo storico di tutte le generazioni massive di buste paga effettuate dalla pagina "Stampe e Invii". Per ogni invio puoi vedere la data, il periodo di riferimento, il modello email usato, il totale dei contratti processati e quanti sono andati a buon fine.</p>
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Azioni</b><br>
+        <b>Dettaglio</b> — apre la pagina con l'elenco completo dei contratti inclusi nell'invio.<br>
+        <b>ZIP</b> — scarica l'archivio ZIP contenente tutti i PDF generati.<br>
+        <b>Elimina</b> — rimuove il riepilogo (i PDF rimangono nella cartella documenti).</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

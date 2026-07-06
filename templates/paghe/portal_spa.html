@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employer Portal</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#09090B; font-family:system-ui,-apple-system,sans-serif; color:#EDEDED; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .placeholder { text-align:center; padding:40px; }
+    .placeholder h1 { font-size:24px; margin-bottom:16px; color:#5E6AD2; }
+    .placeholder p { color:#8A8F98; font-size:14px; margin-bottom:8px; }
+    .placeholder .spinner { width:40px; height:40px; border:3px solid #27282D; border-top-color:#5E6AD2; border-radius:50%; animation:spin 1s linear infinite; margin:20px auto; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    {% if opzioni and opzioni.dati_studio %}
+    .footer { position:fixed; bottom:20px; left:0; right:0; text-align:center; font-size:11px; color:#5C5F66; }
+    {% endif %}
+  </style>
+</head>
+<body>
+  <div class="placeholder">
+    <div class="spinner"></div>
+    <h1>Employer Portal</h1>
+    <p>Caricamento in corso...</p>
+    {% if opzioni and opzioni.dati_studio %}
+    <p style="font-size:12px;color:#5C5F66;">{{ opzioni.dati_studio|linebreaksbr }}</p>
+    {% endif %}
+  </div>
+  <div class="footer">
+    {% if opzioni %}{{ opzioni.nome_programma|default:"Gestionale COLF" }} v{{ opzioni.versione_programma|default:"1.1" }}{% endif %}
+  </div>
+</body>
+</html>

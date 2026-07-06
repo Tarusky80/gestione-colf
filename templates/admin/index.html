@@ -1,0 +1,220 @@
+{% extends "admin/index.html" %}
+{% load static log %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/admin_index.css' %}">
+{% endblock %}
+
+{% block coltype %}colM{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+{% block content_title %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="admin-home">
+  <div class="greeting">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="36" height="36" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <path d="M23 4L41 14V28C41 38 23 44 23 44C23 44 5 38 5 28V14L23 4Z"
+                stroke="#60a5fa" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+          <path d="M23 10C23 10 17 15 14 18C11 21 11 26 23 34C35 26 35 21 32 18C29 15 23 10 23 10Z"
+                fill="#60a5fa" opacity="0.25" stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <h1 style="font-size:20px;font-weight:800;margin:0;letter-spacing:-0.3px;">Gestionale COLF</h1>
+      </div>
+      <p class="date-sub" style="margin:4px 0 0 46px;"><i class="far fa-calendar" style="margin-right:6px;"></i>{% now "l, d F Y" %}</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="/dashboard/" class="btn-dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
+      <a href="/datori/" class="btn btn-ghost-success"><i class="fas fa-user-tie"></i> Datori</a>
+      <a href="/lavoratori/" class="btn btn-ghost-info"><i class="fas fa-users"></i> Lavoratori</a>
+      <a href="/contratti/" class="btn btn-ghost-primary"><i class="fas fa-file-signature"></i> Contratti</a>
+      <a href="/calcoli/" class="btn btn-ghost-warning"><i class="fas fa-calculator"></i> Busta Paga</a>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card anim-card">
+      <div class="stat-icon" style="color:#5E6AD2;"><i class="fas fa-file-signature"></i></div>
+      <div><div class="stat-value">{{ total_attivi }}</div><div class="stat-label">Contratti Attivi</div><span class="stat-tip">In corso</span></div>
+    </div>
+    <div class="stat-card anim-card">
+      <div class="stat-icon" style="color:#06b6d4;"><i class="fas fa-user-tie"></i></div>
+      <div><div class="stat-value">{{ datori_count }}</div><div class="stat-label">Datori</div><span class="stat-tip">{{ datori_count }} registrati</span></div>
+    </div>
+    <div class="stat-card anim-card">
+      <div class="stat-icon" style="color:#10b981;"><i class="fas fa-users"></i></div>
+      <div><div class="stat-value">{{ lavoratori_count }}</div><div class="stat-label">Lavoratori</div><span class="stat-tip">{{ lavoratori_count }} registrati</span></div>
+    </div>
+    <div class="stat-card anim-card">
+      <div class="stat-icon" style="color:#f59e0b;"><i class="fas fa-user-heart"></i></div>
+      <div><div class="stat-value">{{ beneficiari_count }}</div><div class="stat-label">Beneficiari</div><span class="stat-tip">{{ beneficiari_count }} registrati</span></div>
+    </div>
+  </div>
+
+  {% get_admin_log 10 as admin_log for_user user %}
+  <div class="chart-card anim-card">
+    <h3><i class="fas fa-chart-pie me-1"></i> Riepilogo Anagrafiche</h3>
+    <div class="chart-flex">
+      <div class="chart-item">
+        <canvas id="adminChartPie" width="120" height="120"></canvas>
+        <div>
+          <div class="chart-legend">
+            <span><span class="chart-dot" style="background:#60a5fa;"></span> Datori: {{ datori_count }}</span>
+            <span><span class="chart-dot" style="background:#10b981;"></span> Lavoratori: {{ lavoratori_count }}</span>
+            <span><span class="chart-dot" style="background:#f59e0b;"></span> Beneficiari: {{ beneficiari_count }}</span>
+            <span><span class="chart-dot" style="background:#a78bfa;"></span> Contratti Attivi: {{ total_attivi }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="chart-item">
+        <canvas id="adminChartBar" width="120" height="120"></canvas>
+        <div>
+          <div class="chart-legend" style="flex-direction:column;gap:4px;">
+            <span><span class="chart-dot" style="background:#60a5fa;"></span> Datori</span>
+            <span><span class="chart-dot" style="background:#10b981;"></span> Lavoratori</span>
+            <span><span class="chart-dot" style="background:#f59e0b;"></span> Beneficiari</span>
+            <span><span class="chart-dot" style="background:#a78bfa;"></span> Contratti Attivi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3col">
+    <div class="card-section anim-card">
+      <h3><i class="fas fa-link me-1"></i> Navigazione Rapida</h3>
+      <div class="model-links">
+        <div class="nav-group-label">Anagrafiche</div>
+        <a href="{% url 'admin:paghe_datorelavoro_changelist' %}" class="quick-link"><i class="fas fa-user-tie"></i> Datori <span class="badge-count">{{ datori_count }}</span></a>
+        <a href="{% url 'admin:paghe_lavoratore_changelist' %}" class="quick-link"><i class="fas fa-users"></i> Lavoratori <span class="badge-count">{{ lavoratori_count }}</span></a>
+        <a href="{% url 'admin:paghe_beneficiario_changelist' %}" class="quick-link"><i class="fas fa-user-heart"></i> Beneficiari <span class="badge-count">{{ beneficiari_count }}</span></a>
+        <div class="nav-group-label">Contratti</div>
+        <a href="{% url 'admin:paghe_contrattoattivo_changelist' %}" class="quick-link"><i class="fas fa-file-signature"></i> Contratti Attivi <span class="badge-count">{{ total_attivi }}</span></a>
+        <a href="{% url 'admin:paghe_contrattocessato_changelist' %}" class="quick-link"><i class="fas fa-file-archive"></i> Contratti Cessati</a>
+        <a href="{% url 'admin:paghe_contrattolavoro_changelist' %}" class="quick-link"><i class="fas fa-list"></i> Tutti i Contratti</a>
+        <div class="nav-group-label">Progetti</div>
+        <a href="{% url 'admin:paghe_progettoregionale_changelist' %}" class="quick-link"><i class="fas fa-diagram-project"></i> Progetti Regionali</a>
+        <a href="{% url 'admin:paghe_tipoprogettoregionale_changelist' %}" class="quick-link"><i class="fas fa-tags"></i> Tipi Progetto</a>
+        <div class="nav-group-label">Documenti</div>
+        <a href="{% url 'admin:paghe_modellodocumentale_changelist' %}" class="quick-link"><i class="fas fa-file-earmark-text"></i> Modelli Documentali</a>
+        <a href="{% url 'admin:paghe_modellocomposizione_changelist' %}" class="quick-link"><i class="fas fa-puzzle-piece"></i> Composizioni Documenti</a>
+        <div class="nav-group-label">Buste Paga</div>
+        <a href="{% url 'admin:paghe_bustapaga_changelist' %}" class="quick-link"><i class="fas fa-file-invoice"></i> Buste Paga</a>
+        <div class="nav-group-label">Agenda</div>
+        <a href="{% url 'admin:paghe_appuntamento_changelist' %}" class="quick-link"><i class="fas fa-calendar-check"></i> Appuntamenti</a>
+        <div class="nav-group-label">Tabelle Parametriche</div>
+        <a href="{% url 'admin:paghe_parametriccnl_changelist' %}" class="quick-link"><i class="fas fa-list-ol"></i> Parametri CCNL</a>
+        <a href="{% url 'admin:paghe_tabellacontributiinps_changelist' %}" class="quick-link"><i class="fas fa-percent"></i> Contributi INPS</a>
+        <a href="{% url 'admin:paghe_tabellacasse_changelist' %}" class="quick-link"><i class="fas fa-building-columns"></i> Casse (F2/E1)</a>
+        <a href="{% url 'admin:paghe_tabellascattianzianita_changelist' %}" class="quick-link"><i class="fas fa-arrow-up"></i> Scatti Anzianit&agrave;</a>
+        <a href="{% url 'admin:paghe_tabellamalattia_changelist' %}" class="quick-link"><i class="fas fa-heart-pulse"></i> Malattia</a>
+        <a href="{% url 'admin:paghe_livello_changelist' %}" class="quick-link"><i class="fas fa-layer-group"></i> Livelli</a>
+        <div class="nav-group-label">Sistema</div>
+        <a href="{% url 'admin:paghe_opzionisoftware_changelist' %}" class="quick-link"><i class="fas fa-cog"></i> Opzioni Software</a>
+        <a href="{% url 'admin:paghe_gestorebackup_changelist' %}" class="quick-link"><i class="fas fa-database"></i> Backup</a>
+        <a href="{% url 'admin:paghe_auditlog_changelist' %}" class="quick-link"><i class="fas fa-history"></i> Audit Log</a>
+        <a href="{% url 'admin:paghe_recordeliminato_changelist' %}" class="quick-link"><i class="fas fa-trash-can"></i> Record Eliminati</a>
+        <a href="{% url 'admin:paghe_documentoarchiviato_changelist' %}" class="quick-link"><i class="fas fa-file-pdf"></i> Documenti Archiviati</a>
+        <a href="{% url 'admin:paghe_serviziowebconfig_changelist' %}" class="quick-link"><i class="fas fa-globe"></i> Configurazione Servizi Web</a>
+        <a href="{% url 'admin:paghe_modellolista_changelist' %}" class="quick-link"><i class="fas fa-table-list"></i> Modelli Lista</a>
+        <a href="{% url 'admin:paghe_riepilogoinvio_changelist' %}" class="quick-link"><i class="fas fa-paper-plane"></i> Riepiloghi Invio</a>
+        <a href="{% url 'admin:paghe_modificacontratto_changelist' %}" class="quick-link"><i class="fas fa-history"></i> Modifiche Contratto</a>
+        <a href="{% url 'admin:auth_user_changelist' %}" class="quick-link"><i class="fas fa-user-shield"></i> Utenti</a>
+        <a href="{% url 'admin:paghe_anticipotfr_changelist' %}" class="quick-link"><i class="fas fa-money-bill-wave"></i> Anticipi TFR</a>
+        <a href="{% url 'admin:paghe_accessodatore_changelist' %}" class="quick-link"><i class="fas fa-door-open"></i> Accessi Datori</a>
+        <a href="{% url 'admin:paghe_richiestamodificadatore_changelist' %}" class="quick-link"><i class="fas fa-pen-to-square"></i> Richieste Modifica</a>
+        <a href="{% url 'admin:paghe_loginvioemail_changelist' %}" class="quick-link"><i class="fas fa-envelope"></i> Log Invii Email</a>
+        <a href="{% url 'admin:paghe_cuannuale_changelist' %}" class="quick-link"><i class="fas fa-file-invoice"></i> CU Annuali</a>
+        <a href="{% url 'admin:paghe_logoperazioneinps_changelist' %}" class="quick-link"><i class="fas fa-robot"></i> Log Operazioni INPS</a>
+        <a href="{% url 'admin:paghe_scorciatoiatastiera_changelist' %}" class="quick-link"><i class="fas fa-keyboard"></i> Scorciatoie Tastiera</a>
+      </div>
+    </div>
+    <div class="card-section anim-card">
+      <h3 style="display:flex;align-items:center;justify-content:space-between;">
+        <span><i class="fas fa-clock me-1"></i> Ultimi Contratti</span>
+        <a href="{% url 'admin:paghe_contrattoattivo_changelist' %}" style="font-size:10px;font-weight:600;text-transform:none;letter-spacing:0;color:#5E6AD2;text-decoration:none;">Vedi tutti &rarr;</a>
+      </h3>
+      {% for c in ultimi_contratti %}
+      <a href="{% url 'admin:paghe_contrattoattivo_change' c.pk %}" class="contratto-row" style="text-decoration:none;">
+        <div>
+          <div class="nome">{{ c.datore.nome_cognome|truncatechars:22 }} &rarr; {{ c.lavoratore.nome_cognome|truncatechars:22 }}</div>
+          <div class="sub">{{ c.get_tipo_contratto_display|default:c.tipo_contratto }} &middot; {{ c.data_assunzione|date:"d/m/Y" }}</div>
+        </div>
+        <span class="stato-badge">Attivo</span>
+      </a>
+      {% empty %}
+      <div style="color:#8A8F98;font-size:13px;padding:20px 0;text-align:center;">
+        <i class="fas fa-inbox" style="font-size:22px;display:block;margin-bottom:6px;opacity:0.4;"></i>
+        Nessun contratto registrato
+      </div>
+      {% endfor %}
+    </div>
+    <div class="card-section anim-card">
+      <h3><i class="fas fa-history me-1"></i> Azioni Recenti</h3>
+      {% if admin_log %}
+      {% for entry in admin_log %}
+      <div class="log-row">
+        {% if entry.is_addition %}<i class="fas fa-plus-circle" style="color:#10b981;"></i>
+        {% elif entry.is_change %}<i class="fas fa-pen" style="color:#06b6d4;"></i>
+        {% elif entry.is_deletion %}<i class="fas fa-trash-can" style="color:#ef4444;"></i>{% endif %}
+        <div class="log-content">
+          <div class="log-action">
+            {% if entry.is_deletion or not entry.get_admin_url %}
+              {{ entry.object_repr }}
+            {% else %}
+              <a href="{{ entry.get_admin_url }}" style="color:#5E6AD2;text-decoration:none;">{{ entry.object_repr }}</a>
+            {% endif %}
+          </div>
+          <div class="log-meta">{{ entry.action_time|timesince }} fa &middot; {% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</div>
+        </div>
+        {% if entry.is_addition %}<span class="log-badge add">Aggiunto</span>
+        {% elif entry.is_change %}<span class="log-badge change">Modificato</span>
+        {% elif entry.is_deletion %}<span class="log-badge delete">Eliminato</span>{% endif %}
+      </div>
+      {% endfor %}
+      {% else %}
+      <div style="color:#8A8F98;font-size:13px;padding:20px 0;text-align:center;">
+        <i class="fas fa-history" style="font-size:22px;display:block;margin-bottom:6px;opacity:0.4;"></i>
+        Nessuna attivit&agrave; recente
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var colors = ['#60a5fa','#10b981','#f59e0b','#a78bfa'];
+  var labels = ['Datori','Lavoratori','Beneficiari','Contratti Attivi'];
+  var data = [{{ datori_count }},{{ lavoratori_count }},{{ beneficiari_count }},{{ total_attivi }}];
+
+  new Chart(document.getElementById('adminChartPie').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels: labels, datasets: [{ data: data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }] },
+    options: {
+      responsive: false, cutout: '60%',
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e1e36', padding: 8, cornerRadius: 6 } }
+    }
+  });
+
+  new Chart(document.getElementById('adminChartBar').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{ data: data, backgroundColor: colors.map(function(c){ return c+'99'; }), borderColor: colors, borderWidth: 1.5, borderRadius: 4 }]
+    },
+    options: {
+      responsive: false, indexAxis: 'y',
+      scales: { x: { display: false, grid: { display: false } }, y: { display: false, grid: { display: false } } },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e1e36', padding: 8, cornerRadius: 6 } }
+    }
+  });
+});
+</script>
+{% endblock %}

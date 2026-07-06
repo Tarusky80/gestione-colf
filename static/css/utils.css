@@ -1,0 +1,294 @@
+/* ============================================
+   UTILS.CSS — Utility class per tema scuro
+   Sostituisce tema.css + pattern inline comuni
+   ============================================ */
+
+/* --- TEXT COLORS --- */
+.c-text    { color: #EDEDED; }
+.c-muted   { color: #8A8F98; }
+.c-accent  { color: #5E6AD2; }
+.c-green   { color: #34d399; }
+.c-green2  { color: #10b981; }
+.c-red     { color: #f87171; }
+.c-amber   { color: #f59e0b; }
+.c-gray    { color: #5C5F66; }
+
+/* --- FONT SIZES + WEIGHTS --- */
+.fs-10 { font-size: 10px; }
+.fs-11 { font-size: 11px; }
+.fs-12 { font-size: 12px; }
+.fs-13 { font-size: 13px; }
+.fs-14 { font-size: 14px; }
+.fs-15 { font-size: 15px; }
+.fw-6  { font-weight: 600; }
+.fw-7  { font-weight: 700; }
+
+/* --- COMPOUND: size + color + weight --- */
+.c-14    { color: #EDEDED; font-size: 14px; }
+.c-13-b  { font-size: 13px; font-weight: 600; color: #EDEDED; }
+.c-15-b  { font-size: 15px; font-weight: 700; color: #EDEDED; }
+.c-18-b  { font-size: 18px; font-weight: 800; color: #EDEDED; }
+.c-12    { font-size: 12px; color: #EDEDED; }
+.c-12-b  { font-size: 12px; font-weight: 600; color: #EDEDED; }
+.c-11-m  { color: #8A8F98; font-size: 11px; }
+.c-12-m  { font-size: 12px; color: #8A8F98; }
+.c-11-mb { font-size: 11px; color: #8A8F98; font-weight: 600; }
+.c-10-up { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; }
+.tag-block { font-size: 10px; color: #8A8F98; display: block; }
+
+/* --- SPACING --- */
+.mb-14 { margin-bottom: 14px; }
+.mb-0  { margin-bottom: 0; }
+
+/* --- DISPLAY --- */
+.d-none      { display: none; }
+.d-table-cell { display: table-cell; }
+.cell-right  { display: table-cell; padding: 6px 4px; text-align: right; }
+
+/* --- CARDS / BORDERS / BACKGROUNDS --- */
+.card-simple  { background: #17181C; border: 1px solid #27282D; border-radius: 14px; }
+.card-alt     { background: #1a1a1e; border: 1px solid #27282D; border-radius: 14px; }
+.card-alt-12  { background: #17181C; border: 1px solid #27282D; border-radius: 12px; }
+.card-body    { padding: 18px; font-size: 13px; color: #8A8F98; line-height: 1.6; }
+.b-card       { border-bottom: 1px solid #27282D; padding: 14px 18px; }
+.b-light      { border-bottom: 1px solid rgba(255,255,255,0.04); }
+.bg-input     { background-color: #09090B; border: 1px solid #27282D; color: #ffffff; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
+
+/* --- MODAL CARD --- */
+.modal-linear { background: #1a1a1e; border: 1px solid #27282D; border-radius: 14px; }
+.modal-linear-header { border-bottom: 1px solid #27282D; padding: 20px 28px; }
+.modal-linear-body { padding: 28px; }
+
+/* --- BADGE FILTRO --- */
+.badge-filter { display: inline-flex; align-items: center; gap: 5px; background: rgba(245,158,11,0.12); color: #fbbf24; font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.2); }
+.badge-count { display: inline-flex; align-items: center; gap: 5px; background: rgba(245,158,11,0.12); color: #fbbf24; }
+
+/* --- PULSANTE HELP --- */
+.btn-help { background: transparent; color: #8A8F98; border: 1px solid #333; border-radius: 50%; width: 30px; height: 30px; padding: 0; font-size: 14px; font-weight: 700; line-height: 1; flex-shrink: 0; vertical-align: middle; margin-left: 8px; }
+
+/* --- EXPORT XLSX BUTTON --- */
+.btn-xlsx { background: rgba(94,106,210,0.1); color: #9ca3ff; border: 1px solid rgba(94,106,210,0.15); border-radius: 8px; padding: 5px 12px; font-size: 11px; font-weight: 600; }
+
+/* --- SEARCH INPUT --- */
+.search-input { padding: 10px 14px 10px 38px; font-size: 13px; border-radius: 10px; }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px; }
+
+/* --- STICKY HEADER --- */
+.sticky-header { position: sticky; top: 0; z-index: 1; background: #17181C; }
+
+/* --- MISC --- */
+.cursor-pointer { cursor: pointer; }
+.nowrap         { white-space: nowrap; }
+
+/* --- CHECKBOX --- */
+.c-checkbox { accent-color: #5E6AD2; width: 16px; height: 16px; }
+
+/* --- TOGGLE SWITCH OVERRIDE (green version) --- */
+.toggle-switch .toggle-slider::after { display: none; }
+.toggle-switch .toggle-slider { width: 42px; height: 22px; background: #555; border: 1px solid #666; border-radius: 11px; position: relative; display: inline-block; flex-shrink: 0; cursor: pointer; }
+.toggle-switch .toggle-slider::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; bottom: 1px; background: #ccc; border-radius: 50%; transition: transform 0.2s; }
+.toggle-switch input:checked + .toggle-slider { background: rgba(52,211,153,0.3); border-color: #34d399; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+.toggle-switch.conv-toggle-small input:checked + .toggle-slider { background: rgba(52,211,153,0.3); border-color: #34d399; }
+.toggle-switch.toggle-purple input:checked + .toggle-slider { background: rgba(94,106,210,0.3); border-color: #5E6AD2; }
+.toggle-switch.toggle-purple input:checked + .toggle-slider::before { background-color: #5E6AD2; }
+
+/* Purple accent for toggles inside #dynamicForm (form contratto/lavoratore) */
+#dynamicForm .toggle-switch input:checked + .toggle-slider { background: rgba(94,106,210,0.3); border-color: #5E6AD2; }
+#dynamicForm .toggle-switch input:checked + .toggle-slider::before { background-color: #5E6AD2; }
+#dynamicForm .toggle-switch.toggle-danger input:checked + .toggle-slider { background: rgba(248,113,113,0.3); border-color: #f87171; }
+#dynamicForm .toggle-switch.toggle-danger input:checked + .toggle-slider::before { background-color: #f87171; }
+#dynamicForm .toggle-switch.toggle-warning input:checked + .toggle-slider { background: rgba(251,191,36,0.3); border-color: #fbbf24; }
+#dynamicForm .toggle-switch.toggle-warning input:checked + .toggle-slider::before { background-color: #fbbf24; }
+
+/* Toggle label comune (spostato da base.css) */
+.toggle-label { font-size: 10.5px; color: #EDEDED; line-height: 1.2; flex: 1; letter-spacing: 0.02em; }
+
+/* --- BUTTON SYSTEM (unificato) --- */
+.btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 8px; padding: 10px 18px;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none; cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    background: transparent;
+    color: inherit; line-height: 1.2;
+}
+.btn-sm {
+    padding: 6px 12px; font-size: 11px; gap: 4px;
+}
+
+/* --- GHOST BUTTONS (semi-transparent, da usare con .btn) --- */
+.btn-ghost { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); color: #8A8F98; }
+.btn-ghost:hover { background: rgba(255,255,255,0.08); color: #EDEDED; }
+.btn-ghost-primary { background: rgba(94,106,210,0.12); border-color: rgba(94,106,210,0.25); color: #818cf8; }
+.btn-ghost-primary:hover { background: rgba(94,106,210,0.2); color: white; }
+.btn-ghost-success { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10b981; }
+.btn-ghost-success:hover { background: rgba(16,185,129,0.2); color: #34d399; }
+.btn-ghost-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.15); color: #f87171; }
+.btn-ghost-danger:hover { background: rgba(248,113,113,0.15); color: #ff9999; }
+.btn-ghost-warning { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.25); color: #f59e0b; }
+.btn-ghost-warning:hover { background: rgba(245,158,11,0.25); color: #fbbf24; }
+.btn-ghost-info { background: rgba(6,182,212,0.12); border-color: rgba(6,182,212,0.25); color: #06b6d4; }
+.btn-ghost-info:hover { background: rgba(6,182,212,0.2); color: #67e8f9; }
+.btn-ghost-pink { background: rgba(244,114,182,0.08); border-color: rgba(244,114,182,0.2); color: #ec4899; }
+.btn-ghost-pink:hover { background: rgba(244,114,182,0.15); color: #f472b6; }
+
+/* --- UPPERCASE LABEL 9px --- */
+.c-9-up { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; }
+.c-9-up-fw { font-size: 9px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; font-weight: 700; }
+
+/* --- DASHBOARD KPI HELPERS --- */
+.kpi-dash { border-radius: 12px; padding: 14px 16px; }
+.icon-wrap-42 { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.kpi-val-lg { font-size: 22px; font-weight: 800; color: #EDEDED; line-height: 1.2; }
+.kpi-sub { font-size: 10px; color: #545; }
+
+/* --- KPI GRADIENT CARDS --- */
+.kpi-card-red { background: linear-gradient(135deg, rgba(248,113,113,0.12) 0%, rgba(248,113,113,0.04) 100%); border: 1px solid rgba(248,113,113,0.15); border-radius: 14px; }
+.kpi-card-green { background: linear-gradient(135deg, rgba(52,211,153,0.12) 0%, rgba(52,211,153,0.04) 100%); border: 1px solid rgba(52,211,153,0.15); border-radius: 14px; }
+.kpi-card-amber { background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.04) 100%); border: 1px solid rgba(245,158,11,0.15); border-radius: 14px; }
+.kpi-card-blue { background: linear-gradient(135deg, rgba(96,165,250,0.12) 0%, rgba(96,165,250,0.04) 100%); border: 1px solid rgba(96,165,250,0.15); border-radius: 14px; }
+.kpi-card-purple { background: linear-gradient(135deg, rgba(168,85,247,0.12) 0%, rgba(168,85,247,0.04) 100%); border: 1px solid rgba(168,85,247,0.15); border-radius: 14px; }
+
+/* --- MISC HELPERS --- */
+.h-32 { height: 32px; }
+.fw-8 { font-weight: 800; }
+.vr-d { width: 1px; height: 20px; background: #27282D; flex-shrink: 0; }
+
+/* --- INPUT MINI (es. giorniConv) --- */
+.input-mini { width: 50px; background: #09090B; border: 1px solid #27282D; color: #EDEDED; padding: 4px 6px; border-radius: 6px; font-size: 12px; }
+
+/* --- CONTROLS CONTAINER --- */
+.controls-card { background: rgba(255,255,255,0.02); border: 1px solid #27282D; border-radius: 10px; }
+
+/* --- TOGGLE ITEM (comune a tutte le pagine calcoli) --- */
+.toggle-item { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+
+/* --- GRIGLIE --- */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.grid-auto { display: grid; grid-auto-flow: column; gap: 6px; }
+
+/* --- FLEX HELPERS --- */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-gap-xs { display: flex; align-items: center; gap: 6px; }
+.flex-gap-sm { display: flex; align-items: center; gap: 8px; }
+.flex-gap-md { display: flex; align-items: center; gap: 12px; }
+.flex-gap-lg { display: flex; align-items: center; gap: 16px; }
+.flex-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* --- TEXT HELPERS --- */
+.text-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-uppercase { text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* --- PADDING HELPERS --- */
+.p-12 { padding: 12px; }
+.p-14 { padding: 14px; }
+.p-16 { padding: 16px; }
+.p-18 { padding: 18px; }
+.p-24 { padding: 24px; }
+.px-18 { padding-left: 18px; padding-right: 18px; }
+.py-14 { padding-top: 14px; padding-bottom: 14px; }
+
+/* --- BADGE CATEGORIA COLORATO (usa style="--c:#hex" per colore dinamico) --- */
+.badge-cat { display: inline-block; margin: 1px 0; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: color-mix(in srgb, var(--c, #10b981) 12%, transparent); color: var(--c, #10b981); }
+
+/* --- ACTION BUTTON (action panel, bottoni dinamici) --- */
+.btn-action { display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; padding: 9px 12px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.15s; cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #8A8F98; }
+.btn-action:hover { background: rgba(255,255,255,0.08); color: #EDEDED; }
+.btn-action i { font-size: 14px; }
+.btn-action-primary { background: rgba(96,165,250,0.1); border-color: rgba(96,165,250,0.25); color: #9ca3ff; }
+.btn-action-primary:hover { background: rgba(96,165,250,0.2); color: white; }
+.btn-action-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.15); color: #f87171; }
+.btn-action-danger:hover { background: rgba(248,113,113,0.15); color: #ff9999; }
+.btn-action-success { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10b981; }
+.btn-action-success:hover { background: rgba(16,185,129,0.2); color: #34d399; }
+.btn-action-yellow { background: rgba(250,204,21,0.12); border-color: rgba(250,204,21,0.3); color: #fbbf24; }
+.btn-action-yellow:hover { background: rgba(250,204,21,0.2); color: #ffe082; }
+.btn-action-duplica { color: #34d399; }
+.btn-action-duplica:hover { color: #6ee7b7; }
+
+/* --- CARD SCURA (sostituisce style="background:#17181C;border:1px solid #27282D;border-radius:14px;") --- */
+.card-dark { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
+.card-dark-sm { border-radius: var(--radius-md); }
+.card-dark-padded { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; }
+
+/* --- DIVIDER --- */
+.divider { height: 1px; background: var(--border-color); margin: 6px 0; }
+.divider-light { height: 1px; background: rgba(255,255,255,0.04); margin: 6px 0; }
+
+/* --- SEZIONE INFO METADATI (action panel) --- */
+.meta-box { margin-bottom: 10px; padding: 10px 12px; background: var(--bg-base); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 11px; }
+
+/* --- BADGE STATO --- */
+.badge-stato { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+.badge-stato-attivo { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
+.badge-stato-cessato { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+.badge-stato-indeterminato { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+.badge-stato-determinato { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+.badge-stato .dot { width: 6px; height: 6px; border-radius: 50%; }
+.badge-stato-attivo .dot { background: #34d399; }
+.badge-stato-cessato .dot { background: #f87171; }
+.badge-stato-indeterminato .dot { background: #60a5fa; }
+.badge-stato-determinato .dot { background: #fbbf24; }
+
+/* --- SEPARATORE SEZIONE --- */
+.section-sep { border-top: 1px solid var(--border-color); margin-top: 6px; padding-top: 6px; }
+
+/* --- GRIGLIA INFO (action panel meta) --- */
+.grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
+
+/* --- DATA META (action panel date) --- */
+.meta-date { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; font-size: 10px; color: var(--text-muted); }
+
+/* --- SCROLLBAR SCURO --- */
+.scrollbar-dark::-webkit-scrollbar { width: 6px; }
+.scrollbar-dark::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-dark::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+.scrollbar-dark::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* --- TOAST NOTIFICA --- */
+.toast-dark { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 18px; font-size: 13px; color: var(--text-primary); box-shadow: 0 8px 32px rgba(0,0,0,0.4); display: none; }
+.toast-dark.show { display: block; animation: toastIn 0.3s ease; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- HOVER LIFT --- */
+.hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+
+/* --- STATO NASCOSTO --- */
+[hidden] { display: none !important; }
+
+/* --- LINK DISCRETO --- */
+.link-muted { color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+.link-muted:hover { color: var(--text-primary); }
+
+/* --- LABEL UPPERCASE (comune in form/schede) --- */
+.label-up { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED; }
+.label-up-muted { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98; }
+
+/* --- FIELD ERROR --- */
+.field-error { font-size: 11px; color: #ff6b6b; margin-top: 4px; }
+
+/* --- INPUT DARK (form control alternativo) --- */
+.input-dark { background: #09090B; border: 1px solid #27282D; color: #ffffff; border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; }
+
+/* --- BUTTON PRIMARY SMALL --- */
+.btn-primary-sm { background: #5E6AD2; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.btn-primary-sm:hover { background: #4a55c0; }
+
+/* --- BUTTON DANGER SMALL --- */
+.btn-danger-sm { background: rgba(248,113,113,0.08); color: #f87171; border: 1px solid rgba(248,113,113,0.15); border-radius: 8px; padding: 8px 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+.btn-danger-sm:hover { background: rgba(248,113,113,0.15); }
+
+/* --- FLEX ROW --- */
+.flex-row { display: flex; align-items: center; gap: 8px; }
+
+/* --- SECTION TITLE (riepilogo info) --- */
+.section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98; margin-bottom: 18px; }
+.section-title i { margin-right: 6px; color: #5E6AD2; }

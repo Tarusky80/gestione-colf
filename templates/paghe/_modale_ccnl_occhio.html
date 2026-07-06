@@ -1,0 +1,150 @@
+<div style="padding:0;max-height:80vh;display:flex;flex-direction:column;">
+
+  {% comment %} Header con livello selector {% endcomment %}
+  <div style="padding:16px 20px;border-bottom:1px solid #27282D;flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(94,106,210,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:#5E6AD2;">
+          <i class="bi bi-eye"></i>
+        </div>
+        <span style="font-size:16px;font-weight:700;color:#EDEDED;">Colpo d'Occhio CCNL</span>
+        <span style="font-size:11px;color:#8A8F98;background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:4px;">{{ parametri.anno }}</span>
+      </div>
+      <button data-bs-dismiss="modal" style="background:none;border:none;color:#8A8F98;font-size:18px;cursor:pointer;padding:4px;line-height:1;"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    {% comment %} Dropdown livelli {% endcomment %}
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      {% for l in livelli %}
+      <button class="ccnl-livello-btn" data-livello-pk="{{ l.pk }}"
+        style="padding:5px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;
+        background:{% if l.pk == parametri.livello_id %}{{ l.colore }}30{% else %}rgba(255,255,255,0.04){% endif %};
+        color:{% if l.pk == parametri.livello_id %}{{ l.colore }}{% else %}#8A8F98{% endif %};
+        border:1px solid {% if l.pk == parametri.livello_id %}{{ l.colore }}50{% else %}transparent{% endif %};
+        {% if l.pk == parametri.livello_id %}box-shadow:0 0 12px {{ l.colore }}20;{% endif %}">
+        {{ l.codice }}
+      </button>
+      {% endfor %}
+    </div>
+
+    {% if contratto %}
+    <div style="display:flex;align-items:center;gap:12px;margin-top:10px;font-size:11px;color:#5C5F66;">
+      <span><i class="bi bi-person-badge me-1"></i>{{ contratto.lavoratore.nome_cognome }}</span>
+      <span><i class="bi bi-building me-1"></i>{{ contratto.datore.nome_cognome }}</span>
+      <span style="margin-left:auto;">
+        <span style="color:#34d399;">●</span> abilitato
+        <span style="color:#f87171;margin-left:6px;">●</span> disabilitato
+        <span style="color:#5C5F66;margin-left:6px;">●</span> clicca per simulare
+      </span>
+    </div>
+    {% endif %}
+  </div>
+
+  {% comment %} Corpo scrollabile {% endcomment %}
+  <div style="flex:1;overflow-y:auto;padding:14px 20px;">
+
+    {% for group in groups %}
+    <div style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;margin-bottom:10px;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.02);">
+        <i class="bi bi-{{ group.icon }}"></i>
+        {{ group.title }}
+      </div>
+      {% for item in group.items %}
+      <div class="ccnl-occhio-item" data-key="{{ item.key|default:'' }}" data-value="{{ item.value|default:0 }}" data-attiva="{% if item.attiva is not None %}{{ item.attiva|yesno:'true,false' }}{% endif %}"
+        style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-bottom:1px solid rgba(39,40,45,0.4);font-size:12px;
+        {% if item.key %}cursor:pointer;transition:all 0.15s;{% endif %}
+        {% if item.key and item.attiva is not None %}background:{% if item.attiva %}rgba(52,211,153,0.04){% else %}transparent{% endif %};{% endif %}">
+        <div style="display:flex;align-items:center;gap:8px;">
+          {% if item.key and item.attiva is not None %}
+          <span class="ccnl-toggle-icon" style="font-size:13px;color:{% if item.attiva %}#34d399{% else %}#5C5F66{% endif %};">
+            {% if item.attiva %}<i class="bi bi-toggle-on"></i>{% else %}<i class="bi bi-toggle-off"></i>{% endif %}
+          </span>
+          {% elif item.fixed %}
+          <span style="font-size:13px;color:#8A8F98;"><i class="bi bi-lock"></i></span>
+          {% endif %}
+          <span style="color:{% if item.fixed %}#8A8F98{% else %}#EDEDEB{% endif %};">{{ item.label }}</span>
+        </div>
+        <span class="ccnl-value" style="font-weight:600;{% if item.value %}color:#5E6AD2;{% else %}color:#5C5F66;{% endif %}">
+          € {{ item.value|floatformat:4 }}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    {% comment %} Scatti di Anzianità {% endcomment %}
+    <div style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;margin-bottom:10px;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.02);">
+        <i class="bi bi-arrow-up-circle"></i>
+        Scatti di Anzianità
+        <span style="margin-left:auto;font-size:11px;color:#5C5F66;font-weight:400;text-transform:none;">
+          <span class="ccnl-scatto-label" style="color:#f59e0b;font-weight:600;">€ {{ scatto_value|floatformat:4 }}/h</span> per biennio
+        </span>
+      </div>
+      <div style="padding:6px 14px;">
+        <table style="width:100%;border-collapse:collapse;font-size:11px;">
+          <thead>
+            <tr style="border-bottom:1px solid #27282D;color:#5C5F66;font-size:9px;text-transform:uppercase;letter-spacing:0.04em;">
+              <th style="padding:4px 6px;text-align:left;">Biennio</th>
+              <th style="padding:4px 6px;text-align:left;">Anzianità</th>
+              <th style="padding:4px 6px;text-align:right;">Orario</th>
+              <th style="padding:4px 6px;text-align:right;">Mensile (170h)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in bienni %}
+            <tr style="border-bottom:1px solid rgba(39,40,45,0.3);">
+              <td style="padding:4px 6px;color:#8A8F98;">{{ b.biennio }}°</td>
+              <td style="padding:4px 6px;color:#EDEDEB;">{{ b.anni }} anni</td>
+              <td style="padding:4px 6px;text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.orario|floatformat:4 }}</td>
+              <td style="padding:4px 6px;text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.mensile|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {% if parametri.fonte_url %}
+    <div style="text-align:center;padding:6px;font-size:10px;color:#5C5F66;">
+      <i class="bi bi-link-45deg me-1"></i> Fonte:
+      <a href="{{ parametri.fonte_url }}" target="_blank" style="color:#5E6AD2;text-decoration:none;">{{ parametri.fonte_url }}</a>
+    </div>
+    {% endif %}
+  </div>
+
+  {% comment %} Riepilogo - barra fissa in fondo {% endcomment %}
+  <div style="flex-shrink:0;border-top:1px solid #27282D;background:rgba(255,255,255,0.02);padding:12px 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:16px;font-size:12px;flex-wrap:wrap;">
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Paga Base</span>
+          <div class="ccnl-sum-pagabase" style="color:#EDEDED;font-weight:600;">€ {{ paga_base|floatformat:4 }}</div>
+        </div>
+        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Indennità</span>
+          <div class="ccnl-sum-indennita" style="color:#34d399;font-weight:600;">€ {{ totale_indennita|floatformat:4 }}</div>
+        </div>
+        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Scatti</span>
+          <div class="ccnl-sum-scatti" style="color:#f59e0b;font-weight:600;">€ {{ scatto_value|floatformat:4 }}</div>
+        </div>
+        <div style="color:#5C5F66;font-size:16px;">=</div>
+        <div>
+          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Paga Oraria Lorda</span>
+          <div class="ccnl-sum-totale" style="font-size:16px;font-weight:700;color:#5E6AD2;">€ {{ paga_oraria_lorda|floatformat:4 }}</div>
+        </div>
+      </div>
+      {% if livello_contratto and livello_contratto.pk != parametri.livello_id %}
+      <div style="padding:6px 12px;border-radius:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);font-size:11px;white-space:nowrap;">
+        <span style="color:#f59e0b;">± differenza da Liv. {{ livello_contratto.codice }}</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+</div>

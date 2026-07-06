@@ -1,0 +1,499 @@
+﻿{% extends "base.html" %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'backup_page' %}">Sistema</a></li>
+        <li class="breadcrumb-item active" aria-current="page">About</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+<style>
+  .about-header {
+    background: linear-gradient(135deg, #1a1b1e 0%, #0E0F11 100%);
+    border: 1px solid #27282D;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .about-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .about-logo-placeholder {
+    width: 100px;
+    height: 100px;
+    background: #5E6AD2;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+  }
+  .about-logo-placeholder i { font-size: 48px; color: white; }
+  .about-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+  }
+
+  .about-version {
+    color: #8A8F98;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .about-desc {
+    color: #a1a5ab;
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .about-section {
+    background: #0E0F11;
+    border: 1px solid #27282D;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .about-section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .about-section h4 i { color: #5E6AD2; font-size: 18px; }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+  .tech-item {
+    background: #17181C;
+    border: 1px solid #27282D;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.2s;
+  }
+  .tech-item:hover { border-color: #5E6AD2; }
+  .tech-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: #1c1c1f;
+    overflow: hidden;
+  }
+  .tech-icon img { width: 18px; height: 18px; object-fit: contain; filter: brightness(1.2); }
+  .tech-item .tech-name { font-size: 13px; font-weight: 600; color: white; }
+  .tech-item .tech-ver { font-size: 11px; color: #8A8F98; }
+  .credit-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #1c1c1f;
+    font-size: 13px;
+  }
+  .credit-line:last-child { border-bottom: none; }
+  .credit-line span:first-child { color: #a1a5ab; }
+  .credit-line span:last-child { color: white; font-weight: 500; }
+</style>
+
+<div class="about-header">
+  {% if opzioni and opzioni.logo %}
+    <img src="{{ opzioni.logo.url }}" alt="Logo" class="about-logo">
+  {% else %}
+    <div class="about-logo-placeholder"><i class="bi bi-cpu-fill"></i></div>
+  {% endif %}
+  <div class="about-title">{{ opzioni.nome_programma|default:"GESTIONE PAGHE" }}
+    <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+  </div>
+  <div class="about-version">v{{ opzioni.versione_programma|default:"1.1" }}</div>
+  <div class="about-desc">
+    Software per la gestione di contratti di lavoro domestico, buste paga,
+    adempimenti INPS, PagoPA e reportistica professionale.
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="about-section">
+      <h4><i class="bi bi-stack"></i> Tecnologie</h4>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/python" alt="Python"></div>
+          <div><div class="tech-name">Python</div><div class="tech-ver">3.13</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/django" alt="Django"></div>
+          <div><div class="tech-name">Django</div><div class="tech-ver">{{ vers.Django }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/sqlite" alt="SQLite"></div>
+          <div><div class="tech-name">SQLite</div><div class="tech-ver">3.x</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#dc2626;"><i class="bi bi-filetype-pdf" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">ReportLab</div><div class="tech-ver">{{ vers.reportlab }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#5E6AD2;"><i class="bi bi-filetype-pdf" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">xhtml2pdf</div><div class="tech-ver">{{ vers.xhtml2pdf }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/chartdotjs" alt="Chart.js"></div>
+          <div><div class="tech-name">Chart.js</div><div class="tech-ver">4.x</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/bootstrap" alt="Bootstrap"></div>
+          <div><div class="tech-name">Bootstrap</div><div class="tech-ver">5.x</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/tinymce" alt="TinyMCE"></div>
+          <div><div class="tech-name">TinyMCE</div><div class="tech-ver">7.x</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/playwright" alt="Playwright"></div>
+          <div><div class="tech-name">Playwright</div><div class="tech-ver">{{ vers.playwright }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon"><img src="https://cdn.simpleicons.org/selenium" alt="Selenium"></div>
+          <div><div class="tech-name">Selenium</div><div class="tech-ver">{{ vers.selenium }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#107C41;"><i class="bi bi-file-earmark-spreadsheet" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">OpenPyXL</div><div class="tech-ver">{{ vers.openpyxl }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#f59e0b;"><i class="bi bi-clock" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">APScheduler</div><div class="tech-ver">{{ vers.APScheduler }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#6366f1;"><i class="bi bi-image" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">Pillow</div><div class="tech-ver">{{ vers.Pillow }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#0ea5e9;"><i class="bi bi-globe2" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">requests</div><div class="tech-ver">{{ vers.requests }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#e11d48;"><i class="bi bi-file-earmark-pdf" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">pypdf</div><div class="tech-ver">{{ vers.pypdf }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#8b5cf6;"><i class="bi bi-shield-lock" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">cryptography</div><div class="tech-ver">{{ vers.cryptography }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#14b8a6;"><i class="bi bi-droplet" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">bleach</div><div class="tech-ver">{{ vers.bleach }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#f97316;"><i class="bi bi-arrow-left-right" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">django-import-export</div><div class="tech-ver">{{ vers.django_import_export }}</div></div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon" style="background:#84cc16;"><i class="bi bi-gear" style="font-size:16px;color:white;"></i></div>
+          <div><div class="tech-name">chromedriver-autoinstaller</div><div class="tech-ver">{{ vers.chromedriver_autoinstaller }}</div></div>
+        </div>
+      </div>
+
+      <!-- Versione / aggiornamenti integrati -->
+      <div style="margin-top:16px;border-top:1px solid #1c1c1f;padding-top:14px;">
+        <div id="agg-status-bar" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:13px;color:#8A8F98;">
+          <span id="agg-badge" class="badge" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#555;">â¸ In attesa</span>
+          <span id="agg-timestamp"></span>
+        </div>
+        <div id="agg-lista" style="min-height:40px;">
+          <div class="text-center py-3" style="color:#555;">
+            <i class="bi bi-search me-2"></i>Clicca "Verifica aggiornamenti" per controllare
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button id="agg-verifica-btn" type="button" class="btn btn-sm btn-ghost" style="padding:6px 16px;font-size:12px;" onclick="verificaAggiornamenti()">
+            <i class="bi bi-arrow-clockwise"></i> Verifica aggiornamenti
+          </button>
+          <button id="agg-aggiorna-req-btn" type="button" class="btn btn-sm btn-ghost-success" style="padding:6px 16px;font-size:12px;display:none;" onclick="aggiornaRequirements()">
+            <i class="bi bi-file-text"></i> Aggiorna requirements.txt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="about-section">
+      <h4><i class="bi bi-people"></i> Crediti</h4>
+      <div class="credit-line">
+        <span>Sviluppo e progettazione</span>
+        <span>Corongiu Gabriele</span>
+      </div>
+      <div class="credit-line">
+        <span>Admin</span>
+        <span>Corongiu Gabriele</span>
+      </div>
+      <div class="credit-line">
+        <span>Framework backend</span>
+        <span>Django 6.0</span>
+      </div>
+      <div class="credit-line">
+        <span>Generazione PDF</span>
+        <span>ReportLab 4.5</span>
+      </div>
+      <div class="credit-line">
+        <span>UI Framework</span>
+        <span>Bootstrap 5 + Bootstrap Icons</span>
+      </div>
+      <div class="credit-line">
+        <span>Grafici dashboard</span>
+        <span>Chart.js</span>
+      </div>
+      <div class="credit-line">
+        <span>Editor di testo</span>
+        <span>TinyMCE</span>
+      </div>
+      <div class="credit-line">
+        <span>Automazione web</span>
+        <span>Playwright · Selenium</span>
+      </div>
+      <div class="credit-line">
+        <span>Backup automatici</span>
+        <span>APScheduler</span>
+      </div>
+      <div class="credit-line">
+        <span>Database</span>
+        <span>SQLite</span>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h4><i class="bi bi-info-circle"></i> Dipendenze Python</h4>
+      <div style="max-height:200px;overflow-y:auto;font-size:12px;color:#8A8F98;font-family:monospace;line-height:1.8;">
+        APScheduler {{ vers.APScheduler }}<br>
+        bleach {{ vers.bleach }}<br>
+        chromedriver-autoinstaller {{ vers.chromedriver_autoinstaller }}<br>
+        cryptography {{ vers.cryptography }}<br>
+        Django {{ vers.Django }}<br>
+        django-import-export {{ vers.django_import_export }}<br>
+        openpyxl {{ vers.openpyxl }}<br>
+        Pillow {{ vers.Pillow }}<br>
+        playwright {{ vers.playwright }}<br>
+        pypdf {{ vers.pypdf }}<br>
+        reportlab {{ vers.reportlab }}<br>
+        requests {{ vers.requests }}<br>
+        selenium {{ vers.selenium }}<br>
+        xhtml2pdf {{ vers.xhtml2pdf }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modale Progresso Aggiornamento -->
+<div class="modal fade" id="aggiornaModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-cloud-arrow-up me-2" style="color:#5E6AD2;"></i><span id="agg-modal-title">Aggiornamento in corso...</span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;">
+        <div id="agg-modal-status" style="font-size:13px;color:#8A8F98;margin-bottom:10px;"></div>
+        <div id="agg-modal-console" style="background:#0a0a0c;border:1px solid #27282D;border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#22c55e;max-height:300px;overflow-y:auto;white-space:pre-wrap;line-height:1.5;">
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;">
+        <button id="agg-modal-close" type="button" class="btn btn-sm btn-ghost" style="padding:6px 16px;" data-bs-dismiss="modal" disabled>
+          Chiudi
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — About
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Pagina informativa con i dettagli del software: versione installata, tecnologia utilizzata, librerie e framework. Utile per verificare la versione corrente e le dipendenze del sistema.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Informazioni visualizzate</b><br>
+        <b>Nome e versione</b> — nome del programma e versione corrente configurata nelle Impostazioni.<br>
+        <b>Tecnologie</b> — stack tecnologico: Django 6.0, ReportLab, SQLite, Playwright, Selenium, ecc.<br>
+        <b>Dipendenze Python</b> — elenco completo dei pacchetti Python utilizzati dal gestionale.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
+        La versione del programma può essere modificata dalla pagina <b>Impostazioni</b>. Le dipendenze elencate sono quelle installate nell'ambiente Python corrente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script>
+// === Gestore Aggiornamenti ===
+var aggiornamentiModal = null;
+var CSRF_TOKEN = '{{ csrf_token|escapejs }}';
+
+document.addEventListener('DOMContentLoaded', function() {
+  aggiornamentiModal = new bootstrap.Modal(document.getElementById('aggiornaModal'));
+});
+
+function verificaAggiornamenti() {
+  var lista = document.getElementById('agg-lista');
+  var badge = document.getElementById('agg-badge');
+  var ts = document.getElementById('agg-timestamp');
+  var btn = document.getElementById('agg-aggiorna-req-btn');
+
+  if (!lista || !badge) return;
+  lista.innerHTML = '<div class="text-center py-3" style="color:#555;"><div class="spinner-border spinner-border-sm me-2" role="status"></div>Controllo aggiornamenti in corso...</div>';
+  badge.textContent = '\u23F3 Verifica...';
+  badge.style.background = '#555';
+  ts.textContent = '';
+  if (btn) btn.style.display = 'none';
+
+  fetch('/ajax/verifica-aggiornamenti/')
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      var pkg = data.pacchetti || {};
+      var keys = Object.keys(pkg);
+      if (keys.length === 0) {
+        lista.innerHTML = '<div class="text-center py-3" style="color:#8A8F98;">Nessun pacchetto trovato.</div>';
+        badge.textContent = '\u26A0 Errore';
+        badge.style.background = '#dc2626';
+        return;
+      }
+
+      var html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">';
+      html += '<thead><tr style="color:#8A8F98;border-bottom:1px solid #27282D;font-size:11px;text-transform:uppercase;">';
+      html += '<th style="padding:8px 10px 8px 0;text-align:left;font-weight:600;">Pacchetto</th>';
+      html += '<th style="padding:8px 10px;text-align:center;font-weight:600;">Installata</th>';
+      html += '<th style="padding:8px 10px;text-align:center;font-weight:600;">PyPI</th>';
+      html += '</tr></thead><tbody>';
+
+      var aggiornabili = 0;
+      keys.forEach(function(nome) {
+        var info = pkg[nome];
+        var stato = info.stato;
+        var installata = info.installata;
+        var disponibile = info.disponibile;
+        var icon, colore;
+
+        if (stato === 'ok') {
+          icon = '\u2705';
+          colore = '#22c55e';
+        } else if (stato === 'update') {
+          icon = '\uD83D\uDD04';
+          colore = '#f59e0b';
+          aggiornabili++;
+        } else {
+          icon = '\u274C';
+          colore = '#ef4444';
+        }
+
+        html += '<tr style="border-bottom:1px solid #1c1c1f;">';
+        html += '<td style="padding:10px 10px 10px 0;"><span style="color:' + colore + ';margin-right:6px;">' + icon + '</span><span style="color:white;font-weight:500;">' + nome + '</span></td>';
+        html += '<td style="padding:10px;text-align:center;color:#8A8F98;font-family:monospace;">' + installata + '</td>';
+        html += '<td style="padding:10px;text-align:center;' + (stato === 'update' ? 'color:#f59e0b;font-weight:600;' : 'color:#8A8F98;') + 'font-family:monospace;">' + disponibile + (stato === 'update' ? ' <span style="font-size:10px;">\uD83D\uDDC5</span>' : '') + '</td>';
+        html += '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+      lista.innerHTML = html;
+
+      var ora = new Date();
+      var orario = ora.toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit'});
+      if (aggiornabili === 0) {
+        badge.textContent = '\u2705 Tutti aggiornati';
+        badge.style.background = '#22c55e';
+      } else {
+        badge.textContent = '\uD83D\uDD04 ' + aggiornabili + ' aggiornamenti disponibili';
+        badge.style.background = '#f59e0b';
+      }
+      ts.textContent = 'Ultimo controllo: ' + orario;
+
+      if (aggiornabili > 0) {
+        var btn2 = document.getElementById('agg-aggiorna-req-btn');
+        if (btn2) btn2.style.display = 'inline-block';
+      }
+    })
+    .catch(function(err) {
+      lista.innerHTML = '<div class="text-center py-3" style="color:#ef4444;font-size:13px;"><i class="bi bi-exclamation-triangle me-2"></i>' + (err.message || 'Errore di connessione') + '</div>';
+      badge.textContent = '\u274C Errore';
+      badge.style.background = '#ef4444';
+    });
+}
+
+function aggiornaRequirements() {
+  var modalTitle = document.getElementById('agg-modal-title');
+  var modalStatus = document.getElementById('agg-modal-status');
+  var modalConsole = document.getElementById('agg-modal-console');
+  var closeBtn = document.getElementById('agg-modal-close');
+
+  modalTitle.textContent = 'Aggiornamento requirements.txt...';
+  modalStatus.innerHTML = '<i class="bi bi-arrow-repeat me-1" style="color:#f59e0b;"></i>Controllo versioni PyPI in corso...';
+  modalConsole.textContent = '';
+  closeBtn.disabled = true;
+
+  aggiornamentiModal.show();
+
+  fetch('/ajax/aggiorna-requirements/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN, 'X-Requested-With': 'XMLHttpRequest' },
+    body: '{}'
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    if (data.modificati && data.modificati.length > 0) {
+      modalConsole.textContent = data.modificati.join('\n');
+      modalStatus.innerHTML = '<i class="bi bi-check-circle me-1" style="color:#22c55e;"></i>' + data.totale + ' pacchetto/i aggiornato/i in requirements.txt<br><span style="font-size:11px;color:#8A8F98;">Riavvia con GESTIONE.bat per installare gli aggiornamenti.</span>';
+      modalTitle.textContent = '\u2705 requirements.txt aggiornato';
+    } else {
+      modalConsole.textContent = 'Nessun aggiornamento disponibile.';
+      modalStatus.innerHTML = '<i class="bi bi-check-circle me-1" style="color:#22c55e;"></i>Tutti gi\u00e0 all\'ultima versione.';
+      modalTitle.textContent = '\u2705 Gi\u00e0 aggiornato';
+    }
+    closeBtn.disabled = false;
+    verificaAggiornamenti();
+  })
+  .catch(function(err) {
+    modalConsole.textContent = err.message || 'Richiesta fallita';
+    modalStatus.innerHTML = '<i class="bi bi-exclamation-triangle me-1" style="color:#ef4444;"></i>Errore di connessione';
+    closeBtn.disabled = false;
+  });
+}
+</script>
+{% endblock %}
+{% endblock %}

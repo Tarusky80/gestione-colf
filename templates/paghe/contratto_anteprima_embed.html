@@ -1,0 +1,62 @@
+<style>
+.contratto-corpo h1, .contratto-corpo h2, .contratto-corpo h3 { color: #EDEDED; }
+.contratto-corpo p { margin-bottom: 8px; line-height: 1.7; }
+.contratto-corpo ul, .contratto-corpo ol { padding-left: 20px; }
+.contratto-corpo li { margin-bottom: 4px; }
+.contratto-corpo strong { color: #EDEDED; }
+</style>
+
+<div style="padding:24px 28px;">
+
+    <div style="text-align:center;margin-bottom:4px;">
+        <h1 class="fw-bold" style="font-size:16px;margin-bottom:2px;color:#EDEDED;">CONTRATTO DI LAVORO DOMESTICO TRA {{ contratto.datore.nome_cognome }} E {{ contratto.lavoratore.nome_cognome }} PER ASSISTENZA {{ nome_beneficiario }}</h1>
+    </div>
+
+    <hr style="border:none;border-top:1px solid #27282D;margin:14px 0;">
+
+    <div class="contratto-corpo" style="font-size:12px;color:#8A8F98;line-height:1.7;">
+        {{ corpo_risolto|safe }}
+    </div>
+
+    <hr style="border:none;border-top:1px solid #27282D;margin:18px 0;">
+
+    <div style="margin-top:20px;display:flex;justify-content:space-between;font-size:11px;color:#8A8F98;line-height:1.6;">
+        <div style="text-align:center;">
+            <div style="font-size:12px;color:#EDEDED;margin-bottom:4px;">FIRMA DEL DATORE DI LAVORO</div>
+            <span style="border-bottom:1px solid #8A8F98;display:inline-block;width:220px;">&nbsp;</span>
+            <div style="font-size:10px;color:#5C5F66;margin-top:4px;">({{ contratto.datore.nome_cognome }})</div>
+        </div>
+        <div style="text-align:center;">
+            <div style="font-size:12px;color:#EDEDED;margin-bottom:4px;">FIRMA DEL LAVORATORE</div>
+            <span style="border-bottom:1px solid #8A8F98;display:inline-block;width:220px;">&nbsp;</span>
+            <div style="font-size:10px;color:#5C5F66;margin-top:4px;">({{ contratto.lavoratore.nome_cognome }})</div>
+        </div>
+    </div>
+
+    <div style="margin-top:24px;">
+        <div style="font-size:10px;font-weight:700;color:#EDEDED;margin-bottom:6px;">DATI STUDIO</div>
+        {% if opzioni and opzioni.logo_buste_paga %}
+        <div style="margin-bottom:4px;">
+            <img src="{{ opzioni.logo_buste_paga.url }}" style="max-height:40px;max-width:120px;" alt="Logo studio">
+        </div>
+        {% endif %}
+        {% if opzioni %}
+        <div style="font-size:8px;color:#5C5F66;">
+            {% if opzioni.dati_studio %}{{ opzioni.dati_studio }}{% endif %}
+            {% if opzioni.telefono_studio %} | Tel: {{ opzioni.telefono_studio }}{% endif %}
+            {% if opzioni.email_studio %} | Mail: {{ opzioni.email_studio }}{% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    {% if testo.note_interne %}
+    <div style="margin-top:16px;padding:8px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);border-radius:8px;font-size:10px;color:#f59e0b;">
+        <strong>Note interne:</strong> {{ testo.note_interne }}
+    </div>
+    {% endif %}
+
+    <div style="margin-top:20px;padding-top:12px;border-top:1.5px solid #27282D;font-size:8px;color:#5C5F66;text-align:center;">
+        Tutti i diritti riservati: &egrave; vietata la riproduzione, anche parziale, dei contenuti. | Stampata il {% now "d/m/Y" %}
+    </div>
+
+</div>

@@ -1,0 +1,318 @@
+═══════════════════════════════════════════════════════════════
+ APPLICAZIONE WINDOWS — GESTIONE COLF
+═══════════════════════════════════════════════════════════════
+
+Data: 25/06/2026
+
+───────────────────────────────────────────────────────────────
+1. DECISIONE
+───────────────────────────────────────────────────────────────
+
+Trasformare GESTIONECOLF in un'applicazione Windows installabile,
+in modo che un utente finale possa:
+
+  a) Scaricare un singolo file .exe (es. Setup_GestioneColf.exe)
+  b) Eseguire l'installer
+  c) Avere l'app pronta all'uso senza sapere cos'è Python,
+     un ambiente virtuale, o un server web.
+
+Formato scelto: INSTALLER MSI/EXE (Inno Setup)
+
+───────────────────────────────────────────────────────────────
+2. PERCHÉ INNO SETUP
+───────────────────────────────────────────────────────────────
+
+- È lo standard de-facto per installer Windows
+- Produce un unico file .exe con compressione LZMA
+- Rileva/installa automaticamente Python se mancante
+- Crea shortcut Start Menu e Desktop
+- Gestisce disinstallazione pulita (via Registry)
+- Supporta script Pascal personalizzati per logica complessa
+- Gratuito, open-source, ampiamente documentato
+
+───────────────────────────────────────────────────────────────
+3. ARCHITETTURA DELL'APP
+───────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────┐
+│                    USER                            │
+│              (Browser: Chrome/Edge)                 │
+└─────────────────────┬───────────────────────────────┘
+                      │ http://127.0.0.1:8000
+                      ▼
+┌─────────────────────────────────────────────────────┐
+│              WAITRESS (server WSGI)                  │
+│              porta 8000, solo localhost              │
+└─────────────────────┬───────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────┐
+│                  GESTIONECOLF                        │
+│              (Django 6.0 + ReportLab)                │
+└─────────────────────┬───────────────────────────────┘
+                      │
+          ┌───────────┴───────────┐
+          ▼                       ▼
+┌─────────────────┐   ┌─────────────────────────┐
+│    SQLite DB     │   │  Selenium / Playwright  │
+│  (filesystem)    │   │  (automazione INPS)     │
+└─────────────────┘   └─────────────────────────┘
+
+A lato:
+
+┌─────────────────────────────────────────────────────┐
+│              LAUNCHER (launcher.py)                  │
+│  - Avvia waitress                                    │
+│  - Apre il browser                                   │
+│  - Mostra icona in system tray                       │
+│  - Gestisce chiusura graziosa                        │
+└─────────────────────────────────────────────────────┘
+
+───────────────────────────────────────────────────────────────
+4. FILE DA CREARE (5)
+───────────────────────────────────────────────────────────────
+
+4.1 launcher.py (radice progetto)
+─────────────────────────────────
+Entry point principale dell'applicazione.
+
+Cosa fa:
+  - Legge 3 argomenti da riga di comando:
+      --port  (default 8000)
+      --host  (default 127.0.0.1)
+      --no-browser (per disabilitare auto-apertura)
+  - Avvia waitress.serve() con l'applicazione WSGI di Django
+  - Apre il browser predefinito su http://{host}:{port}
+  - Mostra un'icona in system tray (pystray + Pillow)
+    con menu contestuale:
+      • Apri app — riporta in primo piano il browser
+      • Riavvia server — kill e riavvia waitress
+      • Esci — ferma server e chiude il processo
+  - Gestisce segnali SIGINT/SIGTERM per chiusura pulita
+  - Scrive su stdout solo se lanciato da terminale
+    (se lanciato con pythonw.exe, logga su file)
+
+Dipendenze aggiuntive:
+  - waitress >= 3.0.2  (server WSGI)
+  - pystray >= 0.19.5  (system tray icon)
+
+Note implementative:
+  - Inno Setup installerà anche pythonw.exe per lanciare
+    il launcher senza finestra console
+  - Se pystray non è disponibile (fallback), apre solo
+    browser e resta in console
+  - Il PID viene scritto in un file .pid nella cartella
+    di lavoro per permettere la disinstallazione di
+    fermare il server
+
+4.2 installer.iss (radice progetto)
+─────────────────────────────────────
+Script Inno Setup per compilare l'installer.
+
+Sezioni principali:
+  [Setup]
+    AppName=Gestione COLF
+    AppVersion=1.2
+    DefaultDirName={autopf}\GestioneColf
+    DefaultGroupName=Gestione COLF
+    UninstallDisplayIcon={app}\launcher.ico
+    PrivilegesRequired=admin
+    OutputDir=dist
+    OutputBaseFilename=Setup_GestioneColf_v1.2
+
+  [Languages]
+    Italian (con traduzione personalizzata)
+
+  [Files]
+    Tutto il progetto (esclusi .venv, __pycache__, .git)
+    + python-3.13.xx-amd64.exe (embeddable, se l'utente
+      non ha Python)
+
+  [Tasks]
+    Crea shortcut Desktop
+    Aggiungi a avvio automatico (opzionale)
+    Avvia app al termine dell'installazione
+
+  [Run]
+    scripts\installa.ps1  (con shell nascosta)
+    pythonw.exe launcher.py  (post-install opzionale)
+
+  [Icons]
+    Start Menu: Gestione COLF → pythonw.exe launcher.py
+    Start Menu: Disinstalla Gestione COLF → unins000.exe
+    Desktop: Gestione COLF
+
+  [UninstallRun]
+    scripts\disinstalla.ps1 (ferma server, pulisce)
+
+Logica Pascal per:
+  - Rilevare se Python 3.13+ è installato (HKLM\SOFTWARE\Python)
+  - Se non presente, installare Python Embedded silenziosamente
+    con opzione /quiet
+  - Verificare che la porta 8000 sia libera all'avvio
+  - Mostrare pagina con riepilogo configurazione
+
+4.3 scripts/installa.ps1
+─────────────────────────
+Eseguito dall'installer dopo la copia dei file.
+
+Passi:
+  1. python -m venv .venv
+  2. .venv\Scripts\pip install --upgrade pip
+  3. .venv\Scripts\pip install -r requirements.txt
+  4. .venv\Scripts\python manage.py migrate
+  5. .venv\Scripts\python manage.py collectstatic --noinput
+  6. Crea .env se non esiste con SECRET_KEY random
+  7. Verifica che lo startup sia OK (manage.py check)
+
+Tutti i passi loggati in logs\installa.log.
+Se un passo fallisce, l'installer mostra errore.
+
+4.4 scripts/aggiorna.ps1
+─────────────────────────
+Eseguito manualmente o dal nuovo installer per aggiornare.
+
+Passi:
+  1. git pull  (se repository git)
+  2. Oppure: copia incrementale dei nuovi file
+  3. .venv\Scripts\pip install -r requirements.txt
+  4. .venv\Scripts\python manage.py migrate
+  5. .venv\Scripts\python manage.py collectstatic --noinput
+  6. Riavvia il server se in esecuzione (leggi .pid)
+
+4.5 scripts/disinstalla.ps1
+────────────────────────────
+Eseguito dal disinstallatore.
+
+Passi:
+  1. Leggi il PID da app.pid
+  2. Se il processo esiste, kill -TERM (o taskkill)
+  3. Rimuovi venv (opzionale, chiede conferma)
+  4. Lascia intatto il database SQLite e la cartella
+     media/ (o li rimuove su richiesta)
+
+───────────────────────────────────────────────────────────────
+5. FILE DA MODIFICARE (8)
+───────────────────────────────────────────────────────────────
+
+5.1 requirements.txt
+─────────────────────
+Aggiungere:
+  waitress>=3.0.2
+  pystray>=0.19.5
+
+5.2 core/settings.py
+─────────────────────
+- Se SECRET_KEY non è nel .env e non in DEBUG mode,
+  generarne una automaticamente con secrets.token_urlsafe(50)
+- Aggiungere commenti che spiegano quali impostazioni
+  vanno sovrascritte per produzione (locale va bene DEBUG=True)
+
+5.3 paghe/apps.py
+─────────────────────
+- Aggiungere variabile d'ambiente SETUP_COMPLETED=1
+  per saltare _verifica_requirements() e
+  _verifica_playwright() quando già eseguiti dall'installer
+- Lasciare attive solo le verifiche leggere (scheduler,
+  migrazioni pending)
+
+5.4 paghe/views/_gestione_pdf.py
+─────────────────────────────────
+- Linea 640: os.startfile(path, 'print')
+  → wrappare in try/except FileNotFoundError + OSError
+  → loggare warning e mostrare messaggio all'utente
+    invece di crashare
+- Linee 645-656: percorsi fissi Foxit Reader
+  → wrappare in try/except, loggare debug
+- Linee 155, 179: percorso fisso C:\Windows\Fonts
+  → usare os.environ.get('WINDIR', '') + \Fonts
+    invece di hardcoded C:\Windows
+
+5.5 paghe/views/_documenti.py
+──────────────────────────────
+- Linee 205, 229: os.startfile(folder)
+  → try/except OSError
+- Linee 210, 233: subprocess.Popen(['explorer', folder])
+  → try/except FileNotFoundError
+  → fallback: messaggio all'utente "Cartella: {path}"
+
+5.6 paghe/views/_stampe_invii.py
+─────────────────────────────────
+- Linee 38, 55, 1015, 1022: subprocess.Popen(['explorer', ...])
+  → try/except FileNotFoundError
+
+5.7 paghe/views/_invia_email.py
+────────────────────────────────
+- Linea 35: subprocess.Popen([opzioni.exe_posta, '-compose', ...])
+  → se sys.platform != 'win32', salta direttamente a SMTP
+  → se su Windows ma exe_posta non trovato, logga warning
+    e passa a SMTP
+- SMTP diventa il percorso principale (non fallback)
+
+5.8 paghe/views/_cu.py e _buste_massivo.py
+───────────────────────────────────────────
+- Stessa logica: comando Thunderbird/email wrappato
+  in try/except con fallback SMTP
+
+───────────────────────────────────────────────────────────────
+6. COSA NON CAMBIA
+───────────────────────────────────────────────────────────────
+
+- Database: SQLITE rimane (app a singolo utente)
+- Automazione: Selenium + Playwright continuano a funzionare
+  su Windows come prima
+- Template: nessuna modifica a HTML/CSS/JS
+- URLs: nessuna modifica al routing
+- Backup: il sistema di backup locale rimane invariato
+- Icone CDN: semplice.org e Bootstrap CDN continuano
+  a funzionare (l'utente ha internet)
+
+───────────────────────────────────────────────────────────────
+7. COSA CAMBIA PER L'UTENTE FINALE
+───────────────────────────────────────────────────────────────
+
+PRIMA:
+  - Doveva clonare il repository
+  - Creare manualmente il venv
+  - Installare pip requirements
+  - Eseguire migrate
+  - Creare .env
+  - Lanciare manualmente manage.py runserver
+  - Mantenere aperta la finestra console
+
+DOPO:
+  - Scarica Setup_GestioneColf.exe
+  - Doppio click → Avanti → Avanti → Fine
+  - L'app si avvia automaticamente
+  - Si apre il browser sulla dashboard
+  - Icona in system tray per controllo
+  - Per disinstallare: Start Menu → Disinstalla Gestione COLF
+
+───────────────────────────────────────────────────────────────
+8. REQUISITI DI SISTEMA (MINIMI)
+───────────────────────────────────────────────────────────────
+
+- Windows 10 22H2 o Windows 11
+- 4 GB RAM (8 GB consigliati per automazione INPS)
+- 500 MB spazio su disco
+- Python 3.13.x (installato automaticamente se mancante)
+- Connessione internet (per INPS, PagoPA, aggiornamenti)
+
+───────────────────────────────────────────────────────────────
+9. NOTE IMPLEMENTATIVE
+───────────────────────────────────────────────────────────────
+
+- L'installer include Python Embedded (15 MB) da python.org
+  per evitare conflitti con altri Python presenti sul sistema
+- Il venv viene creato dentro la cartella di installazione
+- Durante l'installazione non serve admin rights per il
+  funzionamento base, ma per registry shortcut si
+- La disinstallazione lascia il database SQLite intatto
+  (chiede conferma prima di eliminarlo)
+- Le impostazioni sono in .env dentro la cartella app
+- Aggiornamenti: il nuovo installer esegue aggiorna.ps1
+  che ferma il server, copia i file nuovi, fa migrate
+
+───────────────────────────────────────────────────────────────
+10. FINE
+───────────────────────────────────────────────────────────────

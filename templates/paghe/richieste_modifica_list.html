@@ -1,0 +1,236 @@
+﻿{% extends 'base.html' %}
+{% block title %}Richieste Modifica Datori{% endblock %}
+{% block content %}
+<div class="container-fluid py-3 px-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h5 style="color:#EDEDED;font-weight:700;margin:0;"><i class="bi bi-inbox me-2" style="color:#5E6AD2;"></i> Richieste Modifica Datori
+      <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+    </h5>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <a href="{% url 'richieste_modifica_list' %}" class="btn btn-sm {% if not stato_f %}btn-ghost{% else %}btn-outline-light{% endif %}" style="border-radius:8px;font-size:12px;">Tutte</a>
+      <a href="?stato=INVIATA" class="btn btn-sm {% if stato_f == 'INVIATA' %}btn-ghost-warning{% else %}btn-outline-light{% endif %}" style="border-radius:8px;font-size:12px;">Inviate</a>
+      <a href="?stato=VISTA" class="btn btn-sm {% if stato_f == 'VISTA' %}btn-ghost-info{% else %}btn-outline-light{% endif %}" style="border-radius:8px;font-size:12px;">Viste</a>
+      <a href="?stato=ACCETTATA" class="btn btn-sm {% if stato_f == 'ACCETTATA' %}btn-ghost-success{% else %}btn-outline-light{% endif %}" style="border-radius:8px;font-size:12px;">Accettate</a>
+      <a href="?stato=RIFIUTATA" class="btn btn-sm {% if stato_f == 'RIFIUTATA' %}btn-ghost-danger{% else %}btn-outline-light{% endif %}" style="border-radius:8px;font-size:12px;">Rifiutate</a>
+      <a href="?eliminate=1" class="btn btn-sm {% if mostra_eliminate %}btn-ghost{% else %}btn-outline-light{% endif %}" style="border-radius:8px;font-size:12px;"><i class="bi bi-trash3 me-1"></i>Eliminate</a>
+    </div>
+  </div>
+
+  <div class="table-responsive" style="background:#131316;border:1px solid #27282D;border-radius:12px;">
+    <table class="table table-dark table-hover align-middle mb-0" style="font-size:13px;">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Tipo</th>
+          <th>Datore</th>
+          <th>Contratto</th>
+          <th>Campo</th>
+          <th>Valore richiesto</th>
+          <th>Stato</th>
+          <th style="width:140px;">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in richieste %}
+        <tr class="clickable-row{% if r.eliminata %} richiesta-eliminata{% endif %}" data-pk="{{ r.pk }}" data-eliminata="{{ r.eliminata|yesno:'true,false' }}" data-tipo="{{ r.get_tipo_display }}" data-campo="{{ r.campo }}" data-etichetta="{{ r.etichetta_campo }}" data-attuale="{{ r.valore_attuale }}" data-richiesto="{{ r.valore_richiesto }}" data-nota="{{ r.nota_datore }}" data-notaadmin="{{ r.nota_admin }}" data-stato="{{ r.stato }}" data-datore="{{ r.datore.nome_cognome }}" data-contratto="{% if r.contratto %}{{ r.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}" onclick="apriDettaglioRichiesta(this)">
+          <td style="white-space:nowrap;">{{ r.creato_il|date:"d/m/Y H:i" }}</td>
+          <td><span class="badge" style="background:rgba(94,106,210,0.12);color:#5E6AD2;">{{ r.get_tipo_display }}</span></td>
+          <td>{{ r.datore.nome_cognome }}</td>
+          <td>{% if r.contratto %}{{ r.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}</td>
+          <td>{{ r.etichetta_campo|default:r.campo }}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.valore_richiesto|truncatechars:40 }}</td>
+          <td>
+            {% if r.eliminata %}<span class="badge bg-secondary px-2 py-1">Eliminata</span>
+            {% elif r.stato == 'INVIATA' %}<span class="badge bg-warning bg-opacity-25 text-warning px-2 py-1">Inviata</span>
+            {% elif r.stato == 'VISTA' %}<span class="badge bg-info bg-opacity-25 text-info px-2 py-1">Vista</span>
+            {% elif r.stato == 'ACCETTATA' %}<span class="badge bg-success bg-opacity-25 text-success px-2 py-1">Accettata</span>
+            {% elif r.stato == 'RIFIUTATA' %}<span class="badge bg-danger bg-opacity-25 text-danger px-2 py-1">Rifiutata</span>{% endif %}
+          </td>
+          <td>
+            {% if r.eliminata %}
+            <button class="btn btn-sm btn-outline-success px-2 py-1" onclick="event.stopPropagation();ripristinaRichiesta({{ r.pk }})" title="Ripristina" style="font-size:11px;"><i class="bi bi-arrow-counterclockwise"></i></button>
+            {% else %}
+            {% if r.stato == 'INVIATA' %}
+            <button class="btn btn-sm btn-outline-info px-2 py-1" onclick="event.stopPropagation();gestisciRichiesta({{ r.pk }}, 'VISTA')" title="Segna come vista" style="font-size:11px;">Vista</button>
+            {% endif %}
+            <button class="btn btn-sm btn-outline-danger px-2 py-1" onclick="event.stopPropagation();eliminaRichiesta({{ r.pk }})" title="Elimina" style="font-size:11px;"><i class="bi bi-trash"></i></button>
+            <button class="btn btn-sm btn-outline-light px-2 py-1" onclick="event.stopPropagation();apriDettaglioRichiesta(this)" title="Dettaglio" style="font-size:11px;"><i class="bi bi-eye"></i></button>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" class="text-center text-secondary py-5"><i class="bi bi-inbox fs-2 mb-2 d-block"></i>Nessuna richiesta trovata.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{# Modale dettaglio richiesta #}
+<div class="modal fade" id="modaleDettaglioRichiesta" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:560px;">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-inbox me-2" style="color:#5E6AD2;"></i> Dettaglio Richiesta
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;">
+        <div id="richiestaDettaglioContent"></div>
+        <div style="margin-top:14px;">
+          <label style="font-size:12px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;">Risposta amministratore</label>
+          <textarea id="richiestaNotaAdmin" style="width:100%;background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:8px;padding:10px 14px;font-size:13px;min-height:60px;resize:vertical;" placeholder="Scrivi una nota di risposta..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" data-bs-dismiss="modal" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;">Chiudi</button>
+        <div id="richiestaAzioniAdmin" style="display:flex;gap:6px;margin-left:auto;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<style>
+  tr.richiesta-eliminata { opacity:0.45; }
+  tr.richiesta-eliminata td { text-decoration:line-through; }
+  tr.richiesta-eliminata td .badge { text-decoration:line-through; }
+</style>
+{% block extra_js %}
+<script>
+var _richiestaPk = null;
+
+function apriDettaglioRichiesta(el) {
+    var tr = el.tagName === 'TR' ? el : el.closest('tr');
+    if (!tr) return;
+    _richiestaPk = tr.getAttribute('data-pk');
+    var stato = tr.getAttribute('data-stato');
+    var attuale = tr.getAttribute('data-attuale');
+    var richiesto = tr.getAttribute('data-richiesto');
+    var nota = tr.getAttribute('data-nota');
+    var notaAdmin = tr.getAttribute('data-notaadmin');
+    var etichetta = tr.getAttribute('data-etichetta') || tr.getAttribute('data-campo');
+    var tipo = tr.getAttribute('data-tipo');
+    var datoreNome = tr.getAttribute('data-datore');
+    var contrattoNome = tr.getAttribute('data-contratto');
+
+    var html = '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Tipo:</span> <span style="color:#EDEDED;font-weight:600;">' + tipo + '</span></div>';
+    html += '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Datore:</span> <span style="color:#EDEDED;">' + datoreNome + '</span></div>';
+    html += '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Contratto:</span> <span style="color:#EDEDED;">' + contrattoNome + '</span></div>';
+    html += '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Campo:</span> <span style="color:#EDEDED;">' + etichetta + '</span></div>';
+
+    if (attuale) {
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:#09090B;border:1px solid #27282D;border-radius:8px;">';
+        html += '<div style="color:#5C5F66;font-size:11px;margin-bottom:2px;">Valore attuale</div>';
+        html += '<div style="color:#f87171;font-size:13px;">' + attuale.replace(/\n/g,'<br>') + '</div></div>';
+    }
+    if (richiesto) {
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:#09090B;border:1px solid #27282D;border-radius:8px;">';
+        html += '<div style="color:#5C5F66;font-size:11px;margin-bottom:2px;">Valore richiesto</div>';
+        html += '<div style="color:#34d399;font-size:13px;">' + richiesto.replace(/\n/g,'<br>') + '</div></div>';
+    }
+    if (nota) {
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;">';
+        html += '<div style="color:#f59e0b;font-size:11px;margin-bottom:2px;">Nota del datore</div>';
+        html += '<div style="color:#EDEDED;font-size:13px;">' + nota.replace(/\n/g,'<br>') + '</div></div>';
+    }
+    if (notaAdmin) {
+        html += '<div style="margin-bottom:10px;padding:8px 10px;background:rgba(94,106,210,0.08);border:1px solid rgba(94,106,210,0.2);border-radius:8px;">';
+        html += '<div style="color:#5E6AD2;font-size:11px;margin-bottom:2px;">Risposta admin (precedente)</div>';
+        html += '<div style="color:#EDEDED;font-size:13px;">' + notaAdmin.replace(/\n/g,'<br>') + '</div></div>';
+    }
+
+    document.getElementById('richiestaDettaglioContent').innerHTML = html;
+    document.getElementById('richiestaNotaAdmin').value = '';
+
+    var azioniDiv = document.getElementById('richiestaAzioniAdmin');
+    azioniDiv.innerHTML = '';
+    if (stato === 'INVIATA' || stato === 'VISTA') {
+        azioniDiv.innerHTML += '<button onclick="gestisciRichiesta(' + _richiestaPk + ', \'ACCETTATA\')" class="btn btn-sm btn-ghost-success" style="padding:8px 16px;font-size:12px;cursor:pointer;"><i class="bi bi-check-lg me-1"></i> Accetta</button>';
+        azioniDiv.innerHTML += '<button onclick="gestisciRichiesta(' + _richiestaPk + ', \'RIFIUTATA\')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-x-lg me-1"></i> Rifiuta</button>';
+    }
+
+    new bootstrap.Modal(document.getElementById('modaleDettaglioRichiesta')).show();
+}
+
+function gestisciRichiesta(pk, nuovoStato) {
+    var nota = document.getElementById('richiestaNotaAdmin')?.value || '';
+    fetch('/ajax/admin-gestisci-richiesta/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({pk: pk, stato: nuovoStato, nota_admin: nota})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (d.success) {
+            bootstrap.Modal.getInstance(document.getElementById('modaleDettaglioRichiesta')).hide();
+            location.reload();
+        } else {
+            mostraToast(d.error || 'Errore', false);
+        }
+    })
+    .catch(function(){ mostraToast('Errore di rete.', false); });
+}
+
+function eliminaRichiesta(pk) {
+    if (!confirm('Eliminare questa richiesta? Puoi ripristinarla in seguito.')) return;
+    fetch('/ajax/admin-elimina-richiesta/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({pk: pk})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (d.success) { location.reload(); }
+        else { mostraToast(d.error || 'Errore', false); }
+    })
+    .catch(function(){ mostraToast('Errore di rete.', false); });
+}
+
+function ripristinaRichiesta(pk) {
+    if (!confirm('Ripristinare questa richiesta?')) return;
+    fetch('/ajax/admin-ripristina-richiesta/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({pk: pk})
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if (d.success) { location.reload(); }
+        else { mostraToast(d.error || 'Errore', false); }
+    })
+    .catch(function(){ mostraToast('Errore di rete.', false); });
+}
+</script>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Richieste Modifica Datori
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        I datori di lavoro possono richiedere modifiche ai propri dati anagrafici o contrattuali tramite l'area riservata. Questa pagina permette di gestire tutte le richieste in arrivo.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Stati delle richieste</b><br>
+        <b>Inviata</b> — appena ricevuta, in attesa di visione.<br>
+        <b>Vista</b> — l'amministratore l'ha aperta e letta.<br>
+        <b>Accettata</b> — modifica approvata e applicata.<br>
+        <b>Rifiutata</b> — modifica respinta con eventuale nota.<br>
+        <b>Eliminata</b> — richiesta rimossa (visibile solo spuntando "Eliminate").</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Filtra le richieste per stato usando i pulsanti in alto.<br>
+        <b>2.</b> Clicca su una riga per vedere i dettagli: valore attuale, valore richiesto e note.<br>
+        <b>3.</b> Usa i pulsanti azione per <b>Accettare</b> (la modifica viene applicata automaticamente) o <b>Rifiutare</b> con una nota.<br>
+        <b>4.</b> Le richieste eliminate possono essere ripristinate cliccando l'apposito pulsante.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

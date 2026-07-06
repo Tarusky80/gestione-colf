@@ -1,0 +1,386 @@
+{
+  "CUIDAA35C70F982I": {
+    "lat": 39.7884985,
+    "lng": 9.0794555,
+    "nome": "CUI ADA",
+    "indirizzo": "VICO II NAZIONALE, 4",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "TVNLBA49P43L122M": {
+    "lat": 39.7399581,
+    "lng": 9.1121234,
+    "nome": "TAVIANI ALBA",
+    "indirizzo": "VIA LAZIO , 7",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "MRUNGL38R47I182Z": {
+    "lat": 39.7861575,
+    "lng": 9.0777755,
+    "nome": "MURA ANGELA",
+    "indirizzo": "VIA SARCIDANO, 10",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "SUANGL40T60B745H": {
+    "lat": 39.6921623,
+    "lng": 9.2465913,
+    "nome": "USAI ANGELA",
+    "indirizzo": "VIA GENERALE DALLA CHIESA, 11",
+    "comune": "ORROLI",
+    "provincia": ""
+  },
+  "SRRNNA49S57E336V": {
+    "lat": 39.7400328,
+    "lng": 9.1124065,
+    "nome": "SERRA ANNA",
+    "indirizzo": "VIA TOSCANA , 3",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "ZCCNNA64A69F981O": {
+    "lat": 39.7775289,
+    "lng": 9.0370355,
+    "nome": "ZUCCA ANNA",
+    "indirizzo": "VIA CHIESA , 18",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "RGONNL61B64F982J": {
+    "lat": 39.7787431,
+    "lng": 9.0388231,
+    "nome": "ORGIU ANTONELLA",
+    "indirizzo": "VIA GRAMSCI, 11",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "MNCNNT30S54F982E": {
+    "lat": 39.7926148,
+    "lng": 9.08129,
+    "nome": "MANCA ANTONIETTA",
+    "indirizzo": "VIA NUORO, 27",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "MLSCML34B66A655H": {
+    "lat": 39.6911341,
+    "lng": 8.9070425,
+    "nome": "MELIS CARMELA",
+    "indirizzo": "VIA MANNO, 10",
+    "comune": "USSARAMANNA",
+    "provincia": ""
+  },
+  "CNCCRN41S56F981S": {
+    "lat": 39.7780593,
+    "lng": 9.0372714,
+    "nome": "CONCAS CATERINA",
+    "indirizzo": "VIA UMBERTO I, 16",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "CNGCRN48B46F981W": {
+    "lat": 39.7782803,
+    "lng": 9.0367173,
+    "nome": "CONGIU CATERINA",
+    "indirizzo": "VIA CHIESA , 40",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "CNCCSR34C43D968A": {
+    "lat": 39.7928962,
+    "lng": 9.0100215,
+    "nome": "CONCU CESIRA",
+    "indirizzo": "VIA PRINETTI, 21",
+    "comune": "GENONI",
+    "provincia": ""
+  },
+  "CRNGRL80E04G113O": {
+    "lat": 39.7922674,
+    "lng": 9.0799314,
+    "nome": "GABRIELE CORONGIU",
+    "indirizzo": "Via Cairoli, 17",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "SRRCTN78B60L604D": {
+    "lat": 39.2368675,
+    "lng": 9.1996633,
+    "nome": "SARRITZU COSTANTINA",
+    "indirizzo": "VIA CIRO MENOTTI, 32",
+    "comune": "QUARTU SANT ELENA",
+    "provincia": ""
+  },
+  "CDNDLE88S69B354X": {
+    "lat": 39.697952,
+    "lng": 9.117824,
+    "nome": "CADONI DELIA",
+    "indirizzo": "VIA VITTORIO EMANUELE , 36",
+    "comune": "ESCOLCA",
+    "provincia": ""
+  },
+  "NNSFSN43C16F982R": {
+    "lat": 39.7926148,
+    "lng": 9.08129,
+    "nome": "ONNIS EFISINO",
+    "indirizzo": "VIA NUORO, 14",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "LTTFST30L58F981M": {
+    "lat": 39.7751229,
+    "lng": 9.0388241,
+    "nome": "LATTI FAUSTA",
+    "indirizzo": "VICO II MAZZINI, 3",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "MRGFMN32E71F982U": {
+    "lat": 39.8036529,
+    "lng": 9.100012,
+    "nome": "MURGIA FILOMENA",
+    "indirizzo": "VIA ROMA, 42",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "FDDFNC34E67E336S": {
+    "lat": 39.7369095,
+    "lng": 9.1123822,
+    "nome": "FADDA FRANCESCA",
+    "indirizzo": "VIA VINCENZO BELLINI, 3",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "CNGGLM44E41D430T": {
+    "lat": 39.7031152,
+    "lng": 9.146448,
+    "nome": "CONGIU GEROLAMA",
+    "indirizzo": "VIA GUGLIELMO MARCONI, 10",
+    "comune": "SERRI",
+    "provincia": ""
+  },
+  "TZRGCR53L20E336X": {
+    "lat": 39.7411205,
+    "lng": 9.1066913,
+    "nome": "ATZORI GIAN CARLO",
+    "indirizzo": "VIA ROMA, 89",
+    "comune": "ISILI",
+    "provincia": "CA"
+  },
+  "RGOGNN72B41F982W": {
+    "lat": 39.7920787,
+    "lng": 9.0812681,
+    "nome": "ORGIU GIANNA",
+    "indirizzo": "VIA MARGHERITA, 37",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "CTZGGN39D58G122L": {
+    "lat": 39.7369819,
+    "lng": 9.1123142,
+    "nome": "COTZA GIORGINA",
+    "indirizzo": "VIA BELLINI , 2",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "LNSGNN61L70E336V": {
+    "lat": 39.7397977,
+    "lng": 9.1086122,
+    "nome": "OLIANAS GIOVANNA",
+    "indirizzo": "VIA MENTANA , 12",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "BRCGNN48R11B745S": {
+    "lat": 39.8036529,
+    "lng": 9.100012,
+    "nome": "BORCIU GIOVANNI ANTIOCO",
+    "indirizzo": "VIA ROMA, 32",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "FDDGPP50S62E336I": {
+    "lat": 39.7400099,
+    "lng": 9.1076557,
+    "nome": "FAEDDA GIUSEPPA",
+    "indirizzo": "VICO ROMA, 12",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "SNSGPP26E69F982R": {
+    "lat": 39.7925576,
+    "lng": 9.079244,
+    "nome": "SIONIS GIUSEPPINA",
+    "indirizzo": "VIA ALDO MORO, 40",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "SNNLVN30P58F981R": {
+    "lat": 39.7768341,
+    "lng": 9.0356333,
+    "nome": "SANNA LAVINIA",
+    "indirizzo": "VIA SAN SEBASTIANO, 56",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "CNGLRD14T06B220T": {
+    "lat": 39.7775289,
+    "lng": 9.0370355,
+    "nome": "CONGIU LEONARDO",
+    "indirizzo": "VIA CHIESA, 12",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "MCCLND41D08G044L": {
+    "lat": 39.7372211,
+    "lng": 9.1116065,
+    "nome": "MACCIONI LEONIDA",
+    "indirizzo": "VIA CAGLIARI, 3",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "TZRLGN36E67D431Q": {
+    "lat": 39.6982221,
+    "lng": 9.1228942,
+    "nome": "ATZORI LUIGINA",
+    "indirizzo": "VIA ROMA, 67",
+    "comune": "ESCOLCA",
+    "provincia": ""
+  },
+  "FRAMCL36E63L154P": {
+    "lat": 39.8531844,
+    "lng": 9.0486571,
+    "nome": "FRAU MARCELLINA",
+    "indirizzo": "VIA ALDO MORO , 39",
+    "comune": "LACONI",
+    "provincia": ""
+  },
+  "CRTMRA36P41A380O": {
+    "lat": 39.790585,
+    "lng": 9.0785438,
+    "nome": "CARTA MARIA",
+    "indirizzo": "VIA SAN PIETRO, 13",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "SNOMRA57D52E874C": {
+    "lat": 39.85483,
+    "lng": 9.0525244,
+    "nome": "OSINI MARIA",
+    "indirizzo": "VIA ROMA, 25",
+    "comune": "LACONI",
+    "provincia": ""
+  },
+  "CUIMBN31B43F982X": {
+    "lat": 39.8036529,
+    "lng": 9.100012,
+    "nome": "CUI MARIA BONARIA",
+    "indirizzo": "VIA ROMA, 61",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "CDNMCH53R67F982I": {
+    "lat": 39.7902781,
+    "lng": 9.0807366,
+    "nome": "CADONI MARIA CHIARA",
+    "indirizzo": "NURALLAO (approssimato)",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "VMNMJL48H59Z504L": {
+    "lat": 39.7921296,
+    "lng": 9.0098392,
+    "nome": "VIAMONTE MARIA JULIA",
+    "indirizzo": "VIA MONSIGNOR CAO, 2",
+    "comune": "GENONI",
+    "provincia": ""
+  },
+  "GHNMLS52B55E336I": {
+    "lat": 39.7405818,
+    "lng": 9.1130268,
+    "nome": "GHIANI MARIA LUISA",
+    "indirizzo": "VIA CAMPANIA , 8",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "NMAMMR69B62Z129H": {
+    "lat": 39.6982219,
+    "lng": 9.1470698,
+    "nome": "NAUM MARIA MIRELA",
+    "indirizzo": "VIA ROMA , 134",
+    "comune": "SERRI",
+    "provincia": ""
+  },
+  "CDNPLA18A09B354V": {
+    "lat": 39.697952,
+    "lng": 9.117824,
+    "nome": "CADONI PAOLO",
+    "indirizzo": "VIA VITTORIO EMANUELE , 64",
+    "comune": "ESCOLCA",
+    "provincia": ""
+  },
+  "MRUPRN61B45F981Y": {
+    "lat": 39.7800209,
+    "lng": 9.0335935,
+    "nome": "MURA PIETRINA",
+    "indirizzo": "VIA ENRICO BERLINGUER , 2",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "RROPRN59B59F982D": {
+    "lat": 39.7880262,
+    "lng": 9.0741104,
+    "nome": "ORRU' PIETRINA",
+    "indirizzo": "VIA SAN SALVATORE, 8",
+    "comune": "NURALLAO",
+    "provincia": ""
+  },
+  "PTZRGN45M59F985N": {
+    "lat": 39.79375,
+    "lng": 9.0053803,
+    "nome": "PITZALIS REGINA",
+    "indirizzo": "VIA ELEONORA D'ARBOREA, 9",
+    "comune": "GENONI",
+    "provincia": ""
+  },
+  "TZRRCR81D13B354N": {
+    "lat": 39.7402228,
+    "lng": 9.1127191,
+    "nome": "ATZORI RICCARDO",
+    "indirizzo": "VIA TOSCANA , 13",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "DMRSRN15E44B354L": {
+    "lat": 39.7388947,
+    "lng": 9.1088472,
+    "nome": "DEMURO SABRINA",
+    "indirizzo": "VIA MAZZINI, 48",
+    "comune": "ISILI",
+    "provincia": ""
+  },
+  "MNCSVT64E25F982J": {
+    "lat": 39.2842783,
+    "lng": 9.0171034,
+    "nome": "MANCA SALVATORE",
+    "indirizzo": "VIA MEUCCI, 6",
+    "comune": "ASSEMINI",
+    "provincia": ""
+  },
+  "SLSTRS38E41F981M": {
+    "lat": 39.7785319,
+    "lng": 9.0378596,
+    "nome": "SULIS TERESA",
+    "indirizzo": "VIA ALDO MORO , 14",
+    "comune": "NURAGUS",
+    "provincia": ""
+  },
+  "FDDVTR57S21E336I": {
+    "lat": 39.7438281,
+    "lng": 9.1084124,
+    "nome": "FAEDDA VALTER",
+    "indirizzo": "VIA MANZONI, 30",
+    "comune": "ISILI",
+    "provincia": ""
+  }
+}

@@ -1,0 +1,186 @@
+﻿{% extends 'base.html' %}
+{% block search_bar %}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'datori_list' %}">Anagrafiche</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Contratti Cessati</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">CONTRATTI CESSATI
+          <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
+        </h1>
+        <p class="text-secondary small mb-0">Elenco dei contratti non più attivi. Puoi riattivarli singolarmente.</p>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-sm btn-ghost-warning" onclick="eliminaTuttiCessati()" style="font-size:11px;padding:6px 14px;border-radius:6px;"><i class="bi bi-trash3 me-1"></i> ELIMINA TUTTI</button>
+            <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaTuttiCessatiDefinitivamente()" style="font-size:11px;padding:6px 14px;border-radius:6px;"><i class="bi bi-trash3-fill me-1"></i> ELIMINA TUTTI DEFINITIVAMENTE</button>
+        </div>
+    </div>
+</div>
+
+<div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+            <div style="position: relative;">
+                <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
+                <input type="text" id="fTesto" class="form-control" placeholder="Datore, lavoratore..." oninput="filteraCessati()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-end"></div>
+    </div>
+</div>
+
+<div class="custom-table-container">
+    <table class="table custom-table sortable" id="cessatiTable">
+        <thead>
+            <tr>
+                <th>Datore</th>
+                <th>Lavoratore</th>
+                <th>Data Assunzione</th>
+                <th>Tipo</th>
+                <th>Stato</th>
+                <th style="width:100px;">Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in contratti %}
+            <tr class="clickable-row" data-type="contratto_cessato" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} → {{ c.lavoratore.nome_cognome }}" data-sub="{{ c.get_tipo_contratto_display }} · {{ c.get_stato_display }}" data-stato="{{ c.stato }}" data-tipo-contratto="{{ c.get_tipo_contratto_display }}" data-data-assunzione="{{ c.data_assunzione|date:'d/m/Y' }}" data-data-fine="{{ c.data_fine|date:'d/m/Y'|default:'-' }}" data-livello="{{ c.parametri_minimi.livello.codice }}">
+                <td><div class="fw-bold">{{ c.datore.nome_cognome }}</div></td>
+                <td><div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div></td>
+                <td>{{ c.data_assunzione|date:"d/m/Y" }}</td>
+                <td><span class="badge-livello">{{ c.get_tipo_contratto_display }}</span></td>
+                <td><span class="badge bg-secondary bg-opacity-25 px-2 py-1 rounded-3">{{ c.get_stato_display }}</span></td>
+                <td>
+                    <div style="display:flex;gap:4px;">
+                    <button type="button" onclick="event.stopPropagation();rigeneraDocumentiCessazione(this)" data-pk="{{ c.pk }}" style="display:inline-flex;align-items:center;gap:4px;background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:#ec4899;cursor:pointer;transition:all 0.2s;white-space:nowrap;">
+                        <i class="bi bi-arrow-repeat"></i> Rigenera
+                    </button>
+                    <button type="button" onclick="event.stopPropagation();riattivaContratto({{ c.pk }}, this)" style="display:inline-flex;align-items:center;gap:4px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:#34d399;cursor:pointer;transition:all 0.2s;white-space:nowrap;">
+                        <i class="bi bi-arrow-counterclockwise"></i> Riattiva
+                    </button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-secondary py-5"><i class="bi bi-check-circle fs-2 mb-3 d-block text-muted"></i>Nessun contratto cessato</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+    .badge-livello { background: rgba(94,106,210,0.15); color: #5E6AD2; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+</style>
+<script>
+function riattivaContratto(pk, btn) {
+    if (!confirm('Riattivare questo contratto?')) return;
+    if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+        btn.disabled = true;
+    }
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/ajax/riattiva-contratto/' + pk + '/', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (d.message || 'Operazione fallita'), false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } }
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); if (btn) { btn.innerHTML = orig; btn.disabled = false; } });
+}
+
+function eliminaTuttiCessati() {
+    if (!confirm('Spostare TUTTI i contratti cessati nel cestino?')) return;
+    var btns = document.querySelectorAll('.btn-ghost-warning, .btn-ghost-danger');
+    btns.forEach(function(b) { b.disabled = true; });
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/ajax/elimina-tutti-cessati/', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (d.message || 'Operazione fallita'), false); btns.forEach(function(b) { b.disabled = false; }); }
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); btns.forEach(function(b) { b.disabled = false; }); });
+}
+
+function eliminaTuttiCessatiDefinitivamente() {
+    if (!confirm('Eliminare DEFINITIVAMENTE TUTTI i contratti cessati? Operazione IRREVERSIBILE.')) return;
+    var btns = document.querySelectorAll('.btn-ghost-warning, .btn-ghost-danger');
+    btns.forEach(function(b) { b.disabled = true; });
+    var fd = new FormData();
+    fd.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    fetch('/ajax/elimina-tutti-cessati-definitivamente/', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.success) { window.location.reload(); }
+            else { mostraToast('Errore: ' + (d.message || 'Operazione fallita'), false); btns.forEach(function(b) { b.disabled = false; }); }
+        })
+        .catch(function(e) { mostraToast('Errore: ' + e.message, false); btns.forEach(function(b) { b.disabled = false; }); });
+}
+
+function filteraCessati() {
+    var testo = (document.getElementById('fTesto').value || '').toUpperCase();
+    var table = document.getElementById('cessatiTable');
+    var rows = table.getElementsByTagName('tr');
+    var visibili = 0;
+    for (var i = 1; i < rows.length; i++) {
+        var cells = rows[i].getElementsByTagName('td');
+        if (!cells || cells.length < 2) continue;
+        var mostra = !testo;
+        if (testo) {
+            for (var j = 0; j < 2; j++) {
+                var txt = (cells[j].textContent || '').toUpperCase();
+                if (txt.indexOf(testo) !== -1) { mostra = true; break; }
+            }
+        }
+        rows[i].style.display = mostra ? '' : 'none';
+        if (mostra) visibili++;
+    }
+    aggiornaConteggio('cessatiTable', 'fCount');
+}
+document.addEventListener('DOMContentLoaded', function() { aggiornaConteggio('cessatiTable', 'fCount'); });
+</script>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content" class="class="card-alt"">
+      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Contratti Cessati
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Elenco dei <b>contratti cessati</b> (non più attivi). I contratti finiscono qui quando vengono chiusi, risolti o terminati. Da questa pagina puoi riattivarli o eliminarli definitivamente.</p>
+
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+        <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per nome del datore o del lavoratore.<br>
+        <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina, Documenti, Riattiva.<br>
+        <b>3.</b> <b>ELIMINA TUTTI</b> — sposta tutti i contratti nella pagina Eliminati.<br>
+        <b>4.</b> <b>ELIMINA TUTTI DEFINITIVAMENTE</b> — cancella in modo irreversibile.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Riattivazione</b><br>
+        Cliccando <b>Riattiva</b> dal pannello azioni, il contratto torna nello stato ATTIVO e riappare nella pagina Contratti Attivi. Puoi anche modificare la data di cessazione prima di riattivarlo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

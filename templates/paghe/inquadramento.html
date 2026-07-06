@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .inq-search { background: #17181C; border: 1px solid #27282D; border-radius: 12px; padding: 16px 20px; color: #EDEDED; width: 100%; font-size: 15px; transition: all 0.2s; }
+    .inq-search:focus { outline: none; border-color: #5E6AD2; box-shadow: 0 0 0 3px rgba(94,106,210,0.15); }
+    .inq-livello { background: #17181C; border: 1px solid #27282D; border-radius: 12px; padding: 20px 24px; margin-bottom: 12px; transition: all 0.2s; display: none; }
+    .inq-livello.visible { display: block; }
+    .inq-livello:hover { border-color: #3A3B40; }
+    .inq-codice { color: #5E6AD2; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 2px; }
+    .inq-titolo { color: #EDEDED; font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+    .inq-contatore { color: #8A8F98; font-size: 13px; margin-top: 8px; }
+    .inq-periodo { margin: 10px 0 6px 4px; padding: 10px 14px; background: rgba(255,255,255,0.02); border-radius: 8px; }
+    .inq-validita { color: #8A8F98; font-size: 12px; font-style: italic; display: block; margin-bottom: 4px; }
+    .inq-descrizione { color: #bbb; font-size: 14px; line-height: 1.6; margin: 6px 0; }
+    .inq-profili { color: #8A8F98; font-size: 14px; line-height: 1.6; margin: 4px 0 4px 20px; padding-left: 20px; }
+    .inq-profili li { margin-bottom: 4px; }
+    .inq-note { background: #17181C; border: 1px solid #2c5282; border-radius: 12px; padding: 20px 24px; margin-top: 16px; }
+    .inq-note h4 { color: #2c5282; font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+    .inq-note ol { color: #8A8F98; font-size: 13px; line-height: 1.6; margin-left: 16px; }
+    .inq-note ol li { margin-bottom: 4px; }
+    .inq-highlight { background: #FFD700; color: #000; font-weight: 500; border-radius: 2px; padding: 0 1px; }
+</style>
+
+{% csrf_token %}
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+    <h2 style="color:#EDEDED; font-weight:700; margin:0;">
+        <i class="bi bi-layers" style="color:#5E6AD2; margin-right:10px;"></i> Inquadramento Lavoro Domestico
+    </h2>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'inquadramento_pdf' %}', 0)" class="btn btn-ghost-primary" style="text-decoration:none;">
+            <i class="bi bi-download"></i> Scarica PDF
+        </a>
+        <button class="btn btn-ghost-success" onclick="apriModaleInvioInquadramento()">
+            <i class="bi bi-envelope"></i> Invia Email
+        </button>
+    </div>
+</div>
+
+<div style="margin-bottom:20px;">
+    <input type="text" id="inqSearch" class="inq-search" placeholder="Cerca nei livelli di inquadramento... (parola o codice livello)" autocomplete="off">
+    <div class="inq-contatore" id="inqContatore">Mostrati 0 / {{ livelli|length }} livelli</div>
+</div>
+
+<div id="inqLista">
+{% for lv in livelli %}
+<div class="inq-livello visible" data-codice="{{ lv.codice|lower }}" data-nome="{{ lv.nome|lower }}" data-testo="{{ lv.nome|lower }} {{ lv.codice|lower }}">
+    <div class="inq-codice">LIVELLO {{ lv.codice }}</div>
+    <div class="inq-titolo">{{ lv.nome }}</div>
+    {% for p in lv.periodi %}
+    <div class="inq-periodo">
+        <span class="inq-validita">Validità {{ p.validita }}</span>
+        <p class="inq-descrizione">{{ p.descrizione }}</p>
+        {% if p.profili %}
+        <ol class="inq-profili">
+            {% for lettera, testo in p.profili %}
+            <li><strong>{{ lettera }})</strong> {{ testo }}</li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+</div>
+
+{% include 'paghe/_modale_invio_inquadramento.html' %}
+
+<script>
+var CSRF_TOKEN = '{{ csrf_token|escapejs }}';
+var inqLivelli = document.querySelectorAll('.inq-livello');
+var inqSearch = document.getElementById('inqSearch');
+var inqContatore = document.getElementById('inqContatore');
+
+function rimuoviHighlightInq(el) {
+    el.querySelectorAll('.inq-highlight').forEach(function(span) {
+        span.replaceWith(span.textContent);
+    });
+}
+
+function applicaHighlightInq(el, query) {
+    if (!query) return;
+    var escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp(escaped, 'gi');
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    var nodi = [];
+    while (walker.nextNode()) nodi.push(walker.currentNode);
+    nodi.forEach(function(textNode) {
+        var originale = textNode.textContent;
+        if (!regex.test(originale)) return;
+        regex.lastIndex = 0;
+        var frag = document.createDocumentFragment();
+        var lastIdx = 0, match;
+        while ((match = regex.exec(originale)) !== null) {
+            if (match.index > lastIdx)
+                frag.appendChild(document.createTextNode(originale.slice(lastIdx, match.index)));
+            var span = document.createElement('span');
+            span.className = 'inq-highlight';
+            span.textContent = match[0];
+            frag.appendChild(span);
+            lastIdx = regex.lastIndex;
+        }
+        if (lastIdx < originale.length)
+            frag.appendChild(document.createTextNode(originale.slice(lastIdx)));
+        textNode.parentNode.replaceChild(frag, textNode);
+    });
+}
+
+function filtraInq() {
+    var q = inqSearch.value.toLowerCase().trim();
+    var count = 0;
+    inqLivelli.forEach(function(el) {
+        rimuoviHighlightInq(el);
+        el.normalize();
+        var codice = el.getAttribute('data-codice');
+        var nome = el.getAttribute('data-nome');
+        var testo = el.getAttribute('data-testo');
+        if (!q || codice === q || nome.indexOf(q) !== -1 || testo.indexOf(q) !== -1) {
+            el.classList.add('visible');
+            count++;
+        } else {
+            el.classList.remove('visible');
+        }
+    });
+    if (q) {
+        inqLivelli.forEach(function(el) {
+            if (el.classList.contains('visible')) {
+                applicaHighlightInq(el, q);
+            }
+        });
+    }
+    inqContatore.textContent = 'Mostrati ' + count + ' / ' + inqLivelli.length + ' livelli';
+}
+
+inqSearch.addEventListener('input', filtraInq);
+filtraInq();
+
+function apriModaleInvioInquadramento() {
+    var modal = new bootstrap.Modal(document.getElementById('modalInvioInquadramento'));
+    modal.show();
+}
+</script>
+{% endblock %}

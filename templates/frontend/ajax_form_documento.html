@@ -1,0 +1,43 @@
+<form id="formCaricaDocumento" onsubmit="caricaDocumento(event)" style="padding:4px 0;" enctype="multipart/form-data">
+  <div class="row g-3">
+    <div class="col-6">
+      <label class="form-label small fw-bold text-secondary">TIPO DOCUMENTO</label>
+      <select class="form-control" id="docTipo" required>
+        <option value="">-- Seleziona --</option>
+        {% for k,v in tipi %}
+        <option value="{{ k }}">{{ v }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-6">
+      <label class="form-label small fw-bold text-secondary">TITOLO</label>
+      <input type="text" class="form-control" id="docTitolo" placeholder="es. Contratto firmato Rossi Mario" required>
+    </div>
+    <div class="col-6">
+      <label class="form-label small fw-bold text-secondary">CONTRATTO (opzionale)</label>
+      <input type="text" class="form-control" id="docContrattoSearch" placeholder="Cerca datore o lavoratore..." autocomplete="off" oninput="cercaContratto(this.value)">
+      <input type="hidden" id="docContrattoPk">
+      <div id="docContrattoResults" class="list-group mt-1" style="max-height:160px;overflow-y:auto;display:none;"></div>
+    </div>
+    <div class="col-6">
+      <label class="form-label small fw-bold text-secondary">FILE</label>
+      <input type="file" class="form-control" id="docFile" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.tiff,.tif,.txt,.zip">
+      <div style="font-size:10px;color:#5C5F66;margin-top:3px;">PDF, Word, Excel, immagini, ZIP</div>
+    </div>
+    <div class="col-12">
+      <label class="form-label small fw-bold text-secondary">NOTE (opzionale)</label>
+      <textarea class="form-control" id="docNote" rows="2" placeholder="Note interne..."></textarea>
+    </div>
+  </div>
+
+  <div id="docInfoFile" style="display:none;margin-top:10px;padding:8px 12px;background:rgba(94,106,210,0.08);border:1px solid rgba(94,106,210,0.2);border-radius:8px;font-size:12px;color:#c0c4cc;">
+    <i class="bi bi-file-earmark-check me-1" style="color:#34d399;"></i>
+    <span id="docInfoFileName"></span>
+    <span id="docInfoFileSize" style="color:#8A8F98;margin-left:6px;"></span>
+  </div>
+
+  <div class="d-flex gap-2 mt-4">
+    <button type="button" class="btn btn-ghost flex-fill" data-bs-dismiss="modal">Annulla</button>
+    <button type="submit" class="btn btn-ghost-primary" style="padding:10px 20px;font-size:13px;flex:1;" id="btnCarica"><i class="bi bi-upload"></i> Carica Documento</button>
+  </div>
+</form>

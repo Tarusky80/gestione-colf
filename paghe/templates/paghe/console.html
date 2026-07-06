@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it" class="h-full bg-[#09090b]">
+<head>
+    <meta charset="UTF-8">
+    <title>Console Gestione - Linear Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .linear-border { border-color: rgba(255, 255, 255, 0.08); }
+        .linear-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .linear-input {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 8px;
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+        }
+        .linear-input:focus {
+            border-color: #5e6ad2;
+            background-color: rgba(255, 255, 255, 0.08);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.2);
+        }
+    </style>
+</head>
+<body class="text-zinc-400 bg-[#09090b] min-h-screen">
+
+    <nav class="border-b linear-border px-6 py-3 flex justify-between items-center bg-[#09090b]/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="flex items-center space-x-4">
+            <span class="text-white font-semibold tracking-tight">GESTIONE COLF</span>
+            <span class="text-zinc-600">/</span>
+            <span class="text-zinc-200 text-sm">Nuovo Inserimento</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="/admin/" class="text-xs hover:text-white transition">Torna all'Admin</a>
+            <button class="bg-[#5e6ad2] text-white text-xs font-medium px-3 py-1.5 rounded-md hover:bg-[#4e58b5] transition">
+                Salva Modifiche
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto py-12 px-6" x-data="{ ore: 0, paga: 0, extra: 0 }">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            
+            <div class="lg:col-span-2 space-y-10">
+                <section>
+                    <h2 class="text-white text-lg font-medium mb-6">Dati Contrattuali</h2>
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-xs font-medium text-zinc-500 uppercase">Ore Settimanali</label>
+                            <input type="number" x-model="ore" class="linear-input w-full" placeholder="0">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-medium text-zinc-500 uppercase">Paga Oraria (€)</label>
+                            <input type="number" x-model="paga" class="linear-input w-full" placeholder="0.00">
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-white text-lg font-medium mb-6">Livello Inquadramento</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <select class="linear-input w-full">
+                            {% for p in parametri %}
+                            <option value="{{ p.paga_base }}">{{ p.livello.codice }} — Minimo: {{ p.paga_base }}€</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </section>
+            </div>
+
+            <div class="space-y-6">
+                <div class="linear-card p-6 rounded-2xl">
+                    <h3 class="text-zinc-500 text-xs font-bold uppercase mb-6 tracking-widest">Riepilogo Stimato</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm">Lordo Mensile</span>
+                            <span class="text-zinc-200 font-mono" x-text="(ore * paga * 4.33).toFixed(2) + ' €'"></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm">Contributi Stimati (9%)</span>
+                            <span class="text-zinc-500 font-mono" x-text="'-' + (ore * paga * 4.33 * 0.09).toFixed(2) + ' €'"></span>
+                        </div>
+                        <div class="h-px bg-white/5 my-2"></div>
+                        <div class="flex justify-between items-end pt-2">
+                            <span class="text-sm text-white">Netto in Busta</span>
+                            <span class="text-2xl font-bold text-white tracking-tighter" x-text="'€ ' + (ore * paga * 4.33 * 0.91).toFixed(2)"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl">
+                    <p class="text-[11px] text-blue-300 leading-relaxed italic">
+                        Il calcolo utilizza il coefficiente medio INPS di 4.33 settimane per mese.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

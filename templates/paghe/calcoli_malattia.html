@@ -1,0 +1,577 @@
+﻿{% extends 'base.html' %}{% load tabelle_tags %}
+{% block extra_css %}
+<style>
+#resultMalattia td, #resultMalattia th { padding: 6px 12px; font-size: 13px; }
+#resultMalattia .totale-row td { font-weight: 700; }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: #27282D; border-radius: 3px; outline: none; cursor: pointer; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #5E6AD2; border: 2px solid #4c56b0; cursor: pointer; }
+input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #5E6AD2; border: 2px solid #4c56b0; cursor: pointer; }
+</style>
+{% endblock %}
+{% block breadcrumb %}
+<nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'calcoli_list' %}">Busta Paga</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Busta Malattia</li>
+    </ol>
+</nav>
+{% endblock %}
+{% block content %}
+{% block search_bar %}{% endblock %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h3 fw-bold mb-1"><i class="bi bi-heart-pulse me-2"></i>BUSTA MALATTIA</h1>
+    <p class="text-secondary small mb-0">Calcolo retribuzione malattia con sostituzione (Art. 14 c.9).</p>
+  </div>
+    <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-ghost-success" onclick="vaiContratto()" id="btnContratto" disabled>
+            <i class="bi bi-box-arrow-up-right me-1"></i> VAI AL CONTRATTO
+        </button>
+        <button class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" id="btnCcnlOcchio" disabled>
+            <i class="bi bi-eye me-1"></i> CCNL
+        </button>
+        <button class="btn btn-sm btn-ghost-warning" onclick="salvaBusta()" id="btnSalvaBusta" disabled>
+            <i class="bi bi-save me-1"></i> SALVA BUSTA
+        </button>
+        <a href="{% url 'calcoli_sostituzione' %}?contratto={{ contratto_pk|default:'' }}&mese={{ mese }}&anno={{ anno }}" class="btn btn-sm btn-ghost-success"><i class="bi bi-arrow-repeat me-1"></i> Sostituzione</a>
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
+            <i class="bi bi-journal-text me-1"></i> Archivio Buste
+        </a>
+        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        <button class="btn btn-sm btn-ghost" onclick="resetForm()" style="padding:8px 12px;"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset</button>
+        <button class="btn btn-sm btn-ghost-primary" onclick="downloadPdf()" id="btnPdf" disabled><i class="bi bi-file-pdf me-1"></i> PDF</button>
+        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap" style="margin-right:4px;">
+            <input type="checkbox" id="chkAllegaLul" class="c-checkbox"> Allega LUL
+        </label>
+        <button class="btn btn-sm btn-ghost-warning" onclick="stampaBustaCalcolo(this)" id="btnStampa" disabled><i class="bi bi-printer me-1"></i> STAMPA</button>
+    </div>
+</div>
+
+<div class="p-3 mb-3 card-simple">
+  <div class="row g-3 align-items-end">
+    <div class="col-md-6">
+      <label class="mb-1 fw-bold c-10-up">Contratto</label>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;line-height:1;">&#9664;</button>
+        <select id="fContratto" class="form-control bg-input" onchange="calcola()">
+          <option value="">— Seleziona —</option>
+          {% for c in contratti %}
+          <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;line-height:1;">&#9654;</button>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <label class="mb-1 fw-bold c-10-up">Mese</label>
+      <select id="fMese" class="form-control bg-input" onchange="calcola()">
+        {% for m in mesi_range %}
+        <option value="{{ m|stringformat:'02d' }}" {% if m == mese %}selected{% endif %}>{{ m|stringformat:'02d' }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="mb-1 fw-bold c-10-up">Anno</label>
+      <select id="fAnno" class="form-control bg-input" onchange="calcola()">
+        {% for a in anni_range %}
+        <option value="{{ a }}" {% if a == anno %}selected{% endif %}>{{ a }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="p-3 mb-3 card-simple">
+  <div class="row g-3 align-items-end">
+    <div class="col-md-4">
+      <label class="mb-1 fw-bold c-10-up">Giorni di Malattia: <input type="number" id="giorniInput" min="0" max="180" step="1" value="1" onchange="daInputGiorni()" style="width:55px;background:#09090B;border:1px solid #27282D;color:#5E6AD2;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> gg</label>
+      <input type="range" id="fGiorni" min="0" max="180" step="1" value="1" oninput="daSliderGiorni();calcola()" style="background-color:#09090B;">
+      <div class="d-flex justify-content-between c-9-up" style="margin-top:2px;"><span>0 gg</span><span>180 gg</span></div>
+    </div>
+    <div class="col-md-4 d-flex align-items-center gap-3 pt-3">
+      <span class="toggle-item">
+        <label class="toggle-switch">
+          <input type="checkbox" id="sostituzioneToggle" onchange="calcola()">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="c-12-b">Sostituzione (Art. 14 c.9)</span>
+      </span>
+    </div>
+  </div>
+  <div class="row g-3 align-items-center b-light" style="margin-top:6px;padding-top:10px;">
+    <div class="col-12">
+      <div class="d-flex align-items-center flex-wrap gap-4 c-11-m">
+        <span class="c-9-up-fw" style="color:#5C5F66;">Opzioni Malattia</span>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="ricadutaToggle" onchange="calcola()"><span class="toggle-slider"></span></label>
+          <span class="c-12-b">Ricaduta stessa malattia</span>
+          <span class="c-9-up">100% senza periodo di carenza (art. 27 c.7)</span>
+        </span>
+        <span class="toggle-item">
+          <label class="toggle-switch"><input type="checkbox" id="ricoveratoToggle" onchange="calcola()"><span class="toggle-slider"></span></label>
+          <span style="color:#EDEDED;font-weight:600;">Ricoverato/assente da casa</span>
+          <span style="font-size:9px;">indennità sostitutiva vitto/alloggio</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="resultContainer" style="display:none;">
+  <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+  </div>
+  <div id="resultLoading" class="text-center py-5" style="display:none;">
+    <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
+    <div class="mt-2 text-secondary small">Calcolo in corso...</div>
+  </div>
+  <div id="resultContent"></div>
+</div>
+
+<div id="resultEmpty" class="text-center py-5" style="color:#5C5F66;">
+  <i class="bi bi-heart-pulse fs-1 d-block mb-3" style="color:#27282D;"></i>
+  <div>Seleziona un contratto per calcolare la busta malattia.</div>
+</div>
+<!-- HELP MODAL -->
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Malattia</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+Qui puoi calcolare la <b>retribuzione per malattia</b> del collaboratore domestico secondo il CCNL. Quando il lavoratore si ammala, il datore di lavoro deve continuare a pagargli la retribuzione per un certo numero di giorni.<br><br>
+<b>Importante:</b> a differenza di altri settori, per il lavoro domestico la malattia è <b>interamente a carico del datore di lavoro</b> — non c'è rimborso INPS. Il datore paga direttamente il lavoratore.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
+<b>1.</b> Scegli un contratto. Il sistema mostra subito l'anzianità del lavoratore e il suo plafond malattia (quanti giorni massimi può prendere in un anno).<br>
+<b>2.</b> Usa lo <b>slider Giorni di Malattia</b> (0â€“180) o digita il numero nel campo accanto.<br>
+<b>3.</b> Eventualmente attiva i toggle:<br>
+&nbsp;&nbsp;— <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
+&nbsp;&nbsp;— <b>Ricaduta:</b> se è la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
+&nbsp;&nbsp;— <b>Ricoverato:</b> se il lavoratore è ricoverato, spetta l'indennità sostitutiva vitto/alloggio.<br>
+<b>4.</b> Leggi il risultato: vedrai l'importo per i primi 3 giorni (50%) e dal 4° giorno (100%), più eventuale indennità vitto/alloggio.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si calcola la retribuzione giornaliera</b><br>
+La <b>retribuzione giornaliera</b> si calcola così:<br>
+<code>paga_oraria × ore_mensili ÷ 26</code><br>
+Si divide per 26 (i giorni lavorativi convenzionali del mese, dal lunedì al sabato).<br><br>
+<b>Esempio:</b> paga €6,00/h × 120 h/mese ÷ 26 = €27,69 al giorno.<br><br>
+Se il toggle Sostituzione è attivo, al posto della paga base si usa la <b>retribuzione oraria di sostituzione</b> (Tabella G), che è più alta.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Carenza — 50% e 100%</b><br>
+Il CCNL prevede che i primi 3 giorni di malattia consecutivi vengano pagati al <b>50%</b> della retribuzione globale di fatto. Dal 4° giorno in poi si passa al <b>100%</b>.<br><br>
+<b>Come funziona nella pratica:</b><br>
+— Giorni 1, 2, 3: 50% della retribuzione giornaliera.<br>
+— Giorni 4, 5, ... fino al massimo: 100%.<br>
+— Il calcolo include tutti i giorni del certificato medico, comprese domeniche e festivi.<br>
+— Ogni nuovo certificato medico ricomincia con i primi 3 giorni al 50%.<br><br>
+<b>Ricaduta:</b> se il lavoratore si riammala della <b>stessa malattia</b> entro poco tempo, si considera "ricaduta" e la carenza al 50% NON si applica — il pagamento è al 100% fin dal primo giorno. Attiva il toggle "Ricaduta" in questo caso.</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Plafond Massimo — Quanti giorni si possono prendere</b><br>
+Il numero massimo di giorni di malattia retribuiti in un anno dipende dall'<b>anzianità di servizio</b> del lavoratore:<br><br>
+— Fino a <b>6 mesi</b> di anzianità: massimo <b>8 giorni</b> retribuiti (conservazione del posto: 10 giorni).<br>
+— Da <b>6 a 24 mesi</b> di anzianità: massimo <b>12 giorni</b> (conservazione: 45 giorni).<br>
+— <b>Oltre 24 mesi</b> di anzianità: massimo <b>15 giorni</b> (conservazione: 180 giorni).<br><br>
+Il sistema mostra il <b>plafond residuo</b> (giorni già usati nell'anno, giorni ancora disponibili). Se il plafond è esaurito, il datore non deve più pagare la malattia (ma il posto è conservato per i giorni di conservazione).</p>
+
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ricoverato — Indennità Vitto e Alloggio</b><br>
+Se il lavoratore è <b>convivente</b> e viene <b>ricoverato</b> in ospedale, il datore non deve più fornire vitto e alloggio (perché il lavoratore non è in casa). Tuttavia, spetta al lavoratore un'indennità sostitutiva per i giorni di ricovero: pranzo (€2,33) + cena (€2,33) + alloggio (€2,00) = €6,66 al giorno.<br><br>
+Attiva il toggle "Ricoverato" per includere questa indennità nel calcolo.</p>
+
+<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Contributi INPS sulla Malattia</b><br>
+I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo di malattia. Il sistema calcola le ore retribuite come: giorni_pagati × ore_giornaliere. Su queste ore applica l'aliquota contributiva totale.<br><br>
+<b>Nota Art. 26 CCNL:</b> In caso di malattia il lavoratore deve avvertire tempestivamente il datore, farsi rilasciare il certificato medico entro il giorno successivo, e consegnarlo (a mezzo raccomandata se non convivente) entro 2 giorni. La conservazione del posto è garantita per i periodi sopra indicati. Durante il periodo di prova o il preavviso, la malattia sospende la decorrenza degli stessi.</p>
+
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var contrattiList = [];
+var currIdx = -1;
+var _lastData = null;
+
+(function() {
+  var sel = document.getElementById('fContratto');
+  contrattiList = [];
+  for (var i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value) contrattiList.push(sel.options[i].value);
+  }
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  var sel = document.getElementById('fContratto');
+  if (sel.value) calcola();
+});
+
+window.navContratto = function(dir) {
+  if (contrattiList.length === 0) return;
+  if (currIdx < 0) currIdx = contrattiList.indexOf(document.getElementById('fContratto').value);
+  currIdx += dir;
+  if (currIdx < 0) currIdx = contrattiList.length - 1;
+  if (currIdx >= contrattiList.length) currIdx = 0;
+  document.getElementById('fContratto').value = contrattiList[currIdx];
+  calcola();
+};
+
+window.daSliderGiorni = function() {
+  document.getElementById('giorniInput').value = document.getElementById('fGiorni').value;
+};
+
+window.daInputGiorni = function() {
+  var inp = document.getElementById('giorniInput');
+  var v = parseInt(inp.value, 10);
+  if (isNaN(v) || v < 0) v = 0;
+  if (v > 180) v = 180;
+  inp.value = v;
+  document.getElementById('fGiorni').value = v;
+  calcola();
+};
+
+window.resetForm = function() {
+  document.getElementById('fGiorni').value = 1;
+  document.getElementById('giorniInput').value = 1;
+  document.getElementById('sostituzioneToggle').checked = false;
+  document.getElementById('ricadutaToggle').checked = false;
+  document.getElementById('ricoveratoToggle').checked = false;
+  calcola();
+};
+
+window.calcola = function() {
+  var pk = document.getElementById('fContratto').value;
+  if (!pk) { mostraVuoto(); document.getElementById('btnContratto').disabled = true; return; }
+  currIdx = contrattiList.indexOf(pk);
+  document.getElementById('resultEmpty').style.display = 'none';
+  document.getElementById('resultContainer').style.display = 'block';
+  document.getElementById('resultLoading').style.display = 'block';
+  document.getElementById('resultContent').innerHTML = '';
+  document.getElementById('btnPdf').disabled = true;
+  document.getElementById('btnContratto').disabled = false;
+  document.getElementById('btnContratto').dataset.pk = pk;
+  document.getElementById('btnSalvaBusta').disabled = false;
+  document.getElementById('btnSalvaBusta').dataset.pk = pk;
+
+  var giorni = document.getElementById('fGiorni').value || 0;
+  var params = '?mese=' + document.getElementById('fMese').value + '&anno=' + document.getElementById('fAnno').value
+    + '&giorni_malattia=' + giorni
+    + '&sostituzione=' + (document.getElementById('sostituzioneToggle').checked ? '1' : '0')
+    + '&ricaduta=' + (document.getElementById('ricadutaToggle').checked ? '1' : '0')
+    + '&ricoverato=' + (document.getElementById('ricoveratoToggle').checked ? '1' : '0');
+
+  fetch('/ajax/calcola-busta-malattia/' + pk + '/' + params, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    credentials: 'same-origin'
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    document.getElementById('resultLoading').style.display = 'none';
+    if (d.errore) {
+      document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
+      return;
+    }
+    renderMalattia(d);
+    _lastData = d;
+    document.getElementById('btnPdf').disabled = false;
+    var warn = document.getElementById('bustaEsistenteWarning');
+    if (warn) warn.style.display = d.busta_esistente ? 'block' : 'none';
+  })
+  .catch(function(e) {
+    document.getElementById('resultLoading').style.display = 'none';
+    document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
+  });
+};
+
+function mostraVuoto() {
+  document.getElementById('resultContainer').style.display = 'none';
+  document.getElementById('resultEmpty').style.display = 'block';
+  document.getElementById('btnPdf').disabled = true;
+  document.getElementById('btnSalvaBusta').disabled = true;
+}
+
+function renderMalattia(d) {
+  var lc = d.livello_colore || '#5E6AD2';
+  function hexToRgb(hex) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return r + ',' + g + ',' + b;
+  }
+  var rgb = lc.match(/^#[0-9a-f]{6}$/i) ? hexToRgb(lc) : '94,106,210';
+
+  var html = '<div class="class="card-dark" style="overflow:hidden;"">';
+
+  // Header contratto
+  html += '<div style="padding:16px 24px;border-bottom:1px solid #27282D;">';
+  html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-heart-pulse me-1"></i>Busta Malattia — ' + d.mese_nome + ' ' + d.anno + '</div>';
+  html += '<div class="row g-2 mt-2">';
+  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
+  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
+  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(' + rgb + ',0.2);color:' + lc + ';">' + esc(d.livello) + '</span></div>';
+  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
+  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Anzianit\u00e0</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.anzianita_mesi + ' mesi</span></div>';
+  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Paga base oraria</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
+  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Ore mensili</span><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + (Number(d.ore_mensili)/26).toFixed(2) + ' h/gg)</span></div>';
+  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">' + esc(d.label_paga) + '</span><span style="font-size:13px;font-weight:600;color:#' + (d.sostituzione ? 'f59e0b' : 'EDEDED') + ';">\u20AC ' + d.paga_oraria.toFixed(4) + '/h</span></div>';
+  html += '</div></div>';
+
+  // Fasce anzianità
+  html += '<div style="padding:12px 24px;border-bottom:1px solid #27282D;background:rgba(255,255,255,0.01);">';
+  html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:6px;">Fasce Anzianit\u00e0</div>';
+  html += '<div class="d-flex gap-3 flex-wrap">';
+  var fasce = [
+    {label: '\u2264 6 mesi', giorni: 8, conservazione: 10, attivo: d.anzianita_mesi < 6},
+    {label: '6\u201324 mesi', giorni: 12, conservazione: 45, attivo: d.anzianita_mesi >= 6 && d.anzianita_mesi < 24},
+    {label: '> 24 mesi', giorni: 15, conservazione: 180, attivo: d.anzianita_mesi >= 24}
+  ];
+  for (var fi = 0; fi < fasce.length; fi++) {
+    var f = fasce[fi];
+    html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid ' + (f.attivo ? '#34d399' : '#27282D') + ';background:' + (f.attivo ? 'rgba(52,211,153,0.06)' : 'transparent') + ';">';
+    html += '<div style="font-size:10px;font-weight:600;color:' + (f.attivo ? '#34d399' : '#5C5F66') + ';">' + f.label + '</div>';
+    html += '<div style="font-size:11px;color:#8A8F98;">Max ' + f.giorni + ' gg | Conserv. ' + f.conservazione + ' gg</div>';
+    if (f.attivo) html += '<div style="font-size:9px;color:#34d399;margin-top:2px;"><i class="bi bi-check-circle"></i> FASCIA CORRENTE</div>';
+    html += '</div>';
+  }
+  html += '</div></div>';
+
+  // Plafond residuo
+  html += '<div style="padding:12px 24px;border-bottom:1px solid #27282D;background:rgba(255,255,255,0.01);">';
+  html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:6px;">Plafond Malattia — Anno in Corso</div>';
+  html += '<div class="d-flex gap-3 flex-wrap">';
+  html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid #5E6AD2;background:rgba(94,106,210,0.06);">';
+  html += '<div style="font-size:10px;color:#8A8F98;">Gi\u00e0 usati</div>';
+  html += '<div style="font-size:16px;font-weight:700;color:#5E6AD2;">' + d.giorni_usati + ' gg</div></div>';
+  html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid ' + (d.plafond_esaurito ? '#f87171' : d.giorni_residui <= 3 ? '#f59e0b' : '#34d399') + ';background:rgba(' + (d.plafond_esaurito ? '248,113,113' : d.giorni_residui <= 3 ? '245,158,11' : '52,211,153') + ',0.06);">';
+  html += '<div style="font-size:10px;color:#8A8F98;">Residuo</div>';
+  html += '<div style="font-size:16px;font-weight:700;color:' + (d.plafond_esaurito ? '#f87171' : d.giorni_residui <= 3 ? '#f59e0b' : '#34d399') + ';">' + (d.plafond_esaurito ? 'ESAURITO' : d.giorni_residui + ' gg') + '</div></div>';
+  html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid #8A8F98;background:transparent;">';
+  html += '<div style="font-size:10px;color:#8A8F98;">Massimo annuale</div>';
+  html += '<div style="font-size:16px;font-weight:700;color:#EDEDED;">' + d.max_giorni + ' gg</div></div>';
+  html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid #8A8F98;background:transparent;">';
+  html += '<div style="font-size:10px;color:#8A8F98;">Conservazione posto</div>';
+  html += '<div style="font-size:16px;font-weight:700;color:#EDEDED;">' + d.conservazione + ' gg</div></div>';
+  html += '</div></div>';
+
+  // Dettaglio calcolo
+  html += '<div style="padding:16px 24px;">';
+  html += '<div style="font-size:10px;color:#8A8F98;margin-bottom:8px;">';
+  html += 'Retribuzione giornaliera: \u20AC' + d.retribuzione_giornaliera.toFixed(4) + ' = \u20AC' + d.paga_oraria.toFixed(4) + '/h \u00d7 ' + d.ore_giornaliere.toFixed(2) + ' h/gg';
+  if (d.sostituzione) {
+    html += ' | <span style="color:#f59e0b;">Sostituzione attiva: \u20AC' + d.retribuzione_sostituzione.toFixed(4) + '/h</span>';
+  }
+  html += '</div>';
+
+  html += '<table style="width:100%;border-collapse:collapse;" id="resultMalattia">';
+  html += '<tr><th style="text-align:left;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Voce</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Giorni</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
+  if (d.ricaduta) {
+    html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#a78bfa;">Ricaduta stessa malattia — 100% senza carenza</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_100 + ' gg</td><td style="text-align:right;font-weight:600;color:#a78bfa;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_100.toFixed(2) + '</td></tr>';
+  } else {
+    if (d.giorni_50 > 0) {
+      html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#fbbf24;">50% — primi 3 giorni</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_50 + ' gg</td><td style="text-align:right;font-weight:600;color:#fbbf24;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_50.toFixed(2) + '</td></tr>';
+    }
+    if (d.giorni_100 > 0) {
+      html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#34d399;">100% — dal 4\u00b0 giorno</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_100 + ' gg</td><td style="text-align:right;font-weight:600;color:#34d399;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_100.toFixed(2) + '</td></tr>';
+    }
+  }
+  if (d.indennita_va > 0) {
+    html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#f59e0b;">Indennit\u00e0 sostitutiva vitto/alloggio <span style="font-size:10px;">(\u20AC' + d.vitto_alloggio_gg.toFixed(2) + '/gg)</span></td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_pagati + ' gg</td><td style="text-align:right;font-weight:600;color:#f59e0b;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.indennita_va.toFixed(2) + '</td></tr>';
+  }
+  html += '<tr class="totale-row"><td style="padding-top:10px;border-top:2px solid rgba(52,211,153,0.3);font-size:14px;color:#34d399;">TOTALE MALATTIA</td><td style="border-top:2px solid rgba(52,211,153,0.3);text-align:right;color:#EDEDED;">' + d.giorni_pagati + '/' + d.giorni_malattia + ' gg</td><td style="text-align:right;padding-top:10px;border-top:2px solid rgba(52,211,153,0.3);font-size:16px;font-weight:800;color:#34d399;">\u20AC ' + d.importo_totale.toFixed(2) + '</td></tr>';
+  html += '</table>';
+
+  // Confronto con/senza sostituzione
+  if (d.sostituzione) {
+    html += '<div style="margin-top:12px;padding:8px 12px;background:rgba(94,106,210,0.08);border:1px solid rgba(94,106,210,0.2);border-radius:8px;font-size:11px;color:#8A8F98;">';
+    html += '<span style="color:#5E6AD2;font-weight:600;">Confronto:</span> Con sostituzione \u20AC' + d.paga_oraria.toFixed(4) + '/h | Senza sostituzione (paga base) \u20AC' + d.paga_base_oraria.toFixed(4) + '/h — differenza \u20AC' + (d.paga_oraria - d.paga_base_oraria).toFixed(4) + '/h';
+    html += '</div>';
+  }
+
+  // Grafico a barre composizione
+  if (d.giorni_pagati > 0) {
+    var pct50 = (d.importo_50 / d.importo_totale * 100) || 0;
+    var pct100 = (d.importo_100 / d.importo_totale * 100) || 0;
+    var pctVa = (d.indennita_va / d.importo_totale * 100) || 0;
+    html += '<div style="margin-top:14px;padding:12px 0;border-top:1px solid #27282D;">';
+    html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:8px;"><i class="bi bi-bar-chart me-1"></i>Composizione retribuzione</div>';
+    if (d.importo_50 > 0) {
+      html += '<div class="d-flex align-items-center gap-2 mb-2">';
+      html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#fbbf24;">50% — ' + d.giorni_50 + ' gg</span>';
+      html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
+      html += '<div class="bar-fill" style="width:' + pct50.toFixed(1) + '%;background:#fbbf24;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
+      html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.importo_50.toFixed(2) + ' (' + pct50.toFixed(1) + '%)</span>';
+      html += '</div>';
+    }
+    if (d.importo_100 > 0) {
+      html += '<div class="d-flex align-items-center gap-2 mb-2">';
+      html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#34d399;">100% — ' + d.giorni_100 + ' gg</span>';
+      html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
+      html += '<div class="bar-fill" style="width:' + pct100.toFixed(1) + '%;background:#34d399;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
+      html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.importo_100.toFixed(2) + ' (' + pct100.toFixed(1) + '%)</span>';
+      html += '</div>';
+    }
+    if (d.indennita_va > 0) {
+      html += '<div class="d-flex align-items-center gap-2 mb-2">';
+      html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#f59e0b;">Vitto/alloggio</span>';
+      html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
+      html += '<div class="bar-fill" style="width:' + pctVa.toFixed(1) + '%;background:#f59e0b;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
+      html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.indennita_va.toFixed(2) + ' (' + pctVa.toFixed(1) + '%)</span>';
+      html += '</div>';
+    }
+    // Barra totale
+    html += '<div class="d-flex align-items-center gap-2">';
+    html += '<span class="bar-label" style="min-width:100px;font-size:11px;font-weight:600;color:#EDEDED;">Totale</span>';
+    html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;position:relative;">';
+    var leftPos = 0;
+    if (d.importo_50 > 0) {
+      html += '<div class="bar-fill" style="width:' + pct50.toFixed(1) + '%;background:#fbbf24;opacity:0.8;height:100%;border-radius:4px 0 0 4px;position:absolute;left:0;top:0;transition:width 0.3s ease;"></div>';
+      leftPos = pct50;
+    }
+    if (d.importo_100 > 0) {
+      html += '<div class="bar-fill" style="width:' + pct100.toFixed(1) + '%;background:#34d399;opacity:0.8;height:100%;position:absolute;left:' + leftPos.toFixed(1) + '%;top:0;transition:width 0.3s ease;' + (d.indennita_va <= 0 ? 'border-radius:0 4px 4px 0;' : '') + '"></div>';
+      leftPos = leftPos + pct100;
+    }
+    if (d.indennita_va > 0) {
+      html += '<div class="bar-fill" style="width:' + pctVa.toFixed(1) + '%;background:#f59e0b;opacity:0.8;height:100%;border-radius:0 4px 4px 0;position:absolute;left:' + leftPos.toFixed(1) + '%;top:0;transition:width 0.3s ease;"></div>';
+    }
+    html += '</div>';
+    html += '<span class="bar-value" style="font-size:10px;font-weight:600;color:#EDEDED;min-width:80px;text-align:right;">\u20AC ' + d.importo_totale.toFixed(2) + ' (100%)</span>';
+    html += '</div></div>';
+  }
+
+  // Contributi INPS
+  if (d.giorni_pagati > 0 && d.contributi_inps > 0) {
+    html += '<div style="margin-top:10px;padding:10px 14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;font-size:10px;color:#8A8F98;line-height:1.5;">';
+    html += '<div style="font-size:9px;font-weight:700;color:#f59e0b;margin-bottom:3px;"><i class="bi bi-calculator me-1"></i>Contributi INPS su malattia</div>';
+    html += '<span style="color:#EDEDED;">' + d.ore_pagate.toFixed(2) + ' h</span> retribuite \u00d7 aliquota contributiva = <span style="color:#f59e0b;font-weight:600;">\u20AC ' + d.contributi_inps.toFixed(2) + '</span>';
+    html += ' — I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo malattia.';
+    html += '</div>';
+  }
+
+  // Avviso superamento max o plafond
+  if (d.plafond_esaurito) {
+    html += '<div style="margin-top:8px;padding:10px 14px;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);border-radius:8px;font-size:12px;color:#f87171;line-height:1.5;">';
+    html += '<i class="bi bi-exclamation-triangle me-1"></i><strong>Plafond annuale esaurito.</strong> Il lavoratore ha gi\u00e0 utilizzato tutti i ' + d.max_giorni + ' giorni disponibili. Il datore non deve retribuire ulteriori giorni di malattia. Conservazione del posto: ' + d.conservazione + ' giorni.';
+    html += '</div>';
+  } else if (d.giorni_malattia > d.giorni_residui) {
+    html += '<div style="margin-top:8px;padding:8px 12px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;font-size:11px;color:#f87171;">';
+    html += '<i class="bi bi-exclamation-triangle me-1"></i>I ' + d.giorni_malattia + ' giorni richiesti superano il residuo di ' + d.giorni_residui + ' gg. Calcolo effettuato su ' + d.giorni_pagati + ' gg.';
+    html += '</div>';
+  } else if (d.giorni_malattia > d.max_giorni) {
+    html += '<div style="margin-top:8px;padding:8px 12px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:8px;font-size:11px;color:#f87171;">';
+    html += '<i class="bi bi-exclamation-triangle me-1"></i>I ' + d.giorni_malattia + ' giorni richiesti superano il massimo di ' + d.max_giorni + ' gg. Calcolo effettuato su ' + d.giorni_pagati + ' gg.';
+    html += '</div>';
+  }
+
+  // Nota normativa Art. 26
+  html += '<div style="margin-top:10px;padding:12px 14px;background:rgba(94,106,210,0.05);border:1px solid rgba(94,106,210,0.15);border-radius:10px;font-size:9px;color:#8A8F98;line-height:1.6;">';
+  html += '<div style="font-size:10px;font-weight:700;color:#5E6AD2;margin-bottom:4px;"><i class="bi bi-info-circle me-1"></i>Art. 26 CCNL — Malattia</div>';
+  html += '<div style="margin-bottom:4px;"><strong style="color:#EDEDED;">1. Obblighi del lavoratore:</strong> In caso di malattia il lavoratore deve: ';
+  html += 'a) avvertire tempestivamente il datore di lavoro; ';
+  html += 'b) farsi fare un certificato medico entro il giorno successivo all\'inizio della malattia; ';
+  html += 'c) se non convivente (o convivente assente o in ferie) consegnare o inviare a mezzo raccomandata il certificato medico entro 2 giorni dal rilascio. Per i conviventi che sono in casa non serve consegnare il certificato a meno che non venga richiesto dal datore di lavoro.</div>';
+  html += '<div style="margin-bottom:4px;"><strong style="color:#EDEDED;">2. Conservazione del posto:</strong> Al lavoratore spetta la conservazione del posto per: ';
+  html += 'a) anzianit\u00e0 fino a 6 mesi: 10 giorni di calendario; b) da pi\u00f9 di 6 mesi a 2 anni: 45 giorni; c) oltre 2 anni: 180 giorni. I periodi si calcolano nell\'anno solare (365 giorni dall\'evento).</div>';
+  html += '<div style="margin-bottom:4px;"><strong style="color:#EDEDED;">3. Preavviso e periodo di prova:</strong> In caso di malattia durante il periodo di prova o durante il preavviso, si sospende la decorrenza degli stessi.</div>';
+  html += '<div style="margin-bottom:0;"><strong style="color:#EDEDED;">4. Retribuzione malattia (' + d.max_giorni + ' giorni massimi nell\'anno):</strong> ';
+  html += 'Fino al 3\u00ba giorno consecutivo: <strong style="color:#fbbf24;">50%</strong> della retribuzione globale di fatto. ';
+  html += 'Dal 4\u00ba giorno in poi: <strong style="color:#34d399;">100%</strong>. ';
+  html += 'Il conteggio si basa su tutti i giorni del certificato (comprese domeniche e non lavorativi). ';
+  html += 'Ogni nuovo certificato riparte con i primi 3 giorni al 50%.';
+  html += ' <strong style="color:#5E6AD2;">Nota:</strong> La malattia \u00e8 interamente a carico del datore di lavoro (nessun rimborso INPS).</div>';
+  html += '</div>';
+
+  html += '</div></div>';
+  document.getElementById('resultContent').innerHTML = html;
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function getCSRFToken() {
+  var name = 'csrftoken';
+  var value = '; ' + document.cookie;
+  var parts = value.split('; ' + name + '=');
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return '';
+}
+window.salvaBusta = function() {
+  var pk = document.getElementById('btnSalvaBusta').dataset.pk;
+  if (!pk) return;
+  var warn = document.getElementById('bustaEsistenteWarning');
+  if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
+    if (!confirm('Busta paga già salvata per questo periodo. Sovrascrivere?')) return;
+  }
+  var btn = document.getElementById('btnSalvaBusta');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> SALVATAGGIO...';
+  var formData = new FormData();
+  formData.append('contratto_pk', pk);
+  formData.append('mese', document.getElementById('fMese').value);
+  formData.append('anno', document.getElementById('fAnno').value);
+  formData.append('tipo_calcolo', 'MALATTIA');
+  formData.append('csrfmiddlewaretoken', getCSRFToken());
+  fetch('/ajax/salva-busta/', {
+    method: 'POST',
+    body: formData,
+    credentials: 'same-origin',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> SALVATA';
+      setTimeout(function() {
+        btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+        btn.disabled = false;
+      }, 2000);
+        } else {
+            mostraToast(d.errore || 'Errore salvataggio', false);
+            btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+            btn.disabled = false;
+        }
+    }).catch(function(e) {
+        console.error(e);
+        mostraToast('Errore di rete', false);
+        btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
+    btn.disabled = false;
+  });
+};
+window.downloadPdf = function() {
+  if (!_lastData) return;
+  var pk = document.getElementById('fContratto').value;
+  if (!pk) return;
+  var params = '?mese=' + document.getElementById('fMese').value + '&anno=' + document.getElementById('fAnno').value
+    + '&giorni_malattia=' + (document.getElementById('fGiorni').value || 0)
+    + '&sostituzione=' + (document.getElementById('sostituzioneToggle').checked ? '1' : '0')
+    + '&ricaduta=' + (document.getElementById('ricadutaToggle').checked ? '1' : '0')
+    + '&ricoverato=' + (document.getElementById('ricoveratoToggle').checked ? '1' : '0')
+    + '&allega_lul=' + (document.getElementById('chkAllegaLul').checked ? '1' : '0');
+  apriNelPannello('/ajax/busta-malattia-pdf/' + pk + '/' + params);
+};
+window.vaiContratto = function() {
+  var pk = document.getElementById('btnContratto').dataset.pk;
+  if (pk) loadAjaxForm('/ajax/modifica-contratto/' + pk + '/', 'Modifica Contratto');
+};
+
+window.stampaBustaCalcolo = function(btn) {
+    var pk = document.getElementById('btnPdf').dataset.pk;
+    if (!pk) { mostraToast('Nessuna busta selezionata.', false); return; }
+    var d = window._lastStdData;
+    if (!d || !d.busta_esistente) {
+        mostraToast('Salva prima la busta paga con "SALVA BUSTA".', false);
+        return;
+    }
+    stampaBusta(pk, btn);
+};
+</script>
+{% include 'paghe/_ccnl_occhio_include.html' %}
+{% endblock %}

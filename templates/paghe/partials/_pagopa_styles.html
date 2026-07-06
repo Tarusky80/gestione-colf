@@ -1,0 +1,42 @@
+<style>
+.radio-card {
+    padding: 12px 18px;
+    border: 1px solid #27282D;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.02);
+    min-width: 140px;
+    text-align: center;
+    user-select: none;
+}
+.radio-card:hover { border-color: #5E6AD2; }
+.radio-card.selected {
+    border-color: #34d399;
+    background: rgba(52,211,153,0.08);
+}
+.radio-card input[type="radio"] { display: none; }
+.radio-card .label-giornate { font-size: 20px; font-weight: 700; color: #EDEDED; line-height: 1.2; }
+.radio-card .sotto-tipo { font-size: 10px; color: #8A8F98; margin-top: 2px; }
+.trim-mesi{margin-top:6px;}
+.trim-mese{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:1px 0;}
+.trim-mese-label{font-weight:600;color:#EDEDED;}
+.trim-mese-sett{color:#34d399;}
+.trim-badge{margin-top:8px;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;text-align:center;display:inline-block;width:100%;}
+.trim-badge-completo{color:#34d399;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);}
+.trim-badge-parziale{color:#f87171;background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.4);}
+.toggle-ore { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; vertical-align: middle; }
+.toggle-ore input { display: none; }
+.toggle-ore .slider {
+    display: inline-block; flex-shrink: 0; width: 36px; height: 20px;
+    background: #555; border: 1px solid #666; border-radius: 10px;
+    position: relative; transition: all 0.2s; cursor: pointer;
+}
+.toggle-ore .slider::before {
+    content: ''; position: absolute; left: 2px; bottom: 1px;
+    width: 16px; height: 16px; background: #ccc; border-radius: 50%;
+    transition: transform 0.2s; display: block;
+}
+.toggle-ore input:checked + .slider { background: rgba(245,158,11,0.3); border-color: #f59e0b; }
+.toggle-ore input:checked + .slider::before { transform: translateX(16px); background: #f59e0b; }
+</style>

@@ -1,0 +1,506 @@
+[
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 1,
+  "fields": {
+    "articolo": 1,
+    "titolo": "Sfera di applicazione",
+    "testo": "Il presente contratto collettivo nazionale di lavoro, stipulato tra:\nFidaldo, Federazione Italiana Datori di Lavoro Domestico, aderente a Confedilizia, costituita da Nuova Collaborazione, Assindatcolf, Associazione Datori di Lavoro di Collaboratori Domestici, Associazione Datori Lavoro Domestico,\nDomina, Associazione Nazionale Famiglie Datori di Lavoro Domestico\nda una parte,\nFedercolf, Filcams-Cgil, Fisascat-Cisl, Uiltucs-Uil,\ndall’altra, disciplina, in maniera unitaria per tutto il territorio nazionale, il rapporto di lavoro domestico.\nIl contratto si applica agli assistenti familiari (colf, badanti, babysitter ed altri profili professionali di cui al presente CCNL), anche di nazionalità non italiana o apolidi, comunque retribuiti, addetti al funzionamento della vita familiare e delle convivenze familiarmente strutturate, tenuto conto di alcune fondamentali caratteristiche del rapporto.\nResta ferma, per i soggetti che ne sono destinatari, la normativa dettata in tema di collocamento alla pari dall’Accordo del 24 novembre 1969, n. 68, ratificato con la legge 18 maggio 1973, n.304."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 2,
+  "fields": {
+    "articolo": 2,
+    "titolo": "Inscindibilità della presente regolamentazione",
+    "testo": "Le norme della presente regolamentazione collettiva nazionale sono, nell’ambito di ciascuno dei relativi istituti, inscindibili e correlative fra di loro, né quindi cumulabili con altro trattamento, e sono ritenute dalle parti complessivamente più favorevoli rispetto a quelle dei precedenti contratti collettivi."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 3,
+  "fields": {
+    "articolo": 3,
+    "titolo": "Condizioni di miglior favore",
+    "testo": "Eventuali trattamenti più favorevoli saranno mantenuti ‘ad personam’."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 4,
+  "fields": {
+    "articolo": 4,
+    "titolo": "Documenti di lavoro",
+    "testo": "All’atto dell’assunzione il lavoratore dovrà consegnare al datore di lavoro i documenti necessari in conformità con la normativa in vigore e presentare in visione i documenti assicurativi e previdenziali, nonché ogni altro documento sanitario aggiornato con tutte le attestazioni previste dalle norme di legge vigenti, un documento di identità personale non scaduto ed eventuali diplomi o attestati professionali specifici. In caso di pluralità di rapporti, i documenti di cui sopra saranno trattenuti da uno dei datori di lavoro con conseguente rilascio di ricevuta. Il lavoratore extracomunitario potrà essere assunto se in possesso del permesso di soggiorno valido per lo svolgimento di lavoro subordinato."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 5,
+  "fields": {
+    "articolo": 5,
+    "titolo": "Assunzione",
+    "testo": "L’assunzione del lavoratore avviene ai sensi di legge."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 6,
+  "fields": {
+    "articolo": 6,
+    "titolo": "Contratto individuale di lavoro (Lettera di assunzione)",
+    "testo": "Tra le parti dovrà essere stipulato un contratto di lavoro (lettera di assunzione), nel quale andranno indicati, oltre ad eventuali clausole specifiche:\nApplicazione del Contratto collettivo di lavoro stipulato da FIDALDO e DOMINA per i datori di lavoro e Filcams-CGIL, Fisascat-CISL, UILTuCS e FEDERCOLF per i lavoratori (Codice CNEL H501);\ndata dell’inizio del rapporto di lavoro;\nlivello di appartenenza, mansione;\ndurata del periodo di prova;\nesistenza o meno della convivenza;\nla residenza del lavoratore, nonché l’eventuale diverso domicilio, valido agli effetti del rapporto di lavoro. Per i rapporti di convivenza, il lavoratore dovrà indicare l’eventuale proprio domicilio diverso da quello della convivenza, a valere in caso di sua assenza da quest’ultimo, ovvero validare a tutti gli effetti lo stesso indirizzo della convivenza, anche in caso di sua assenza purché in costanza di rapporto di lavoro;\ndurata dell’orario di lavoro, sua distribuzione e collocazione temporale;\neventuale tenuta di lavoro, che dovrà essere fornita dal datore di lavoro;\nper i lavoratori conviventi, la collocazione della mezza giornata di riposo settimanale in aggiunta alla giornata di riposo settimanale spettante alla domenica, ovvero ad altra giornata nel caso di cui all’art. 13, ultimo comma;\nretribuzione pattuita, con indicazione dei suoi elementi costitutivi nonché del periodo e delle modalità di pagamento;\nluogo di effettuazione della prestazione lavorativa nonché la previsione di eventuali temporanei spostamenti per villeggiatura o per altri motivi familiari (trasferte);\nperiodo concordato di godimento delle ferie annuali;\nindicazione dell’adeguato spazio dove il lavoratore abbia diritto di riporre e custodire i propri effetti personali;\nobbligatorietà del versamento dei contributi di assistenza contrattuale di cui all’art. 54 per il funzionamento degli organismi bilaterali al servizio dei lavoratori e dei datori di lavoro: Fondo Colf, Cas.Sa.Colf ed Ebincolf;\neventuale presenza di impianti audiovisivi all’interno dell’abitazione;\napplicazione di tutti gli altri istituti previsti dal presente contratto e dalla normativa vigente.\nLa lettera di assunzione, firmata dal lavoratore e dal datore di lavoro, dovrà essere scambiata tra le parti. Le variazioni delle condizioni contrattuali, non meramente occasionali, dovranno essere concordate tra le parti."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 7,
+  "fields": {
+    "articolo": 7,
+    "titolo": "Assunzione a tempo determinato",
+    "testo": "L’assunzione può effettuarsi a tempo determinato, nel rispetto della normativa vigente, obbligatoriamente in forma scritta, con scambio tra le parti della relativa lettera, nella quale devono essere specificate le fattispecie giustificatrici. La forma scritta non è necessaria quando la durata del rapporto di lavoro, puramente occasionale, non sia superiore a dodici giorni di calendario.\nIl termine del contratto a tempo determinato può essere, con il consenso del lavoratore, prorogato solo quando la durata iniziale del contratto sia inferiore a 24 mesi. In questi casi si possono effettuare fino a quattro proroghe a condizione che sia richiesta da ragioni oggettive e si riferisca alla stessa attività lavorativa per la quale il contratto è stato stipulato a tempo determinato; la durata complessiva del rapporto a termine non potrà essere comunque superiore, compresa l’eventuale proroga, ai 24 mesi. Nei contratti a tempo determinato di durata superiore ai 12 mesi è necessario l’inserimento della causale.\nA titolo esemplificativo è consentita l’apposizione di un termine alla durata del contratto di lavoro nei seguenti casi:\nper l’esecuzione di un servizio definito o predeterminato nel tempo, anche se ripetitivo;\nper sostituire anche parzialmente lavoratori che abbiano ottenuto la sospensione del rapporto per motivi familiari, compresa la necessità di raggiungere la propria famiglia residente all’estero;\nper sostituire lavoratori malati, infortunati, in maternità o fruenti dei diritti istituiti dalle norme di legge sulla tutela dei minori e assenti per assistere familiari in situazione di grave disabilità certificata, anche oltre i periodi di conservazione obbligatoria del posto;\nper sostituire lavoratori in ferie;\nper l’assistenza extradomiciliare a persone non autosufficienti ricoverate in ospedali, case di cura, residenze sanitarie assistenziali e case di riposo.\nPer le causali che giustificano l’assunzione a tempo determinato i datori di lavoro potranno altresì avvalersi di somministrazione di lavoro a tempo determinato."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 8,
+  "fields": {
+    "articolo": 8,
+    "titolo": "Lavoro ripartito",
+    "testo": "È consentita l’assunzione di due lavoratori che assumono in solido l’adempimento di un’unica obbligazione lavorativa. Fermo restando il vincolo di solidarietà e fatta salva una diversa intesa fra le parti contraenti, ciascuno dei due lavoratori resta personalmente e direttamente responsabile dell’adempimento dell’intera obbligazione lavorativa.\nIl contratto di lavoro ripartito deve essere stipulato in forma scritta. Nella lettera di assunzione devono essere indicati il trattamento economico e normativo spettante a ciascun lavoratore in base al presente contratto collettivo, nonché la misura percentuale e la collocazione temporale del lavoro giornaliero, settimanale, mensile o annuale che si prevede venga svolto da ciascuno dei due lavoratori.\nFatte salve eventuali diverse intese fra le parti contraenti, i due lavoratori hanno facoltà di determinare, discrezionalmente ed in qualsiasi momento, sostituzioni fra di loro, nonché di modificare consensualmente la collocazione temporale dei rispettivi orari di lavoro; nel qual caso il rischio dell’impossibilità della prestazione lavorativa, per fatti attinenti ad uno dei coobbligati, è posta in capo all’altro obbligato. Il trattamento economico e normativo di ciascuno dei due lavoratori è riproporzionato in ragione della prestazione lavorativa effettivamente eseguita da ciascun lavoratore.\nEventuali sostituzioni da parte di terzi, nel caso di impossibilità di uno o di entrambi i lavoratori coobbligati, sono vietate.\nSalvo diverse intese fra le parti, le dimissioni o il licenziamento di uno dei lavoratori coobbligati comportano l’estinzione dell’intero vincolo contrattuale. Tale disposizione non trova applicazione se, su richiesta del datore di lavoro o su proposta dell’altro prestatore di lavoro, quest’ultimo si renda disponibile ad adempiere l’obbligazione lavorativa, interamente o parzialmente; in tal caso il contratto di lavoro ripartito si trasforma in un normale contratto di lavoro subordinato ai sensi dell’art. 2094 c.c. Analogamente è data facoltà al lavoratore di indicare la persona con la quale, previo consenso del datore di lavoro, egli potrà assumere in solido la prestazione di lavoro. In ogni caso, l’assenza di intesa fra le parti comporterà l’estinzione dell’intero vincolo contrattuale."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 9,
+  "fields": {
+    "articolo": 9,
+    "titolo": "Inquadramento dei lavoratori",
+    "testo": "Gli assistenti familiari sono inquadrati in quattro livelli, a ciascuno dei quali corrispondono due parametri retributivi, il superiore dei quali è definito “super”:\nLivello A\nAppartengono a questo livello gli assistenti familiari, non addetti all’assistenza di persone che svolgono con competenza le proprie mansioni, relative ai profili lavorativi indicati, a livello esecutivo e sotto il diretto controllo del datore di lavoro.\nAddetto alle pulizie:\nSvolge esclusivamente mansioni relative alla pulizia della casa;\nAddetto alla lavanderia:\nSvolge mansioni relative alla lavanderia;\nAiuto di cucina:\nSvolge mansioni di supporto al cuoco;\nStalliere:\nSvolge mansioni di normale pulizia della stalla e di cura generica del/dei cavallo/i;\nAssistente ad animali domestici:\nSvolge mansioni di assistenza ad animali domestici;\nAddetto alla pulizia ed annaffiatura delle aree verdi;\nOperaio comune:\nSvolge mansioni manuali, di fatica, sia per le grandi pulizie, sia nell’ambito di interventi di piccola manutenzione.\nLivello A super\nAddetto alla compagnia:\nSvolge esclusivamente mansioni di mera compagnia a persone adulte autosufficienti, senza effettuare alcuna altra prestazione di lavoro;\nLivello B\nAppartengono a questo livello gli assistenti familiari che, svolgono con specifica competenza le proprie mansioni, ancorché a livello esecutivo.\nCollaboratore generico polifunzionale:\nSvolge le incombenze relative al normale andamento della vita familiare, compiendo, anche congiuntamente, mansioni di pulizia e riassetto della casa, di addetto alla cucina, di addetto alla lavanderia, di assistente ad animali domestici, nonché altri compiti nell’ambito del livello di appartenenza;\nCustode di abitazione privata:\nSvolge mansioni di vigilanza dell’abitazione del datore di lavoro e relative pertinenze, nonché, se fornito di alloggio nella proprietà, di custodia;\nAddetto alla stireria:\nSvolge mansioni relative alla stiratura;\nCameriere:\nSvolge servizio di tavola e di camera;\nGiardiniere:\nAddetto alla cura delle aree verdi ed ai connessi interventi di manutenzione;\nOperaio qualificato:\nSvolge mansioni manuali nell’ambito di interventi, anche complessi, di manutenzione;\nAutista:\nSvolge mansioni di conduzione di automezzi adibiti al trasporto di persone ed effetti familiari, effettuando anche la relativa ordinaria manutenzione e pulizia;\nAddetto al riassetto camere e servizio di prima colazione anche per persone ospiti del datore di lavoro:\nSvolge le ordinarie mansioni previste per il collaboratore generico polifunzionale, oltreché occuparsi del rifacimento camere e servizio di tavola della prima colazione per gli ospiti del datore di lavoro.\nLivello B super\nAssistente familiare che assiste persone autosufficienti:\nivi comprese, se richieste, le attività connesse alle esigenze del vitto e della pulizia della casa ove vivono gli assistiti;\nAssistente familiare che assiste bambini (baby sitter):\nivi comprese, se richieste, le attività connesse alle esigenze del vitto e della pulizia della casa ove vivono gli assistiti.\nLivello C\nAppartengono a questo livello gli assistenti familiari che, in possesso di specifiche conoscenze di base, sia teoriche che tecniche, relative allo svolgimento dei compiti assegnati, operano con totale autonomia e responsabilità.\nCuoco:\nSvolge mansioni di addetto alla preparazione dei pasti ed ai connessi compiti di cucina, nonché di approvvigionamento delle materie prime.\nLivello C Super\nAssistente familiare che assiste persone non autosufficienti (non formato):\nivi comprese, se richieste, le attività connesse alle esigenze del vitto e della pulizia della casa ove vivono gli assistiti.\nLivello D\nAppartengono a questo livello gli assistenti familiari che, in possesso dei necessari requisiti professionali, ricoprono specifiche posizioni di lavoro caratterizzate da responsabilità, autonomia decisionale e/o coordinamento.\nAmministratore dei beni di famiglia:\nSvolge mansioni connesse all’amministrazione del patrimonio familiare;\nMaggiordomo:\nSvolge mansioni di gestione e di coordinamento relative a tutte le esigenze connesse ai servizi rivolti alla vita familiare;\nGovernante:\nSvolge mansioni di coordinamento relative alle attività di cameriere di camera, di stireria, di lavanderia, di guardaroba e simili;\nCapo cuoco:\nSvolge mansioni di gestione e di coordinamento relative a tutte le esigenze connesse alla preparazione dei cibi ed, in generale, ai compiti della cucina e della dispensa;\nCapo giardiniere:\nSvolge mansioni di gestione e di coordinamento relative a tutte le esigenze connesse alla cura delle aree verdi e relativi interventi di manutenzione;\nIstitutore:\nSvolge mansioni di istruzione e/o educazione dei componenti il nucleo familiare.\nLivello D Super\nAssistente familiare che assiste persone non autosufficienti (formato):\nivi comprese, se richieste, le attività connesse alle esigenze del vitto e della pulizia della casa ove vivono gli assistiti;\nDirettore di casa:\nSvolge mansioni di gestione e di coordinamento relative a tutte le esigenze connesse all’andamento della casa.\nAssistente familiare educatore formato:\nLavoratore che, nell’ambito di progetti educativi e riabilitativi elaborati da professionisti individuati dal datore di lavoro, attua specifici interventi volti a favorire l’inserimento o il reinserimento nei rapporti sociali, in autonomia, di persone in condizioni di difficoltà perché affette da disabilità psichica oppure da disturbi dell’apprendimento o relazionali."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 10,
+  "fields": {
+    "articolo": 10,
+    "titolo": "Discontinue prestazioni notturne di cura alla persona",
+    "testo": "Al personale non infermieristico espressamente assunto per discontinue prestazioni assistenziali di attesa notturna in favore di soggetti autosufficienti (bambini, anziani, portatori di handicap o ammalati), e conseguentemente inquadrato nel livello B super, ovvero per discontinue prestazioni assistenziali notturne in favore di soggetti non autosufficienti, e conseguentemente inquadrato nel livello C super (se non formato) o nel livello D super (se formato), qualora la collocazione temporale della prestazione sia ricompresa tra le ore 20.00 e le ore 8.00 sarà corrisposta la retribuzione prevista dalla Tabella D allegata al presente contratto, relativa al livello di inquadramento, fermo restando quanto previsto dal successivo art. 15 e, per il personale non convivente, sussiste l’obbligo di corresponsione della prima colazione, della cena e di un’idonea sistemazione per la notte.\nAl personale convivente di cui al presente articolo dovranno essere in ogni caso garantite undici ore di riposo consecutivo ogni ventiquattro ore.\nFatta salva la fascia oraria indicata al comma 1, ai soli fini dell’assolvimento dell’obbligo contributivo di cui all’art.54 , l’orario convenzionale di lavoro è pari a otto ore giornaliere.\nL’assunzione ai sensi del presente articolo dovrà risultare da apposito atto sottoscritto dalle parti; in tale atto devono essere indicate l’ora d’inizio e quella di cessazione dell’assistenza e il suo carattere di prestazione discontinua."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 11,
+  "fields": {
+    "articolo": 11,
+    "titolo": "Prestazioni esclusivamente d’attesa",
+    "testo": "Al personale assunto esclusivamente per garantire la presenza notturna, sarà corrisposta la retribuzione prevista dalla Tabella E allegata al presente contratto, qualora la durata della presenza stessa sia interamente ricompresa tra le ore 21.00 e le ore 8.00, fermo restando l’obbligo di consentire al lavoratore il completo riposo notturno in un alloggio idoneo.\nQualora venissero richieste al lavoratore prestazioni diverse dalla presenza, queste non saranno considerate lavoro straordinario, bensì retribuite aggiuntivamente sulla base delle retribuzioni previste per i lavoratori non conviventi, come da Tabella C, con le eventuali maggiorazioni contrattuali e limitatamente al tempo effettivamente impiegato.\nFatta salva la fascia oraria indicata al comma 1, ai soli fini dell’assolvimento dell’obbligo contributivo di cui all’art. 54, l’orario convenzionale di lavoro è pari a cinque ore giornaliere, oltre alle prestazioni eventualmente retribuite ai sensi del comma 2.\nL’assunzione dovrà risultare da apposito atto sottoscritto e scambiato tra le parti."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 12,
+  "fields": {
+    "articolo": 12,
+    "titolo": "Periodo di prova",
+    "testo": "I lavoratori inquadrati nei livelli D) e D super) ed i lavoratori operanti in regime di convivenza indipendentemente dal livello di inquadramento, sono soggetti ad un periodo di prova regolarmente retribuito di 30 giorni di lavoro effettivo. Per i restanti rapporti di lavoro, il periodo di prova è di 8 giorni di lavoro effettivo.\nIl lavoratore che abbia superato il periodo di prova senza aver ricevuto disdetta s’intende automaticamente confermato. Il servizio prestato durante il periodo di prova va computato a tutti gli effetti dell’anzianità.\nDurante il periodo di prova, il rapporto di lavoro può essere risolto in qualsiasi momento da ciascuna delle parti, senza preavviso, ma con il pagamento a favore del lavoratore della retribuzione e delle eventuali competenze accessorie corrispondenti al lavoro prestato.\nSe il lavoratore è stato assunto come prima provenienza da altra Regione, senza avere trasferito la propria residenza, e la risoluzione del rapporto non avvenga per giusta causa, dovrà essere dato dal datore di lavoro un preavviso di 3 giorni o, in difetto, la retribuzione corrispondente.\nL’apposizione del periodo di prova deve risultare da atto scritto."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 13,
+  "fields": {
+    "articolo": 13,
+    "titolo": "Riposo settimanale",
+    "testo": "Il riposo settimanale, per i lavoratori conviventi, è di 36 ore e deve essere goduto per 24 ore di domenica, mentre le residue 12 ore possono essere godute in qualsiasi altro giorno della settimana, concordato tra le parti. In tale giorno il lavoratore presterà la propria attività per un numero di ore non superiore alla metà di quelle che costituiscono la durata normale dell’orario di lavoro giornaliero. Qualora vengano effettuate prestazioni nelle 12 ore di riposo non domenicale, esse saranno retribuite con la retribuzione globale di fatto maggiorata del 40%, a meno che tale riposo non sia goduto in altro giorno della stessa settimana diverso da quello concordato ai sensi del precedente comma.\nIl riposo settimanale, per i lavoratori non conviventi, è di 24 ore e deve essere goduto la domenica.\nIl riposo settimanale domenicale è irrinunciabile. Qualora fossero richieste prestazioni di lavoro per esigenze imprevedibili e che non possano essere altrimenti soddisfatte, sarà concesso un uguale numero di ore di riposo non retribuito nel corso della giornata immediatamente seguente e le ore così lavorate saranno retribuite con la maggiorazione del 60% della retribuzione globale di fatto.\nQualora il lavoratore professi una fede religiosa che preveda la solennizzazione in giorno diverso dalla domenica, le parti potranno accordarsi sulla sostituzione, a tutti gli effetti contrattuali, della domenica con altra giornata; in difetto di accordo, sarà data integrale applicazione ai commi precedenti."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 14,
+  "fields": {
+    "articolo": 14,
+    "titolo": "Orario di lavoro",
+    "testo": "La durata normale dell’orario di lavoro è quella concordata fra le parti e comunque, fatto salvo quanto previsto al comma 2, con un massimo di:\n10 ore giornaliere, non consecutive, per un totale di 54 ore settimanali, per i lavoratori conviventi;\n8 ore giornaliere, non consecutive, per un totale di 40 ore settimanali, distribuite su 5 giorni oppure su 6 giorni, per i lavoratori non conviventi.\nI lavoratori conviventi inquadrati nei livelli C, B e B super, nonché gli studenti di età compresa fra i 16 e i 40 anni frequentanti corsi di studio al termine dei quali viene conseguito un titolo riconosciuto dallo Stato ovvero da Enti pubblici, possono essere assunti in regime di convivenza anche con orario fino a 30 ore settimanali; il loro orario di lavoro dovrà essere articolato in una delle seguenti tipologie:\ninteramente collocato tra le ore 6.00 e le ore 14.00;\ninteramente collocato tra le ore 14.00 e le ore 22.00;\ninteramente collocato, nel limite massimo di 10 ore al giorno non consecutive, in non più di tre giorni settimanali.\nA questi lavoratori dovrà essere corrisposta, qualunque sia l’orario di lavoro osservato nel limite massimo delle 30 ore settimanali, una retribuzione pari a quella prevista dalla Tabella B allegata al presente contratto, fermo restando l’obbligo di corresponsione dell’intera retribuzione in natura. Eventuali prestazioni lavorative eccedenti l’orario effettivo di lavoro concordato nell’atto scritto di cui al successivo comma 3 saranno retribuite con la retribuzione globale di fatto oraria, se collocate temporalmente all’interno della tipologia di articolazione dell’orario adottata; le prestazioni collocate temporalmente al di fuori di tale tipologia saranno retribuite in ogni caso con la retribuzione globale di fatto oraria con le maggiorazioni previste dall’ art. 15.\nL’assunzione ai sensi del comma 2 dovrà risultare da atto scritto, redatto e sottoscritto dal datore di lavoro e dal lavoratore, da cui risultino l’orario effettivo di lavoro concordato e la sua collocazione temporale nell’ambito delle articolazioni orarie individuate nel stesso comma 2; ai lavoratori così assunti si applicano integralmente tutti gli istituti disciplinati dal presente contratto. Con atto scritto, redatto e sottoscritto dal datore di lavoro e dal lavoratore, contenente gli stessi elementi, il rapporto di convivenza con durata normale dell’orario di lavoro concordata ai sensi del comma 1 potrà essere trasformato nel rapporto di convivenza di cui al comma 2 e viceversa.\nIl lavoratore convivente ha diritto ad un riposo di almeno 11 ore consecutive nell’arco della stessa giornata e, qualora il suo orario giornaliero non sia interamente collocato tra le ore 6.00 e le ore 14.00 oppure tra le ore 14.00 e le ore 22.00, ad un riposo intermedio non retribuito, normalmente nelle ore pomeridiane, non inferiore alle 2 ore giornaliere di effettivo riposo. Durante tale riposo il lavoratore potrà uscire dall’abitazione del datore di lavoro, fatta salva in ogni caso la destinazione di tale intervallo all’effettivo recupero delle energie psicofisiche. È consentito il recupero consensuale e a regime normale di eventuali ore non lavorate, in ragione di non più di 2 ore giornaliere.\nLa collocazione dell’orario di lavoro è fissata dal datore di lavoro, nell’ambito della durata di cui al comma 1, nei confronti del personale convivente a servizio intero; per il personale convivente con servizio ridotto o non convivente è concordata fra le parti.\nSalvo quanto previsto per i rapporti di cui ai precedenti artt. 11 e 12, è considerato lavoro notturno quello prestato tra le ore 22.00 e le ore 6.00, ed è compensato, se ordinario, con la maggiorazione del 20% della retribuzione globale di fatto oraria, se straordinario, in quanto prestato oltre il normale orario di lavoro, così come previsto dall’art. 15.\nLe cure personali e delle proprie cose, salvo quelle di servizio, saranno effettuate dal lavoratore fuori dell’orario di lavoro.\nAl lavoratore tenuto all’osservanza di un orario giornaliero pari o superiore alle 6 ore, ove sia concordata la presenza continuativa sul posto di lavoro, spetta la fruizione del pasto, ovvero, in difetto di erogazione, un’indennità pari al suo valore convenzionale. Il tempo necessario alla fruizione del pasto, in quanto trascorso senza effettuare prestazioni lavorative, sarà concordato fra le parti e non retribuito.\nIl datore di lavoro che abbia in servizio uno o più lavoratori a tempo pieno addetti all’assistenza di persone non autosufficienti inquadrati nei livelli CS o DS, potrà assumere in servizio uno o più lavoratori, conviventi o meno, da inquadrare nei livelli CS o DS, con prestazioni limitate alla copertura delle ore e giorni di riposo, giornaliere e settimanali, dei lavoratori titolari dell’assistenza. Tali prestazioni saranno retribuite sulla base della Tabella G e della Tabella F inerente le indennità di vitto e alloggio di cui all’art. 36, qualora spettanti."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 15,
+  "fields": {
+    "articolo": 15,
+    "titolo": "Lavoro straordinario",
+    "testo": "Al lavoratore può essere richiesta una prestazione lavorativa oltre l’orario stabilito, sia di giorno che di notte, salvo suo giustificato motivo di impedimento. In nessun caso il lavoro straordinario dovrà pregiudicare il diritto al riposo giornaliero.\nÈ considerato lavoro straordinario quello che eccede la durata giornaliera o settimanale massima fissata all’art. 14, comma 1, salvo che il prolungamento sia stato preventivamente concordato per il recupero di ore non lavorate.\nLo straordinario è compensato con la retribuzione globale di fatto oraria così maggiorata:\ndel 25%, se prestato dalle ore 6.00 alle ore 22.00;\ndel 50%, se prestato dalle ore 22.00 alle ore 6.00;\ndel 60%, se prestato di domenica o in una delle festività indicate nell’art. 16.\nLe ore di lavoro prestate dai lavoratori non conviventi, eccedenti le ore 40 e fino alle ore 44 settimanali, purché eseguite nella fascia oraria compresa tra le ore 6.00 e le ore 22.00, sono compensate con la retribuzione globale di fatto oraria maggiorate del 10%.\nLe ore di lavoro straordinario debbono essere richieste con almeno un giorno di preavviso, salvo casi di emergenza o particolari necessità impreviste.\nIn caso di emergenza, le prestazioni effettuate negli orari di riposo notturno e diurno sono considerate di carattere normale e daranno luogo soltanto al prolungamento del riposo stesso; tali prestazioni devono avere carattere di assoluta episodicità e imprevedibilità."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 16,
+  "fields": {
+    "articolo": 16,
+    "titolo": "Festività nazionali ed infrasettimanali",
+    "testo": "Sono considerate festive le giornate riconosciute tali dalla legislazione vigente; esse attualmente sono: 1° gennaio, 6 gennaio, lunedì di Pasqua, 25 aprile, 1° maggio, 2 giugno, 15 agosto, 4 ottobre, 1° novembre, 8 dicembre, 25 dicembre, 26 dicembre, S. Patrono.\nIn tali giornate sarà osservato il completo riposo, fermo restando l’obbligo di corrispondere la normale retribuzione.\nPer il rapporto ad ore le festività di cui al comma 1 verranno retribuite sulla base della normale paga oraria ragguagliata ad un 1/6 dell’orario settimanale. Le festività da retribuire sono tutte quelle cadenti nel periodo interessato, indipendentemente dal fatto che in tali giornate fosse prevista, o meno, la prestazione lavorativa.\nIn caso di prestazione lavorativa è dovuto, oltre alla normale retribuzione giornaliera, il pagamento delle ore lavorate con la retribuzione globale di fatto maggiorata del 60%.\nIn caso di festività infrasettimanale coincidente con la domenica, il lavoratore avrà diritto al recupero del riposo in altra giornata o, in alternativa, al pagamento di 1/26 della retribuzione globale di fatto mensile.\nLe giornate che hanno cessato di essere considerate festive agli effetti civili, ai sensi della legge 5 marzo 1977, n. 54, sono state compensate mediante il riconoscimento al lavoratore del godimento dell’intera giornata nelle festività di cui al comma 1."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 17,
+  "fields": {
+    "articolo": 17,
+    "titolo": "Ferie",
+    "testo": "Indipendentemente dalla durata e dalla distribuzione dell’orario di lavoro, per ogni anno di servizio presso lo stesso datore di lavoro, il lavoratore ha diritto ad un periodo di ferie di 26 giorni lavorativi.\nI lavoratori con retribuzione mensile percepiranno la normale retribuzione, senza alcuna decurtazione; quelli con retribuzione ragguagliata alle ore lavorate percepiranno una retribuzione ragguagliata ad 1/6 dell’orario settimanale per ogni giorno di ferie godute.\nIl datore di lavoro, compatibilmente con le proprie esigenze e con quelle del lavoratore, dovrà fissare il periodo di ferie, ferma restando la possibilità di diverso accordo tra le parti, da giugno a settembre.\nIl diritto al godimento delle ferie è irrinunciabile. A norma dell’art. 10 del D.Lgs. 8 aprile 2003, n. 66, un periodo minimo di 4 settimane per ogni anno di servizio non può essere sostituito dalla relativa indennità, salvo il caso previsto al comma 8.\nLe ferie hanno di regola carattere continuativo. Esse potranno essere frazionate in non più di due periodi all’anno, purché concordati tra le parti. La fruizione delle ferie, salvo il caso previsto al comma 8, deve aver luogo per almeno due settimane entro l’anno di maturazione e, per almeno ulteriori due settimane, entro i 18 mesi successivi all’anno di maturazione.\nDurante il periodo di godimento delle ferie il lavoratore ha diritto per ciascuna giornata ad una retribuzione pari a 1/26 della retribuzione globale di fatto mensile.\nAl lavoratore che usufruisca del vitto e dell’alloggio spetta per il periodo delle ferie, ove non usufruisca durante tale periodo di dette corresponsioni, il compenso sostitutivo convenzionale.\nNel caso di lavoratore di cittadinanza non italiana che abbia necessità di godere di un periodo di ferie più lungo, al fine di utilizzarlo per un rimpatrio non definitivo, su sua richiesta e con l’accordo del datore di lavoro, è possibile l’accumulo delle ferie nell’arco massimo di un biennio, anche in deroga a quanto previsto al comma 4.\nIn caso di licenziamento o di dimissioni, o se al momento d’inizio del godimento del periodo di ferie il lavoratore non abbia raggiunto un anno di servizio, spetteranno al lavoratore stesso tanti dodicesimi del periodo di ferie al quale ha diritto, quanti sono i mesi di effettivo servizio prestato.\nLe ferie non possono essere godute durante il periodo di preavviso e di licenziamento, né durante il periodo di malattia o infortunio.\nIl godimento delle ferie non interrompe la maturazione di tutti gli istituti contrattuali.\nL’eventuale patologia contratta dal lavoratore durante il periodo feriale che determini il ricovero ospedaliero, laddove debitamente certificata, interrompe il godimento delle ferie per l’intera sua durata."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 18,
+  "fields": {
+    "articolo": 18,
+    "titolo": "Sospensioni di lavoro extraferiali",
+    "testo": "Durante le sospensioni del lavoro extraferiali, per esigenze del datore di lavoro, sarà corrisposta al lavoratore la retribuzione globale di fatto, ivi compreso, nel caso di lavoratore che usufruisca del vitto e dell’alloggio, il compenso sostitutivo convenzionale, sempreché lo stesso non usufruisca durante tale periodo di dette corresponsioni.\nPer gravi e documentati motivi il lavoratore potrà richiedere un periodo di sospensione extraferiale senza maturazione di alcun elemento retributivo per un massimo di 12 mesi. Il datore di lavoro potrà, o meno, convenire con la richiesta."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 19,
+  "fields": {
+    "articolo": 19,
+    "titolo": "Permessi",
+    "testo": "I lavoratori hanno diritto a permessi individuali retribuiti per l’effettuazione di visite mediche documentate, per le incombenze legate al rinnovo del permesso di soggiorno e per le pratiche di ricongiungimento familiare, purché coincidenti anche parzialmente con l’orario di lavoro.\nI permessi spettano nelle quantità di seguito indicate:\nlavoratori conviventi: 16 ore annue ridotte a 12 per i lavoratori di cui all’art. 14, comma 2;\nlavoratori non conviventi con orario non inferiore alle 30 ore settimanali: 12 ore annue.\nPer i lavoratori non conviventi con orario settimanale inferiore a 30 ore, le 12 ore saranno riproporzionate in ragione dell’orario di lavoro prestato.\nI lavoratori potranno, inoltre, fruire dei suindicati permessi retribuiti e di ulteriori permessi non retribuiti, su accordo tra le parti, per assistere familiari con grave disabilità certificata (coniuge/parte di unione civile/convivente di fatto, parente o affine entro il secondo grado, ovvero entro il terzo grado qualora il genitore o il coniuge/parte di unione civile/ convivente di fatto risultante dallo stato di famiglia della persona in situazione di grave disabilità certificata siano anch’essi affetti da patologie invalidanti o siano deceduti o mancanti).\nIl lavoratore colpito da comprovata disgrazia a familiari conviventi o parenti entro il 2° grado ha diritto a un permesso retribuito pari a 3 giorni lavorativi.\nAl lavoratore padre spettano le giornate di permesso retribuito e di congedo facoltativo in caso di nascita di un figlio, nella misura prevista dalla normativa vigente.\nAl lavoratore che ne faccia richiesta potranno essere comunque concessi, per giustificati motivi, permessi di breve durata non retribuiti.\nIn caso di permesso non retribuito, non è dovuta l’indennità sostitutiva del vitto e dell’alloggio."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 20,
+  "fields": {
+    "articolo": 20,
+    "titolo": "Permessi per formazione professionale",
+    "testo": "I lavoratori a tempo pieno e indeterminato, con anzianità di servizio presso il datore di lavoro di almeno 6 mesi, possono usufruire di un monte ore annuo di 40 ore di permesso retribuito per la frequenza di corsi di formazione professionale specifici per collaboratori o assistenti familiari.\nFermi i requisiti sopra indicati, per la frequenza di corsi di formazione finanziati o comunque riconosciuti dall’Ente bilaterale Ebincolf di cui all’ art. 48, il monte ore annuo dei permessi retribuiti ammonta a 64 ore.\nIl monte ore annuo di cui al comma 1 potrà essere utilizzato anche per le eventuali attività formative previste dalla normativa e necessarie per il rinnovo dei titoli di soggiorno. In tale ottica i datori di lavoro favoriranno la frequenza, da parte dei lavoratori, a corsi di formazione specifici, gestiti da Enti pubblici ovvero organizzati o riconosciuti dagli Enti bilaterali, anche finalizzati al rinnovo dei titoli di soggiorno. L’utilizzo del monte ore per le finalità indicate al presente comma dovrà trovare riscontro in apposita documentazione, riportante anche gli orari delle attività formative esercitate.\nE’ esclusa in ogni caso la possibilità di cumulo pluriennale dei permessi in questione che devono essere usufruiti nel periodo annuale di maturazione."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 21,
+  "fields": {
+    "articolo": 21,
+    "titolo": "Congedo per le donne vittime di violenza di genere",
+    "testo": "Ai sensi e per gli effetti dell’art. 24 D.Lgs. 80/2015 e successive modificazioni ed integrazioni la lavoratrice inserita nei percorsi di protezione relativi alla violenza di genere, debitamente certificati dai servizi sociali del Comune di residenza o dai centri antiviolenza o dalle case rifugio, ha il diritto di astenersi dal lavoro per motivi connessi al percorso di protezione per un periodo massimo di tre mesi.\nAi fini dell’esercizio del diritto di cui al presente articolo, la lavoratrice, salvo casi di oggettiva impossibilità, è tenuta a preavvisare il datore di lavoro con un termine di preavviso non inferiore a sette giorni, con l’indicazione dell’inizio e della fine del periodo di congedo e a produrre la certificazione attestante l’inserimento nei percorsi di cui al precedente comma.\nIl periodo di congedo è computato ai fini dell’anzianità di servizio a tutti gli effetti, nonché ai fini della maturazione delle ferie, della tredicesima mensilità e del trattamento di fine rapporto.\nDurante il periodo di congedo, la lavoratrice, tranne quanto previsto dal comma 3, ha diritto a percepire un’indennità corrispondente all’ultima retribuzione e il periodo medesimo è coperto da contribuzione figurativa. L’indennità è corrisposta direttamente dall’Inps, a seguito di domanda presentata all’Istituto dall’avente diritto, secondo le modalità previste per la corresponsione dei trattamenti economici di maternità.\nIl congedo può essere usufruito su base oraria o giornaliera nell’arco temporale di tre anni secondo quanto concordato tra le parti. In caso di mancato accordo, la lavoratrice può scegliere tra la fruizione giornaliera e quella oraria, fermo restando che la fruizione su base oraria è consentita in misura pari alla metà dell’orario medio giornaliero del periodo di paga mensile immediatamente precedente a quello nel corso del quale ha inizio il congedo."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 22,
+  "fields": {
+    "articolo": 22,
+    "titolo": "Assenze",
+    "testo": "Le assenze del lavoratore debbono essere in ogni caso tempestivamente giustificate al datore di lavoro. Per quelle derivanti da malattia si applica l’art. 26 e per quelle derivanti da infortunio o malattia professionale l’art. 28.\nLe assenze non giustificate entro il quinto giorno, ove non si verifichino cause di forza maggiore, sono da considerare giusta causa di licenziamento. A tal fine la relativa lettera di contestazione e quella di eventuale successivo licenziamento saranno inviate all’indirizzo indicato nella lettera di assunzione, così come previsto dall’art. 6, lettera e del presente contratto."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 23,
+  "fields": {
+    "articolo": 23,
+    "titolo": "Diritto allo studio",
+    "testo": "Tenuto conto della funzionalità della vita familiare, il datore di lavoro favorirà la frequenza del lavoratore a corsi scolastici per il conseguimento del diploma di scuola dell’obbligo o di specifico titolo professionale; un attestato di frequenza deve essere esibito mensilmente al datore di lavoro.\nLe ore di lavoro non prestate per tali motivi non sono retribuite, ma potranno essere recuperate a regime normale; le ore relative agli esami annuali, entro l’orario giornaliero, saranno retribuite nei limiti di quelle occorrenti agli esami stessi."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 24,
+  "fields": {
+    "articolo": 24,
+    "titolo": "Matrimonio",
+    "testo": "In caso di matrimonio spetta al lavoratore un congedo retribuito di 15 giorni di calendario.\nAl lavoratore che usufruisca del vitto e dell’alloggio spetta, per il periodo del congedo, ove non usufruisca durante tale periodo di dette corresponsioni, il compenso sostitutivo convenzionale.\nLa retribuzione del congedo sarà corrisposta a presentazione della documentazione comprovante l’avvenuto matrimonio.\nIl lavoratore potrà scegliere di fruire del congedo matrimoniale anche non in coincidenza con la data del matrimonio, purché entro il termine di un anno dalla stessa e sempre ché il matrimonio sia contratto in costanza dello stesso rapporto di lavoro. La mancata fruizione del congedo a causa di dimissioni del lavoratore non determinerà alcun diritto alla relativa indennità sostitutiva."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 25,
+  "fields": {
+    "articolo": 25,
+    "titolo": "Tutela della maternità, paternità e genitorialità",
+    "testo": "Si applicano le norme di legge in materia di tutela e sostegno della maternità, della paternità e della genitorialità, con le limitazioni ivi indicate, salvo quanto previsto ai commi successivi.\nÈ vietato adibire al lavoro le donne:\ndurante i 2 mesi precedenti la data presunta del parto, salvo eventuali anticipi o posticipi previsti dalla normativa di legge;\nper il periodo eventualmente intercorrente tra tale data e quella effettiva del parto;\ndurante i 3 mesi dopo il parto, salvo i posticipi autorizzati.\nDetti periodi sono computati nell’anzianità di servizio a tutti gli effetti, compresi gratifica natalizia e ferie.\nIl padre o il genitore intenzionale, lavoratore, dai due mesi precedenti la data presunta del parto ed entro i cinque mesi successivi, ha diritto di astenersi dal lavoro per un periodo di dieci giorni lavorativi, non frazionabili ad ore, anche non continuativi; il congedo è fruibile nello stesso arco temporale, anche in caso di morte perinatale del figlio.\nDall’inizio della gravidanza (intervenuta nel corso del rapporto) e fino alla cessazione del congedo di maternità e/o di paternità alternativo e dell’eventuale congedo parentale di cui al comma 7, la lavoratrice e/o il lavoratore che ne fruiscono non possono essere licenziati, salvo giusta causa. Le dimissioni rese in tale periodo sono inefficaci se non in forma scritta o se non intervenute nelle sedi di cui all’art. 2113, 4° comma, c.c. Le assenze non giustificate entro cinque giorni, salvo forza maggiore, costituiscono giusta causa di licenziamento.\nIn caso di dimissioni volontarie presentate nel periodo in cui vige il divieto di licenziamento di cui al comma 4, la lavoratrice o il lavoratore non sono tenuti al preavviso.\nSi applicano le norme di legge sulla tutela della paternità nonché su adozioni e affidamenti preadottivi, con le limitazioni ivi indicate.\nPer ogni figlio, ciascun genitore ha diritto di astenersi dal lavoro secondo le seguenti modalità:\nLa madre lavoratrice, trascorso il periodo di congedo di maternità di cui al comma 2 e senza soluzione di continuità con esso, per un periodo continuativo non superiore a quattro mesi, senza maturazione di alcun istituto retributivo diretto e indiretto.\nIl padre lavoratore, dalla nascita del figlio, trascorso l’eventuale congedo di paternità alternativo e senza soluzione di continuità con esso, per un periodo continuativo non superiore a quattro mesi, senza maturazione di alcun istituto retributivo diretto e indiretto."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 26,
+  "fields": {
+    "articolo": 26,
+    "titolo": "Tutela del lavoro minorile",
+    "testo": "Non è ammessa l’assunzione dei minori degli anni 16.\nÈ ammessa l’assunzione di adolescenti, ai sensi della legge 17 ottobre 1967, n. 977, così come modificata e integrata dal D. Lgs. 4 agosto 1999, n. 345, purchè sia compatibile con le esigenze particolari di tutela della salute e non comporti trasgressione dell’obbligo scolastico.\nÈ vietato adibire i minori al lavoro notturno, tranne casi di forza maggiore.\nSono altresì da osservare le disposizioni dell’art. 4 della legge 2 aprile 1958, n. 339, secondo cui il datore di lavoro, che intenda assumere e fare convivere con la propria famiglia un lavoratore minorenne, deve farsi rilasciare una dichiarazione scritta di consenso, con sottoscrizione vidimata dal Sindaco del Comune di residenza del lavoratore, da parte di chi esercita la potestà genitoriale, cui verrà poi data preventiva comunicazione del licenziamento; il datore di lavoro è impegnato ad una particolare cura del minore, per lo sviluppo ed il rispetto della sua personalità fisica, morale e professionale."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 27,
+  "fields": {
+    "articolo": 27,
+    "titolo": "Malattia",
+    "testo": "In caso di malattia il lavoratore dovrà avvertire tempestivamente il datore di lavoro salvo cause di forza maggiore o obbiettivi impedimenti, entro l’orario contrattualmente previsto per l’inizio della prestazione lavorativa.\nIl lavoratore dovrà successivamente far pervenire al datore di lavoro il relativo certificato medico, rilasciato entro il giorno successivo all’inizio della malattia. Il certificato, indicante la prognosi di inabilità al lavoro, deve essere consegnato o inviato mediante raccomandata al datore di lavoro entro due giorni dal relativo rilascio.\nPer i lavoratori conviventi non è necessario l’invio del certificato medico, salvo che non sia espressamente richiesto dal datore di lavoro. Rimane l’obbligo della spedizione del certificato medico per i conviventi, qualora la malattia intervenga nel corso delle ferie o in periodi nei quali i lavoratori non siano presenti nell’abitazione del datore di lavoro.\nIn caso di malattia, al lavoratore, convivente o non convivente, spetta la conservazione del posto per i seguenti periodi:\na) per anzianità fino a 6 mesi, superato il periodo di prova, 10 giorni di calendario;\nb) per anzianità da più di 6 mesi a 2 anni, 45 giorni di calendario;\nc) per anzianità oltre i 2 anni, 180 giorni di calendario.\nI periodi relativi alla conservazione del posto di lavoro si calcolano nell’anno solare, intendendosi per tale il periodo di 365 giorni decorrenti dall’evento.\nI periodi di cui al comma 4 saranno aumentati del 50% in caso di malattia oncologica, documentata dalla competente ASL.\nDurante i periodi indicati nei precedenti commi 4 e 6 decorre in caso di malattia la retribuzione globale di fatto per un massimo di 8, 10, 15 giorni complessivi nell’anno per le anzianità di cui ai punti a), b), c) dello stesso comma 4, nella seguente misura:\nfino al 3° giorno consecutivo, il 50% della retribuzione globale di fatto;\ndal 4° giorno in poi, il 100% della retribuzione globale di fatto.\nRestano salve le condizioni di miglior favore localmente in atto che si riferiscono alle norme di legge riguardanti i lavoratori conviventi.\nL’aggiunta della quota convenzionale sostitutiva di vitto e alloggio, per il personale che ne usufruisca normalmente, è dovuta solo nel caso in cui il lavoratore ammalato non sia degente in ospedale o presso il domicilio del datore di lavoro.\nLa malattia in periodo di prova o di preavviso sospende la decorrenza degli stessi."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 28,
+  "fields": {
+    "articolo": 28,
+    "titolo": "Tutela delle condizioni di lavoro",
+    "testo": "Ogni lavoratore ha diritto ad un ambiente di lavoro sicuro e salubre, sulla base di quanto previsto dalla legislazione vigente, relativamente agli ambienti domestici. A tal fine il datore di lavoro sarà tenuto a garantire la presenza sull’impianto elettrico di un adeguato interruttore differenziale, cosiddetto salvavita.\nIl datore di lavoro provvede ad informare il lavoratore circa eventuali rischi esistenti nell’ambiente di lavoro relativi anche all’uso delle attrezzature, ivi compresi gli strumenti telematici e robotici, e all’esposizione a particolari agenti chimici, fisici e biologici.\nL’informativa si realizzerà all’atto dell’individuazione delle mansioni o del successivo mutamento delle stesse, mediante la consegna dell’apposito documento che verrà elaborato dall’Ente bilaterale di settore – Ebincolf.\nE’ facoltà del datore di lavoro installare impianti audiovisivi all’interno dell’abitazione.\nL’esistenza o l’installazione di detti impianti, devono essere preventivamente comunicate per iscritto al lavoratore e sono comunque vietate nell’alloggio riservato allo stesso ai sensi dell’art. 36, comma 2, nonché nei servizi igienici.\nLe immagini e le informazioni raccolte a mezzo degli impianti audiovisivi, devono essere trattate nel rispetto della vigente disciplina sul trattamento dei dati personali."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 29,
+  "fields": {
+    "articolo": 29,
+    "titolo": "Infortunio sul lavoro e malattia professionale",
+    "testo": "In caso di infortunio sul lavoro o malattia professionale, spetta al lavoratore, convivente o non convivente, la conservazione del posto per i seguenti periodi:\na) per anzianità fino a sei mesi, superato il periodo di prova, 10 giorni di calendario;\nb) per anzianità da più di sei mesi a due anni, 45 giorni di calendario;\nc) per anzianità oltre i due anni, 180 giorni di calendario.\nI periodi relativi alla conservazione del posto di lavoro si calcolano nell’anno solare, intendendosi per tale il periodo di 365 giorni decorrenti dall’evento.\nAl lavoratore, nel caso di infortunio sul lavoro o malattia professionale, spettano le prestazioni previste del D.P.R. 30 giugno 1965, n. 1124, e successive modificazioni e integrazioni.\nLe prestazioni vengono erogate dall’INAIL, al quale il datore di lavoro deve denunciare tutti gli infortuni o malattie professionali nei seguenti termini:\nentro le 24 ore e telegraficamente per quelli mortali o presunti tali;\nentro due giorni dalla ricezione del relativo certificato di infortunio o di malattia professionale, per gli eventi prognosticati non guaribili entro tre giorni;\nentro due giorni dalla ricezione del relativo certificato di prosecuzione, per gli eventi inizialmente prognosticati guaribili entro tre giorni ma non guariti entro tale termine.\nLa denuncia all’INAIL deve essere redatta su apposito modello predisposto da parte di detto istituto e corredata dal certificato medico. Altra denuncia deve essere rimessa entro gli stessi termini all’autorità di Pubblica sicurezza nei casi di legge.\nIl datore di lavoro deve corrispondere la retribuzione globale di fatto per i primi tre giorni di assenza per infortunio o malattia professionale.\nL’aggiunta della quota convenzionale sostitutiva di vitto e alloggio, per il personale che ne usufruisca normalmente, è dovuta solo nel caso in cui il lavoratore non sia degente in ospedale o presso il domicilio del datore di lavoro.\nL’ infortunio e la malattia professionale in periodo di prova o di preavviso sospendono la decorrenza degli stessi."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 30,
+  "fields": {
+    "articolo": 30,
+    "titolo": "Tutele previdenziali",
+    "testo": "Il lavoratore deve essere assoggettato alle forme assicurative e previdenziali previste dalla legge, sia nel caso di rapporto in regime di convivenza che di non convivenza.\nIn caso di pluralità di rapporti in capo allo stesso lavoratore le forme assicurative e previdenziali devono essere applicate da ciascun datore di lavoro.\nÈ nullo ogni patto contrario."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 31,
+  "fields": {
+    "articolo": 31,
+    "titolo": "Servizio militare e richiamo alle armi",
+    "testo": "Si fa riferimento alle leggi che disciplinano la materia."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 32,
+  "fields": {
+    "articolo": 32,
+    "titolo": "Trasferimenti",
+    "testo": "In caso di trasferimento in altro comune, il lavoratore deve essere preavvisato, per iscritto, almeno 15 giorni prima.\nAl lavoratore trasferito deve essere corrisposta, per i primi 15 giorni di assegnazione alla nuova sede di lavoro, una diaria pari al 20% della retribuzione globale di fatto afferente tale periodo.\nAl lavoratore trasferito sarà inoltre corrisposto il rimborso delle spese di viaggio e trasporto per sé ed i propri effetti personali, ove alle stesse non provveda direttamente il datore di lavoro.\nIl lavoratore che non accetta il trasferimento ha diritto all’indennità sostitutiva del preavviso, ove non sia stato rispettato il termine di cui al comma 1."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 33,
+  "fields": {
+    "articolo": 33,
+    "titolo": "Trasferte",
+    "testo": "Il lavoratore convivente di cui all’art. 15, comma 1, è tenuto, ove richiesto dal datore di lavoro, a recarsi in trasferta, ovvero a seguire il datore di lavoro o la persona alla cui cura egli è addetto, in soggiorni temporanei in altro comune e/o in residenze secondarie. In tali località il lavoratore fruirà dei riposi settimanali.\nNei casi di trasferta indicati al comma 1, saranno rimborsate al lavoratore le eventuali spese di viaggio che egli abbia direttamente sostenuto in tali occasioni. Sarà inoltre corrisposta al lavoratore una diaria giornaliera, pari al 20% della retribuzione minima tabellare giornaliera, di cui alla Tabella A, per tutti i giorni nei quali egli sia stato in trasferta ovvero si sia recato in soggiorni temporanei, come indicato al comma 1, salvo il caso in cui il relativo obbligo fosse stato contrattualmente previsto nella lettera di assunzione."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 34,
+  "fields": {
+    "articolo": 34,
+    "titolo": "Retribuzione e prospetto paga",
+    "testo": "Il datore di lavoro, contestualmente alla corresponsione periodica della retribuzione, deve predisporre un prospetto paga in duplice copia, una per il lavoratore, firmata dal datore di lavoro, e l’altra per il datore di lavoro, firmata dal lavoratore.\nLa retribuzione del lavoratore è composta dalle seguenti voci:\na) retribuzione minima contrattuale di cui all’art. 34, comprensiva per i livelli D e D super di uno specifico elemento denominato indennità di funzione;\nb) eventuali scatti di anzianità di cui all’art. 36;\nc) eventuale compenso sostitutivo di vitto e alloggio;\nd) eventuale superminimo.\nSino al compimento del sesto anno di età di ciascun bambino assistito, l’assistente familiare inquadrata nel profilo B Super), lett. b) (baby sitter) avrà diritto a percepire, oltre al minimo retributivo di cui all’art. 35, anche l’indennità mensile di cui alla successiva Tabella H. Tale indennità è assorbibile da eventuali superminimi individuali di miglior favore percepiti dal lavoratore.\nAl lavoratore inquadrato nel livello C Super) o D Super) addetto all’assistenza di più di una persona non autosufficiente, è altresì dovuta l’indennità mensile nella misura di cui alla Tabella I. Tale indennità è assorbibile da eventuali superminimi individuali di miglior favore percepiti dal lavoratore.\nNel prospetto paga dovrà risultare se l’eventuale trattamento retributivo di cui alla lettera d) del comma 2 sia una condizione di miglior favore ‘ad personam’ non assorbibile; dovranno altresì risultare, oltre alle voci di cui al comma 2, i compensi per le ore straordinarie prestate e per festività nonché le trattenute per oneri previdenziali.\nIl datore di lavoro è tenuto a rilasciare una dichiarazione dalla quale risulti l’ammontare complessivo delle somme erogate nell’anno. l’attestazione deve essere rilasciata almeno 30 giorni prima della scadenza dei termini di presentazione della dichiarazione dei redditi, ovvero in occasione della cessazione del rapporto di lavoro.\nAl lavoratore inquadrato nei livelli B), B super) e C super) in possesso della certificazione di qualità di cui alla norma tecnica UNI 11766:2019 in corso di validità, è dovuta l’indennità mensile di cui alla Tabella L, è onere del lavoratore comunicare per iscritto al datore di lavoro il conseguimento, anche in corso di rapporto di lavoro, di detta certificazione e consegnarne copia.\nNota a verbale\nAllo scadere della validità della certificazione di qualità di cui alla norma tecnica UNI 11766:2019 l’indennità di cui alla Tabella L non sarà più dovuta. Ai fini del diritto a detta indennità, è onere del lavoratore consegnare al datore di lavoro copia della certificazione di qualità, eventualmente anche laddove fosse conseguita in corso di rapporto di lavoro.\nTale indennità sarà dovuta decorsi 12 mesi dalla data di decorrenza del presente contratto."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 35,
+  "fields": {
+    "articolo": 35,
+    "titolo": "Minimi retributivi",
+    "testo": "I minimi retributivi sono fissati nelle tabelle A, B, C, D, E, G, H, I ed L allegate al presente contratto e sono rivalutati annualmente ai sensi del successivo art. 38."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 36,
+  "fields": {
+    "articolo": 36,
+    "titolo": "Vitto e alloggio",
+    "testo": "Il vitto dovuto al lavoratore deve assicurargli una alimentazione sana e sufficiente; l’ambiente di lavoro non deve essere nocivo all’integrità fisica e morale dello stesso.\nIl datore di lavoro deve fornire al lavoratore convivente un alloggio idoneo a salvaguardarne la dignità e la riservatezza.\nI valori convenzionali del vitto e dell’alloggio sono fissati nella tabella F allegata al presente contratto e sono rivalutati annualmente ai sensi del successivo art. 38. I valori mensili si ottengono moltiplicando per 30 quelli giornalieri."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 37,
+  "fields": {
+    "articolo": 37,
+    "titolo": "Scatti di anzianità",
+    "testo": "A decorrere dal 22 maggio 1972 spetta al lavoratore, per ogni biennio di servizio presso lo stesso datore di lavoro, un aumento del 4% sulla retribuzione minima contrattuale.\nA partire dall’1 agosto 1992 gli scatti non sono assorbibili dall’eventuale superminimo.\nIl numero massimo degli scatti è fissato in 7.\nNota a verbale\nIl primo scatto di anzianità matura dal mese successivo al compimento di ogni biennio di servizio."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 38,
+  "fields": {
+    "articolo": 38,
+    "titolo": "Variazione periodica dei minimi retributivi e dei valori convenzionali del vitto e dell’alloggio",
+    "testo": "Le retribuzioni minime contrattuali e i valori convenzionali del vitto e dell’alloggio, determinati dal presente contratto, sono variati, da parte della Commissione nazionale per l’aggiornamento retributivo di cui all’art. 45, secondo le variazioni del costo della vita per le famiglie di impiegati ed operai rilevate dall’ ISTAT al 30 novembre di ogni anno.\nLa Commissione verrà a tal fine convocata dal Ministero del Lavoro e delle Politiche Sociali, entro e non oltre il 20 dicembre di ciascun anno, in prima convocazione, e, nelle eventuali successive convocazioni, ogni 15 giorni. Dopo la terza convocazione, in caso di mancato accordo o di assenza delle parti, il Ministero del Lavoro e delle Politiche Sociali è delegato dalle Organizzazioni ed Associazioni stipulanti a determinare la variazione periodica della retribuzione minima, secondo quanto stabilito al comma 1, in misura pari all’90% della variazione del costo della vita per le famiglie di impiegati ed operai rilevate dall’ ISTAT per quanto concerne le retribuzioni minime contrattuali e in misura pari al 100% per i valori convenzionali del vitto e dell’alloggio.\nLe retribuzioni minime contrattuali ed i valori convenzionali del vitto e dell’alloggio, determinati ai sensi dei commi precedenti, hanno decorrenza dal 1° gennaio di ciascun anno, se non diversamente stabilito dalle Parti."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 39,
+  "fields": {
+    "articolo": 39,
+    "titolo": "Tredicesima mensilità",
+    "testo": "In occasione del Natale, e comunque entro il mese di dicembre, spetta al lavoratore una mensilità aggiuntiva, pari alla retribuzione globale di fatto, in essa compresa l’indennità sostitutiva di vitto e alloggio, così come chiarito nelle note a verbale apposte in calce al presente contratto.\nPer coloro le cui prestazioni non raggiungano un anno di servizio, saranno corrisposti tanti dodicesimi di detta mensilità quanti sono i mesi del rapporto di lavoro.\nLa tredicesima mensilità matura anche durante le assenze per malattia, infortunio sul lavoro, malattia professionale e maternità, nei limiti del periodo di conservazione del posto e per la parte non liquidata dagli enti preposti."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 40,
+  "fields": {
+    "articolo": 40,
+    "titolo": "Risoluzione del rapporto di lavoro e preavviso",
+    "testo": "Il rapporto di lavoro può essere risolto da ciascuna delle parti con l’osservanza dei seguenti termini di preavviso.\nPer i rapporti non inferiori a 25 ore settimanali:\nfino a 5 anni di anzianità presso lo stesso datore di lavoro: 15 giorni di calendario;\noltre i 5 anni di anzianità presso lo stesso datore di lavoro: 30 giorni di calendario.\nI suddetti termini saranno ridotti del 50% nel caso di dimissioni da parte del lavoratore.\nPer i rapporti inferiori alle 25 ore settimanali:\nfino a 2 anni di anzianità presso lo stesso datore di lavoro: 8 giorni di calendario;\noltre i 2 anni di anzianità presso lo stesso datore di lavoro: 15 giorni di calendario.\nI termini di preavviso di cui al comma precedente saranno raddoppiati nell’eventualità in cui il datore di lavoro intimi il licenziamento prima del trentunesimo giorno successivo al termine del congedo per maternità.\nPer i portieri privati, custodi di villa ed altri dipendenti che usufruiscono con la famiglia di alloggio indipendente di proprietà del datore di lavoro, e/o messo a disposizione dal medesimo, il preavviso è di:\n30 giorni di calendario, sino ad un anno di anzianità,\n60 giorni di calendario per anzianità superiore.\nAlla scadenza del preavviso, l’alloggio dovrà essere rilasciato, libero da persone e da cose non di proprietà del datore di lavoro.\nIn caso di mancato o insufficiente preavviso, è dovuta dalla parte recedente un’indennità pari alla retribuzione corrispondente al periodo di preavviso non concesso.\nPossono dare luogo al licenziamento senza preavviso mancanze così gravi da non consentire la prosecuzione nemmeno provvisoria del rapporto di lavoro. Il licenziamento non esclude le eventuali responsabilità nelle quali possa essere incorso il lavoratore.\nAl lavoratore che si dimette per giusta causa compete l’indennità di mancato preavviso.\nIn caso di morte del datore di lavoro il rapporto può essere risolto con il rispetto dei termini di preavviso indicati nel presente articolo.\nI familiari coabitanti, i coniugi, le persone unite da unione civile o da stabile convivenza di fatto ai sensi della L. n. 76/2016 e successive modificazioni ed integrazioni, il cui stato familiare sia certificato da registrazione storico anagrafica, sono obbligati in solido per i crediti di lavoro maturati dal prestatore di lavoro. In ogni caso il soggetto obbligato in solido risponde solo entro i limiti della durata temporale risultante dalla suddetta registrazione storico anagrafica.\nNel caso in cui il rapporto di lavoro sia cessato mediante intimazione del licenziamento, il datore di lavoro, su richiesta scritta del lavoratore, sarà tenuto a fornire una dichiarazione scritta che attesti l’avvenuto licenziamento."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 41,
+  "fields": {
+    "articolo": 41,
+    "titolo": "Trattamento di fine rapporto (T.F.R.)",
+    "testo": "In ogni caso di cessazione del rapporto di lavoro, il lavoratore ha diritto a un trattamento di fine rapporto (T.F.R.) determinato, a norma della legge 29 maggio 1982, n. 297, sull’ammontare delle retribuzioni percepite nell’anno, comprensive del valore convenzionale di vitto e alloggio: il totale è diviso per 13,5. Le quote annue accantonate sono incrementate a norma dell’art. 1, comma 4, della citata legge, dell’1,5% annuo, mensilmente riproporzionato, e del 75% dell’aumento del costo della vita, accertato dall’ISTAT, con esclusione della quota maturata nell’anno in corso.\nI datori di lavoro anticiperanno, a richiesta del lavoratore e per non più di una volta all’anno, il T.F.R. nella misura massima del 70% di quanto maturato\nL’ammontare del T.F.R. maturato annualmente dal 29 maggio 1982 al 31 dicembre 1989 va riproporzionato in ragione di 20/26 per i lavoratori allora inquadrati nella seconda e terza categoria.\nPer i periodi di servizio antecedenti il 29 maggio 1982 l’indennità di anzianità è determinata nelle seguenti misure: A) Per il rapporto di lavoro in regime di convivenza, o di non convivenza con orario settimanale superiore alle 24 ore:\n1) per l’anzianità maturata anteriormente all’1 maggio 1958:\na) al personale già considerato impiegato: 15 giorni per ogni anno d’anzianità;\nb) al personale già considerato operaio: 8 giorni per ogni anno d’anzianità;\n2) per l’anzianità maturata dopo il 1 maggio 1958 e fino al 21 maggio 1974:\na) al personale già considerato impiegato: 1 mese per ogni anno d’anzianità;\nb) al personale già considerato operaio: 15 giorni per ogni anno d’anzianità;\n3) per l’anzianità maturata dal 22 maggio 1974 al 28 maggio 1982:\na) al personale già considerato impiegato: 1 mese per ogni anno d’anzianità\nb) al personale già considerato operaio: 20 giorni per ogni anno d’anzianità.\nB) Per il rapporto di lavoro di meno di 24 ore settimanali:\n1) per l’anzianità maturata anteriormente al 22 maggio 1974: 8 giorni per ogni anno d’anzianità;\n2) per l’anzianità maturata dal 22 maggio 1974 al 31 dicembre 1978: 10 giorni per ogni anno d’anzianità;\n3) per l’anzianità maturata dal 1 gennaio 1979 al 31 dicembre 1979: 15 giorni per ogni anno d’anzianità;\n4) per l’anzianità maturata dal 1 gennaio 1980 al 29 maggio 1982: 20 giorni per ogni anno d’anzianità.\nLe indennità, determinate come sopra, sono calcolate sulla base dell’ultima retribuzione e accantonate nel T.F.R.\nAi fini del computo di cui al comma 4, il valore della giornata lavorativa si ottiene dividendo per 6 l’importo della retribuzione media settimanale o per 26 l’importo della retribuzione media mensile in atto alla data del 29 maggio 1982. Tali importi devono essere maggiorati del rateo di gratifica natalizia o tredicesima mensilità."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 42,
+  "fields": {
+    "articolo": 42,
+    "titolo": "Indennità in caso di morte",
+    "testo": "In caso di morte del lavoratore, le indennità di preavviso ed il T.F.R. devono corrispondersi al coniuge, ai figli o, se vivevano a carico del lavoratore, ai parenti entro il 3° grado e agli affini entro il 2° grado.\nLa ripartizione delle indennità e del T.F.R., se non vi è accordo fra gli aventi diritto, deve farsi secondo le norme di legge.\nIn mancanza dei superstiti sopra indicati, le indennità sono attribuite secondo le norme della successione testamentaria e legittima."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 43,
+  "fields": {
+    "articolo": 43,
+    "titolo": "Permessi sindacali",
+    "testo": "I componenti degli organismi direttivi territoriali e nazionali delle Organizzazioni Sindacali firmatarie del presente contratto, la cui carica risulti da apposita attestazione dell’Organizzazione Sindacale di appartenenza, rilasciata all’atto della nomina, da presentare al datore di lavoro, hanno diritto a permessi retribuiti per la partecipazione documentata alle riunioni degli organismi suddetti, nella misura di 6 giorni lavorativi nell’anno.\nI lavoratori che intendano esercitare tale diritto devono darne comunicazione al datore di lavoro di norma 3 giorni prima, presentando la richiesta di permesso rilasciata dalle Organizzazioni Sindacali di appartenenza."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 44,
+  "fields": {
+    "articolo": 44,
+    "titolo": "Interpretazione del Contratto",
+    "testo": "Le controversie individuali e collettive che dovessero insorgere in relazione al rapporto di lavoro, riguardanti l’interpretazione autentica delle norme del presente contratto, possono essere demandate alla Commissione paritetica nazionale di cui all’art. 44.\nLa Commissione si pronuncerà entro 60 giorni dal ricevimento della richiesta."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 45,
+  "fields": {
+    "articolo": 45,
+    "titolo": "Commissione nazionale per l’aggiornamento retributivo",
+    "testo": "È costituita una Commissione nazionale presso il Ministero del Lavoro e Previdenza Sociale, composta dai rappresentanti delle Organizzazioni Sindacali dei lavoratori e delle Associazioni dei datori di lavoro stipulanti il presente contratto.\nCiascuna Organizzazione Sindacale dei lavoratori e ciascuna Associazione dei datori di lavoro designa il proprio rappresentante nella Commissione, la quale delibera all’unanimità.\nLa Commissione nazionale ha le funzioni di cui agli artt. 34, 35 e 37."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 46,
+  "fields": {
+    "articolo": 46,
+    "titolo": "Commissione paritetica nazionale",
+    "testo": "Presso l’Ente bilaterale di cui all’ art. 47 è costituita una Commissione paritetica nazionale, composta da un rappresentante per ciascuna delle OO.SS dei lavoratori e da uguale numero di rappresentanti delle Associazioni dei datori di lavoro, stipulanti il presente contratto.\nAlla Commissione sono attribuiti i seguenti compiti, oltre a quello indicato all’art. 43:\na) esprimere pareri e formulare proposte per quanto si riferisce all’applicazione del presente contratto di lavoro e per il funzionamento delle Commissioni territoriali di conciliazione;\nb) esaminare le istanze delle Parti per la eventuale identificazione di nuove figure professionali;\nc) esperire il tentativo di conciliazione per le controversie insorte tra le Associazioni territoriali dei datori di lavoro e le OO.SS territoriali dei lavoratori, facenti capo alle Associazioni ed Organizzazioni nazionali, stipulanti il presente contratto\nLa Commissione nazionale sarà convocata ogni qualvolta se ne ravvisi l’opportunità o quando ne faccia richiesta scritta e motivata una delle Parti stipulanti il presente contratto.\nLe Parti s’impegnano a riunire la Commissione almeno 2 volte all’anno, in concomitanza con le riunioni della Commissione di cui all’art. 44."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 47,
+  "fields": {
+    "articolo": 47,
+    "titolo": "Commissioni territoriali di conciliazione",
+    "testo": "Per tutte le vertenze individuali di lavoro relative all’applicazione del presente contratto, le parti potranno esperire, prima dell’azione giudiziaria, il tentativo di conciliazione, di cui all’articolo 410 e seguenti del Cod. Proc. Civ., presso l’apposita Commissione territoriale di conciliazione, composta dal Rappresentante dell’Organizzazione sindacale e da quello della Associazione dei datori di lavoro, cui, rispettivamente, il lavoratore ed il datore di lavoro siano iscritti o conferiscano mandato.\nIl lavoratore deve essere assistito dal rappresentante di una Organizzazione sindacale dei lavoratori firmataria del presente contratto. In caso di assenza del rappresentante di un’Associazione datoriale, nel verbale di conciliazione deve essere esplicitato che il datore di lavoro è stato informato della possibilità di essere assistito da un’Associazione datoriale e che vi abbia espressamente rinunciato.\nLa conciliazione, che produce fra le parti gli effetti di cui all’art. 2113, 4° comma, codice civile, dovrà risultare da apposito verbale."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 48,
+  "fields": {
+    "articolo": 48,
+    "titolo": "Ente bilaterale Ebincolf",
+    "testo": "L’Ente bilaterale è un organismo paritetico così composto: per il 50% da Fidaldo (attualmente costituita come indicato in epigrafe) e Domina, e per l’altro 50%, Filcams-Cgil, Fisascat-Cisl, Uiltucs-Uil e Federcolf.\nL’Ente bilaterale nazionale ha le seguenti funzioni:\na) istituisce l’osservatorio che ha il compito di effettuare analisi e studi, al fine di cogliere gli aspetti peculiari delle diverse realtà presenti nel nostro Paese. A tal fine, l’osservatorio dovrà rilevare:\nla situazione occupazionale della categoria;\nle retribuzioni medie di fatto;\nil livello di applicazione del CCNL nei territori;\nil grado di uniformità sull’applicazione del CCNL e delle normative di legge ai lavoratori immigrati;\nla situazione previdenziale e assistenziale della categoria;\ni fabbisogni formativi;\nle analisi e le proposte in materia di sicurezza;\nb) promuove ai vari livelli iniziative in materia di formazione, qualificazione professionale e certificazione delle competenze, anche in collaborazione con le Regioni e gli altri Enti competenti, nonché di informazione in materia di sicurezza."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 49,
+  "fields": {
+    "articolo": 49,
+    "titolo": "Contrattazione di secondo livello",
+    "testo": "La contrattazione di secondo livello fra le OO.SS. e le Associazioni datoriali firmatarie del presente CCNL potrà riferirsi, di norma, ad ambito regionale ovvero provinciale per le province autonome di Trento e Bolzano. In deroga a quanto sopra previsto, l’ambito territoriale della contrattazione di secondo livello potrà riferirsi anche alle città metropolitane.\nLa contrattazione di cui al precedente comma avrà luogo presso l’Ebincolf, con la presenza e l’accordo di tutti i soggetti firmatari il presente CCNL.\nEssa riguarderà esclusivamente le seguenti materie:\ni. indennità di vitto e alloggio;\nii. ore di permesso per studio e/o formazione professionale.\nGli accordi stipulati a norma del presente articolo resteranno depositati, ai fini della loro efficacia, presso l’Ente bilaterale Ebincolf."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 50,
+  "fields": {
+    "articolo": 50,
+    "titolo": "Cas.Sa.Colf",
+    "testo": "Cas.sa.Colf è un organismo paritetico composto per il 50% da FIDALDO e DOMINA e per l’altro 50% da Filcams-Cgil, Fisascat-Cisl, Uiltucs e Federcolf.\nLa Cas.sa.Colf ha lo scopo di fornire prestazioni e servizi a favore dei lavoratori e datori di lavoro, comprensivi di trattamenti assistenziali sanitari e assicurativi, integrativi e aggiuntivi delle prestazioni pubbliche."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 51,
+  "fields": {
+    "articolo": 51,
+    "titolo": "Fondo Colf",
+    "testo": "Il Fondo Colf è un organismo paritetico composto per il 50% da FIDALDO e DOMINA e per l’altro 50% da Filcams-Cgil, Fisascat-Cisl, Uiltucs e Federcolf.\nIl suo scopo istituzionale è quello di ricevere il contributo versato ai sensi del successivo art. 54 e destinarlo per il funzionamento degli strumenti contrattuali di cui ai precedenti articoli 45 e seguenti."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 52,
+  "fields": {
+    "articolo": 52,
+    "titolo": "Previdenza complementare",
+    "testo": "Le Parti concordano di istituire una forma di previdenza complementare per i lavoratori del settore, con modalità da concordare entro tre mesi dalla stipula del presente contratto.\nPer la pratica realizzazione di quanto previsto al precedente comma le Parti convengono che il contributo a carico del datore di lavoro sia pari allo 1 per cento della retribuzione utile per il calcolo del trattamento di fine rapporto e il contributo a carico del lavoratore sia pari allo 0,55 per cento della retribuzione utile per il calcolo del trattamento di fine rapporto."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 53,
+  "fields": {
+    "articolo": 53,
+    "titolo": "Fondi paritetici e Interprofessionali",
+    "testo": "Le Parti concordano di verificare nel corso della vigenza del presente contratto le condizioni affinché gli assistenti familiari possano accedere ai piani formativi attuati dai Fondi Paritetici Interprofessionali di cui all’art. 118 della L. n. 388/2000"
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 54,
+  "fields": {
+    "articolo": 54,
+    "titolo": "Contributi di assistenza contrattuale",
+    "testo": "1. Per la pratica realizzazione di quanto previsto negli artt. 44, 45, 46, 47, 48, e 50 e 51 del presente contratto e per il funzionamento degli organismi paritetici al servizio dei lavoratori e dei datori di lavoro, le Organizzazioni e Associazioni stipulanti procederanno alla riscossione di contributi di assistenza contrattuale per il tramite di un Istituto previdenziale o assistenziale, ai sensi della legge 4 giugno 1973, n. 311, con esazione a mezzo degli strumenti previsti dalla normativa per il versamento dei contributi previdenziali obbligatori o con la diversa modalità concordata tra le Parti.\n2. I contributi di cui al comma 1 sono obbligatori. Sono tenuti al loro versamento tanto i datori di lavoro che i rispettivi dipendenti, nella misura oraria di euro 0,06 dei quali 0,02 a carico del lavoratore.\n3. Le Parti si danno atto che nelle valutazioni per la definizione del costo per il rinnovo contrattuale si è tenuto conto dell’incidenza dei contributi di cui al presente articolo, i quali, conseguentemente, per la quota a carico del datore di lavoro, hanno natura retributiva, con decorrenza dal 1° luglio 2007."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 55,
+  "fields": {
+    "articolo": 55,
+    "titolo": "Aumenti retributivi",
+    "testo": "1. Le parti concordano l’aumento dei minimi retributivi per il periodo di vigenza contrattuale. Per i lavoratori conviventi inquadrati nel livello BS della tabella A, l’aumento sarà di €. 100,00 con i seguenti importi mensili e relative decorrenze:\n1° gennaio 2026: 40 €;\n1° gennaio 2027: 30 €;\n1° gennaio 2028: 15 €;\n1° settembre 2028: 15 €.\nPer tutti gli altri livelli/tabelle l’aumento dei minimi retributivi sarà riproporzionato con le stesse modalità e termini.\n2. Le retribuzioni minime contrattuali dei livelli A e AS sulle quali verranno applicati gli aumenti sono quelle risultanti nelle tabelle A e C.\n3. L’indennità ex art. 34 comma 7 prevista dalla tabella L viene aggiornato a 30 € mensili a far data dal 1° gennaio 2026.\n4. Il sistema di variazione periodica dei minimi retributivi di cui all’art. 38 si applicherà alle retribuzioni incrementate ai sensi del presente articolo, come da esemplificazione contenuta nell’appendice del presente contratto."
+  }
+},
+{
+  "model": "paghe.ccnlarticolo",
+  "pk": 56,
+  "fields": {
+    "articolo": 56,
+    "titolo": "Decorrenza e durata",
+    "testo": "1. Il presente contratto decorre dal 1° novembre 2025 e scadrà il 31 ottobre 2028. Esso resterà in vigore sino a che non sia stato sostituito dal successivo.\n2. In caso di mancata disdetta di una delle parti, da comunicarsi almeno 3 mesi prima della data di scadenza a mezzo PEC con avviso di consegna e/o lettera raccomandata con avviso di ricevimento, il contratto s’intenderà tacitamente rinnovato per un triennio.\nAppendice n. 1\nArt. 55, comma 3, determinazione della retribuzione dovuta nel triennio:\nEsemplificazione per il Livello BS) convivente:\nretribuzione in corso a dicembre 2025 + €. 40,00 + ISTAT ai sensi dell’art. 38 del CCNL= nuova retribuzione decorrente da gennaio 2026;\nretribuzione in corso a gennaio 2026 + € 30,00 + ISTAT ai sensi dell’art. 38 del CCNL = nuova retribuzione decorrente da gennaio 2027;\nretribuzione in corso a gennaio 2027 + 15,00 + ISTAT ai sensi dell’art. 38 del CCNL = nuova retribuzione decorrente da gennaio 2028;\nretribuzione in corso a gennaio 2028 + 15,00 = nuova retribuzione decorrente da settembre 2028.\nChiarimenti a verbale\nIl calcolo della retribuzione giornaliera si ottiene determinando 1/26 della retribuzione mensile. Esempio: paga oraria per numero di ore lavorate nella settimana per 52:12:26=1/26 della retribuzione mensile.\nQuando nel contratto viene usata l’espressione “giorni di calendario” si considerano i trentesimi della mensilità (esempio: malattia).\nQuando nel contratto viene usata l’espressione “giorni lavorativi” si considerano i ventiseiesimi della mensilità (esempio: ferie).\nLe frazioni di anno si computano a mesi interi e le frazioni di mese, quando raggiungono o superano i 15 giorni di calendario, si computano a mese intero.\nPer “retribuzione globale di fatto” s’intende quella comprensiva di tutte le indennità di cui alle tabelle allegate, ivi incluse le indennità di vitto e alloggio.\nle Parti Sociali concordano l’aggiornamento degli attuali minimi retributivi in misura di euro 12,00 con decorrenza dal 1° gennaio 2021 per i lavoratori conviventi inquadrati nel livello BS della Tabella A), ed in misura proporzionale per gli altri livelli/tabelle. L’aggiornamento retributivo di cui all’articolo 38 del presente CCNL verrà effettuato sui minimi retributivi comprensivi degli aumenti pattuiti, come da accordo.\nI contributi di assistenza contrattuale nella misura prevista dall’art. 53, comma 2, sono dovuti a far data dal 01/01/2021; fermo restando che fino a tale data i contributi sono dovuti nella misura prevista dal previgente CCNL del 01/07/2013."
+  }
+}
+]
