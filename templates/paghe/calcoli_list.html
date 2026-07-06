@@ -37,7 +37,7 @@
         </a>
         <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         <select id="fBustaTemplate" class="form-control bg-input" onchange="salvaBustaTemplate()" style="font-size:11px;padding:6px 10px;max-width:220px;" disabled>
-            <option value="">â€” Standard (ReportLab) â€”</option>
+            <option value="">— Standard (ReportLab) —</option>
             {% for t in template_busta_paga %}
             <option value="{{ t.pk }}">{{ t.codice }}</option>
             {% endfor %}
@@ -88,7 +88,7 @@
 
         <span class="vr"></span>
 
-        <span class="c-9-up-fw" style="color:#5C5F66;">IndennitÃ </span>
+        <span class="c-9-up-fw" style="color:#5C5F66;">Indennità</span>
         <span class="toggle-item">
             <span>Funzione</span>
             <label class="toggle-switch">
@@ -104,14 +104,14 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span>PiÃ¹ Assistiti</span>
+            <span>Più Assistiti</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="indPiuAssistiti" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
             </label>
         </span>
         <span class="toggle-item">
-            <span>Cert. QualitÃ </span>
+            <span>Cert. Qualità</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="indCertQualita" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -121,7 +121,7 @@
         <span class="vr"></span>
 
         <span class="toggle-item">
-            <span>Scatti AnzianitÃ </span>
+            <span>Scatti Anzianità</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="toggleScatti" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -173,66 +173,66 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto â€” Busta Paga Standard</h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Paga Standard</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body card-body">
-        <p class="mb-14"><b class="c-text fs-14">Cos'Ã¨ questa pagina</b><br>
-        Qui puoi calcolare la busta paga mensile di un collaboratore domestico <b>convivente</b> (cioÃ¨ che vive nella stessa casa del datore di lavoro). Il calcolo parte dal <b>budget</b> che la Regione o gli enti locali hanno assegnato a quel lavoratore attraverso uno o piÃ¹ progetti sociali (es. "Fondo Non Autosufficienze", "Vita Indipendente", "Dopo di Noi").<br><br>
+        <p class="mb-14"><b class="c-text fs-14">Cos'è questa pagina</b><br>
+        Qui puoi calcolare la busta paga mensile di un collaboratore domestico <b>convivente</b> (cioè che vive nella stessa casa del datore di lavoro). Il calcolo parte dal <b>budget</b> che la Regione o gli enti locali hanno assegnato a quel lavoratore attraverso uno o più progetti sociali (es. "Fondo Non Autosufficienze", "Vita Indipendente", "Dopo di Noi").<br><br>
         A differenza della pagina "Conviventi CCNL" che usa i minimi tabellari fissati dal contratto collettivo, questa pagina usa il budget reale del progetto. Per i lavoratori <b>non conviventi</b> esiste un'altra pagina apposita.</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa â€” 3 passi semplici</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa — 3 passi semplici</b><br>
         <b>1.</b> Scegli un contratto dal menu a tendina "Contratto". Il sistema carica automaticamente i dati del lavoratore, del datore e dei progetti collegati.<br>
-        <b>2.</b> Regola le opzioni sotto il contratto: ratei (TFR, 13Âª, Ferie, Festivi), indennitÃ  (funzione, bambini sotto i 6 anni, piÃ¹ assistiti, certificazione qualitÃ ), vitto/alloggio (pranzo, cena, alloggio con i relativi giorni), scatti di anzianitÃ .<br>
-        <b>3.</b> Leggi la busta paga che appare: vedrai il Totale Lordo, i Contributi INPS, l'Ente Bilaterale, le Trattenute (vitto/alloggio e ratei accantonati) e infine il <b>Netto in busta</b>, cioÃ¨ quanto il datore deve effettivamente pagare al lavoratore.</p>
+        <b>2.</b> Regola le opzioni sotto il contratto: ratei (TFR, 13Âª, Ferie, Festivi), indennità (funzione, bambini sotto i 6 anni, più assistiti, certificazione qualità), vitto/alloggio (pranzo, cena, alloggio con i relativi giorni), scatti di anzianità.<br>
+        <b>3.</b> Leggi la busta paga che appare: vedrai il Totale Lordo, i Contributi INPS, l'Ente Bilaterale, le Trattenute (vitto/alloggio e ratei accantonati) e infine il <b>Netto in busta</b>, cioè quanto il datore deve effettivamente pagare al lavoratore.</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Budget e Ore â€” le basi del calcolo</b><br>
-        Il <b>budget mensile</b> Ã¨ la somma di tutti i budget mensili dei progetti collegati a quel contratto. Per esempio, se il contratto ha due progetti da â‚¬400 e â‚¬100 al mese, il budget totale sarÃ  â‚¬500.<br><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Budget e Ore — le basi del calcolo</b><br>
+        Il <b>budget mensile</b> è la somma di tutti i budget mensili dei progetti collegati a quel contratto. Per esempio, se il contratto ha due progetti da €400 e €100 al mese, il budget totale sarà €500.<br><br>
         Le <b>ore mensili</b> sono quelle scritte nel contratto (es. 120 ore al mese).<br><br>
         Da queste due cose il sistema calcola la <b>paga oraria base</b>:<br>
         <code>budget Ã· ore = paga oraria</code><br>
-        Esempio: â‚¬500 Ã· 120 h = â‚¬4,1667 all'ora.<br><br>
-        Le ore INPS (usate per calcolare i contributi) sono le ore mensili arrotondate per eccesso all'unitÃ  superiore. Se il contratto prevede 25 ore alla settimana, il sistema calcola le ore mensili come 25 Ã— 52 settimane Ã· 12 mesi = 108,33 h, arrotondate a 109 h per l'INPS.</p>
+        Esempio: €500 Ã· 120 h = €4,1667 all'ora.<br><br>
+        Le ore INPS (usate per calcolare i contributi) sono le ore mensili arrotondate per eccesso all'unità superiore. Se il contratto prevede 25 ore alla settimana, il sistema calcola le ore mensili come 25 × 52 settimane Ã· 12 mesi = 108,33 h, arrotondate a 109 h per l'INPS.</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Prorating â€” cosa succede se il budget non basta</b><br>
-        Il sistema prima calcola il "lordo ideale", cioÃ¨ tutto quello che il lavoratore guadagnerebbe se non ci fossero limiti di budget (paga base + indennitÃ  + ratei).<br><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Prorating — cosa succede se il budget non basta</b><br>
+        Il sistema prima calcola il "lordo ideale", cioè tutto quello che il lavoratore guadagnerebbe se non ci fossero limiti di budget (paga base + indennità + ratei).<br><br>
         Poi confronta questo lordo con il budget disponibile:<br>
-        â€” Se il budget Ã¨ <b>uguale o maggiore</b> del lordo ideale â†’ tutto ok, il lavoratore prende quello che ha maturato.<br>
-        â€” Se il budget Ã¨ <b>minore</b> del lordo ideale â†’ il sistema applica il <b>prorating</b>, cioÃ¨ scala proporzionalmente TUTTE le componenti (paga base, indennitÃ , ratei) della stessa percentuale, finchÃ© il totale non rientra nel budget.<br><br>
-        Esempio pratico: budget â‚¬500, lordo ideale â‚¬600 â†’ prorata = 500/600 = 0,833. Ogni voce viene moltiplicata per 0,833. Il lavoratore prenderÃ  l'83,3% di quanto maturato.</p>
+        — Se il budget è <b>uguale o maggiore</b> del lordo ideale â†’ tutto ok, il lavoratore prende quello che ha maturato.<br>
+        — Se il budget è <b>minore</b> del lordo ideale â†’ il sistema applica il <b>prorating</b>, cioè scala proporzionalmente TUTTE le componenti (paga base, indennità, ratei) della stessa percentuale, finché il totale non rientra nel budget.<br><br>
+        Esempio pratico: budget €500, lordo ideale €600 â†’ prorata = 500/600 = 0,833. Ogni voce viene moltiplicata per 0,833. Il lavoratore prenderà l'83,3% di quanto maturato.</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">I Ratei â€” TFR, 13Âª, Ferie, Festivi</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">I Ratei — TFR, 13Âª, Ferie, Festivi</b><br>
         I <b>ratei</b> sono quote di retribuzione che maturano mese dopo mese e vengono pagate in momenti specifici dell'anno o alla fine del rapporto di lavoro.<br><br>
-        Per ogni rateo puoi scegliere tra <b>3 modalitÃ </b>:<br>
-        <span style="color:#34d399;">âœ“ Incluso nel lordo</span> â€” Il rateo viene calcolato e pagato direttamente in busta paga ogni mese. Il lavoratore lo riceve subito.<br>
-        <span style="color:#f59e0b;">âŸ³ Accantonato</span> â€” Il rateo viene calcolato ma <b>non pagato</b> in busta: viene trattenuto e accantonato per essere liquidato alla fine del rapporto (TFR) o alla scadenza (13Âª a Natale, ferie non godute).<br>
-        <span style="color:#5C5F66;">âœ• Disabilitato</span> â€” Il rateo non viene nÃ© calcolato nÃ© pagato.<br><br>
-        <b>TFR (Trattamento di Fine Rapporto):</b> Ã¨ la "liquidazione" che spetta al lavoratore quando finisce il rapporto di lavoro. Si accumula mese per mese.<br>
-        <b>13Âª mensilitÃ :</b> Ã¨ la "tredicesima", pagata solitamente a dicembre.<br>
+        Per ogni rateo puoi scegliere tra <b>3 modalità</b>:<br>
+        <span style="color:#34d399;">âœ“ Incluso nel lordo</span> — Il rateo viene calcolato e pagato direttamente in busta paga ogni mese. Il lavoratore lo riceve subito.<br>
+        <span style="color:#f59e0b;">âŸ³ Accantonato</span> — Il rateo viene calcolato ma <b>non pagato</b> in busta: viene trattenuto e accantonato per essere liquidato alla fine del rapporto (TFR) o alla scadenza (13Âª a Natale, ferie non godute).<br>
+        <span style="color:#5C5F66;">âœ• Disabilitato</span> — Il rateo non viene né calcolato né pagato.<br><br>
+        <b>TFR (Trattamento di Fine Rapporto):</b> è la "liquidazione" che spetta al lavoratore quando finisce il rapporto di lavoro. Si accumula mese per mese.<br>
+        <b>13Âª mensilità:</b> è la "tredicesima", pagata solitamente a dicembre.<br>
         <b>Ferie:</b> sono i giorni di ferie maturati e non goduti.<br>
-        <b>Festivi:</b> sono le festivitÃ  non godute (es. Pasqua, 1Â° Maggio, etc.).</p>
+        <b>Festivi:</b> sono le festività non godute (es. Pasqua, 1° Maggio, etc.).</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">IndennitÃ  e Scatti di AnzianitÃ </b><br>
-        Il CCNL prevede alcune <b>indennitÃ  mensili</b> che si aggiungono alla paga base:<br>
-        â€” <b>IndennitÃ  di funzione:</b> per lavoratori con responsabilitÃ  particolari.<br>
-        â€” <b>IndennitÃ  bambini &lt; 6 anni:</b> se il lavoratore assiste bambini piccoli.<br>
-        â€” <b>IndennitÃ  piÃ¹ assistiti:</b> se assiste piÃ¹ persone non autosufficienti.<br>
-        â€” <b>IndennitÃ  certificazione qualitÃ :</b> per lavoratori con specifiche certificazioni.<br><br>
-        Gli <b>scatti di anzianitÃ </b> sono aumenti periodici della retribuzione che scattano ogni 2 anni di servizio presso lo stesso datore di lavoro.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Indennità e Scatti di Anzianità</b><br>
+        Il CCNL prevede alcune <b>indennità mensili</b> che si aggiungono alla paga base:<br>
+        — <b>Indennità di funzione:</b> per lavoratori con responsabilità particolari.<br>
+        — <b>Indennità bambini &lt; 6 anni:</b> se il lavoratore assiste bambini piccoli.<br>
+        — <b>Indennità più assistiti:</b> se assiste più persone non autosufficienti.<br>
+        — <b>Indennità certificazione qualità:</b> per lavoratori con specifiche certificazioni.<br><br>
+        Gli <b>scatti di anzianità</b> sono aumenti periodici della retribuzione che scattano ogni 2 anni di servizio presso lo stesso datore di lavoro.</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Convivenza â€” Vitto e Alloggio</b><br>
-        Se il contratto Ã¨ <b>convivente</b>, il lavoratore vive nella casa del datore. Per legge, il datore deve fornire vitto e alloggio. Se invece fornisce un'indennitÃ  sostitutiva in denaro, puoi attivare i toggle:<br>
-        â€” <b>Pranzo:</b> â‚¬2,33 al giorno.<br>
-        â€” <b>Cena:</b> â‚¬2,33 al giorno.<br>
-        â€” <b>Alloggio:</b> â‚¬2,00 al giorno.<br><br>
-        I giorni di convivenza (di solito 26, dal lunedÃ¬ al sabato) moltiplicano l'importo giornaliero. L'indennitÃ  viene <b>detratta dal netto</b> (cioÃ¨ il datore la paga in piÃ¹ oltre alla retribuzione, ma viene scalata dal netto in busta perchÃ© Ã¨ considerata "in natura" o forfettaria).</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Convivenza — Vitto e Alloggio</b><br>
+        Se il contratto è <b>convivente</b>, il lavoratore vive nella casa del datore. Per legge, il datore deve fornire vitto e alloggio. Se invece fornisce un'indennità sostitutiva in denaro, puoi attivare i toggle:<br>
+        — <b>Pranzo:</b> €2,33 al giorno.<br>
+        — <b>Cena:</b> €2,33 al giorno.<br>
+        — <b>Alloggio:</b> €2,00 al giorno.<br><br>
+        I giorni di convivenza (di solito 26, dal lunedì al sabato) moltiplicano l'importo giornaliero. L'indennità viene <b>detratta dal netto</b> (cioè il datore la paga in più oltre alla retribuzione, ma viene scalata dal netto in busta perché è considerata "in natura" o forfettaria).</p>
 
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Template Busta â€” Personalizzazione PDF</b><br>
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Template Busta — Personalizzazione PDF</b><br>
         Puoi scegliere un <b>template personalizzato</b> per la stampa del PDF della busta paga. I template vengono creati nella sezione apposita. Se non selezioni nulla, viene usato il template standard (ReportLab) con il formato predefinito.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> â€” salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta giÃ  salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> â€” consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lÃ¬ puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
       </div>
     </div>
   </div>
@@ -443,7 +443,7 @@ function renderBusta(d) {
         html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
 
-    // Combined IndennitÃ  e Ratei pagati (solo quelli inclusi nel lordo)
+    // Combined Indennità e Ratei pagati (solo quelli inclusi nel lordo)
     var totalIndennitaRatei = 0;
     for (var iri = 0; iri < d.indennita.length; iri++) totalIndennitaRatei += d.indennita[iri].totale;
     for (var irr = 0; irr < d.ratei_pagati.length; irr++) { if (d.ratei_pagati[irr].incluso) totalIndennitaRatei += d.ratei_pagati[irr].orario * d.ore_mensili; }

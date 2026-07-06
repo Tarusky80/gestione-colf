@@ -93,8 +93,8 @@
                 {{ log.get_tipo_op_display }}
               </span>
             </td>
-            <td style="padding:8px 14px;color:#8A8F98;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ log.dettaglio|default:"â€”" }}</td>
-            <td style="padding:8px 14px;color:#8A8F98;">{{ log.utente|default:"â€”" }}</td>
+            <td style="padding:8px 14px;color:#8A8F98;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ log.dettaglio|default:"—" }}</td>
+            <td style="padding:8px 14px;color:#8A8F98;">{{ log.utente|default:"—" }}</td>
             <td style="padding:8px 14px;text-align:center;white-space:nowrap;">
               <button class="btn" onclick="mostraDettaglioLog({{ log.pk }})" title="Visualizza dettaglio" style="background:transparent;color:#5E6AD2;border:none;padding:2px 6px;font-size:14px;"><i class="bi bi-eye"></i></button>
               <button class="btn" onclick="confermaEliminaLog({{ log.pk }})" title="Elimina" style="background:transparent;color:#f87171;border:none;padding:2px 6px;font-size:14px;"><i class="bi bi-trash"></i></button>
@@ -133,11 +133,11 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Cronologia INPS</h5>
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Cronologia INPS</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
         Qui trovi il registro cronologico di tutte le operazioni effettuate sulle procedure INPS (Iscrizione, Cessazione, PagoPA manuale e automatica). Ogni volta che viene aperta o completata una procedura, viene registrato un log con data, operazione e utente.</p>
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Filtri</b><br>
         Puoi filtrare per contratto, tipo di operazione e intervallo di date per trovare rapidamente le operazioni di tuo interesse.</p>
@@ -186,8 +186,8 @@ var logData = {
     contratto: '{% if log.contratto.datore %}{{ log.contratto.datore.nome_cognome }}{% endif %} â†’ {% if log.contratto.lavoratore %}{{ log.contratto.lavoratore.nome_cognome }}{% endif %}',
     contratto_pk: {{ log.contratto_id|default:"null" }},
     operazione: '{{ log.get_tipo_op_display }}',
-    dettaglio: '{{ log.dettaglio|default:"â€”"|escapejs }}',
-    utente: '{{ log.utente|default:"â€”" }}',
+    dettaglio: '{{ log.dettaglio|default:"—"|escapejs }}',
+    utente: '{{ log.utente|default:"—" }}',
     tipo_op: '{{ log.tipo_op }}'
   }{% if not forloop.last %},{% endif %}
   {% endfor %}

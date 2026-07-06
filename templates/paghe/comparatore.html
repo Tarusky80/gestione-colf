@@ -14,7 +14,7 @@
         <h1 class="h3 fw-bold mb-1">COMPARATORE COSTO LAVORATORE
           <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
-        <p class="text-secondary small mb-0">Confronta il costo del lavoro tra scenari diversi (budget, ore, indennitÃ ).</p>
+        <p class="text-secondary small mb-0">Confronta il costo del lavoro tra scenari diversi (budget, ore, indennità).</p>
     </div>
 </div>
 
@@ -23,7 +23,7 @@
     <div class="col-md-4">
         <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98;">Contratto</label>
         <select name="contratto" class="form-select" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;width:calc(400px + 6cm);" onchange="this.form.submit()">
-            <option value="">â€” Seleziona un contratto â€”</option>
+            <option value="">— Seleziona un contratto —</option>
             {% for c in contratti %}
             <option value="{{ c.pk }}" {% if contratto and contratto.pk == c.pk %}selected{% endif %}>{{ c|contratto_option }}</option>
             {% endfor %}
@@ -66,16 +66,16 @@
             </div>
             {% if current %}
             <table class="table custom-table" style="font-size: 12px;">
-                <tr><td style="color:#8A8F98;">Budget mensile</td><td class="fw-bold text-end">â‚¬ {{ current.budget_mensile|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Budget mensile</td><td class="fw-bold text-end">€ {{ current.budget_mensile|floatformat:2 }}</td></tr>
                 <tr><td style="color:#8A8F98;">Ore mensili</td><td class="fw-bold text-end">{{ current.ore_mensili|floatformat:1 }}h</td></tr>
                 <tr><td style="color:#8A8F98;">Ore settimanali</td><td class="fw-bold text-end">{{ current.ore_settimanali|floatformat:1 }}h</td></tr>
-                <tr><td style="color:#8A8F98;">Paga oraria lorda</td><td class="fw-bold text-end">â‚¬ {{ current.paga_oraria_lorda|floatformat:4 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale lordo</td><td class="fw-bold text-end">â‚¬ {{ current.totale_lordo|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Contributi INPS</td><td class="fw-bold text-end">â‚¬ {{ current.contributi.inps.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Contributi Cassa</td><td class="fw-bold text-end">â‚¬ {{ current.contributi.cassa.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale contributi</td><td class="fw-bold text-end">â‚¬ {{ current.contributi.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Netto</td><td class="fw-bold text-end" style="color:#34d399;">â‚¬ {{ current.netto|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Stima trimestrale contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">â‚¬ {{ current.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Paga oraria lorda</td><td class="fw-bold text-end">€ {{ current.paga_oraria_lorda|floatformat:4 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Totale lordo</td><td class="fw-bold text-end">€ {{ current.totale_lordo|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Contributi INPS</td><td class="fw-bold text-end">€ {{ current.contributi.inps.totale|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Contributi Cassa</td><td class="fw-bold text-end">€ {{ current.contributi.cassa.totale|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Totale contributi</td><td class="fw-bold text-end">€ {{ current.contributi.totale|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ current.netto|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Stima trimestrale contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ current.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
             </table>
             {% else %}
             <div class="text-secondary small py-3 text-center">Errore nel calcolo: {{ current.errore|default:"parametri mancanti" }}</div>
@@ -89,7 +89,7 @@
                 <i class="bi bi-arrow-left-right" style="margin-right: 6px;"></i>Scenario Alternativo
             </div>
             <div class="mb-3">
-                <label class="mb-1 fw-bold" style="font-size: 11px; color: #8A8F98;">Budget mensile (â‚¬)</label>
+                <label class="mb-1 fw-bold" style="font-size: 11px; color: #8A8F98;">Budget mensile (€)</label>
                 <input type="number" step="0.01" name="budget_alt" class="form-control" value="{{ budget_alt|default:current.budget_mensile }}" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;">
             </div>
             <div class="mb-3">
@@ -104,10 +104,10 @@
                     <input type="checkbox" name="ind_bambini_6" value="1" {% if request.GET.ind_bambini_6 == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Bambini &lt;6
                 </label>
                 <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
-                    <input type="checkbox" name="ind_piu_assistiti" value="1" {% if request.GET.ind_piu_assistiti == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> PiÃ¹ Assistiti
+                    <input type="checkbox" name="ind_piu_assistiti" value="1" {% if request.GET.ind_piu_assistiti == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Più Assistiti
                 </label>
                 <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
-                    <input type="checkbox" name="ind_cert_qualita" value="1" {% if request.GET.ind_cert_qualita == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Cert. QualitÃ 
+                    <input type="checkbox" name="ind_cert_qualita" value="1" {% if request.GET.ind_cert_qualita == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Cert. Qualità
                 </label>
                 <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
                     <input type="checkbox" name="scatti" value="1" {% if request.GET.scatti == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Scatti
@@ -116,13 +116,13 @@
 
             {% if alternative %}
             <table class="table custom-table" style="font-size: 12px;">
-                <tr><td style="color:#8A8F98;">Budget mensile</td><td class="fw-bold text-end">â‚¬ {{ alternative.budget_mensile|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Budget mensile</td><td class="fw-bold text-end">€ {{ alternative.budget_mensile|floatformat:2 }}</td></tr>
                 <tr><td style="color:#8A8F98;">Ore mensili</td><td class="fw-bold text-end">{{ alternative.ore_mensili|floatformat:1 }}h</td></tr>
-                <tr><td style="color:#8A8F98;">Paga oraria lorda</td><td class="fw-bold text-end">â‚¬ {{ alternative.paga_oraria_lorda|floatformat:4 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale lordo</td><td class="fw-bold text-end">â‚¬ {{ alternative.totale_lordo|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale contributi</td><td class="fw-bold text-end">â‚¬ {{ alternative.contributi.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Netto</td><td class="fw-bold text-end" style="color:#34d399;">â‚¬ {{ alternative.netto|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Stima trim. contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">â‚¬ {{ alternative.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Paga oraria lorda</td><td class="fw-bold text-end">€ {{ alternative.paga_oraria_lorda|floatformat:4 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Totale lordo</td><td class="fw-bold text-end">€ {{ alternative.totale_lordo|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Totale contributi</td><td class="fw-bold text-end">€ {{ alternative.contributi.totale|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ alternative.netto|floatformat:2 }}</td></tr>
+                <tr><td style="color:#8A8F98;">Stima trim. contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ alternative.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
             </table>
 
             <div style="background: rgba(94,106,210,0.08); border-radius: 10px; padding: 12px; margin-top: 10px;">
@@ -130,25 +130,25 @@
                 <div class="d-flex justify-content-between small">
                     <span style="color:#8A8F98;">Lordo:</span>
                     <span class="fw-bold" style="color:{% if diff_lordo >= 0 %}#34d399{% else %}#f87171{% endif %};">
-                        â‚¬ {{ diff_lordo|floatformat:2 }}
+                        € {{ diff_lordo|floatformat:2 }}
                     </span>
                 </div>
                 <div class="d-flex justify-content-between small">
                     <span style="color:#8A8F98;">Contributi:</span>
                     <span class="fw-bold" style="color:{% if diff_contributi >= 0 %}#34d399{% else %}#f87171{% endif %};">
-                        â‚¬ {{ diff_contributi|floatformat:2 }}
+                        € {{ diff_contributi|floatformat:2 }}
                     </span>
                 </div>
                 <div class="d-flex justify-content-between small">
                     <span style="color:#8A8F98;">Netto:</span>
                     <span class="fw-bold" style="color:{% if diff_netto >= 0 %}#34d399{% else %}#f87171{% endif %};">
-                        â‚¬ {{ diff_netto|floatformat:2 }}
+                        € {{ diff_netto|floatformat:2 }}
                     </span>
                 </div>
                 <div class="d-flex justify-content-between small">
                     <span style="color:#8A8F98;">Stima trim. contributi:</span>
                     <span class="fw-bold" style="color:{% if diff_trimestrale >= 0 %}#34d399{% else %}#f87171{% endif %};">
-                        â‚¬ {{ diff_trimestrale|floatformat:2 }}
+                        € {{ diff_trimestrale|floatformat:2 }}
                     </span>
                 </div>
             </div>
@@ -170,17 +170,17 @@
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Comparatore Costo
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Comparatore Costo
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨</b><br>
-        Confronta il costo totale di un lavoratore modificando budget, ore e indennitÃ  per vedere l'impatto su lordo, contributi e netto.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        Confronta il costo totale di un lavoratore modificando budget, ore e indennità per vedere l'impatto su lordo, contributi e netto.</p>
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Seleziona un contratto attivo.<br>
         <b>2.</b> A sinistra vedi lo scenario corrente.<br>
-        <b>3.</b> A destra modifica budget, ore e toggle indennitÃ .<br>
+        <b>3.</b> A destra modifica budget, ore e toggle indennità.<br>
         <b>4.</b> Clicca <b>Confronta</b> per vedere le differenze evidenziate.</p>
       </div>
     </div>

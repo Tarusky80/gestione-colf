@@ -3,11 +3,11 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Crea PAGOPA</h5>
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Crea PAGOPA</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
 Qui puoi creare un <b>Avviso di Pagamento PagoPA</b> (ex MAV) per versare i contributi INPS del trimestre selezionato. Puoi anche avviare l'automazione che compila il bollettino direttamente sul sito INPS.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
@@ -15,28 +15,28 @@ Qui puoi creare un <b>Avviso di Pagamento PagoPA</b> (ex MAV) per versare i cont
 <b>2.</b> Scegli il <b>trimestre</b> (TRIMESTRE 1=Gen-Mar, 2=Apr-Giu, 3=Lug-Set, 4=Ott-Dic) e l'<b>anno</b>.<br>
 <b>3.</b> Leggi il <b>riepilogo contributivo</b> che mostra ore, quote associative e contributi INPS calcolati.<br>
 <b>4.</b> Clicca <b>Scarica Riepilogo PDF</b> per salvare il prospetto.<br>
-<b>5.</b> Clicca <b>Avvia INPS</b> per aprire l'automazione nel browser â€” segui le istruzioni, risolvi il CAPTCHA e premi Ctrl+Invio per proseguire.</p>
+<b>5.</b> Clicca <b>Avvia INPS</b> per aprire l'automazione nel browser — segui le istruzioni, risolvi il CAPTCHA e premi Ctrl+Invio per proseguire.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">MODIFICA ORE PAGOPA</b><br>
 Questa sezione ti permette di <b>personalizzare le ore trimestrali</b> per il calcolo dei contributi.<br><br>
-â€” Il campo mostra il valore salvato nel DB (dal modulo contratto).<br>
-â€” <b>Auto ON:</b> il sistema usa automaticamente le ore modificate nei calcoli.<br>
-â€” <b>Auto OFF:</b> il sistema usa le ore standard del contratto.<br>
-â€” <b>CARICA ORE MODIFICATE:</b> forza l'utilizzo del valore scritto nel campo, indipendentemente dal toggle Auto.<br>
-â€” <b>Ripristina originali:</b> torna al comportamento normale (toggle Auto).<br><br>
+— Il campo mostra il valore salvato nel DB (dal modulo contratto).<br>
+— <b>Auto ON:</b> il sistema usa automaticamente le ore modificate nei calcoli.<br>
+— <b>Auto OFF:</b> il sistema usa le ore standard del contratto.<br>
+— <b>CARICA ORE MODIFICATE:</b> forza l'utilizzo del valore scritto nel campo, indipendentemente dal toggle Auto.<br>
+— <b>Ripristina originali:</b> torna al comportamento normale (toggle Auto).<br><br>
 Il valore salvato nel DB si modifica dal <b>modulo contratto</b> in /contratti/, non da questa pagina.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Automazione INPS</b><br>
 L'automazione apre il sito INPS nel browser e compila automaticamente i campi del bollettino PagoPA.<br><br>
 <b>Flusso:</b><br>
-â€” <b>Avvia INPS:</b> apre Chrome e fa il login sul sito INPS.<br>
-â€” Risolvi il <b>CAPTCHA</b> manualmente (Ã¨ richiesto da INPS).<br>
-â€” Premi <b>Ctrl+Invio</b> nella finestra Chrome per far proseguire l'automazione.<br>
-â€” L'automazione seleziona il trimestre, compila il bollettino, conferma e salva il PDF.<br><br>
+— <b>Avvia INPS:</b> apre Chrome e fa il login sul sito INPS.<br>
+— Risolvi il <b>CAPTCHA</b> manualmente (è richiesto da INPS).<br>
+— Premi <b>Ctrl+Invio</b> nella finestra Chrome per far proseguire l'automazione.<br>
+— L'automazione seleziona il trimestre, compila il bollettino, conferma e salva il PDF.<br><br>
 Il motore di automazione (<b>Playwright</b> o <b>Selenium</b>) si configura in <b>Configurazioni Servizi</b>.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Scarica Riepilogo PDF</b><br>
-Il PDF generato contiene tutti i dati del riepilogo contributivo (ore, contributi, quote). Se hai attivo MODIFICA ORE PAGOPA, nel PDF comparirÃ  una riga arancione <b>âš  Ore modificate</b> con l'indicazione del valore personalizzato.</p>
+Il PDF generato contiene tutti i dati del riepilogo contributivo (ore, contributi, quote). Se hai attivo MODIFICA ORE PAGOPA, nel PDF comparirà una riga arancione <b>âš  Ore modificate</b> con l'indicazione del valore personalizzato.</p>
       </div>
     </div>
   </div>

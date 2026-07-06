@@ -37,7 +37,7 @@
 {% for r in risultati %}
 <div class="p-3 mb-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;{% if r.extra_db %}border-color:#a78bfa;{% endif %}">
   <h4 class="mb-3" style="font-size:14px;font-weight:600;color:#EDEDED;">
-    {{ r.anno }} â€” <span style="color:#2c5282;">{{ r.livello }}</span>
+    {{ r.anno }} — <span style="color:#2c5282;">{{ r.livello }}</span>
     {% if not r.db_presente %}<span class="badge" style="background:#eab308;font-size:9px;vertical-align:middle;">solo CCNL</span>{% endif %}
     {% if r.extra_db %}<span class="badge" style="background:#a78bfa;font-size:9px;vertical-align:middle;">extra DB</span>{% endif %}
   </h4>
@@ -79,9 +79,9 @@
       {% for nome, v in r.indennita.items %}
       {% if v.stato != 'ok' %}
       <tr>
-        <td style="text-align:left;font-weight:500;">IndennitÃ  {{ nome|capfirst }}</td>
-        <td>â‚¬ {{ v.ccnl }}</td>
-        <td class="col-db">â‚¬ {{ v.db }}</td>
+        <td style="text-align:left;font-weight:500;">Indennità {{ nome|capfirst }}</td>
+        <td>€ {{ v.ccnl }}</td>
+        <td class="col-db">€ {{ v.db }}</td>
         <td>
           {% if v.stato == 'diff' %}<span class="cell-diff" style="padding:1px 8px;border-radius:4px;">âœ—</span>{% endif %}
           {% if v.stato == 'solo_ccnl' %}<span class="cell-solo-ccnl" style="padding:1px 8px;border-radius:4px;">solo CCNL</span>{% endif %}
@@ -96,9 +96,9 @@
       {% if c.stato == 'nessuno' %}
       <tr>
         <td style="text-align:left;font-weight:500;color:#5C5F66;">{{ colonne_label|get_item:col }}</td>
-        <td class="cell-nessuno">â€”</td>
-        <td class="col-db cell-nessuno">â€”</td>
-        <td><span class="cell-nessuno">â€”</span></td>
+        <td class="cell-nessuno">—</td>
+        <td class="col-db cell-nessuno">—</td>
+        <td><span class="cell-nessuno">—</span></td>
       </tr>
       {% endif %}
       {% endwith %}

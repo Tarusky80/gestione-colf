@@ -118,7 +118,7 @@
     {% if filtro_datore_pk %}datore #{{ filtro_datore_pk }}{% endif %}
     {% if filtro_lavoratore_pk %}lavoratore #{{ filtro_lavoratore_pk }}{% endif %}
     {% if filtro_beneficiario_pk %}beneficiario #{{ filtro_beneficiario_pk }}{% endif %}
-    â€” <a href="{% url 'documenti_list' %}" style="color:#fff;text-decoration:underline;">Rimuovi filtro</a>
+    — <a href="{% url 'documenti_list' %}" style="color:#fff;text-decoration:underline;">Rimuovi filtro</a>
   </div>
   {% endif %}
 
@@ -772,27 +772,27 @@ function toggleVisibileDatore(el, documentoPk) {
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Archivio Documenti
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Documenti
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
-        Archivio centrale di tutti i <b>documenti PDF</b> generati dal gestionale: buste paga, certificazioni uniche, ricevute, lettere, PagoPA, ecc. Ogni documento Ã¨ associato a un contratto e ha un tipo specifico.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Archivio centrale di tutti i <b>documenti PDF</b> generati dal gestionale: buste paga, certificazioni uniche, ricevute, lettere, PagoPA, ecc. Ogni documento è associato a un contratto e ha un tipo specifico.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Usa i <b>filtri</b> in alto per cercare per tipo documento, contratto, datore, lavoratore, periodo (da/a) o stato invio.<br>
         <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi, Scarica, Stampa, Apri cartella, Collega contratto, Invia Email, Elimina.<br>
-        <b>3.</b> Seleziona piÃ¹ documenti con le <b>checkbox</b> per azioni massive: Invio email massivo, Download ZIP.</p>
+        <b>3.</b> Seleziona più documenti con le <b>checkbox</b> per azioni massive: Invio email massivo, Download ZIP.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Stati del documento</b><br>
-        Ogni documento puÃ² avere uno stato: <b>Inviato</b> (spedito via email), <b>Stampato</b>, <b>Non inviato</b> (solo generato). I badge colore aiutano a identificare rapidamente lo stato.</p>
+        Ogni documento può avere uno stato: <b>Inviato</b> (spedito via email), <b>Stampato</b>, <b>Non inviato</b> (solo generato). I badge colore aiutano a identificare rapidamente lo stato.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Visibile al datore</b><br>
         La colonna <b>VISIBILE</b> con il toggle verde permette di rendere il documento accessibile al datore di lavoro nella sua area riservata (<b>/datore/</b>). Attiva il toggle per i documenti che il datore deve poter scaricare autonomamente.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Collega Contratto</b><br>
-        Se un documento non Ã¨ ancora associato a un contratto (es. caricato manualmente), puoi collegarlo usando l'apposita funzione dal pannello azioni.</p>
+        Se un documento non è ancora associato a un contratto (es. caricato manualmente), puoi collegarlo usando l'apposita funzione dal pannello azioni.</p>
       </div>
     </div>
   </div>

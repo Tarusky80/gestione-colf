@@ -90,9 +90,9 @@
                                 {% with colore=obj.colore|default:'#10b981' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
                             {% elif val.type == 'bool' and val.value %}<i class="bi bi-check-circle-fill text-success"></i>
                             {% elif val.type == 'bool' and not val.value %}<i class="bi bi-x-circle-fill text-secondary"></i>
-                            {% elif val.type == 'none' %}<span class="text-secondary small">â€”</span>
+                            {% elif val.type == 'none' %}<span class="text-secondary small">—</span>
                             {% elif val.type == 'date' %}{{ val.value|date:"d/m/Y" }}
-                            {% elif val.type == 'number' %}â‚¬ {{ val.value|floatformat:2 }}
+                            {% elif val.type == 'number' %}€ {{ val.value|floatformat:2 }}
                             {% else %}
                                 {% if f.name == 'corpo_testo' %}
                                     {{ val.value|striptags|tronca_caratteri:150 }}
@@ -130,10 +130,10 @@ function ordinaTabella(th, idx) {
     rows.sort(function(a, b) {
         var va = (a.cells[idx] ? a.cells[idx].textContent.trim() : '');
         var vb = (b.cells[idx] ? b.cells[idx].textContent.trim() : '');
-        if (va === 'â€”') va = '';
-        if (vb === 'â€”') vb = '';
-        var na = parseFloat(va.replace(/[â‚¬.\s]/g, '').replace(',', '.'));
-        var nb = parseFloat(vb.replace(/[â‚¬.\s]/g, '').replace(',', '.'));
+        if (va === '—') va = '';
+        if (vb === '—') vb = '';
+        var na = parseFloat(va.replace(/[€.\s]/g, '').replace(',', '.'));
+        var nb = parseFloat(vb.replace(/[€.\s]/g, '').replace(',', '.'));
         if (!isNaN(na) && !isNaN(nb)) return dir === 'asc' ? na - nb : nb - na;
         return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
     });
@@ -164,7 +164,7 @@ function filteraTabella() {
                 if (txt.indexOf(testo) !== -1) { mostra = true; break; }
             }
         }
-        // Filtro anno (cerca nella cella dell'anno â€” di solito indice 2)
+        // Filtro anno (cerca nella cella dell'anno — di solito indice 2)
         if (mostra && anno) {
             var foundAnno = false;
             for (var j = 0; j < cells.length; j++) {
@@ -189,21 +189,21 @@ document.addEventListener('DOMContentLoaded', filteraTabella);
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” {{ titolo|default:"Tabella" }}
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — {{ titolo|default:"Tabella" }}
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
         Pagina di gestione della tabella <b>{{ titolo|default:"generica" }}</b>. Da qui puoi visualizzare, cercare, aggiungere, modificare e duplicare gli elementi.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare l'elenco in tempo reale.<br>
         <b>2.</b> Se presente, usa il menu a tendina <b>Anno</b> per filtrare per anno.<br>
         <b>3.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina.<br>
-        <b>4.</b> <b>Nuovo</b> â€” aggiunge un nuovo elemento tramite pannello laterale.<br>
-        <b>5.</b> <b>Export XLSX</b> (se disponibile) â€” scarica l'elenco in Excel.<br>
-        <b>6.</b> <b>Importa</b> (se disponibile) â€” carica dati da file XLSX.</p>
+        <b>4.</b> <b>Nuovo</b> — aggiunge un nuovo elemento tramite pannello laterale.<br>
+        <b>5.</b> <b>Export XLSX</b> (se disponibile) — scarica l'elenco in Excel.<br>
+        <b>6.</b> <b>Importa</b> (se disponibile) — carica dati da file XLSX.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Ordinamento</b><br>
         Clicca sulle intestazioni delle colonne per ordinare la tabella in ordine crescente o decrescente.</p>

@@ -88,7 +88,7 @@
 {% empty %}
 <div class="text-center py-5" class="card-simple">
     <i class="bi bi-check2-square text-secondary" style="font-size:32px;display:block;margin-bottom:8px;"></i>
-    <div class="text-secondary">Nessuna attivitÃ  per questo mese.</div>
+    <div class="text-secondary">Nessuna attività per questo mese.</div>
 </div>
 {% endfor %}
 </div>
@@ -97,7 +97,7 @@
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content" class="class="card-alt"">
             <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-                <h5 class="modal-title" style="font-size:14px;color:#EDEDED;">Nota attivitÃ </h5>
+                <h5 class="modal-title" style="font-size:14px;color:#EDEDED;">Nota attività</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" style="padding:18px;">
@@ -163,7 +163,7 @@ function salvaNota() {
 }
 
 function resettaMese(anno, mese) {
-    if (!confirm('Resettare tutte le attivitÃ  per ' + mese + '/' + anno + '?')) return;
+    if (!confirm('Resettare tutte le attività per ' + mese + '/' + anno + '?')) return;
     var formData = new FormData();
     formData.append('anno', anno);
     formData.append('mese', mese);
@@ -182,22 +182,22 @@ function resettaMese(anno, mese) {
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Checklist Mensile
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Checklist Mensile
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨</b><br>
-        La Checklist Mensile ti aiuta a monitorare le attivitÃ  periodiche da svolgere ogni mese per ogni contratto. Ogni attivitÃ  completata viene tracciata con data e ora.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        La Checklist Mensile ti aiuta a monitorare le attività periodiche da svolgere ogni mese per ogni contratto. Ogni attività completata viene tracciata con data e ora.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Clicca sul <b>cerchio</b> accanto a ogni attivitÃ  per segnarla come completata (si riempie di verde).<br>
+        <b>1.</b> Clicca sul <b>cerchio</b> accanto a ogni attività per segnarla come completata (si riempie di verde).<br>
         <b>2.</b> Usa le frecce <b>&lt; &gt;</b> per navigare tra i mesi oppure clicca "Mese corrente" per tornare a oggi.<br>
         <b>3.</b> La barra di progresso mostra il completamento complessivo del mese.<br>
-        <b>4.</b> Clicca <b>"Resetta"</b> per azzerare tutte le attivitÃ  del mese selezionato.</p>
+        <b>4.</b> Clicca <b>"Resetta"</b> per azzerare tutte le attività del mese selezionato.</p>
 
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">AttivitÃ  obbligatorie</b><br>
-        Le attivitÃ  con bordo giallo sono <b>obbligatorie</b> e vanno completate prima della chiusura del mese. Le altre sono facoltative ma consigliate per una gestione ordinata.</p>
+        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Attività obbligatorie</b><br>
+        Le attività con bordo giallo sono <b>obbligatorie</b> e vanno completate prima della chiusura del mese. Le altre sono facoltative ma consigliate per una gestione ordinata.</p>
       </div>
     </div>
   </div>

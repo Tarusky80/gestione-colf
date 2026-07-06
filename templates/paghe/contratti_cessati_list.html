@@ -18,7 +18,7 @@
         <h1 class="h3 fw-bold mb-1">CONTRATTI CESSATI
           <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
         </h1>
-        <p class="text-secondary small mb-0">Elenco dei contratti non piÃ¹ attivi. Puoi riattivarli singolarmente.</p>
+        <p class="text-secondary small mb-0">Elenco dei contratti non più attivi. Puoi riattivarli singolarmente.</p>
     </div>
     <div class="d-flex align-items-center gap-3">
         <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
@@ -56,7 +56,7 @@
         </thead>
         <tbody>
             {% for c in contratti %}
-            <tr class="clickable-row" data-type="contratto_cessato" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} â†’ {{ c.lavoratore.nome_cognome }}" data-sub="{{ c.get_tipo_contratto_display }} Â· {{ c.get_stato_display }}" data-stato="{{ c.stato }}" data-tipo-contratto="{{ c.get_tipo_contratto_display }}" data-data-assunzione="{{ c.data_assunzione|date:'d/m/Y' }}" data-data-fine="{{ c.data_fine|date:'d/m/Y'|default:'-' }}" data-livello="{{ c.parametri_minimi.livello.codice }}">
+            <tr class="clickable-row" data-type="contratto_cessato" data-pk="{{ c.pk }}" data-title="{{ c.datore.nome_cognome }} â†’ {{ c.lavoratore.nome_cognome }}" data-sub="{{ c.get_tipo_contratto_display }} · {{ c.get_stato_display }}" data-stato="{{ c.stato }}" data-tipo-contratto="{{ c.get_tipo_contratto_display }}" data-data-assunzione="{{ c.data_assunzione|date:'d/m/Y' }}" data-data-fine="{{ c.data_fine|date:'d/m/Y'|default:'-' }}" data-livello="{{ c.parametri_minimi.livello.codice }}">
                 <td><div class="fw-bold">{{ c.datore.nome_cognome }}</div></td>
                 <td><div class="text-secondary">{{ c.lavoratore.nome_cognome }}</div></td>
                 <td>{{ c.data_assunzione|date:"d/m/Y" }}</td>
@@ -163,19 +163,19 @@ document.addEventListener('DOMContentLoaded', function() { aggiornaConteggio('ce
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Contratti Cessati
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Contratti Cessati
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
-        Elenco dei <b>contratti cessati</b> (non piÃ¹ attivi). I contratti finiscono qui quando vengono chiusi, risolti o terminati. Da questa pagina puoi riattivarli o eliminarli definitivamente.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        Elenco dei <b>contratti cessati</b> (non più attivi). I contratti finiscono qui quando vengono chiusi, risolti o terminati. Da questa pagina puoi riattivarli o eliminarli definitivamente.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per nome del datore o del lavoratore.<br>
         <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina, Documenti, Riattiva.<br>
-        <b>3.</b> <b>ELIMINA TUTTI</b> â€” sposta tutti i contratti nella pagina Eliminati.<br>
-        <b>4.</b> <b>ELIMINA TUTTI DEFINITIVAMENTE</b> â€” cancella in modo irreversibile.</p>
+        <b>3.</b> <b>ELIMINA TUTTI</b> — sposta tutti i contratti nella pagina Eliminati.<br>
+        <b>4.</b> <b>ELIMINA TUTTI DEFINITIVAMENTE</b> — cancella in modo irreversibile.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Riattivazione</b><br>
         Cliccando <b>Riattiva</b> dal pannello azioni, il contratto torna nello stato ATTIVO e riappare nella pagina Contratti Attivi. Puoi anche modificare la data di cessazione prima di riattivarlo.</p>

@@ -81,7 +81,7 @@
         <div style="display:flex;flex-wrap:wrap;gap:4px;">
         {% for s in prossime_scadenze|slice:':6' %}
             <span style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.15);border-radius:4px;padding:2px 8px;font-size:10px;color:#EDEDED;white-space:nowrap;">
-                {{ s.data|date:"d/m" }} â€” {{ s.titolo }}
+                {{ s.data|date:"d/m" }} — {{ s.titolo }}
             </span>
         {% endfor %}
         {% if prossime_scadenze|length > 6 %}
@@ -104,7 +104,7 @@
 <div style="background:rgba(94,106,210,0.06);border:1px solid rgba(94,106,210,0.12);border-radius:10px;padding:10px 14px;margin-bottom:14px;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
         <span style="background:#5E6AD2;width:8px;height:8px;border-radius:50%;display:inline-block;"></span>
-        <span style="font-size:11px;font-weight:700;color:#b0b8ff;text-transform:uppercase;">Oggi â€” {{ oggi|date:"d/m/Y" }}</span>
+        <span style="font-size:11px;font-weight:700;color:#b0b8ff;text-transform:uppercase;">Oggi — {{ oggi|date:"d/m/Y" }}</span>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;">
     {% for app in oggi_eventi %}
@@ -155,8 +155,8 @@
                 {{ appuntamenti|length }} eventi
                 <span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:6px;">
                 {% if conteggio_per_tipo.SCADENZA %}<span style="color:#f59e0b;">{{ conteggio_per_tipo.SCADENZA }} scad.</span>{% endif %}
-                {% if conteggio_per_tipo.APPUNTAMENTO %}{% if conteggio_per_tipo.SCADENZA %} Â· {% endif %}<span style="color:#b0b8ff;">{{ conteggio_per_tipo.APPUNTAMENTO }} app.</span>{% endif %}
-                {% if conteggio_per_tipo.PROMEMORIA %}{% if conteggio_per_tipo.SCADENZA or conteggio_per_tipo.APPUNTAMENTO %} Â· {% endif %}<span style="color:#34d399;">{{ conteggio_per_tipo.PROMEMORIA }} prom.</span>{% endif %}
+                {% if conteggio_per_tipo.APPUNTAMENTO %}{% if conteggio_per_tipo.SCADENZA %} · {% endif %}<span style="color:#b0b8ff;">{{ conteggio_per_tipo.APPUNTAMENTO }} app.</span>{% endif %}
+                {% if conteggio_per_tipo.PROMEMORIA %}{% if conteggio_per_tipo.SCADENZA or conteggio_per_tipo.APPUNTAMENTO %} · {% endif %}<span style="color:#34d399;">{{ conteggio_per_tipo.PROMEMORIA }} prom.</span>{% endif %}
                 </span>
             {% else %}
                 Nessun evento
@@ -286,12 +286,12 @@
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Agenda Appuntamenti
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Agenda Appuntamenti
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
         Agenda mensile per tenere traccia di appuntamenti, scadenze (F24, INPS, ecc.) e promemoria vari.</p>
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Clicca su un giorno del calendario per vedere gli eventi di quel giorno.<br>
@@ -329,7 +329,7 @@ function selezionaGiorno(dataStr, el) {
     label.style.display = 'inline';
     var gg = new Date(dataStr + 'T12:00:00');
     var nomiGiorni = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
-    label.textContent = 'â€” ' + nomiGiorni[gg.getDay()] + ' ' + gg.getDate() + '/' + (gg.getMonth()+1) + ' (' + count + ' eventi)';
+    label.textContent = '— ' + nomiGiorni[gg.getDay()] + ' ' + gg.getDate() + '/' + (gg.getMonth()+1) + ' (' + count + ' eventi)';
 }
 
 function filtraAgenda(tipo) {

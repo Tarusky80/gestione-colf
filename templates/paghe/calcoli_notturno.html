@@ -64,7 +64,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
       <div class="d-flex align-items-center gap-2">
         <button class="btn btn-sm" onclick="navContratto(-1)" style="background:transparent;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:4px 8px;font-size:12px;line-height:1;">&#9664;</button>
         <select id="fContratto" class="form-control" onchange="calcola()" class="bg-input">
-          <option value="">â€” Seleziona â€”</option>
+          <option value="">— Seleziona —</option>
           {% for c in contratti %}
           <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
           {% endfor %}
@@ -99,12 +99,12 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         <label class="radio-card selected" id="rc-presenza" onclick="selezionaTipo('presenza')">
           <input type="radio" name="tipoNotturno" value="presenza" checked>
           <div class="label-tipo">Presenza Notturna</div>
-          <div class="sotto-tipo">Art. 11 â€” â‚¬811,09/mese <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
+          <div class="sotto-tipo">Art. 11 — €811,09/mese <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
         </label>
         <label class="radio-card" id="rc-assistenza" onclick="selezionaTipo('assistenza')">
           <input type="radio" name="tipoNotturno" value="assistenza">
           <div class="label-tipo">Assistenza Notturna</div>
-          <div class="sotto-tipo">Art. 10 â€” per livello <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
+          <div class="sotto-tipo">Art. 10 — per livello <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
         </label>
         <label class="radio-card" id="rc-a_ore" onclick="selezionaTipo('a_ore')">
           <input type="radio" name="tipoNotturno" value="a_ore">
@@ -182,7 +182,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 
 <div id="resultContainer" style="display:none;">
   <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga giÃ  salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
   <div id="resultLoading" class="text-center py-5" style="display:none;">
     <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
@@ -200,55 +200,55 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto â€” Busta Notturno</h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Notturno</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
-Qui puoi calcolare la <b>retribuzione per lavoro notturno</b> dei collaboratori domestici. Il CCNL prevede che il lavoro svolto nella fascia notturna (22:00â€“06:00, o 20:00â€“08:00 per la presenza) venga pagato con modalitÃ  speciali.<br><br>
-Ci sono <b>3 modalitÃ </b> di calcolo, ognuna pensata per una situazione diversa. Scegli quella che corrisponde al tipo di assistenza notturna che il lavoratore effettua.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+Qui puoi calcolare la <b>retribuzione per lavoro notturno</b> dei collaboratori domestici. Il CCNL prevede che il lavoro svolto nella fascia notturna (22:00â€“06:00, o 20:00â€“08:00 per la presenza) venga pagato con modalità speciali.<br><br>
+Ci sono <b>3 modalità</b> di calcolo, ognuna pensata per una situazione diversa. Scegli quella che corrisponde al tipo di assistenza notturna che il lavoratore effettua.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Le 3 ModalitÃ  â€” Come scegliere quella giusta</b><br><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Le 3 Modalità — Come scegliere quella giusta</b><br><br>
 <b style="color:#818cf8;">1. Presenza Notturna (Art. 11 CCNL)</b><br>
-â€” <b>Cos'Ã¨:</b> una retribuzione mensile <b>fissa</b> di â‚¬811,09 (importo CCNL 2024).<br>
-â€” <b>Onnicomprensivo:</b> significa che l'importo include giÃ  TUTTO: paga base, ratei (TFR, 13Âª, Ferie, Festivi), indennitÃ  notturne. Non si aggiungono maggiorazioni orarie.<br>
-â€” <b>Quando si usa:</b> per assistenza notturna <b>continuativa</b> nella fascia 20:00â€“08:00 (12 ore). Tipico del badante convivente che sta sveglio tutta la notte per assistere un anziano non autosufficiente.<br>
-â€” <b>Slider ore:</b> non serve, l'importo Ã¨ fisso.<br><br>
+— <b>Cos'è:</b> una retribuzione mensile <b>fissa</b> di €811,09 (importo CCNL 2024).<br>
+— <b>Onnicomprensivo:</b> significa che l'importo include già TUTTO: paga base, ratei (TFR, 13Âª, Ferie, Festivi), indennità notturne. Non si aggiungono maggiorazioni orarie.<br>
+— <b>Quando si usa:</b> per assistenza notturna <b>continuativa</b> nella fascia 20:00â€“08:00 (12 ore). Tipico del badante convivente che sta sveglio tutta la notte per assistere un anziano non autosufficiente.<br>
+— <b>Slider ore:</b> non serve, l'importo è fisso.<br><br>
 <b style="color:#818cf8;">2. Assistenza Notturna (Art. 10 CCNL)</b><br>
-â€” <b>Cos'Ã¨:</b> un importo mensile <b>variabile per livello</b> contrattuale (dipende dal livello A, B, C, D, etc.).<br>
-â€” <b>Onnicomprensivo:</b> anche questo include tutto (paga base, ratei, indennitÃ ).<br>
-â€” <b>Quando si usa:</b> per assistenza a persone <b>non autosufficienti</b> durante la notte, con o senza convivenza.<br>
-â€” <b>Slider ore:</b> non serve, l'importo Ã¨ mensile fisso per livello.<br><br>
+— <b>Cos'è:</b> un importo mensile <b>variabile per livello</b> contrattuale (dipende dal livello A, B, C, D, etc.).<br>
+— <b>Onnicomprensivo:</b> anche questo include tutto (paga base, ratei, indennità).<br>
+— <b>Quando si usa:</b> per assistenza a persone <b>non autosufficienti</b> durante la notte, con o senza convivenza.<br>
+— <b>Slider ore:</b> non serve, l'importo è mensile fisso per livello.<br><br>
 <b style="color:#818cf8;">3. A Ore con Maggiorazione 20%</b><br>
-â€” <b>Cos'Ã¨:</b> si prende la <b>paga base oraria</b> del contratto e si moltiplica per <b>1,20</b> (maggiorazione del 20%) e per le <b>ore effettive</b> di lavoro notturno.<br>
-â€” <b>Non Ã¨ onnicomprensivo:</b> i ratei (TFR, 13Âª, Ferie, Festivi) si calcolano separatamente con i toggle appositi.<br>
-â€” <b>Quando si usa:</b> per lavoro notturno <b>saltuario</b> o <b>a ore</b>, quando il lavoratore non fa tutte le notti ma solo alcune ore in fascia notturna.<br>
-â€” <b>Slider ore:</b> USA lo slider (0â€“200 ore, step 0,5) o digita il numero per impostare le ore notturne del mese.</p>
+— <b>Cos'è:</b> si prende la <b>paga base oraria</b> del contratto e si moltiplica per <b>1,20</b> (maggiorazione del 20%) e per le <b>ore effettive</b> di lavoro notturno.<br>
+— <b>Non è onnicomprensivo:</b> i ratei (TFR, 13Âª, Ferie, Festivi) si calcolano separatamente con i toggle appositi.<br>
+— <b>Quando si usa:</b> per lavoro notturno <b>saltuario</b> o <b>a ore</b>, quando il lavoratore non fa tutte le notti ma solo alcune ore in fascia notturna.<br>
+— <b>Slider ore:</b> USA lo slider (0â€“200 ore, step 0,5) o digita il numero per impostare le ore notturne del mese.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Opzioni aggiuntive (solo per "A Ore")</b><br>
-Quando scegli la modalitÃ  "A Ore", si attivano due opzioni extra:<br><br>
+Quando scegli la modalità "A Ore", si attivano due opzioni extra:<br><br>
 <b>Straordinario notturno (+50%):</b> se il lavoratore fa ore straordinarie in fascia notturna, si applica una maggiorazione del 50% sulla paga base. Attiva il toggle e usa lo slider per le ore di straordinario notturno.<br><br>
 <b>Festivo/Domenicale (+60%):</b> se il lavoro notturno cade in un giorno festivo o domenicale, si applica una maggiorazione del 60%. Attiva il toggle e imposta le ore festive notturne.<br><br>
-<b>Nota importante:</b> le maggiorazioni si <b>cumulano</b>. Se un'ora Ã¨ sia notturna (20%) che straordinaria (50%), la maggiorazione totale Ã¨ 20% + 50% = 70% sulla paga base.</p>
+<b>Nota importante:</b> le maggiorazioni si <b>cumulano</b>. Se un'ora è sia notturna (20%) che straordinaria (50%), la maggiorazione totale è 20% + 50% = 70% sulla paga base.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei Notturni</b><br>
 Per ogni rateo (TFR, 13Âª, Ferie, Festivi) puoi scegliere se:<br>
-<span style="color:#34d399;">âœ“ Incluso</span> â€” pagato in busta ogni mese.<br>
-<span style="color:#f59e0b;">âŸ³ Accantonato</span> â€” trattenuto per liquidazione futura.<br><br>
-<b>Nota per le modalitÃ  onnicomprensive (Presenza e Assistenza):</b> l'importo fisso include giÃ  i ratei, ma puoi comunque regolare i toggle per gestire accantonamenti separati.</p>
+<span style="color:#34d399;">âœ“ Incluso</span> — pagato in busta ogni mese.<br>
+<span style="color:#f59e0b;">âŸ³ Accantonato</span> — trattenuto per liquidazione futura.<br><br>
+<b>Nota per le modalità onnicomprensive (Presenza e Assistenza):</b> l'importo fisso include già i ratei, ma puoi comunque regolare i toggle per gestire accantonamenti separati.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Toggle Convivente</b><br>
-Se il lavoratore notturno Ã¨ <b>convivente</b>, attiva il toggle "Convivente" per includere le indennitÃ  di vitto e alloggio nel calcolo. L'indennitÃ  viene detratta dal netto.</p>
+Se il lavoratore notturno è <b>convivente</b>, attiva il toggle "Convivente" per includere le indennità di vitto e alloggio nel calcolo. L'indennità viene detratta dal netto.</p>
 
 <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Fasce Orarie del Lavoro Notturno</b><br>
-Secondo il CCNL, il lavoro notturno Ã¨ quello svolto nella fascia:<br>
-â€” <b>22:00 â€“ 06:00</b> (per la generalitÃ  dei casi).<br>
-â€” <b>20:00 â€“ 08:00</b> (per la modalitÃ  Presenza Notturna Art. 11).<br><br>
+Secondo il CCNL, il lavoro notturno è quello svolto nella fascia:<br>
+— <b>22:00 â€“ 06:00</b> (per la generalità dei casi).<br>
+— <b>20:00 â€“ 08:00</b> (per la modalità Presenza Notturna Art. 11).<br><br>
 Le ore al di fuori di queste fasce vengono retribuite con la paga base normale.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> â€” salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta giÃ  salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> â€” consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lÃ¬ puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
       </div>
     </div>
   </div>
@@ -435,7 +435,7 @@ function renderNotturno(d) {
 
   // Header contratto
   html += '<div style="padding:16px 24px;border-bottom:1px solid #27282D;">';
-  html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-moon-stars me-1"></i>Busta Notturna â€” ' + d.mese_nome + ' ' + d.anno + '</div>';
+  html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-moon-stars me-1"></i>Busta Notturna — ' + d.mese_nome + ' ' + d.anno + '</div>';
   html += '<div class="row g-2 mt-2">';
   html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
   html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
@@ -503,7 +503,7 @@ window.salvaBusta = function() {
   if (!pk) return;
   var warn = document.getElementById('bustaEsistenteWarning');
   if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
-    if (!confirm('Busta paga giÃ  salvata per questo periodo. Sovrascrivere?')) return;
+    if (!confirm('Busta paga già salvata per questo periodo. Sovrascrivere?')) return;
   }
   var btn = document.getElementById('btnSalvaBusta');
   btn.disabled = true;

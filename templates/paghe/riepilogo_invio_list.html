@@ -43,9 +43,9 @@
             {% for r in riepiloghi %}
             <tr>
                 <td>{{ r.creato_il|date:"d/m/Y H:i" }}</td>
-                <td>{{ r.creato_da|default:"â€”" }}</td>
+                <td>{{ r.creato_da|default:"—" }}</td>
                 <td>{{ r.get_mese_display }} {{ r.anno }}</td>
-                <td>{{ r.modello_email.codice|default:"â€”" }}</td>
+                <td>{{ r.modello_email.codice|default:"—" }}</td>
                 <td>{{ r.totale_contratti }}</td>
                 <td><span style="color:#10b981;font-weight:600;">{{ r.totale_ok }}</span></td>
                 <td>{% if r.totale_errori > 0 %}<span style="color:#dc2626;font-weight:600;">{{ r.totale_errori }}</span>{% else %}0{% endif %}</td>
@@ -54,7 +54,7 @@
                     <a href="{% url 'download_riepilogo_zip' r.pk %}" class="btn btn-sm" style="background:#059669;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;text-decoration:none;">
                         <i class="bi bi-download"></i>
                     </a>
-                    {% else %}<span class="text-secondary small">â€”</span>{% endif %}
+                    {% else %}<span class="text-secondary small">—</span>{% endif %}
                 </td>
                 <td>
                     <a href="{% url 'riepilogo_invio_dettaglio' r.pk %}" class="btn btn-sm" style="background:#2563eb;color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;text-decoration:none;">
@@ -105,16 +105,16 @@ function eliminaTuttiInvio() {
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Riepilogo Invii</h5>
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Riepilogo Invii</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
         Qui trovi lo storico di tutte le generazioni massive di buste paga effettuate dalla pagina "Stampe e Invii". Per ogni invio puoi vedere la data, il periodo di riferimento, il modello email usato, il totale dei contratti processati e quanti sono andati a buon fine.</p>
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Azioni</b><br>
-        <b>Dettaglio</b> â€” apre la pagina con l'elenco completo dei contratti inclusi nell'invio.<br>
-        <b>ZIP</b> â€” scarica l'archivio ZIP contenente tutti i PDF generati.<br>
-        <b>Elimina</b> â€” rimuove il riepilogo (i PDF rimangono nella cartella documenti).</p>
+        <b>Dettaglio</b> — apre la pagina con l'elenco completo dei contratti inclusi nell'invio.<br>
+        <b>ZIP</b> — scarica l'archivio ZIP contenente tutti i PDF generati.<br>
+        <b>Elimina</b> — rimuove il riepilogo (i PDF rimangono nella cartella documenti).</p>
       </div>
     </div>
   </div>

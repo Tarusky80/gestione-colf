@@ -114,8 +114,8 @@
             <tr class="clickable-row" data-type="backup" data-pk="{{ backup.pk }}" data-title="{{ backup.data_creazione|date:'d M Y H:i' }}" data-sub="{{ backup.get_tipo_backup_display }}">
                 <td><div class="fw-bold" style="font-size: 12px;">{{ backup.data_creazione|date:"d M Y H:i" }}</div></td>
                 <td><span style="display:inline-block; padding:2px 10px; border-radius:6px; font-size:11px; font-weight:600; background:rgba(94,106,210,0.15); color:#b0b8ff;">{{ backup.get_tipo_backup_display }}</span></td>
-                <td><div class="text-secondary" style="font-size: 11px;">{{ backup.note_opzionali|default:"â€”" }}</div></td>
-                <td><div class="text-secondary" style="font-size: 11px;">{{ backup.file_size_display|filesizeformat|default:"â€”" }}</div></td>
+                <td><div class="text-secondary" style="font-size: 11px;">{{ backup.note_opzionali|default:"—" }}</div></td>
+                <td><div class="text-secondary" style="font-size: 11px;">{{ backup.file_size_display|filesizeformat|default:"—" }}</div></td>
                 <td>
                     {% if backup.file_json %}
                         <div class="d-flex gap-2 align-items-center">
@@ -127,7 +127,7 @@
                             </a>
                         </div>
                     {% else %}
-                        <span class="text-secondary" style="font-size: 11px;">â€”</span>
+                        <span class="text-secondary" style="font-size: 11px;">—</span>
                     {% endif %}
                 </td>
                 <td>
@@ -142,7 +142,7 @@
                         </div>
                         <div class="text-secondary" style="font-size:10px;margin-top:2px;">{{ backup.db_size_display }}</div>
                     {% else %}
-                        <span class="text-secondary" style="font-size: 11px;">â€”</span>
+                        <span class="text-secondary" style="font-size: 11px;">—</span>
                     {% endif %}
                 </td>
                 <td>
@@ -235,7 +235,7 @@ function importaExcel(e) {
 
 function ripristinaDaJson(e) {
     e.preventDefault();
-    if (!confirm('ATTENZIONE: questo ripristino sovrascriverÃ  TUTTI i dati correnti nel database. Continuare?')) return;
+    if (!confirm('ATTENZIONE: questo ripristino sovrascriverà TUTTI i dati correnti nel database. Continuare?')) return;
     var btn = document.getElementById('btnRipristinaJson');
     var originalText = btn.innerHTML;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Ripristino in corso...';
@@ -267,7 +267,7 @@ function ripristinaDb(pk, btn) {
 }
 
 function pulisciBackupVecchi() {
-    if (!confirm('Eliminare tutti i backup piÃ¹ vecchi di 6 mesi?')) return;
+    if (!confirm('Eliminare tutti i backup più vecchi di 6 mesi?')) return;
     var formData = new FormData();
     formData.append('azione', 'pulisci');
     formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
@@ -286,20 +286,20 @@ function pulisciBackupVecchi() {
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Gestione Backup
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Gestione Backup
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
         Qui puoi creare, scaricare e ripristinare i <b>backup</b> del database in formato JSON + ZIP del database SQLite. I backup sono essenziali per la sicurezza dei dati e vengono automaticamente programmati ogni notte alle 03:00.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Scegli il <b>tipo di backup</b>: Completo (tutti i dati), o parziale (solo selezioni specifiche).<br>
         <b>2.</b> Clicca <b>Crea Backup</b> per generare il salvataggio. Verranno creati sia il file JSON (dati strutturati) sia lo ZIP del database (copia fisica).<br>
         <b>3.</b> Nella tabella puoi <b>Scaricare</b> il JSON, lo ZIP del DB, o <b>Ripristinare</b> direttamente il DB cliccando "Ripristina DB".<br>
-        <b>4.</b> Usa <b>Pulisci backup vecchi</b> per rimuovere automaticamente quelli piÃ¹ vecchi di 6 mesi.<br>
-        <b>5.</b> <b>Upload e ripristino</b> â€” carica un file JSON dal tuo computer per ripristinare dati da un backup esterno.</p>
+        <b>4.</b> Usa <b>Pulisci backup vecchi</b> per rimuovere automaticamente quelli più vecchi di 6 mesi.<br>
+        <b>5.</b> <b>Upload e ripristino</b> — carica un file JSON dal tuo computer per ripristinare dati da un backup esterno.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Backup del database (ZIP)</b><br>
         Ogni backup crea automaticamente una copia del file <code>db.sqlite3</code> tramite l'API <code>sqlite3.backup()</code>, che garantisce una copia consistente anche durante le scritture. Lo ZIP contiene un unico file <code>db.sqlite3</code> pronto per il ripristino. Dopo un ripristino del DB, <b>riavviare il server</b> per sicurezza.</p>

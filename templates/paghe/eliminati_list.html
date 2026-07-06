@@ -54,7 +54,7 @@
                 <option value="tabella_casse">Tabella Casse</option>
                 <option value="contributi_inps">Contributi INPS</option>
                 <option value="malattia">Malattia</option>
-                <option value="scatti_anzianita">Scatti AnzianitÃ </option>
+                <option value="scatti_anzianita">Scatti Anzianità</option>
                 <option value="testo_preimpostato">Testo Preimpostato</option>
                 <option value="tipo_progetto">Tipo Progetto</option>
                 <option value="livello">Livello</option>
@@ -199,13 +199,13 @@ window.apriVediEliminato = function(pk) {
         'applica_scatti': 'Applica Scatti', 'applica_notturno_assistenza': 'Notturno Assistenza',
         'applica_notturno_presenza': 'Notturno Presenza',
         'applica_notturno_base': 'Notturno Base', 'applica_notturno_20': 'Notturno 20%',
-        'ind_certificazione_qualita': 'Ind. Certificazione QualitÃ ',
-        'ind_piu_persone_non_conv': 'Ind. PiÃ¹ Persone Non Conviv.',
+        'ind_certificazione_qualita': 'Ind. Certificazione Qualità',
+        'ind_piu_persone_non_conv': 'Ind. Più Persone Non Conviv.',
         'ind_minori_non_conv': 'Ind. Minori Non Conviv.',
-        'ind_piu_persone_qualita': 'Ind. PiÃ¹ Persone QualitÃ ',
-        'ind_minori_qualita': 'Ind. Minori QualitÃ ',
-        'ind_assistenza_piu_persone_ft': 'Ind. Assistenza PiÃ¹ Pers. FT',
-        'ind_assistenza_piu_persone_pt': 'Ind. Assistenza PiÃ¹ Pers. PT',
+        'ind_piu_persone_qualita': 'Ind. Più Persone Qualità',
+        'ind_minori_qualita': 'Ind. Minori Qualità',
+        'ind_assistenza_piu_persone_ft': 'Ind. Assistenza Più Pers. FT',
+        'ind_assistenza_piu_persone_pt': 'Ind. Assistenza Più Pers. PT',
         'ind_minori_6_anni_ft': 'Ind. Minori 6 Anni FT',
         'ind_funzione_conviventi': 'Ind. Funzione Conviventi',
         'ind_conviventi_ft_54h': 'Ind. Conviventi FT 54h',
@@ -237,7 +237,7 @@ window.apriVediEliminato = function(pk) {
             return '<span class="badge rounded-pill px-3 py-1" style="background:' + sc + '20;color:' + sc + ';font-size:12px;font-weight:600;"><i class="bi bi-circle-fill me-1" style="font-size:8px;"></i>' + s + '</span>';
         }
         // Progetto: badge colorato anche singolo
-        if (key === 'progetto' && s.indexOf('â‚¬') === -1) {
+        if (key === 'progetto' && s.indexOf('€') === -1) {
             var col = '#2dd4bf';
             var parts = s.indexOf(', ') !== -1 ? s.split(', ') : [s];
             return parts.map(function(p) { return '<span class="badge rounded-pill px-3 py-1 me-1" style="background:' + col + '20;color:' + col + ';font-size:12px;font-weight:500;margin-bottom:2px;">' + p.trim() + '</span>'; }).join('');
@@ -249,7 +249,7 @@ window.apriVediEliminato = function(pk) {
         .then(function(r) { return r.json(); })
         .then(function(d) {
             if (!d.success) { mostraToast('Errore', false); return; }
-            document.getElementById('vediEliminatoSubtitle').textContent = d.tipo + ' â€” eliminato il ' + d.eliminato_il;
+            document.getElementById('vediEliminatoSubtitle').textContent = d.tipo + ' — eliminato il ' + d.eliminato_il;
             var body = document.getElementById('vediEliminatoBody');
             var html = '<div class="d-flex align-items-center gap-2 mb-4">';
             var icona = d.tipo.toLowerCase().indexOf('datore') !== -1 ? 'bi-person-vcard' :
@@ -345,22 +345,22 @@ document.addEventListener('DOMContentLoaded', filteraEliminati);
     <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Eliminati
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Eliminati
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
         Contiene tutti i <b>record eliminati</b> dalle anagrafiche (datori, lavoratori, beneficiari, contratti). I record non vengono cancellati subito dal database, ma spostati qui in modo da poterli eventualmente ripristinare.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per nome, tipo o codice fiscale.<br>
         <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi (dettaglio del record originale), Ripristina, Elimina definitivamente.<br>
-        <b>3.</b> <b>RIPRISTINA TUTTI</b> â€” riporta tutti i record eliminati nelle rispettive pagine.<br>
-        <b>4.</b> <b>ELIMINA TUTTI</b> â€” cancella definitivamente tutti i record (operazione irreversibile).</p>
+        <b>3.</b> <b>RIPRISTINA TUTTI</b> — riporta tutti i record eliminati nelle rispettive pagine.<br>
+        <b>4.</b> <b>ELIMINA TUTTI</b> — cancella definitivamente tutti i record (operazione irreversibile).</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
-        L'eliminazione definitiva non puÃ² essere annullata. Il ripristino ricrea il record esattamente com'era prima dell'eliminazione.</p>
+        L'eliminazione definitiva non può essere annullata. Il ripristino ricrea il record esattamente com'era prima dell'eliminazione.</p>
       </div>
     </div>
   </div>

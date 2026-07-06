@@ -149,7 +149,7 @@
         <div class="col-md-6">
             <label class="c-10-up mb-1 fw-bold">Contratto</label>
             <select id="fContratto" class="form-control bg-input" onchange="selezionaContratto()">
-                <option value="">â€” Seleziona un contratto â€”</option>
+                <option value="">— Seleziona un contratto —</option>
                 {% for c in contratti %}
                 <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
                 {% endfor %}
@@ -185,11 +185,11 @@
             <input type="number" id="invOreSettimanali" class="inv-input" step="0.01" min="0" placeholder="0" onfocus="attivaInput('ore_settimanali')" oninput="calcolaInverso()">
         </div>
         <div class="col-md-3">
-            <span class="inv-label">Lordo (â‚¬)</span>
+            <span class="inv-label">Lordo (€)</span>
             <input type="number" id="invLordo" class="inv-input" step="0.01" min="0" placeholder="0,00" onfocus="attivaInput('lordo')" oninput="calcolaInverso()">
         </div>
         <div class="col-md-3">
-            <span class="inv-label">Netto (â‚¬)</span>
+            <span class="inv-label">Netto (€)</span>
             <input type="number" id="invNetto" class="inv-input" step="0.01" min="0" placeholder="0,00" onfocus="attivaInput('netto')" oninput="calcolaInverso()">
         </div>
     </div>
@@ -227,7 +227,7 @@
 
         <span style="width:1px;height:20px;background:#27282D;"></span>
 
-        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">IndennitÃ </span>
+        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Indennità</span>
         <span class="toggle-item">
             <span>Funzione</span>
             <label class="toggle-switch">
@@ -243,14 +243,14 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span>PiÃ¹ Assistiti</span>
+            <span>Più Assistiti</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="indPiuAssistiti" onchange="calcolaInverso()">
                 <span class="toggle-slider"></span>
             </label>
         </span>
         <span class="toggle-item">
-            <span>Cert. QualitÃ </span>
+            <span>Cert. Qualità</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="indCertQualita" onchange="calcolaInverso()">
                 <span class="toggle-slider"></span>
@@ -260,7 +260,7 @@
         <span style="width:1px;height:20px;background:#27282D;"></span>
 
         <span class="toggle-item">
-            <span>Scatti AnzianitÃ </span>
+            <span>Scatti Anzianità</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="toggleScatti" onchange="calcolaInverso()">
                 <span class="toggle-slider"></span>
@@ -318,7 +318,7 @@
 
 <div id="resultContainer" style="display:none;">
     <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga giÃ  salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
     </div>
     <div id="resultLoading" class="text-center py-5" style="display:none;">
         <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
@@ -336,48 +336,48 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto â€” Calcolo Inverso</h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Calcolo Inverso</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body card-body">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
 Il <b>Calcolo Inverso</b> funziona al contrario delle altre pagine: invece di inserire le ore e vedere quanto viene in busta, tu inserisci <b>UN SOLO valore</b> (ore, lordo, netto o budget) e il sistema calcola automaticamente <b>TUTTI</b> gli altri parametri della busta paga.<br><br>
 <b>Esempi pratici:</b><br>
-â€” "Quante ore servono per avere un netto di â‚¬800?" â†’ inserisci 800 nel campo Netto.<br>
-â€” "Con un budget di â‚¬600, quanto prende il lavoratore?" â†’ inserisci 600 nel campo Budget.<br>
-â€” "Se lavoro 150 ore al mese, quanto Ã¨ il netto?" â†’ inserisci 150 nel campo Ore.<br>
-â€” "Voglio un lordo di â‚¬900, quante ore servono?" â†’ inserisci 900 in Lordo.</p>
+— "Quante ore servono per avere un netto di €800?" â†’ inserisci 800 nel campo Netto.<br>
+— "Con un budget di €600, quanto prende il lavoratore?" â†’ inserisci 600 nel campo Budget.<br>
+— "Se lavoro 150 ore al mese, quanto è il netto?" â†’ inserisci 150 nel campo Ore.<br>
+— "Voglio un lordo di €900, quante ore servono?" â†’ inserisci 900 in Lordo.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa â€” passo passo</b><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa — passo passo</b><br>
 <b>1.</b> Scegli un contratto dal menu a tendina. Il sistema carica i dati base (paga oraria, livello, eventuali progetti).<br>
 <b>2.</b> Clicca su <b>UNO</b> dei campi editabili per attivarlo (il campo si illumina):<br>
-&nbsp;&nbsp;â€” <b>Ore mensili:</b> inserisci le ore che vuoi calcolare.<br>
-&nbsp;&nbsp;â€” <b>Ore settimanali:</b> alternativa, inserisci le ore a settimana (il sistema calcola le ore mensili).<br>
-&nbsp;&nbsp;â€” <b>Lordo obiettivo:</b> quanto vuoi che sia il lordo totale.<br>
-&nbsp;&nbsp;â€” <b>Netto obiettivo:</b> quanto vuoi che il lavoratore riceva in tasca.<br>
-&nbsp;&nbsp;â€” <b>Budget:</b> quanto budget vuoi usare (se il contratto ha progetti).<br><br>
+&nbsp;&nbsp;— <b>Ore mensili:</b> inserisci le ore che vuoi calcolare.<br>
+&nbsp;&nbsp;— <b>Ore settimanali:</b> alternativa, inserisci le ore a settimana (il sistema calcola le ore mensili).<br>
+&nbsp;&nbsp;— <b>Lordo obiettivo:</b> quanto vuoi che sia il lordo totale.<br>
+&nbsp;&nbsp;— <b>Netto obiettivo:</b> quanto vuoi che il lavoratore riceva in tasca.<br>
+&nbsp;&nbsp;— <b>Budget:</b> quanto budget vuoi usare (se il contratto ha progetti).<br><br>
 <b>3.</b> Inserisci il valore. Gli altri campi si aggiornano automaticamente.<br>
-<b>4.</b> Regola i toggle (ratei, indennitÃ , scatti, vitto/alloggio) per vedere come cambia il risultato.<br>
+<b>4.</b> Regola i toggle (ratei, indennità, scatti, vitto/alloggio) per vedere come cambia il risultato.<br>
 <b>5.</b> Leggi il risultato: vedrai la busta paga completa con tutti i parametri calcolati.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Quale campo scegliere?</b><br>
-â€” <b>Ore mensili / Ore settimanali:</b> se sai quante ore farÃ  lavorare il collaboratore e vuoi sapere quanto costerÃ  (lordo, netto, contributi).<br>
-â€” <b>Lordo obiettivo:</b> se hai un importo lordo massimo da non superare (es. "non voglio superare â‚¬800 di lordo").<br>
-â€” <b>Netto obiettivo:</b> se il lavoratore chiede un netto specifico (es. "voglio â‚¬600 netti"). Il sistema calcola quante ore servono e quanto sarÃ  il costo totale.<br>
-â€” <b>Budget:</b> se hai un budget fisso da un progetto e vuoi sapere quante ore puoi pagare.<br><br>
+— <b>Ore mensili / Ore settimanali:</b> se sai quante ore farà lavorare il collaboratore e vuoi sapere quanto costerà (lordo, netto, contributi).<br>
+— <b>Lordo obiettivo:</b> se hai un importo lordo massimo da non superare (es. "non voglio superare €800 di lordo").<br>
+— <b>Netto obiettivo:</b> se il lavoratore chiede un netto specifico (es. "voglio €600 netti"). Il sistema calcola quante ore servono e quanto sarà il costo totale.<br>
+— <b>Budget:</b> se hai un budget fisso da un progetto e vuoi sapere quante ore puoi pagare.<br><br>
 <b>Importante:</b> puoi attivare solo UN campo alla volta. Se cambi campo, il precedente viene disattivato.</p>
 
 <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Regole e Vincoli</b><br>
 Il calcolo inverso rispetta tutte le regole del CCNL:<br>
-â€” Contributi INPS calcolati sulle ore INPS arrotondate.<br>
-â€” Prorating sul budget (se attivo) â€” se il budget non basta, il sistema scala proporzionalmente.<br>
-â€” Aliquote contributive corrette per fascia oraria (sopra/sotto 24h).<br>
-â€” Ratei, indennitÃ  e scatti applicati secondo le regole contrattuali.<br><br>
+— Contributi INPS calcolati sulle ore INPS arrotondate.<br>
+— Prorating sul budget (se attivo) — se il budget non basta, il sistema scala proporzionalmente.<br>
+— Aliquote contributive corrette per fascia oraria (sopra/sotto 24h).<br>
+— Ratei, indennità e scatti applicati secondo le regole contrattuali.<br><br>
 Il risultato include anche l'<b>offset visivo</b> che nasconde i dati sensibili se attivi l'apposito toggle.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> â€” salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta giÃ  salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> â€” consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lÃ¬ puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
       </div>
     </div>
   </div>

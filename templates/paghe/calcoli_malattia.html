@@ -55,7 +55,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
       <div class="d-flex align-items-center gap-2">
         <button class="btn btn-sm btn-outline-soft" onclick="navContratto(-1)" style="padding:4px 8px;line-height:1;">&#9664;</button>
         <select id="fContratto" class="form-control bg-input" onchange="calcola()">
-          <option value="">â€” Seleziona â€”</option>
+          <option value="">— Seleziona —</option>
           {% for c in contratti %}
           <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
           {% endfor %}
@@ -111,7 +111,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="ricoveratoToggle" onchange="calcola()"><span class="toggle-slider"></span></label>
           <span style="color:#EDEDED;font-weight:600;">Ricoverato/assente da casa</span>
-          <span style="font-size:9px;">indennitÃ  sostitutiva vitto/alloggio</span>
+          <span style="font-size:9px;">indennità sostitutiva vitto/alloggio</span>
         </span>
       </div>
     </div>
@@ -120,7 +120,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 
 <div id="resultContainer" style="display:none;">
   <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga giÃ  salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
   <div id="resultLoading" class="text-center py-5" style="display:none;">
     <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
@@ -138,57 +138,57 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto â€” Busta Malattia</h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Malattia</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
 Qui puoi calcolare la <b>retribuzione per malattia</b> del collaboratore domestico secondo il CCNL. Quando il lavoratore si ammala, il datore di lavoro deve continuare a pagargli la retribuzione per un certo numero di giorni.<br><br>
-<b>Importante:</b> a differenza di altri settori, per il lavoro domestico la malattia Ã¨ <b>interamente a carico del datore di lavoro</b> â€” non c'Ã¨ rimborso INPS. Il datore paga direttamente il lavoratore.</p>
+<b>Importante:</b> a differenza di altri settori, per il lavoro domestico la malattia è <b>interamente a carico del datore di lavoro</b> — non c'è rimborso INPS. Il datore paga direttamente il lavoratore.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-<b>1.</b> Scegli un contratto. Il sistema mostra subito l'anzianitÃ  del lavoratore e il suo plafond malattia (quanti giorni massimi puÃ² prendere in un anno).<br>
+<b>1.</b> Scegli un contratto. Il sistema mostra subito l'anzianità del lavoratore e il suo plafond malattia (quanti giorni massimi può prendere in un anno).<br>
 <b>2.</b> Usa lo <b>slider Giorni di Malattia</b> (0â€“180) o digita il numero nel campo accanto.<br>
 <b>3.</b> Eventualmente attiva i toggle:<br>
-&nbsp;&nbsp;â€” <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
-&nbsp;&nbsp;â€” <b>Ricaduta:</b> se Ã¨ la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
-&nbsp;&nbsp;â€” <b>Ricoverato:</b> se il lavoratore Ã¨ ricoverato, spetta l'indennitÃ  sostitutiva vitto/alloggio.<br>
-<b>4.</b> Leggi il risultato: vedrai l'importo per i primi 3 giorni (50%) e dal 4Â° giorno (100%), piÃ¹ eventuale indennitÃ  vitto/alloggio.</p>
+&nbsp;&nbsp;— <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
+&nbsp;&nbsp;— <b>Ricaduta:</b> se è la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
+&nbsp;&nbsp;— <b>Ricoverato:</b> se il lavoratore è ricoverato, spetta l'indennità sostitutiva vitto/alloggio.<br>
+<b>4.</b> Leggi il risultato: vedrai l'importo per i primi 3 giorni (50%) e dal 4° giorno (100%), più eventuale indennità vitto/alloggio.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si calcola la retribuzione giornaliera</b><br>
-La <b>retribuzione giornaliera</b> si calcola cosÃ¬:<br>
-<code>paga_oraria Ã— ore_mensili Ã· 26</code><br>
-Si divide per 26 (i giorni lavorativi convenzionali del mese, dal lunedÃ¬ al sabato).<br><br>
-<b>Esempio:</b> paga â‚¬6,00/h Ã— 120 h/mese Ã· 26 = â‚¬27,69 al giorno.<br><br>
-Se il toggle Sostituzione Ã¨ attivo, al posto della paga base si usa la <b>retribuzione oraria di sostituzione</b> (Tabella G), che Ã¨ piÃ¹ alta.</p>
+La <b>retribuzione giornaliera</b> si calcola così:<br>
+<code>paga_oraria × ore_mensili Ã· 26</code><br>
+Si divide per 26 (i giorni lavorativi convenzionali del mese, dal lunedì al sabato).<br><br>
+<b>Esempio:</b> paga €6,00/h × 120 h/mese Ã· 26 = €27,69 al giorno.<br><br>
+Se il toggle Sostituzione è attivo, al posto della paga base si usa la <b>retribuzione oraria di sostituzione</b> (Tabella G), che è più alta.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Carenza â€” 50% e 100%</b><br>
-Il CCNL prevede che i primi 3 giorni di malattia consecutivi vengano pagati al <b>50%</b> della retribuzione globale di fatto. Dal 4Â° giorno in poi si passa al <b>100%</b>.<br><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Carenza — 50% e 100%</b><br>
+Il CCNL prevede che i primi 3 giorni di malattia consecutivi vengano pagati al <b>50%</b> della retribuzione globale di fatto. Dal 4° giorno in poi si passa al <b>100%</b>.<br><br>
 <b>Come funziona nella pratica:</b><br>
-â€” Giorni 1, 2, 3: 50% della retribuzione giornaliera.<br>
-â€” Giorni 4, 5, ... fino al massimo: 100%.<br>
-â€” Il calcolo include tutti i giorni del certificato medico, comprese domeniche e festivi.<br>
-â€” Ogni nuovo certificato medico ricomincia con i primi 3 giorni al 50%.<br><br>
-<b>Ricaduta:</b> se il lavoratore si riammala della <b>stessa malattia</b> entro poco tempo, si considera "ricaduta" e la carenza al 50% NON si applica â€” il pagamento Ã¨ al 100% fin dal primo giorno. Attiva il toggle "Ricaduta" in questo caso.</p>
+— Giorni 1, 2, 3: 50% della retribuzione giornaliera.<br>
+— Giorni 4, 5, ... fino al massimo: 100%.<br>
+— Il calcolo include tutti i giorni del certificato medico, comprese domeniche e festivi.<br>
+— Ogni nuovo certificato medico ricomincia con i primi 3 giorni al 50%.<br><br>
+<b>Ricaduta:</b> se il lavoratore si riammala della <b>stessa malattia</b> entro poco tempo, si considera "ricaduta" e la carenza al 50% NON si applica — il pagamento è al 100% fin dal primo giorno. Attiva il toggle "Ricaduta" in questo caso.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Plafond Massimo â€” Quanti giorni si possono prendere</b><br>
-Il numero massimo di giorni di malattia retribuiti in un anno dipende dall'<b>anzianitÃ  di servizio</b> del lavoratore:<br><br>
-â€” Fino a <b>6 mesi</b> di anzianitÃ : massimo <b>8 giorni</b> retribuiti (conservazione del posto: 10 giorni).<br>
-â€” Da <b>6 a 24 mesi</b> di anzianitÃ : massimo <b>12 giorni</b> (conservazione: 45 giorni).<br>
-â€” <b>Oltre 24 mesi</b> di anzianitÃ : massimo <b>15 giorni</b> (conservazione: 180 giorni).<br><br>
-Il sistema mostra il <b>plafond residuo</b> (giorni giÃ  usati nell'anno, giorni ancora disponibili). Se il plafond Ã¨ esaurito, il datore non deve piÃ¹ pagare la malattia (ma il posto Ã¨ conservato per i giorni di conservazione).</p>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Plafond Massimo — Quanti giorni si possono prendere</b><br>
+Il numero massimo di giorni di malattia retribuiti in un anno dipende dall'<b>anzianità di servizio</b> del lavoratore:<br><br>
+— Fino a <b>6 mesi</b> di anzianità: massimo <b>8 giorni</b> retribuiti (conservazione del posto: 10 giorni).<br>
+— Da <b>6 a 24 mesi</b> di anzianità: massimo <b>12 giorni</b> (conservazione: 45 giorni).<br>
+— <b>Oltre 24 mesi</b> di anzianità: massimo <b>15 giorni</b> (conservazione: 180 giorni).<br><br>
+Il sistema mostra il <b>plafond residuo</b> (giorni già usati nell'anno, giorni ancora disponibili). Se il plafond è esaurito, il datore non deve più pagare la malattia (ma il posto è conservato per i giorni di conservazione).</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ricoverato â€” IndennitÃ  Vitto e Alloggio</b><br>
-Se il lavoratore Ã¨ <b>convivente</b> e viene <b>ricoverato</b> in ospedale, il datore non deve piÃ¹ fornire vitto e alloggio (perchÃ© il lavoratore non Ã¨ in casa). Tuttavia, spetta al lavoratore un'indennitÃ  sostitutiva per i giorni di ricovero: pranzo (â‚¬2,33) + cena (â‚¬2,33) + alloggio (â‚¬2,00) = â‚¬6,66 al giorno.<br><br>
-Attiva il toggle "Ricoverato" per includere questa indennitÃ  nel calcolo.</p>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ricoverato — Indennità Vitto e Alloggio</b><br>
+Se il lavoratore è <b>convivente</b> e viene <b>ricoverato</b> in ospedale, il datore non deve più fornire vitto e alloggio (perché il lavoratore non è in casa). Tuttavia, spetta al lavoratore un'indennità sostitutiva per i giorni di ricovero: pranzo (€2,33) + cena (€2,33) + alloggio (€2,00) = €6,66 al giorno.<br><br>
+Attiva il toggle "Ricoverato" per includere questa indennità nel calcolo.</p>
 
 <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Contributi INPS sulla Malattia</b><br>
-I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo di malattia. Il sistema calcola le ore retribuite come: giorni_pagati Ã— ore_giornaliere. Su queste ore applica l'aliquota contributiva totale.<br><br>
-<b>Nota Art. 26 CCNL:</b> In caso di malattia il lavoratore deve avvertire tempestivamente il datore, farsi rilasciare il certificato medico entro il giorno successivo, e consegnarlo (a mezzo raccomandata se non convivente) entro 2 giorni. La conservazione del posto Ã¨ garantita per i periodi sopra indicati. Durante il periodo di prova o il preavviso, la malattia sospende la decorrenza degli stessi.</p>
+I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo di malattia. Il sistema calcola le ore retribuite come: giorni_pagati × ore_giornaliere. Su queste ore applica l'aliquota contributiva totale.<br><br>
+<b>Nota Art. 26 CCNL:</b> In caso di malattia il lavoratore deve avvertire tempestivamente il datore, farsi rilasciare il certificato medico entro il giorno successivo, e consegnarlo (a mezzo raccomandata se non convivente) entro 2 giorni. La conservazione del posto è garantita per i periodi sopra indicati. Durante il periodo di prova o il preavviso, la malattia sospende la decorrenza degli stessi.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> â€” salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta giÃ  salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> â€” consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lÃ¬ puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
       </div>
     </div>
   </div>
@@ -312,7 +312,7 @@ function renderMalattia(d) {
 
   // Header contratto
   html += '<div style="padding:16px 24px;border-bottom:1px solid #27282D;">';
-  html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-heart-pulse me-1"></i>Busta Malattia â€” ' + d.mese_nome + ' ' + d.anno + '</div>';
+  html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-heart-pulse me-1"></i>Busta Malattia — ' + d.mese_nome + ' ' + d.anno + '</div>';
   html += '<div class="row g-2 mt-2">';
   html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
   html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
@@ -324,7 +324,7 @@ function renderMalattia(d) {
   html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">' + esc(d.label_paga) + '</span><span style="font-size:13px;font-weight:600;color:#' + (d.sostituzione ? 'f59e0b' : 'EDEDED') + ';">\u20AC ' + d.paga_oraria.toFixed(4) + '/h</span></div>';
   html += '</div></div>';
 
-  // Fasce anzianitÃ 
+  // Fasce anzianità
   html += '<div style="padding:12px 24px;border-bottom:1px solid #27282D;background:rgba(255,255,255,0.01);">';
   html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:6px;">Fasce Anzianit\u00e0</div>';
   html += '<div class="d-flex gap-3 flex-wrap">';
@@ -345,7 +345,7 @@ function renderMalattia(d) {
 
   // Plafond residuo
   html += '<div style="padding:12px 24px;border-bottom:1px solid #27282D;background:rgba(255,255,255,0.01);">';
-  html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:6px;">Plafond Malattia â€” Anno in Corso</div>';
+  html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:6px;">Plafond Malattia — Anno in Corso</div>';
   html += '<div class="d-flex gap-3 flex-wrap">';
   html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid #5E6AD2;background:rgba(94,106,210,0.06);">';
   html += '<div style="font-size:10px;color:#8A8F98;">Gi\u00e0 usati</div>';
@@ -373,13 +373,13 @@ function renderMalattia(d) {
   html += '<table style="width:100%;border-collapse:collapse;" id="resultMalattia">';
   html += '<tr><th style="text-align:left;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Voce</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Giorni</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
   if (d.ricaduta) {
-    html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#a78bfa;">Ricaduta stessa malattia â€” 100% senza carenza</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_100 + ' gg</td><td style="text-align:right;font-weight:600;color:#a78bfa;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_100.toFixed(2) + '</td></tr>';
+    html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#a78bfa;">Ricaduta stessa malattia — 100% senza carenza</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_100 + ' gg</td><td style="text-align:right;font-weight:600;color:#a78bfa;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_100.toFixed(2) + '</td></tr>';
   } else {
     if (d.giorni_50 > 0) {
-      html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#fbbf24;">50% â€” primi 3 giorni</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_50 + ' gg</td><td style="text-align:right;font-weight:600;color:#fbbf24;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_50.toFixed(2) + '</td></tr>';
+      html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#fbbf24;">50% — primi 3 giorni</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_50 + ' gg</td><td style="text-align:right;font-weight:600;color:#fbbf24;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_50.toFixed(2) + '</td></tr>';
     }
     if (d.giorni_100 > 0) {
-      html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#34d399;">100% â€” dal 4\u00b0 giorno</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_100 + ' gg</td><td style="text-align:right;font-weight:600;color:#34d399;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_100.toFixed(2) + '</td></tr>';
+      html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#34d399;">100% — dal 4\u00b0 giorno</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_100 + ' gg</td><td style="text-align:right;font-weight:600;color:#34d399;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.importo_100.toFixed(2) + '</td></tr>';
     }
   }
   if (d.indennita_va > 0) {
@@ -391,7 +391,7 @@ function renderMalattia(d) {
   // Confronto con/senza sostituzione
   if (d.sostituzione) {
     html += '<div style="margin-top:12px;padding:8px 12px;background:rgba(94,106,210,0.08);border:1px solid rgba(94,106,210,0.2);border-radius:8px;font-size:11px;color:#8A8F98;">';
-    html += '<span style="color:#5E6AD2;font-weight:600;">Confronto:</span> Con sostituzione \u20AC' + d.paga_oraria.toFixed(4) + '/h | Senza sostituzione (paga base) \u20AC' + d.paga_base_oraria.toFixed(4) + '/h â€” differenza \u20AC' + (d.paga_oraria - d.paga_base_oraria).toFixed(4) + '/h';
+    html += '<span style="color:#5E6AD2;font-weight:600;">Confronto:</span> Con sostituzione \u20AC' + d.paga_oraria.toFixed(4) + '/h | Senza sostituzione (paga base) \u20AC' + d.paga_base_oraria.toFixed(4) + '/h — differenza \u20AC' + (d.paga_oraria - d.paga_base_oraria).toFixed(4) + '/h';
     html += '</div>';
   }
 
@@ -404,7 +404,7 @@ function renderMalattia(d) {
     html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:8px;"><i class="bi bi-bar-chart me-1"></i>Composizione retribuzione</div>';
     if (d.importo_50 > 0) {
       html += '<div class="d-flex align-items-center gap-2 mb-2">';
-      html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#fbbf24;">50% â€” ' + d.giorni_50 + ' gg</span>';
+      html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#fbbf24;">50% — ' + d.giorni_50 + ' gg</span>';
       html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
       html += '<div class="bar-fill" style="width:' + pct50.toFixed(1) + '%;background:#fbbf24;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
       html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.importo_50.toFixed(2) + ' (' + pct50.toFixed(1) + '%)</span>';
@@ -412,7 +412,7 @@ function renderMalattia(d) {
     }
     if (d.importo_100 > 0) {
       html += '<div class="d-flex align-items-center gap-2 mb-2">';
-      html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#34d399;">100% â€” ' + d.giorni_100 + ' gg</span>';
+      html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#34d399;">100% — ' + d.giorni_100 + ' gg</span>';
       html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
       html += '<div class="bar-fill" style="width:' + pct100.toFixed(1) + '%;background:#34d399;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
       html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.importo_100.toFixed(2) + ' (' + pct100.toFixed(1) + '%)</span>';
@@ -452,7 +452,7 @@ function renderMalattia(d) {
     html += '<div style="margin-top:10px;padding:10px 14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;font-size:10px;color:#8A8F98;line-height:1.5;">';
     html += '<div style="font-size:9px;font-weight:700;color:#f59e0b;margin-bottom:3px;"><i class="bi bi-calculator me-1"></i>Contributi INPS su malattia</div>';
     html += '<span style="color:#EDEDED;">' + d.ore_pagate.toFixed(2) + ' h</span> retribuite \u00d7 aliquota contributiva = <span style="color:#f59e0b;font-weight:600;">\u20AC ' + d.contributi_inps.toFixed(2) + '</span>';
-    html += ' â€” I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo malattia.';
+    html += ' — I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo malattia.';
     html += '</div>';
   }
 
@@ -473,7 +473,7 @@ function renderMalattia(d) {
 
   // Nota normativa Art. 26
   html += '<div style="margin-top:10px;padding:12px 14px;background:rgba(94,106,210,0.05);border:1px solid rgba(94,106,210,0.15);border-radius:10px;font-size:9px;color:#8A8F98;line-height:1.6;">';
-  html += '<div style="font-size:10px;font-weight:700;color:#5E6AD2;margin-bottom:4px;"><i class="bi bi-info-circle me-1"></i>Art. 26 CCNL â€” Malattia</div>';
+  html += '<div style="font-size:10px;font-weight:700;color:#5E6AD2;margin-bottom:4px;"><i class="bi bi-info-circle me-1"></i>Art. 26 CCNL — Malattia</div>';
   html += '<div style="margin-bottom:4px;"><strong style="color:#EDEDED;">1. Obblighi del lavoratore:</strong> In caso di malattia il lavoratore deve: ';
   html += 'a) avvertire tempestivamente il datore di lavoro; ';
   html += 'b) farsi fare un certificato medico entro il giorno successivo all\'inizio della malattia; ';
@@ -510,7 +510,7 @@ window.salvaBusta = function() {
   if (!pk) return;
   var warn = document.getElementById('bustaEsistenteWarning');
   if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
-    if (!confirm('Busta paga giÃ  salvata per questo periodo. Sovrascrivere?')) return;
+    if (!confirm('Busta paga già salvata per questo periodo. Sovrascrivere?')) return;
   }
   var btn = document.getElementById('btnSalvaBusta');
   btn.disabled = true;

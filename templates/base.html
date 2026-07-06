@@ -33,7 +33,7 @@
                     <div style="font-size:15px;font-weight:700;color:#EDEDED;margin-top:6px;">Gestionale COLF</div>
                 </div>
             {% endif %}
-            <div class="sidebar-toggle-edge" onclick="toggleNavLayout()" title="Passa a topbar">â˜°</div>
+            <div class="sidebar-toggle-edge" onclick="toggleNavLayout()" title="Passa a topbar"><i class="bi bi-list"></i></div>
         </div>
 
         <nav class="flex-grow-1 overflow-auto">
@@ -151,7 +151,7 @@
                     <a id="nav_tabelle_casse" href="/tabella/tabelle-casse/" class="nav-link-custom {% if '/tabella/tabelle-casse/' in request.path %}active{% endif %}"><i class="bi bi-cash-stack"></i> Tabella Casse{% if shortcut_badges.nav_tabelle_casse %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tabelle_casse }}</span>{% endif %}</a>
                     <a id="nav_contributi_inps" href="/tabella/contributi-inps/" class="nav-link-custom {% if '/tabella/contributi-inps/' in request.path %}active{% endif %}"><i class="bi bi-percent"></i> Contributi INPS{% if shortcut_badges.nav_contributi_inps %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_contributi_inps }}</span>{% endif %}</a>
                     <a id="nav_tabella_malattia" href="/tabella/malattia/" class="nav-link-custom {% if '/tabella/malattia/' in request.path %}active{% endif %}"><i class="bi bi-heart-pulse"></i> Tabella Malattia{% if shortcut_badges.nav_tabella_malattia %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tabella_malattia }}</span>{% endif %}</a>
-                    <a id="nav_scatti_anzianita" href="/tabella/scatti-anzianita/" class="nav-link-custom {% if '/tabella/scatti-anzianita/' in request.path %}active{% endif %}"><i class="bi bi-arrow-up-circle"></i> Scatti AnzianitÃ {% if shortcut_badges.nav_scatti_anzianita %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_scatti_anzianita }}</span>{% endif %}</a>
+                    <a id="nav_scatti_anzianita" href="/tabella/scatti-anzianita/" class="nav-link-custom {% if '/tabella/scatti-anzianita/' in request.path %}active{% endif %}"><i class="bi bi-arrow-up-circle"></i> Scatti Anzianità{% if shortcut_badges.nav_scatti_anzianita %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_scatti_anzianita }}</span>{% endif %}</a>
                     <a id="nav_tipo_progetto" href="/tabella/tipi-progetto/" class="nav-link-custom {% if '/tabella/tipi-progetto/' in request.path %}active{% endif %}"><i class="bi bi-tags"></i> Tipo Progetto{% if shortcut_badges.nav_tipo_progetto %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tipo_progetto }}</span>{% endif %}</a>
                     <a id="nav_livelli" href="/tabella/livelli/" class="nav-link-custom {% if '/tabella/livelli/' in request.path %}active{% endif %}"><i class="bi bi-layers"></i> Livelli{% if shortcut_badges.nav_livelli %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_livelli }}</span>{% endif %}</a>
                     <a id="nav_modelli_lista" href="/tabella/modelli-lista/" class="nav-link-custom {% if '/tabella/modelli-lista/' in request.path %}active{% endif %}"><i class="bi bi-file-earmark-spreadsheet"></i> Modelli Lista{% if shortcut_badges.nav_modelli_lista %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_modelli_lista }}</span>{% endif %}</a>
@@ -259,7 +259,7 @@
         {% if db_profile != 'default' %}
         <div class="sidebar-footer-user"><i class="bi bi-database"></i> {{ db_profile }}</div>
         {% else %}
-        <div class="sidebar-footer-user"><i class="bi bi-person"></i> {{ user.get_full_name|default:user.username }}{% if ruolo_utente %} Â· <span style="color:#5E6AD2;font-weight:600;font-size:10px;">{{ ruolo_utente }}</span>{% endif %}</div>
+        <div class="sidebar-footer-user"><i class="bi bi-person"></i> {{ user.get_full_name|default:user.username }}{% if ruolo_utente %} · <span style="color:#5E6AD2;font-weight:600;font-size:10px;">{{ ruolo_utente }}</span>{% endif %}</div>
         {% endif %}
     </div>
     </div>
@@ -394,7 +394,7 @@
                         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:rgba(248,113,113,0.12);display:flex;align-items:center;justify-content:center;font-size:20px;color:#f87171;"><i class="bi bi-exclamation-triangle-fill"></i></div>
                         <div>
                             <div style="font-size:14px;font-weight:700;color:#EDEDED;margin-bottom:2px;">Conferma eliminazione</div>
-                            <div style="font-size:11px;color:#8A8F98;">L'operazione non puÃ² essere annullata.</div>
+                            <div style="font-size:11px;color:#8A8F98;">L'operazione non può essere annullata.</div>
                         </div>
                     </div>
                     <div style="padding:10px 12px;background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:16px;">
@@ -672,7 +672,7 @@
             .catch(error => {
                 container.innerHTML = `
                     <div class="alert alert-danger mt-4" style="background-color: rgba(220,53,69,0.1); border-color: rgba(220,53,69,0.2); color:#ff6b6b;">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i><b>Ops! C'Ã¨ un intoppo nel backend.</b><br><br><span style="font-size:13px;">${error.message}</span><br><br>
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i><b>Ops! C'è un intoppo nel backend.</b><br><br><span style="font-size:13px;">${error.message}</span><br><br>
                     </div>`;
             });
     }
@@ -828,12 +828,12 @@
                     '<div style="margin-bottom:10px;">' +
                         '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#8A8F98;margin-bottom:8px;"><i class="bi bi-file-text me-1"></i>Riepilogo contratto origine</div>' +
                         '<div class="row g-1" style="font-size:11px;color:#EDEDED;">' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Datore:</span> ' + (data.datore ? document.querySelector('select[name="datore"] option[value="' + data.datore + '"]')?.textContent || '#' + data.datore : 'â€”') + '</div>' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Lavoratore:</span> ' + (data.lavoratore ? document.querySelector('select[name="lavoratore"] option[value="' + data.lavoratore + '"]')?.textContent || '#' + data.lavoratore : 'â€”') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Datore:</span> ' + (data.datore ? document.querySelector('select[name="datore"] option[value="' + data.datore + '"]')?.textContent || '#' + data.datore : '—') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Lavoratore:</span> ' + (data.lavoratore ? document.querySelector('select[name="lavoratore"] option[value="' + data.lavoratore + '"]')?.textContent || '#' + data.lavoratore : '—') + '</div>' +
                             '<div class="col-6"><span style="color:#8A8F98;">Stato:</span> ' + (data.stato === 'ATTIVO' ? '<span style="color:#34d399;">Attivo</span>' : '<span style="color:#f87171;">Cessato</span>') + '</div>' +
                             '<div class="col-6"><span style="color:#8A8F98;">Tipo:</span> ' + (data.tipo_contratto === 'INDETERMINATO' ? 'Indeterminato' : 'Determinato') + '</div>' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Data ass.:</span> ' + (data.data_assunzione || 'â€”') + '</div>' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Cod. INPS:</span> ' + (data.codice_rapporto_inps || 'â€”') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Data ass.:</span> ' + (data.data_assunzione || '—') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Cod. INPS:</span> ' + (data.codice_rapporto_inps || '—') + '</div>' +
                             (data.parametri_minimi ? '<div class="col-6"><span style="color:#8A8F98;">Parametri:</span> ' + (document.querySelector('select[name="parametri_minimi"] option[value="' + data.parametri_minimi + '"]')?.textContent || '#' + data.parametri_minimi) + '</div>' : '') +
                             (data.progetto && data.progetto.length ? '<div class="col-12"><span style="color:#8A8F98;">Progetti:</span> ' + data.progetto.length + ' selezionati</div>' : '') +
                         '</div>' +
@@ -1360,11 +1360,11 @@
         if (!cb || !sel || !lbl) return;
         var attivo = cb.checked;
         sel.value = attivo ? 'ATTIVO' : 'CESSATO';
-        lbl.innerHTML = attivo ? 'â— Attivo' : 'â— Cessato';
+        lbl.innerHTML = attivo ? '● Attivo' : '● Cessato';
         lbl.style.color = attivo ? '#34d399' : '#f87171';
         var rs = document.getElementById('riepilogoStato');
         if (rs) {
-            rs.textContent = attivo ? 'â— ATTIVO' : 'â— CESSATO';
+            rs.textContent = attivo ? '● ATTIVO' : '● CESSATO';
             rs.style.background = attivo ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)';
             rs.style.color = attivo ? '#34d399' : '#f87171';
         }
@@ -1396,7 +1396,7 @@
         var cb = document.getElementById('scattiToggle');
         var lbl = document.getElementById('scattiLabel');
         if (!cb || !lbl) return;
-        lbl.textContent = cb.checked ? 'â— SÃ¬' : 'â—‹ No';
+        lbl.textContent = cb.checked ? '● Sì' : 'â—‹ No';
         if (window.aggiornaInfoScatti) window.aggiornaInfoScatti();
     }
     document.addEventListener('change', function(e) {
@@ -1407,7 +1407,7 @@
         var cb = document.getElementById('rivalutazioneTfrToggle');
         var lbl = document.getElementById('rivalutazioneTfrLabel');
         if (!cb || !lbl) return;
-        lbl.textContent = cb.checked ? 'â— SÃ¬' : 'â—‹ No';
+        lbl.textContent = cb.checked ? '● Sì' : 'â—‹ No';
     }
     document.addEventListener('change', function(e) {
         if (e.target.id === 'rivalutazioneTfrToggle') syncRivalutazioneTfr();
@@ -1464,7 +1464,7 @@
         if (budget > 0 && pagaTot > 0) ore = Math.ceil(budget / pagaTot);
         var lordaMensile = lordaConScatti * ore;
         var partiBiennio = bienni > 0 ? bienni + (anni % 2 === 0 ? '' : '+') : '';
-        infoEl.textContent = bienni + ' bienni Ã— â‚¬' + valScatto.toFixed(4) + ' = â‚¬' + scattoMensile.toFixed(4) + '/h Â· Lorda â‚¬' + lordaConScatti.toFixed(4) + '/h Ã— ' + ore + 'h = â‚¬' + lordaMensile.toFixed(2);
+        infoEl.textContent = bienni + ' bienni × €' + valScatto.toFixed(4) + ' = €' + scattoMensile.toFixed(4) + '/h · Lorda €' + lordaConScatti.toFixed(4) + '/h × ' + ore + 'h = €' + lordaMensile.toFixed(2);
     };
 
     // Navigazione contratti (prev/next senza salvare)
@@ -1570,7 +1570,7 @@
         if (curPk === null) return;
         var sel = document.getElementById('nav' + entity.charAt(0).toUpperCase() + entity.slice(1) + 'Select');
         if (!sel) return;
-        sel.innerHTML = '<option value="" style="color:#8A8F98;font-weight:400;">â€”</option>';
+        sel.innerHTML = '<option value="" style="color:#8A8F98;font-weight:400;">—</option>';
         data.forEach(function(c) {
             var opt = document.createElement('option');
             opt.value = c.pk;
@@ -1613,7 +1613,7 @@
     window.updateRiepilogo = function updateRiepilogo() {
         function txt(id, val) {
             var el = document.getElementById(id);
-            if (el) el.textContent = val || 'â€”';
+            if (el) el.textContent = val || '—';
         }
         function selText(name) {
             var s = document.querySelector('select[name="' + name + '"]');
@@ -1635,10 +1635,10 @@
             var b = cb.dataset.beneficiario;
             if (b) benSet.add(b);
         });
-        txt('riepilogoBeneficiario', benSet.size ? Array.from(benSet).join(', ') : 'â€”');
+        txt('riepilogoBeneficiario', benSet.size ? Array.from(benSet).join(', ') : '—');
         // data assunzione formatted as GG/MM/AAAA
         var da = document.querySelector('input[name="data_assunzione"]');
-        var daVal = 'â€”';
+        var daVal = '—';
         if (da && da.value) {
             var d = new Date(da.value + 'T00:00:00');
             if (!isNaN(d)) daVal = d.toLocaleDateString('it-IT');
@@ -1646,7 +1646,7 @@
         txt('riepilogoDataAss', daVal);
         // codice rapporto inps
         var cr = document.querySelector('input[name="codice_rapporto_inps"]');
-        txt('riepilogoCodice', cr && cr.value ? cr.value : 'â€”');
+        txt('riepilogoCodice', cr && cr.value ? cr.value : '—');
         // ore mav (hide if 0 or empty)
         var om = document.querySelector('input[name="ore_mav_custom"]');
         var omv = om ? om.value : '';
@@ -1676,7 +1676,7 @@
         }
         // data inizio TFR
         var dit = document.querySelector('input[name="data_inizio_tfr"]');
-        var ditVal = 'â€”';
+        var ditVal = '—';
         if (dit && dit.value) {
             var d2 = new Date(dit.value + 'T00:00:00');
             if (!isNaN(d2)) ditVal = d2.toLocaleDateString('it-IT');
@@ -1692,17 +1692,17 @@
         if (t13Cb && t13Cb.checked) parts.push('13ma');
         if (ferieCb && ferieCb.checked) parts.push('Ferie');
         if (festCb && festCb.checked) parts.push('Festivi');
-        txt('riepilogoPagheAbilitate', parts.length ? parts.join(' \u00B7 ') : 'â€”');
+        txt('riepilogoPagheAbilitate', parts.length ? parts.join(' \u00B7 ') : '—');
         // progetti
         var progCbs = document.querySelectorAll('.progetto-checkbox:checked');
         var budgetTot = 0;
         progCbs.forEach(function(cb) {
             budgetTot += parseFloat(cb.getAttribute('data-budget')) || 0;
         });
-        txt('riepilogoProgetti', progCbs.length ? progCbs.length + ' prog. (\u20AC ' + budgetTot.toFixed(2) + ')' : 'â€”');
+        txt('riepilogoProgetti', progCbs.length ? progCbs.length + ' prog. (\u20AC ' + budgetTot.toFixed(2) + ')' : '—');
         // note
         var note = document.querySelector('textarea[name="note_post_it"]');
-        txt('riepilogoNote', note && note.value ? note.value : 'â€”');
+        txt('riepilogoNote', note && note.value ? note.value : '—');
         // accordion: datore/lavoratore data from JSON
         var form = document.getElementById('dynamicForm');
         if (form) {
@@ -1713,24 +1713,24 @@
                 var datorePk = selVal('datore');
                 if (datorePk && dd[datorePk]) {
                     var info = dd[datorePk];
-                    txt('riepilogoDatoreEmail', info.email || 'â€”');
-                    txt('riepilogoDatoreTel', info.telefono || 'â€”');
-                    txt('riepilogoDatoreIndirizzo', info.indirizzo || 'â€”');
-                    txt('riepilogoDatoreComune', info.comune || 'â€”');
-                    txt('riepilogoDatoreProv', info.provincia || 'â€”');
-                    txt('riepilogoDatoreCap', info.cap || 'â€”');
-                    txt('riepilogoDatoreDataNascita', info.data_nascita || 'â€”');
-                    txt('riepilogoDatoreSesso', info.sesso || 'â€”');
-                    txt('riepilogoDatoreComuneNascita', info.comune_nascita || 'â€”');
-                    txt('riepilogoDatoreProvNascita', info.provincia_nascita || 'â€”');
-                    txt('riepilogoDatorePatrono', info.patrono || 'â€”');
+                    txt('riepilogoDatoreEmail', info.email || '—');
+                    txt('riepilogoDatoreTel', info.telefono || '—');
+                    txt('riepilogoDatoreIndirizzo', info.indirizzo || '—');
+                    txt('riepilogoDatoreComune', info.comune || '—');
+                    txt('riepilogoDatoreProv', info.provincia || '—');
+                    txt('riepilogoDatoreCap', info.cap || '—');
+                    txt('riepilogoDatoreDataNascita', info.data_nascita || '—');
+                    txt('riepilogoDatoreSesso', info.sesso || '—');
+                    txt('riepilogoDatoreComuneNascita', info.comune_nascita || '—');
+                    txt('riepilogoDatoreProvNascita', info.provincia_nascita || '—');
+                    txt('riepilogoDatorePatrono', info.patrono || '—');
                 } else {
-                    txt('riepilogoDatoreEmail', 'â€”'); txt('riepilogoDatoreTel', 'â€”');
-                    txt('riepilogoDatoreIndirizzo', 'â€”'); txt('riepilogoDatoreComune', 'â€”');
-                    txt('riepilogoDatoreProv', 'â€”'); txt('riepilogoDatoreCap', 'â€”');
-                    txt('riepilogoDatoreDataNascita', 'â€”'); txt('riepilogoDatoreSesso', 'â€”');
-                    txt('riepilogoDatoreComuneNascita', 'â€”'); txt('riepilogoDatoreProvNascita', 'â€”');
-                    txt('riepilogoDatorePatrono', 'â€”');
+                    txt('riepilogoDatoreEmail', '—'); txt('riepilogoDatoreTel', '—');
+                    txt('riepilogoDatoreIndirizzo', '—'); txt('riepilogoDatoreComune', '—');
+                    txt('riepilogoDatoreProv', '—'); txt('riepilogoDatoreCap', '—');
+                    txt('riepilogoDatoreDataNascita', '—'); txt('riepilogoDatoreSesso', '—');
+                    txt('riepilogoDatoreComuneNascita', '—'); txt('riepilogoDatoreProvNascita', '—');
+                    txt('riepilogoDatorePatrono', '—');
                 }
             } catch(e) {}
             if (ldStr) try {
@@ -1738,24 +1738,24 @@
                 var lavPk = selVal('lavoratore');
                 if (lavPk && ld[lavPk]) {
                     var info2 = ld[lavPk];
-                    txt('riepilogoLavoratoreEmail', info2.email || 'â€”');
-                    txt('riepilogoLavoratoreTel', info2.telefono || 'â€”');
-                    txt('riepilogoLavoratoreIndirizzo', info2.indirizzo || 'â€”');
-                    txt('riepilogoLavoratoreComune', info2.comune || 'â€”');
-                    txt('riepilogoLavoratoreProv', info2.provincia || 'â€”');
-                    txt('riepilogoLavoratoreCap', info2.cap || 'â€”');
-                    txt('riepilogoLavoratoreDataNascita', info2.data_nascita || 'â€”');
-                    txt('riepilogoLavoratoreSesso', info2.sesso || 'â€”');
-                    txt('riepilogoLavoratoreComuneNascita', info2.comune_nascita || 'â€”');
-                    txt('riepilogoLavoratoreProvNascita', info2.provincia_nascita || 'â€”');
-                    txt('riepilogoLavoratorePatrono', info2.patrono || 'â€”');
+                    txt('riepilogoLavoratoreEmail', info2.email || '—');
+                    txt('riepilogoLavoratoreTel', info2.telefono || '—');
+                    txt('riepilogoLavoratoreIndirizzo', info2.indirizzo || '—');
+                    txt('riepilogoLavoratoreComune', info2.comune || '—');
+                    txt('riepilogoLavoratoreProv', info2.provincia || '—');
+                    txt('riepilogoLavoratoreCap', info2.cap || '—');
+                    txt('riepilogoLavoratoreDataNascita', info2.data_nascita || '—');
+                    txt('riepilogoLavoratoreSesso', info2.sesso || '—');
+                    txt('riepilogoLavoratoreComuneNascita', info2.comune_nascita || '—');
+                    txt('riepilogoLavoratoreProvNascita', info2.provincia_nascita || '—');
+                    txt('riepilogoLavoratorePatrono', info2.patrono || '—');
                 } else {
-                    txt('riepilogoLavoratoreEmail', 'â€”'); txt('riepilogoLavoratoreTel', 'â€”');
-                    txt('riepilogoLavoratoreIndirizzo', 'â€”'); txt('riepilogoLavoratoreComune', 'â€”');
-                    txt('riepilogoLavoratoreProv', 'â€”'); txt('riepilogoLavoratoreCap', 'â€”');
-                    txt('riepilogoLavoratoreDataNascita', 'â€”'); txt('riepilogoLavoratoreSesso', 'â€”');
-                    txt('riepilogoLavoratoreComuneNascita', 'â€”'); txt('riepilogoLavoratoreProvNascita', 'â€”');
-                    txt('riepilogoLavoratorePatrono', 'â€”');
+                    txt('riepilogoLavoratoreEmail', '—'); txt('riepilogoLavoratoreTel', '—');
+                    txt('riepilogoLavoratoreIndirizzo', '—'); txt('riepilogoLavoratoreComune', '—');
+                    txt('riepilogoLavoratoreProv', '—'); txt('riepilogoLavoratoreCap', '—');
+                    txt('riepilogoLavoratoreDataNascita', '—'); txt('riepilogoLavoratoreSesso', '—');
+                    txt('riepilogoLavoratoreComuneNascita', '—'); txt('riepilogoLavoratoreProvNascita', '—');
+                    txt('riepilogoLavoratorePatrono', '—');
                 }
             } catch(e) {}
         }
@@ -1869,15 +1869,15 @@
         var elComuneRes = document.getElementById('r_comune');
         var elProvRes = document.getElementById('r_provincia');
         var elCapRes = document.getElementById('r_cap');
-        if (no && co && elNome) elNome.textContent = (no.value + ' ' + co.value).trim() || 'â€”';
-        if (tel && elTel) elTel.textContent = tel.value || 'â€”';
-        if (em && elEmail) elEmail.textContent = em.value || 'â€”';
-        if (ind && elInd) elInd.textContent = ind.value || 'â€”';
-        if (elComuneRes) elComuneRes.textContent = comuneField ? (comuneField.value || 'â€”') : 'â€”';
-        if (elProvRes) elProvRes.textContent = provField ? (provField.value || 'â€”') : 'â€”';
-        if (elCapRes) elCapRes.textContent = capField ? (capField.value || 'â€”') : 'â€”';
+        if (no && co && elNome) elNome.textContent = (no.value + ' ' + co.value).trim() || '—';
+        if (tel && elTel) elTel.textContent = tel.value || '—';
+        if (em && elEmail) elEmail.textContent = em.value || '—';
+        if (ind && elInd) elInd.textContent = ind.value || '—';
+        if (elComuneRes) elComuneRes.textContent = comuneField ? (comuneField.value || '—') : '—';
+        if (elProvRes) elProvRes.textContent = provField ? (provField.value || '—') : '—';
+        if (elCapRes) elCapRes.textContent = capField ? (capField.value || '—') : '—';
         if (cf) {
-            if (elCf) elCf.textContent = cf.value.toUpperCase() || 'â€”';
+            if (elCf) elCf.textContent = cf.value.toUpperCase() || '—';
             var decoded = window.decodaCF(cf.value);
             if (decoded) {
                 if (elData) elData.textContent = decoded.data;
@@ -1887,14 +1887,14 @@
                 if (inpD) inpD.value = decoded.data;
                 if (inpS) inpS.value = decoded.sesso;
             } else {
-                if (elData) elData.textContent = 'â€”';
-                if (elSesso) elSesso.textContent = 'â€”';
+                if (elData) elData.textContent = '—';
+                if (elSesso) elSesso.textContent = '—';
             }
             // Async per comune/provincia
             window.decodificaCFAsync(cf.value, function(full) {
                 if (full) {
-                    if (elComuneNasc) elComuneNasc.textContent = full.comune_nascita || 'â€”';
-                    if (elProvNasc) elProvNasc.textContent = full.provincia_nascita || 'â€”';
+                    if (elComuneNasc) elComuneNasc.textContent = full.comune_nascita || '—';
+                    if (elProvNasc) elProvNasc.textContent = full.provincia_nascita || '—';
                     var inpC = document.getElementById('cf_comune_nascita');
                     var inpP = document.getElementById('cf_provincia');
                     if (inpC) inpC.value = full.comune_nascita || '';
@@ -2028,7 +2028,7 @@
     window.updateRiepilogoProgetto = function() {
         function txt(id, val) {
             var el = document.getElementById(id);
-            if (el) el.textContent = val || 'â€”';
+            if (el) el.textContent = val || '—';
         }
         var ben = document.querySelector('select[name="beneficiario"]');
         var ba = document.querySelector('input[name="budget_annuale"]');
@@ -2038,14 +2038,14 @@
         var me = document.querySelector('input[name="mesi"]');
         var tp = document.querySelector('select[name="tipo"]');
 
-        txt('r_beneficiario', ben && ben.options[ben.selectedIndex] ? ben.options[ben.selectedIndex].text : 'â€”');
-        txt('r_budget_annuale', ba && ba.value ? 'â‚¬ ' + parseFloat(ba.value).toFixed(2) : 'â€”');
-        txt('r_budget_mensile', bm && bm.value ? 'â‚¬ ' + parseFloat(bm.value).toFixed(2) : 'â€”');
-        txt('r_data_inizio', di && di.value ? new Date(di.value + 'T00:00:00').toLocaleDateString('it-IT') : 'â€”');
-        txt('r_data_fine', df && df.value ? new Date(df.value + 'T00:00:00').toLocaleDateString('it-IT') : 'â€”');
+        txt('r_beneficiario', ben && ben.options[ben.selectedIndex] ? ben.options[ben.selectedIndex].text : '—');
+        txt('r_budget_annuale', ba && ba.value ? '€ ' + parseFloat(ba.value).toFixed(2) : '—');
+        txt('r_budget_mensile', bm && bm.value ? '€ ' + parseFloat(bm.value).toFixed(2) : '—');
+        txt('r_data_inizio', di && di.value ? new Date(di.value + 'T00:00:00').toLocaleDateString('it-IT') : '—');
+        txt('r_data_fine', df && df.value ? new Date(df.value + 'T00:00:00').toLocaleDateString('it-IT') : '—');
 
         var mesiVal = me ? parseInt(me.value) || 0 : 0;
-        txt('r_mesi', mesiVal ? mesiVal + ' mesi' : 'â€”');
+        txt('r_mesi', mesiVal ? mesiVal + ' mesi' : '—');
 
         // Durata: calcola mesi tra data_inizio e data_fine
         if (di && di.value && df && df.value) {
@@ -2054,13 +2054,13 @@
             if (!isNaN(d1) && !isNaN(d2) && d2 > d1) {
                 var diffMesi = (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
                 txt('r_durata', diffMesi + ' mesi');
-            } else { txt('r_durata', 'â€”'); }
-        } else { txt('r_durata', 'â€”'); }
+            } else { txt('r_durata', '—'); }
+        } else { txt('r_durata', '—'); }
 
-        txt('r_tipo', tp && tp.options[tp.selectedIndex] ? tp.options[tp.selectedIndex].text : 'â€”');
+        txt('r_tipo', tp && tp.options[tp.selectedIndex] ? tp.options[tp.selectedIndex].text : '—');
 
         var countEl = document.querySelectorAll('#dynamicForm .contratto-link').length;
-        txt('r_contratti_count', countEl ? countEl + ' contratti' : 'â€”');
+        txt('r_contratti_count', countEl ? countEl + ' contratti' : '—');
     };
 
     window.calcolaBudgetDaAnnuale = function() {
@@ -2101,11 +2101,11 @@
         if (!opt || !opt.value) { card.style.display = 'none'; return; }
         card.style.display = '';
         var el;
-        el = document.getElementById('ben_cf'); if (el) el.textContent = opt.dataset.cf || 'â€”';
-        el = document.getElementById('ben_indirizzo'); if (el) el.textContent = opt.dataset.indirizzo || 'â€”';
-        el = document.getElementById('ben_comune'); if (el) el.textContent = opt.dataset.comune || 'â€”';
-        el = document.getElementById('ben_provincia'); if (el) el.textContent = opt.dataset.provincia || 'â€”';
-        el = document.getElementById('ben_cap'); if (el) el.textContent = opt.dataset.cap || 'â€”';
+        el = document.getElementById('ben_cf'); if (el) el.textContent = opt.dataset.cf || '—';
+        el = document.getElementById('ben_indirizzo'); if (el) el.textContent = opt.dataset.indirizzo || '—';
+        el = document.getElementById('ben_comune'); if (el) el.textContent = opt.dataset.comune || '—';
+        el = document.getElementById('ben_provincia'); if (el) el.textContent = opt.dataset.provincia || '—';
+        el = document.getElementById('ben_cap'); if (el) el.textContent = opt.dataset.cap || '—';
     };
 
     window.aggiornaTipoDesc = function() {
@@ -2336,7 +2336,7 @@
             {text:'â†’ Destra',      code:'â†’'},
             {text:'â† Sinistra',    code:'â†'},
             {text:'â†‘ Su',          code:'â†‘'},
-            {text:'â†“ GiÃ¹',         code:'â†“'},
+            {text:'â†“ Giù',         code:'â†“'},
             {text:'âž¡ Grande',      code:'âž¡'},
         ]},
         {title:'Comunicazione', items:[
@@ -2594,30 +2594,30 @@
             var fname = el.getAttribute('data-field');
             var checkbox = el.closest('.toggle-switch').querySelector('.toggle-input');
             var valore = vals[fname] || 0;
-            el.textContent = 'â‚¬ ' + valore.toFixed(4);
+            el.textContent = '€ ' + valore.toFixed(4);
             if (checkbox && checkbox.checked && valore > 0) {
                 somma += valore;
                 var label = el.closest('.toggle-switch').querySelector('.toggle-label');
-                items.push('<span style="color:#34d399;">&#10003;</span> ' + (label ? label.textContent.trim() : fname) + ' <span style="color:#8A8F98;">â‚¬ ' + valore.toFixed(4) + '</span>');
+                items.push('<span style="color:#34d399;">&#10003;</span> ' + (label ? label.textContent.trim() : fname) + ' <span style="color:#8A8F98;">€ ' + valore.toFixed(4) + '</span>');
             }
         });
         var summary = document.getElementById('opzioniSummary');
         if (items.length > 0) {
             summary.style.display = 'block';
             document.getElementById('opzioniSummaryList').innerHTML = items.join('<br>');
-            document.getElementById('opzioniSummaryTotale').textContent = 'â‚¬ ' + somma.toFixed(4);
+            document.getElementById('opzioniSummaryTotale').textContent = '€ ' + somma.toFixed(4);
         } else {
             summary.style.display = 'none';
         }
         var pr = document.getElementById('riepilogoParametri');
-        if (pr) { pr.textContent = vals.livello || 'â€”'; pr.style.color = vals.livello_colore || '#EDEDED'; }
+        if (pr) { pr.textContent = vals.livello || '—'; pr.style.color = vals.livello_colore || '#EDEDED'; }
         var pd = document.getElementById('riepilogoDescrizione');
         if (pd) pd.textContent = vals.descrizione_corta || '';
         var pb = document.getElementById('riepilogoPagaBase');
-        if (pb) pb.textContent = 'â‚¬ ' + (vals.paga_base || 0).toFixed(4);
+        if (pb) pb.textContent = '€ ' + (vals.paga_base || 0).toFixed(4);
         var pt = document.getElementById('riepilogoTotale');
-        if (pt) pt.textContent = 'â‚¬ ' + ((vals.paga_base || 0) + somma).toFixed(4);
-        // Voci economiche orarie â€” INCLUSO / NON INCLUSO
+        if (pt) pt.textContent = '€ ' + ((vals.paga_base || 0) + somma).toFixed(4);
+        // Voci economiche orarie — INCLUSO / NON INCLUSO
         var _r = function(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
         function _setIncluso(id, fieldName) {
             var el = document.getElementById(id);
@@ -2631,7 +2631,7 @@
                 el.style.color = '#f87171';
             }
         }
-        // TFR con 3 modalitÃ 
+        // TFR con 3 modalità
         var tfrEl = document.getElementById('riepilogoPagaTfr');
         if (tfrEl) {
             var mtInput = document.getElementById('id_modalita_tfr');
@@ -2640,7 +2640,7 @@
             else if (mt === 'SEPARATO_70') { tfrEl.textContent = 'ANTICIPO 70%'; tfrEl.style.color = '#fbbf24'; }
             else if (mt === 'SEPARATO_100') { tfrEl.textContent = 'ACCANTONATO'; tfrEl.style.color = '#f87171'; }
         }
-        // Aggiungi TFR a somma in base alla modalitÃ 
+        // Aggiungi TFR a somma in base alla modalità
         var tfrRateo = vals.paga_tfr || 0;
         if (tfrRateo > 0 && mtInput) {
             var mtVal = mtInput.value;
@@ -2649,12 +2649,12 @@
             else if (mtVal === 'SEPARATO_70') tfrIncluso = tfrRateo * 0.7;
             if (tfrIncluso > 0) {
                 somma += tfrIncluso;
-                items.push('<span style="color:#34d399;">&#10003;</span> TFR <span style="color:#8A8F98;">â‚¬ ' + tfrIncluso.toFixed(4) + '</span>');
+                items.push('<span style="color:#34d399;">&#10003;</span> TFR <span style="color:#8A8F98;">€ ' + tfrIncluso.toFixed(4) + '</span>');
             }
             document.getElementById('opzioniSummaryList').innerHTML = items.join('<br>');
-            document.getElementById('opzioniSummaryTotale').textContent = 'â‚¬ ' + somma.toFixed(4);
+            document.getElementById('opzioniSummaryTotale').textContent = '€ ' + somma.toFixed(4);
             var pt = document.getElementById('riepilogoTotale');
-            if (pt) pt.textContent = 'â‚¬ ' + ((vals.paga_base || 0) + somma).toFixed(4);
+            if (pt) pt.textContent = '€ ' + ((vals.paga_base || 0) + somma).toFixed(4);
         }
         var accCol = document.getElementById('riepilogoAccantonatoTfrCol');
         var accEl = document.getElementById('riepilogoTfrAccumulato');
@@ -2664,7 +2664,7 @@
             if (isSep) {
                 var _form = document.getElementById('dynamicForm');
                 var cumTfr = parseFloat(_form ? _form.getAttribute('data-tfr-accantonato') : '0') || 0;
-                accEl.textContent = 'â‚¬ ' + cumTfr.toFixed(2);
+                accEl.textContent = '€ ' + cumTfr.toFixed(2);
                 accCol.style.display = '';
             } else {
                 accCol.style.display = 'none';
@@ -2678,11 +2678,11 @@
         if (mmft) mmft.textContent = (vals.minimo_mensile_ft || 0).toFixed(2);
         var mmpt = document.getElementById('val_minimo_mensile_pt');
         if (mmpt) mmpt.textContent = (vals.minimo_mensile_pt || 0).toFixed(2);
-        _r('riepilogoMinMensileFt', vals.minimo_mensile_ft ? 'â‚¬ ' + Number(vals.minimo_mensile_ft).toFixed(2) : 'â€”');
-        _r('riepilogoMinMensilePt', vals.minimo_mensile_pt ? 'â‚¬ ' + Number(vals.minimo_mensile_pt).toFixed(2) : 'â€”');
+        _r('riepilogoMinMensileFt', vals.minimo_mensile_ft ? '€ ' + Number(vals.minimo_mensile_ft).toFixed(2) : '—');
+        _r('riepilogoMinMensilePt', vals.minimo_mensile_pt ? '€ ' + Number(vals.minimo_mensile_pt).toFixed(2) : '—');
 
         // Calcolo ore da budget / paga_oraria_totale
-        // Scatti anzianitÃ 
+        // Scatti anzianità
         var scattoMensile = 0;
         var calcBienni = 0;
         var scattiCb = document.getElementById('scattiToggle');
@@ -2701,7 +2701,7 @@
                     var valScatto = parseFloat(vals.valore_scatto) || 0;
                     scattoMensile = bienni * valScatto;
                     if (scattoMensile > 0) {
-                        items.push('<span style="color:#f59e0b;">&#9733;</span> Scatti anzianit\u00E0 (' + bienni + ' bienni) <span style="color:#8A8F98;">â‚¬ ' + scattoMensile.toFixed(4) + '</span>');
+                        items.push('<span style="color:#f59e0b;">&#9733;</span> Scatti anzianit\u00E0 (' + bienni + ' bienni) <span style="color:#8A8F98;">€ ' + scattoMensile.toFixed(4) + '</span>');
                         somma += scattoMensile;
                     }
                 }
@@ -2710,7 +2710,7 @@
         // riepilogo scatti
         var scattiAbilitati = scattiCb && scattiCb.checked;
         var scattiVal = scattiAbilitati && scattoMensile > 0 ? scattoMensile.toFixed(4) : null;
-        _r('riepilogoScatti', scattiVal ? calcBienni + ' bienni x â‚¬' + Number(vals.valore_scatto||0).toFixed(4) + ' = â‚¬' + scattiVal : 'â€”');
+        _r('riepilogoScatti', scattiVal ? calcBienni + ' bienni x €' + Number(vals.valore_scatto||0).toFixed(4) + ' = €' + scattiVal : '—');
 
         var budget = 0;
         document.querySelectorAll('.progetto-checkbox:checked').forEach(function(cb) {
@@ -3053,8 +3053,8 @@
             if (!ca || !cb) return 0;
             let va = ca.getAttribute('data-sort') || ca.textContent.trim();
             let vb = cb.getAttribute('data-sort') || cb.textContent.trim();
-            const na = parseFloat(va.replace(/[â‚¬\s]/g, '').replace(',', '.'));
-            const nb = parseFloat(vb.replace(/[â‚¬\s]/g, '').replace(',', '.'));
+            const na = parseFloat(va.replace(/[€\s]/g, '').replace(',', '.'));
+            const nb = parseFloat(vb.replace(/[€\s]/g, '').replace(',', '.'));
             if (!isNaN(na) && !isNaN(nb)) { va = na; vb = nb; }
             else {
                 const da = Date.parse(va);
@@ -3579,9 +3579,9 @@
             h += '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">';
             h += '<td style="padding:5px 8px;">' + r.anno + '</td>';
             h += '<td style="padding:5px 8px;text-align:right;">' + r.mesi + '</td>';
-            h += '<td style="padding:5px 8px;text-align:right;">â‚¬ ' + r.accantonato.toFixed(2) + '</td>';
-            h += '<td style="padding:5px 8px;text-align:right;" ' + rivClass + '>â‚¬ ' + r.rivalutazione.toFixed(2) + '</td>';
-            h += '<td style="padding:5px 8px;text-align:right;font-weight:600;">â‚¬ ' + r.totale_progressivo.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;">€ ' + r.accantonato.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;" ' + rivClass + '>€ ' + r.rivalutazione.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;font-weight:600;">€ ' + r.totale_progressivo.toFixed(2) + '</td>';
             h += '</tr>';
           });
           h += '</tbody></table>';
@@ -3589,9 +3589,9 @@
           riassunto.style.display = 'block';
           var label = d.applica_rivalutazione ? ' (con rivalutazione)' : ' (senza rivalutazione)';
           riassunto.innerHTML = '<div style="display:flex;gap:16px;flex-wrap:wrap;">' +
-            '<span><span style="color:#8A8F98;">Accantonato:</span> <strong>â‚¬ ' + d.solo_accantonato.toFixed(2) + '</strong></span>' +
-            '<span><span style="color:#8A8F98;">Rivalutazione:</span> <strong style="color:#a78bfa;">â‚¬ ' + d.rivalutazione_totale.toFixed(2) + '</strong></span>' +
-            '<span><span style="color:#8A8F98;">Totale' + label + ':</span> <strong style="color:#34d399;">â‚¬ ' + d.totale.toFixed(2) + '</strong></span></div>';
+            '<span><span style="color:#8A8F98;">Accantonato:</span> <strong>€ ' + d.solo_accantonato.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Rivalutazione:</span> <strong style="color:#a78bfa;">€ ' + d.rivalutazione_totale.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Totale' + label + ':</span> <strong style="color:#34d399;">€ ' + d.totale.toFixed(2) + '</strong></span></div>';
         })
         .catch(function(err) {
           content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;">Errore di caricamento: ' + err.message + '</div>';
@@ -4288,7 +4288,7 @@
             });
     };
 
-    // ===== MULTI-STEP FORM (contratto) â€” lightweight init =====
+    // ===== MULTI-STEP FORM (contratto) — lightweight init =====
     window.initStepForm = function(container) {
         var form = container.querySelector('#dynamicForm');
         if (!form) return;
@@ -4445,7 +4445,7 @@
                         riepilogoOpzioni.innerHTML += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:4px;font-size:12px;font-weight:700;color:#34d399;">Totale: ' + summaryTotale.textContent + '</div>';
                     }
                 } else {
-                    riepilogoOpzioni.textContent = 'â€”';
+                    riepilogoOpzioni.textContent = '—';
                 }
             }
             // Ensure opzioni summary is visible when step 3 is shown
