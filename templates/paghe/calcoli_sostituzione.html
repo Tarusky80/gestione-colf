@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}{% load tabelle_tags %}
 
 {% block extra_css %}
@@ -83,7 +83,7 @@
         </h1>
         <div class="d-flex align-items-center gap-2">
             <select id="fAssente" class="contratto-select" style="min-width:320px;" onchange="onCambiaAssente()">
-                <option value="">— Seleziona lavoratore assente —</option>
+                <option value="">â€” Seleziona lavoratore assente â€”</option>
                 {% for c in contratti %}
                 <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
                 </option>
@@ -139,7 +139,7 @@
                 </div>
                 <div class="badge-count" style="padding:4px 14px;text-align:center;">
                     <div class="c-9-up" style="color:#f59e0b;">Budget</div>
-                    <div id="assenteBudget" style="font-size:16px;font-weight:700;color:#f59e0b;">€ 0</div>
+                    <div id="assenteBudget" style="font-size:16px;font-weight:700;color:#f59e0b;">â‚¬ 0</div>
                 </div>
             </div>
 
@@ -173,20 +173,20 @@
                     <div class="col-md-4">
                         <div class="budget-card subtle">
                             <div class="label">Costo Malattia</div>
-                            <div class="amount" id="costoMalattiaDisplay" style="color:#f87171;">€ 0</div>
+                            <div class="amount" id="costoMalattiaDisplay" style="color:#f87171;">â‚¬ 0</div>
                             <div style="font-size:10px;color:#666;margin-top:2px;" id="costoDetail"></div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="budget-card subtle">
                             <div class="label">Budget Assente</div>
-                            <div class="amount" id="budgetAssenteDisplay">€ 0</div>
+                            <div class="amount" id="budgetAssenteDisplay">â‚¬ 0</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="budget-card">
                             <div class="label">Budget Residuo</div>
-                            <div class="amount" id="budgetResiduoDisplay">€ 0</div>
+                            <div class="amount" id="budgetResiduoDisplay">â‚¬ 0</div>
                         </div>
                     </div>
                 </div>
@@ -205,7 +205,7 @@
                 </div>
                 <div id="budgetResiduoBadge" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:4px 14px;text-align:center;">
                     <div style="font-size:9px;text-transform:uppercase;color:#34d399;letter-spacing:0.04em;">Budget residuo</div>
-                    <div id="budgetResiduoBadgeAmount" style="font-size:16px;font-weight:700;color:#34d399;">€ 0</div>
+                    <div id="budgetResiduoBadgeAmount" style="font-size:16px;font-weight:700;color:#34d399;">â‚¬ 0</div>
                 </div>
             </div>
 
@@ -248,7 +248,7 @@
     <!-- BUSTA SOSTITUTO -->
     <div id="bustaSostituto" style="display:none;margin-top:12px;">
         <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga giÃ  salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
         </div>
         <div id="bustaSostitutoContent"></div>
     </div>
@@ -341,50 +341,50 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Sostituzione Malattia</h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto â€” Sostituzione Malattia</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
 Qui puoi gestire la <b>Sostituzione per Malattia</b> di un collaboratore domestico. Quando un lavoratore si ammala, puoi:<br>
 <b>1.</b> Calcolare quanto costa la sua malattia.<br>
 <b>2.</b> Trovare o creare un <b>lavoratore sostituto</b> che lo copra.<br>
-<b>3.</b> Calcolare la busta paga del sostituto usando il <b>budget residuo</b> (cioè i soldi che avanzano dal budget dell'assente dopo aver pagato la malattia).<br><br>
-È un flusso in <b>3 step</b> guidati — segui le istruzioni in pagina.</p>
+<b>3.</b> Calcolare la busta paga del sostituto usando il <b>budget residuo</b> (cioÃ¨ i soldi che avanzano dal budget dell'assente dopo aver pagato la malattia).<br><br>
+Ãˆ un flusso in <b>3 step</b> guidati â€” segui le istruzioni in pagina.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 1 — Seleziona il lavoratore assente</b><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 1 â€” Seleziona il lavoratore assente</b><br>
 Scegli dal menu a tendina il contratto del lavoratore che si ammala. Il sistema carica i dati del contratto (datore, budget mensile, etc.).<br><br>
-Puoi anche selezionare il <b>mese e l'anno</b> di riferimento (di default è il mese corrente). Usa le frecce < e > per navigare tra i mesi.</p>
+Puoi anche selezionare il <b>mese e l'anno</b> di riferimento (di default Ã¨ il mese corrente). Usa le frecce < e > per navigare tra i mesi.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 2 — Calcola il costo della malattia</b><br>
-Imposta i <b>giorni di malattia</b> con lo slider (0–180) o digitando il numero. Poi scegli le opzioni:<br>
-— <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
-— <b>Ricaduta:</b> se è la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
-— <b>Ricoverato:</b> se il lavoratore è ricoverato, si aggiunge l'indennità vitto/alloggio.<br><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 2 â€” Calcola il costo della malattia</b><br>
+Imposta i <b>giorni di malattia</b> con lo slider (0â€“180) o digitando il numero. Poi scegli le opzioni:<br>
+â€” <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
+â€” <b>Ricaduta:</b> se Ã¨ la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
+â€” <b>Ricoverato:</b> se il lavoratore Ã¨ ricoverato, si aggiunge l'indennitÃ  vitto/alloggio.<br><br>
 Clicca <b>"Calcola Costo Malattia"</b>. Il sistema mostra:<br>
-— <b>Costo malattia:</b> quanto costa al datore la malattia del lavoratore.<br>
-— <b>Budget assente:</b> il budget mensile del lavoratore malato.<br>
-— <b>Budget residuo:</b> la differenza = budget_assente − costo_malattia. Sono i soldi disponibili per pagare il sostituto.<br><br>
-<b>Attenzione:</b> se il costo malattia è uguale o superiore al budget, non ci sono soldi per il sostituto.</p>
+â€” <b>Costo malattia:</b> quanto costa al datore la malattia del lavoratore.<br>
+â€” <b>Budget assente:</b> il budget mensile del lavoratore malato.<br>
+â€” <b>Budget residuo:</b> la differenza = budget_assente âˆ’ costo_malattia. Sono i soldi disponibili per pagare il sostituto.<br><br>
+<b>Attenzione:</b> se il costo malattia Ã¨ uguale o superiore al budget, non ci sono soldi per il sostituto.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 3 — Scegli il sostituto e calcola la busta</b><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 3 â€” Scegli il sostituto e calcola la busta</b><br>
 Hai <b>due modi</b> per trovare un sostituto:<br><br>
 <b>A) Cerca un sostituto esistente:</b><br>
 Clicca "Cerca esistente". Si apre una modale con un campo di ricerca: digita almeno 2 caratteri per cercare tra i contratti attivi (escluso l'assente). Quando trovi il lavoratore giusto, clicca su di esso per selezionarlo.<br><br>
 <b>B) Crea un nuovo sostituto:</b><br>
 Clicca "Nuovo sostituto". Si apre una modale per creare un nuovo lavoratore e un contratto a <b>termine (determinato)</b> apposta per la sostituzione. Compila i campi obbligatori:<br>
-&nbsp;&nbsp;— Nome, Cognome, Codice Fiscale.<br>
-&nbsp;&nbsp;— Livello contrattuale.<br>
-&nbsp;&nbsp;— Ore mensili previste.<br>
-&nbsp;&nbsp;— Data inizio e data fine della sostituzione.<br>
-&nbsp;&nbsp;— Se convivente o meno.<br>
+&nbsp;&nbsp;â€” Nome, Cognome, Codice Fiscale.<br>
+&nbsp;&nbsp;â€” Livello contrattuale.<br>
+&nbsp;&nbsp;â€” Ore mensili previste.<br>
+&nbsp;&nbsp;â€” Data inizio e data fine della sostituzione.<br>
+&nbsp;&nbsp;â€” Se convivente o meno.<br>
 Clicca "Crea e seleziona". Il sistema crea il lavoratore e il contratto, e lo seleziona automaticamente.<br><br>
 Dopo aver selezionato il sostituto, clicca <b>"Calcola Busta Sostituto"</b>. Il sistema calcola la sua busta paga usando il <b>budget residuo</b> dallo Step 2 (invece del budget originale del contratto).</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Budget residuo — Come funziona</b><br>
-Il concetto è semplice: se il lavoratore assente aveva un budget mensile di €500 e la sua malattia costa €150, restano €350 per pagare il sostituto.<br><br>
-Il sistema usa questi €350 come <b>budget_override</b> per calcolare la busta del sostituto. Tutto il calcolo (paga base, ratei, contributi, prorating) viene fatto su questo budget residuo.<br><br>
-Se il budget residuo è €0 o negativo, il sistema mostra un errore e non è possibile calcolare la busta del sostituto.</p>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Budget residuo â€” Come funziona</b><br>
+Il concetto Ã¨ semplice: se il lavoratore assente aveva un budget mensile di â‚¬500 e la sua malattia costa â‚¬150, restano â‚¬350 per pagare il sostituto.<br><br>
+Il sistema usa questi â‚¬350 come <b>budget_override</b> per calcolare la busta del sostituto. Tutto il calcolo (paga base, ratei, contributi, prorating) viene fatto su questo budget residuo.<br><br>
+Se il budget residuo Ã¨ â‚¬0 o negativo, il sistema mostra un errore e non Ã¨ possibile calcolare la busta del sostituto.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">PDF della Busta Sostituto</b><br>
 Dopo aver calcolato la busta del sostituto, puoi scaricare il <b>PDF</b> cliccando il pulsante apposito. Il PDF include tutti i dettagli della busta paga e la nota "calcolata sul budget residuo".</p>
@@ -393,8 +393,8 @@ Dopo aver calcolato la busta del sostituto, puoi scaricare il <b>PDF</b> cliccan
 Puoi tornare alla pagina Malattia cliccando il pulsante "Malattia" (in alto). Usa il pulsante "Reset" per ricominciare da capo. Lo step indicator in alto mostra sempre a che punto sei del flusso.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <b>SALVA BUSTA</b> â€” salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta giÃ  salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> â€” consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lÃ¬ puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
       </div>
     </div>
   </div>
@@ -483,7 +483,7 @@ function caricamentoAssente() {
     fetch('/ajax/dettaglio-contratto-copia/' + assentePk + '/')
     .then(function(r) { return r.json(); })
     .then(function(d) {
-        document.getElementById('assenteBudget').textContent = '€ ?';
+        document.getElementById('assenteBudget').textContent = 'â‚¬ ?';
         aggiornaStep(1);
     })
     .catch(function() {
@@ -519,14 +519,14 @@ function calcolaCostoMalattia() {
     .then(function(r) { return r.json(); })
     .then(function(d) {
         if (d.errore) { mostraToast(d.errore, false); return; }
-        document.getElementById('costoMalattiaDisplay').textContent = '€ ' + (d.costo_malattia || 0).toFixed(2);
-        document.getElementById('budgetAssenteDisplay').textContent = '€ ' + (d.budget_assente || 0).toFixed(2);
-        document.getElementById('budgetResiduoDisplay').textContent = '€ ' + (d.budget_residuo || 0).toFixed(2);
-        document.getElementById('budgetResiduoBadgeAmount').textContent = '€ ' + (d.budget_residuo || 0).toFixed(2);
+        document.getElementById('costoMalattiaDisplay').textContent = 'â‚¬ ' + (d.costo_malattia || 0).toFixed(2);
+        document.getElementById('budgetAssenteDisplay').textContent = 'â‚¬ ' + (d.budget_assente || 0).toFixed(2);
+        document.getElementById('budgetResiduoDisplay').textContent = 'â‚¬ ' + (d.budget_residuo || 0).toFixed(2);
+        document.getElementById('budgetResiduoBadgeAmount').textContent = 'â‚¬ ' + (d.budget_residuo || 0).toFixed(2);
         budgetResiduo = d.budget_residuo || 0;
         var det = d.giorni_50 > 0 ? (d.giorni_50 + ' gg 50% + ' + d.giorni_100 + ' gg 100%') : (d.giorni_100 + ' gg 100%');
-        if (d.ricaduta) det = 'Ricaduta — 100% (' + d.giorni_100 + ' gg)';
-        if (d.indennita_va > 0) det += ' + vitto/alloggio €' + d.indennita_va.toFixed(2);
+        if (d.ricaduta) det = 'Ricaduta â€” 100% (' + d.giorni_100 + ' gg)';
+        if (d.indennita_va > 0) det += ' + vitto/alloggio â‚¬' + d.indennita_va.toFixed(2);
         document.getElementById('costoDetail').textContent = det;
         document.getElementById('step2Results').style.display = 'block';
         document.getElementById('step3Panel').style.display = 'block';
@@ -572,9 +572,9 @@ function cercaSostituti(q) {
             for (var i = 0; i < d.results.length; i++) {
                 var r = d.results[i];
                 if (r.pk == assentePk) continue; // exclude the sick worker
-                html += '<div class="d-flex align-items-center justify-content-between p-2" style="border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;border-radius:6px;" onmouseover="this.style.background=\'rgba(255,255,255,0.05)\'" onmouseout="this.style.background=\'transparent\'" onclick="selezionaSostituto(' + r.pk + ', \'' + r.lavoratore.replace(/'/g, "\\'") + ' — ' + r.datore.replace(/'/g, "\\'") + '\')">';
+                html += '<div class="d-flex align-items-center justify-content-between p-2" style="border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;border-radius:6px;" onmouseover="this.style.background=\'rgba(255,255,255,0.05)\'" onmouseout="this.style.background=\'transparent\'" onclick="selezionaSostituto(' + r.pk + ', \'' + r.lavoratore.replace(/'/g, "\\'") + ' â€” ' + r.datore.replace(/'/g, "\\'") + '\')">';
                 html += '<div><div style="font-weight:600;font-size:13px;color:#EDEDED;">' + r.lavoratore + '</div>';
-                html += '<div style="font-size:11px;color:#8A8F98;">' + r.datore + ' — ' + r.tipo_contratto + (r.codice_inps ? ' — INPS: ' + r.codice_inps : '') + '</div></div>';
+                html += '<div style="font-size:11px;color:#8A8F98;">' + r.datore + ' â€” ' + r.tipo_contratto + (r.codice_inps ? ' â€” INPS: ' + r.codice_inps : '') + '</div></div>';
                 html += '<i class="bi bi-plus-circle" style="color:#10b981;font-size:18px;"></i>';
                 html += '</div>';
             }
@@ -655,7 +655,7 @@ function creaNuovoSostituto() {
 function calcolaBustaSostituto() {
     if (!sostitutoPk) { mostraToast('Selezionare un sostituto', false); return; }
     if (budgetResiduo <= 0) {
-        mostraToast('Budget residuo esaurito (€' + budgetResiduo.toFixed(2) + '). Non è possibile calcolare la busta del sostituto.', false);
+        mostraToast('Budget residuo esaurito (â‚¬' + budgetResiduo.toFixed(2) + '). Non Ã¨ possibile calcolare la busta del sostituto.', false);
         return;
     }
     var params = 'mese=' + mese + '&anno=' + anno + '&budget_residuo=' + budgetResiduo.toFixed(2);
@@ -678,7 +678,7 @@ function calcolaBustaSostituto() {
 }
 
 function renderBustaSostituto(d) {
-    var h = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:20px 24px;">';
+    var h = '<div class="class="card-dark" style="padding:20px 24px;"">';
     // Header
     h += '<div class="d-flex justify-content-between align-items-center mb-3">';
     h += '<div><span class="c-10-up">' + d.mese_nome + ' ' + d.anno + '</span>';
@@ -689,47 +689,47 @@ function renderBustaSostituto(d) {
     h += '<div class="row g-2 mb-3" style="font-size:11px;color:#8A8F98;">';
     h += '<div class="col-md-4"><b>Datore:</b> ' + (d.datore || '') + '</div>';
     h += '<div class="col-md-4"><b>Ore:</b> ' + (d.ore_mensili || 0) + ' h/mese (INPS: ' + (d.ore_inps || 0) + ' h)</div>';
-    h += '<div class="col-md-4"><b>Budget applicato:</b> € ' + (d.budget_mensile || 0).toFixed(2) + '</div></div>';
+    h += '<div class="col-md-4"><b>Budget applicato:</b> â‚¬ ' + (d.budget_mensile || 0).toFixed(2) + '</div></div>';
     // Table
     h += '<div style="border-top:1px solid #27282D;padding-top:12px;">';
     h += '<table style="width:100%;font-size:12px;border-collapse:collapse;">';
     h += '<tr><th style="text-align:left;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Voce</th><th style="text-align:right;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
     // Paga base
     var pb = d.paga_base || {};
-    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Paga base (' + (pb.orario || 0).toFixed(4) + '€/h &times; ' + (d.ore_mensili || 0) + ' h)</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (pb.totale || 0).toFixed(2) + '</td></tr>';
-    // Indennità
+    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Paga base (' + (pb.orario || 0).toFixed(4) + 'â‚¬/h &times; ' + (d.ore_mensili || 0) + ' h)</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">â‚¬ ' + (pb.totale || 0).toFixed(2) + '</td></tr>';
+    // IndennitÃ 
     var inds = d.indennita || [];
     for (var i = 0; i < inds.length; i++) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + (inds[i].label || '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (inds[i].totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + (inds[i].label || '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">â‚¬ ' + (inds[i].totale || 0).toFixed(2) + '</td></tr>';
     }
     // Scatti
     var sc = d.scatti_anzianita || {};
     if (sc.valore > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Scatti anzianità (' + (sc.dettaglio || '') + ')</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (sc.orario || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Scatti anzianitÃ  (' + (sc.dettaglio || '') + ')</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">â‚¬ ' + (sc.orario || 0).toFixed(2) + '</td></tr>';
     }
     // Ratei
     var ratei = d.ratei_pagati || [];
     for (var j = 0; j < ratei.length; j++) {
         var r = ratei[j];
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + r.label + (r.incluso ? ' (incluso)' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (r.totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + r.label + (r.incluso ? ' (incluso)' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">â‚¬ ' + (r.totale || 0).toFixed(2) + '</td></tr>';
     }
     // Lordo
-    h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">TOTALE LORDO</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">€ ' + (d.totale_lordo || 0).toFixed(2) + '</td></tr>';
+    h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">TOTALE LORDO</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">â‚¬ ' + (d.totale_lordo || 0).toFixed(2) + '</td></tr>';
     // Separator
     h += '<tr><td colspan="2" style="padding:2px;"></td></tr>';
     // Contributi
     var contr = d.contributi || {};
-    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Contributi INPS' + (contr.inps && contr.inps.fascia ? ' (' + contr.inps.fascia + ')' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (contr.totale || 0).toFixed(2) + '</td></tr>';
+    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Contributi INPS' + (contr.inps && contr.inps.fascia ? ' (' + contr.inps.fascia + ')' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">â‚¬ ' + (contr.totale || 0).toFixed(2) + '</td></tr>';
     // Trattenute
     var trat = d.trattenute || {};
     if (trat.convivenza && trat.convivenza.totale > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Vitto e alloggio</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.convivenza.totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Vitto e alloggio</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">â‚¬ ' + (trat.convivenza.totale || 0).toFixed(2) + '</td></tr>';
     }
     if (trat.ratei_accantonati > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Ratei accantonati</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.ratei_accantonati || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Ratei accantonati</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">â‚¬ ' + (trat.ratei_accantonati || 0).toFixed(2) + '</td></tr>';
     }
     // Netto
-    h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">NETTO A PAGARE</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">€ ' + (d.netto || 0).toFixed(2) + '</td></tr>';
+    h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">NETTO A PAGARE</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">â‚¬ ' + (d.netto || 0).toFixed(2) + '</td></tr>';
     h += '</table></div>';
     // Verifica copertura
     if (d.verifica_copertura !== undefined) {
@@ -737,7 +737,7 @@ function renderBustaSostituto(d) {
         var vcColor = vc >= 0 ? '#10b981' : '#f87171';
         h += '<div style="margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;text-align:center;">';
         h += '<span style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Verifica copertura budget</span>';
-        h += '<div style="font-size:15px;font-weight:700;color:' + vcColor + ';">€ ' + vc.toFixed(2) + '</div></div>';
+        h += '<div style="font-size:15px;font-weight:700;color:' + vcColor + ';">â‚¬ ' + vc.toFixed(2) + '</div></div>';
     }
     h += '</div>';
     document.getElementById('bustaSostitutoContent').innerHTML = h;
@@ -755,7 +755,7 @@ window.salvaBusta = function() {
     if (!pk) return;
     var warn = document.getElementById('bustaEsistenteWarning');
     if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
-        if (!confirm('Busta paga già salvata per questo periodo. Sovrascrivere?')) return;
+        if (!confirm('Busta paga giÃ  salvata per questo periodo. Sovrascrivere?')) return;
     }
     var btn = document.getElementById('btnSalvaBusta');
     btn.disabled = true;

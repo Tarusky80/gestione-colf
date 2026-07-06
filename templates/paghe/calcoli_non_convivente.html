@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block extra_css %}
@@ -89,7 +89,7 @@
 
         <span class="vr"></span>
 
-        <span class="c-9-up-fw" style="color:#5C5F66;">Indennità</span>
+        <span class="c-9-up-fw" style="color:#5C5F66;">IndennitÃ </span>
         <span class="toggle-item">
             <span>Funzione</span>
             <label class="toggle-switch conv-toggle-small">
@@ -105,14 +105,14 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span>Più Assistiti</span>
+            <span>PiÃ¹ Assistiti</span>
             <label class="toggle-switch conv-toggle-small">
                 <input type="checkbox" id="indPiuAssistiti" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
             </label>
         </span>
         <span class="toggle-item">
-            <span>Cert. Qualità</span>
+            <span>Cert. QualitÃ </span>
             <label class="toggle-switch conv-toggle-small">
                 <input type="checkbox" id="indCertQualita" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -122,7 +122,7 @@
         <span class="vr-d"></span>
 
         <span class="toggle-item">
-            <span>Scatti Anzianità</span>
+            <span>Scatti AnzianitÃ </span>
             <label class="toggle-switch conv-toggle-small">
                 <input type="checkbox" id="toggleScatti" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -143,7 +143,7 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span>13ª</span>
+            <span>13Âª</span>
             <label class="toggle-switch conv-toggle-small">
                 <input type="checkbox" id="rateo13ma" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -174,60 +174,60 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Non Convivente</h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto â€” Busta Non Convivente</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Qui puoi calcolare la busta paga mensile di un collaboratore domestico <b>non convivente</b>, cioè che NON vive nella stessa casa del datore di lavoro. Questo è il caso più comune: la colf o il badante viene a ore e torna a casa sua.<br><br>
-Il calcolo parte dalla <b>paga oraria</b> moltiplicata per le <b>ore mensili</b> previste dal contratto. A differenza della pagina "Busta Standard" (che usa il budget dei progetti regionali e applica il prorating), qui non c'è un budget limite da rispettare: il lavoratore prende esattamente paga_oraria × ore.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+Qui puoi calcolare la busta paga mensile di un collaboratore domestico <b>non convivente</b>, cioÃ¨ che NON vive nella stessa casa del datore di lavoro. Questo Ã¨ il caso piÃ¹ comune: la colf o il badante viene a ore e torna a casa sua.<br><br>
+Il calcolo parte dalla <b>paga oraria</b> moltiplicata per le <b>ore mensili</b> previste dal contratto. A differenza della pagina "Busta Standard" (che usa il budget dei progetti regionali e applica il prorating), qui non c'Ã¨ un budget limite da rispettare: il lavoratore prende esattamente paga_oraria Ã— ore.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa — 3 passi</b><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa â€” 3 passi</b><br>
 <b>1.</b> Scegli un contratto dal menu a tendina.<br>
-<b>2.</b> Regola le opzioni: toggle Sostituzione (Art. 14), ratei, indennità, scatti, convivenza (vitto/alloggio forfettario).<br>
+<b>2.</b> Regola le opzioni: toggle Sostituzione (Art. 14), ratei, indennitÃ , scatti, convivenza (vitto/alloggio forfettario).<br>
 <b>3.</b> Leggi la busta paga: Lordo, Contributi INPS, Trattenute (vitto/alloggio, ratei accantonati), Netto.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sostituzione (Art. 14 comma 9 del CCNL)</b><br>
-Se attivi il toggle "Sostituzione", il sistema usa la <b>retribuzione oraria di sostituzione</b> (Tabella G del CCNL) invece della normale paga base. Questa è più alta della paga base normale.<br><br>
+Se attivi il toggle "Sostituzione", il sistema usa la <b>retribuzione oraria di sostituzione</b> (Tabella G del CCNL) invece della normale paga base. Questa Ã¨ piÃ¹ alta della paga base normale.<br><br>
 Cosa cambia:<br>
-— La paga base viene sostituita dalla <b>retribuzione di sostituzione</b> (es. invece di €6,00/h si usa €7,50/h).<br>
-— Non si applica il prorating (il prorata è sempre 1,0 — non c'è limite di budget).<br>
-— Il calcolo diventa: retribuzione_sostituzione × ore_mensili.<br><br>
-<b>Attenzione:</b> la sostituzione è un istituto diverso dalla "Sostituzione Malattia" che trovi nell'apposita pagina. Qui si tratta di un lavoratore che sostituisce temporaneamente un altro con una paga maggiorata.</p>
+â€” La paga base viene sostituita dalla <b>retribuzione di sostituzione</b> (es. invece di â‚¬6,00/h si usa â‚¬7,50/h).<br>
+â€” Non si applica il prorating (il prorata Ã¨ sempre 1,0 â€” non c'Ã¨ limite di budget).<br>
+â€” Il calcolo diventa: retribuzione_sostituzione Ã— ore_mensili.<br><br>
+<b>Attenzione:</b> la sostituzione Ã¨ un istituto diverso dalla "Sostituzione Malattia" che trovi nell'apposita pagina. Qui si tratta di un lavoratore che sostituisce temporaneamente un altro con una paga maggiorata.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei — TFR, 13ª, Ferie, Festivi</b><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei â€” TFR, 13Âª, Ferie, Festivi</b><br>
 Per ogni rateo hai 3 scelte:<br>
-<span style="color:#34d399;">✓ Incluso nel lordo</span> — Pagato in busta ogni mese.<br>
-<span style="color:#f59e0b;">⟳ Accantonato</span> — Calcolato ma trattenuto per liquidazione futura (TFR a fine rapporto, 13ª a dicembre, ferie non godute).<br>
-<span style="color:#5C5F66;">✕ Disabilitato</span> — Non viene calcolato.<br><br>
+<span style="color:#34d399;">âœ“ Incluso nel lordo</span> â€” Pagato in busta ogni mese.<br>
+<span style="color:#f59e0b;">âŸ³ Accantonato</span> â€” Calcolato ma trattenuto per liquidazione futura (TFR a fine rapporto, 13Âª a dicembre, ferie non godute).<br>
+<span style="color:#5C5F66;">âœ• Disabilitato</span> â€” Non viene calcolato.<br><br>
 <b>TFR:</b> la liquidazione. Si accumua mese per mese e viene pagata quando il rapporto finisce.<br>
-<b>13ª:</b> la tredicesima, pagata a dicembre.<br>
+<b>13Âª:</b> la tredicesima, pagata a dicembre.<br>
 <b>Ferie:</b> giorni di ferie maturati e non goduti.<br>
-<b>Festivi:</b> festività non godute (Pasqua, 1° Maggio, etc.).</p>
+<b>Festivi:</b> festivitÃ  non godute (Pasqua, 1Â° Maggio, etc.).</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Indennità e Scatti di Anzianità</b><br>
-Le <b>indennità</b> sono importi mensili aggiuntivi previsti dal CCNL:<br>
-— Indennità di funzione (per ruoli con responsabilità).<br>
-— Indennità bambini sotto i 6 anni (se assiste minori).<br>
-— Indennità più assistiti (se assiste più persone).<br>
-— Indennità certificazione qualità.<br><br>
-Gli <b>scatti di anzianità</b> sono aumenti ogni 2 anni di servizio presso lo stesso datore.</p>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">IndennitÃ  e Scatti di AnzianitÃ </b><br>
+Le <b>indennitÃ </b> sono importi mensili aggiuntivi previsti dal CCNL:<br>
+â€” IndennitÃ  di funzione (per ruoli con responsabilitÃ ).<br>
+â€” IndennitÃ  bambini sotto i 6 anni (se assiste minori).<br>
+â€” IndennitÃ  piÃ¹ assistiti (se assiste piÃ¹ persone).<br>
+â€” IndennitÃ  certificazione qualitÃ .<br><br>
+Gli <b>scatti di anzianitÃ </b> sono aumenti ogni 2 anni di servizio presso lo stesso datore.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Convivenza — Vitto e Alloggio Forfettario</b><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Convivenza â€” Vitto e Alloggio Forfettario</b><br>
 Anche per i non conviventi puoi attivare vitto e alloggio (es. se il lavoratore mangia a casa del datore).<br>
-— Pranzo: €2,33/gg — Cena: €2,33/gg — Alloggio: €2,00/gg.<br>
-I giorni sono di default 26 (dal lunedì al sabato). L'importo viene detratto dal netto.</p>
+â€” Pranzo: â‚¬2,33/gg â€” Cena: â‚¬2,33/gg â€” Alloggio: â‚¬2,00/gg.<br>
+I giorni sono di default 26 (dal lunedÃ¬ al sabato). L'importo viene detratto dal netto.</p>
 
 <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Contributi INPS</b><br>
 I contributi INPS si calcolano sulle <b>ore INPS</b>, che sono le ore mensili arrotondate per eccesso all'intero superiore. Per esempio, se il contratto prevede 108,33 ore al mese, le ore INPS sono 109.<br><br>
 L'aliquota contributiva dipende dalla <b>fascia oraria settimanale</b>:<br>
-— <b>SOPRA la soglia</b> (24 ore settimanali o più): aliquota piena.<br>
-— <b>SOTTO la soglia</b> (meno di 24 ore settimanali): aliquota ridotta.<br><br>
+â€” <b>SOPRA la soglia</b> (24 ore settimanali o piÃ¹): aliquota piena.<br>
+â€” <b>SOTTO la soglia</b> (meno di 24 ore settimanali): aliquota ridotta.<br><br>
 A questi si aggiunge la <b>quota cassa/ente bilaterale</b> (es. EBINCOLF, CAD, etc.), un piccolo contributo aggiuntivo calcolato sulle stesse ore INPS.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <b>SALVA BUSTA</b> â€” salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta giÃ  salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> â€” consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lÃ¬ puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
       </div>
     </div>
   </div>
@@ -369,7 +369,7 @@ function renderBustaNonConvivente(d) {
     var tipoLabel = 'Non Convivente';
     if (d.tipo_calcolo === 'SOSTITUZIONE') tipoLabel = 'Sostituzione (Art. 14 c.9)';
 
-    var html = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;">';
+    var html = '<div class="class="card-dark" style="overflow:hidden;"">';
 
     // Header
     html += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
@@ -414,7 +414,7 @@ function renderBustaNonConvivente(d) {
     html += '<span style="font-size:12px;color:#EDEDED;">Paga base <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
     html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
 
-    // Indennità
+    // IndennitÃ 
     for (var i = 0; i < d.indennita.length; i++) {
         var ind = d.indennita[i];
         html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
@@ -437,7 +437,7 @@ function renderBustaNonConvivente(d) {
         html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
 
-    // Totale indennità e ratei inclusi
+    // Totale indennitÃ  e ratei inclusi
     var totalIndennitaRatei = 0;
     for (var iri = 0; iri < d.indennita.length; iri++) totalIndennitaRatei += d.indennita[iri].totale;
     for (var irr = 0; irr < d.ratei_pagati.length; irr++) { if (d.ratei_pagati[irr].incluso) totalIndennitaRatei += d.ratei_pagati[irr].orario * d.ore_mensili; }
@@ -581,7 +581,7 @@ function renderBustaNonConvivente(d) {
 
     html += '</div></div>';
 
-    // ── Dettaglio Progetti (se presenti) ──
+    // â”€â”€ Dettaglio Progetti (se presenti) â”€â”€
     if (d.progetti_data && d.progetti_data.righe && d.progetti_data.righe.length > 0) {
         html += '<div style="margin-top:24px;background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;">';
         html += '<div style="padding:16px 24px;">';

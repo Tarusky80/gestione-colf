@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load static %}{% load tabelle_tags %}
+﻿{% extends 'base.html' %}{% load static %}{% load tabelle_tags %}
 {% block title %}Busta TFR{% endblock %}
 {% block extra_css %}
 <style>
@@ -68,7 +68,7 @@
           <div class="d-flex align-items-center gap-2">
             <button class="btn btn-sm" onclick="navContratto(-1)" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;padding:4px 8px;color:#8A8F98;font-size:13px;line-height:1;">&#9664;</button>
             <select id="fContratto" class="form-control" onchange="onCambioContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;width:100%;">
-              <option value="">— Seleziona contratto —</option>
+              <option value="">â€” Seleziona contratto â€”</option>
               {% for c in contratti %}
               <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
               {% endfor %}
@@ -112,7 +112,7 @@
     </div>
 
     <div id="resultEmpty" style="display:{% if contratto_pk %}none{% else %}block{% endif %};">
-      <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:60px 20px;text-align:center;">
+      <div class="class="card-dark" style="padding:60px 20px;text-align:center;"">
         <i class="bi bi-piggy-bank" style="font-size:48px;color:#555;display:block;margin-bottom:12px;"></i>
         <div style="font-size:16px;font-weight:600;color:#8A8F98;">Seleziona un contratto</div>
         <div style="font-size:12px;color:#666;margin-top:4px;">Il calcolo parte automaticamente al cambio dei parametri</div>
@@ -121,7 +121,7 @@
 
     <div id="resultContainer" style="display:none;">
       <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i> Liquidazione TFR già salvata per questo periodo. Clicca <strong>LIQUIDA TFR</strong> per sovrascriverla.
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Liquidazione TFR giÃ  salvata per questo periodo. Clicca <strong>LIQUIDA TFR</strong> per sovrascriverla.
       </div>
       <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 24px;margin-bottom:16px;">
         <div id="resultLoading" style="display:none;text-align:center;padding:30px;">
@@ -137,32 +137,32 @@
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Busta TFR
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Busta TFR
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        La <b>Busta TFR</b> genera il documento di liquidazione del Trattamento di Fine Rapporto per il collaboratore domestico. Il TFR è l'accantonamento mensile che viene corrisposto al lavoratore al termine del rapporto di lavoro.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        La <b>Busta TFR</b> genera il documento di liquidazione del Trattamento di Fine Rapporto per il collaboratore domestico. Il TFR Ã¨ l'accantonamento mensile che viene corrisposto al lavoratore al termine del rapporto di lavoro.</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Modalità TFR</b><br>
-        <b>Incluso nel lordo</b> — l'importo TFR è già compreso nella paga base mensile, non viene accantonato separatamente.<br>
-        <b>Separato 100%</b> — l'intero importo del TFR viene accantonato mese per mese e liquidato alla fine del rapporto.<br>
-        <b>Separato 70%</b> — il 70% del TFR viene pagato in busta ogni mese, il restante 30% viene accantonato per la liquidazione finale.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">ModalitÃ  TFR</b><br>
+        <b>Incluso nel lordo</b> â€” l'importo TFR Ã¨ giÃ  compreso nella paga base mensile, non viene accantonato separatamente.<br>
+        <b>Separato 100%</b> â€” l'intero importo del TFR viene accantonato mese per mese e liquidato alla fine del rapporto.<br>
+        <b>Separato 70%</b> â€” il 70% del TFR viene pagato in busta ogni mese, il restante 30% viene accantonato per la liquidazione finale.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Pulsanti rapidi</b><br>
         Per il periodo di liquidazione puoi usare i pulsanti rapidi: <b>Inizio anno</b>, <b>Inizio rapporto</b>, <b>Fine mese</b>, <b>Fine anno</b>, <b>Data...</b> per impostare date personalizzate. Il sistema calcola automaticamente il totale maturato nel periodo.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
-        La modalità TFR si configura nel contratto (paga_tfr). Per i contratti con TFR 70%, una parte viene pagata in busta e una parte accantonata. Il TFR accantonato è soggetto a rivalutazione ISTAT.</p>
+        La modalitÃ  TFR si configura nel contratto (paga_tfr). Per i contratti con TFR 70%, una parte viene pagata in busta e una parte accantonata. Il TFR accantonato Ã¨ soggetto a rivalutazione ISTAT.</p>
         <p class="mb-0"><b>PDF:</b> genera il documento di liquidazione con timbro e firma, salvato nell'archivio documenti.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Liquidazione TFR e Archivio</b><br>
-        <b>LIQUIDA TFR</b> — crea un record di liquidazione TFR nell'archivio buste paga con i dati del periodo selezionato. Il PDF viene generato automaticamente e associato alla busta.<br>
-        <b>Archivio Buste</b> — consulta tutte le liquidazioni TFR salvate (badge rosa), filtrale per tipo=TFR. Da lì puoi cambiare lo stato, vedere il PDF ed eliminare record.<br>
+        <b>LIQUIDA TFR</b> â€” crea un record di liquidazione TFR nell'archivio buste paga con i dati del periodo selezionato. Il PDF viene generato automaticamente e associato alla busta.<br>
+        <b>Archivio Buste</b> â€” consulta tutte le liquidazioni TFR salvate (badge rosa), filtrale per tipo=TFR. Da lÃ¬ puoi cambiare lo stato, vedere il PDF ed eliminare record.<br>
         <b>Cessazione contratto:</b> quando imposti un contratto a stato <b>CESSATO</b>, l'ultima busta paga e la liquidazione TFR vengono generate automaticamente.</p>
       </div>
     </div>
@@ -314,7 +314,7 @@ window.renderTfr = function(d) {
 
   html += '<div class="row g-3">';
 
-  // Colonna sx — Info contratto + dettaglio calcolo
+  // Colonna sx â€” Info contratto + dettaglio calcolo
   html += '<div class="col-md-6">';
 
   // Scheda datore/lavoratore
@@ -335,7 +335,7 @@ window.renderTfr = function(d) {
   html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Inizio TFR effettivo</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.data_inizio_tfr_eff + '</td></tr>';
   html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Paga base oraria</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.paga_base.toFixed(4) + '</td></tr>';
   html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Budget mensile</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.budget_mensile.toFixed(2) + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Modalità TFR</td><td style="font-size:12px;font-weight:600;color:#fbbf24;padding:2px 0;">' + d.modalita_tfr + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">ModalitÃ  TFR</td><td style="font-size:12px;font-weight:600;color:#fbbf24;padding:2px 0;">' + d.modalita_tfr + '</td></tr>';
   html += '</table>';
   html += '</div>';
 
@@ -343,7 +343,7 @@ window.renderTfr = function(d) {
   html += '<div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:12px 14px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px;"><i class="bi bi-calculator me-1"></i> CALCOLO TFR</div>';
   html += '<table style="width:100%;">';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Periodo maturazione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.data_inizio + ' — ' + d.data_fine + '</td></tr>';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Periodo maturazione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.data_inizio + ' â€” ' + d.data_fine + '</td></tr>';
   html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Mesi trascorsi</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.mesi + '</td></tr>';
   html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Ore mensili</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.ore_mensili + ' h</td></tr>';
   html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">TFR orario</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">\u20AC ' + d.tfr_orario.toFixed(4) + '</td></tr>';
@@ -355,7 +355,7 @@ window.renderTfr = function(d) {
 
   html += '</div>'; // fine col-sx
 
-  // Colonna dx — Riepilogo
+  // Colonna dx â€” Riepilogo
   html += '<div class="col-md-6">';
 
   html += '<div style="padding:20px;background:rgba(251,191,36,0.08);border:2px solid rgba(251,191,36,0.25);border-radius:14px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">';
@@ -369,7 +369,7 @@ window.renderTfr = function(d) {
   html += '<div style="font-size:16px;font-weight:700;color:#EDEDED;margin-bottom:10px;">\u20AC ' + d.tfr_mensile.toFixed(4) + '</div>';
 
   html += '<div style="font-size:10px;color:#8A8F98;">Periodo</div>';
-  html += '<div style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.data_inizio + ' – ' + d.data_fine + '</div>';
+  html += '<div style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.data_inizio + ' â€“ ' + d.data_fine + '</div>';
 
   html += '</div>';
 
@@ -417,7 +417,7 @@ window.liquidaTfr = function() {
   if (!pk) { mostraToast('Nessun contratto selezionato', false); return; }
   var warn = document.getElementById('bustaEsistenteWarning');
   if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
-    if (!confirm('Liquidazione TFR già salvata per questo periodo. Sovrascrivere?')) return;
+    if (!confirm('Liquidazione TFR giÃ  salvata per questo periodo. Sovrascrivere?')) return;
   }
   var btn = document.getElementById('btnLiquidaTfr');
   btn.disabled = true;

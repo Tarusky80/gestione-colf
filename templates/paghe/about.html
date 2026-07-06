@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -218,7 +218,7 @@
       <!-- Versione / aggiornamenti integrati -->
       <div style="margin-top:16px;border-top:1px solid #1c1c1f;padding-top:14px;">
         <div id="agg-status-bar" style="display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:13px;color:#8A8F98;">
-          <span id="agg-badge" class="badge" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#555;">⏸ In attesa</span>
+          <span id="agg-badge" class="badge" style="font-size:11px;padding:4px 10px;border-radius:20px;background:#555;">â¸ In attesa</span>
           <span id="agg-timestamp"></span>
         </div>
         <div id="agg-lista" style="min-height:40px;">
@@ -271,7 +271,7 @@
       </div>
       <div class="credit-line">
         <span>Automazione web</span>
-        <span>Playwright · Selenium</span>
+        <span>Playwright Â· Selenium</span>
       </div>
       <div class="credit-line">
         <span>Backup automatici</span>
@@ -308,7 +308,7 @@
 <!-- Modale Progresso Aggiornamento -->
 <div class="modal fade" id="aggiornaModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
           <i class="bi bi-cloud-arrow-up me-2" style="color:#5E6AD2;"></i><span id="agg-modal-title">Aggiornamento in corso...</span>
@@ -332,24 +332,24 @@
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — About
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” About
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
         Pagina informativa con i dettagli del software: versione installata, tecnologia utilizzata, librerie e framework. Utile per verificare la versione corrente e le dipendenze del sistema.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Informazioni visualizzate</b><br>
-        <b>Nome e versione</b> — nome del programma e versione corrente configurata nelle Impostazioni.<br>
-        <b>Tecnologie</b> — stack tecnologico: Django 6.0, ReportLab, SQLite, Playwright, Selenium, ecc.<br>
-        <b>Dipendenze Python</b> — elenco completo dei pacchetti Python utilizzati dal gestionale.</p>
+        <b>Nome e versione</b> â€” nome del programma e versione corrente configurata nelle Impostazioni.<br>
+        <b>Tecnologie</b> â€” stack tecnologico: Django 6.0, ReportLab, SQLite, Playwright, Selenium, ecc.<br>
+        <b>Dipendenze Python</b> â€” elenco completo dei pacchetti Python utilizzati dal gestionale.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
-        La versione del programma può essere modificata dalla pagina <b>Impostazioni</b>. Le dipendenze elencate sono quelle installate nell'ambiente Python corrente.</p>
+        La versione del programma puÃ² essere modificata dalla pagina <b>Impostazioni</b>. Le dipendenze elencate sono quelle installate nell'ambiente Python corrente.</p>
       </div>
     </div>
   </div>

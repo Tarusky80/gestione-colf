@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -33,7 +33,7 @@
                     <div style="font-size:15px;font-weight:700;color:#EDEDED;margin-top:6px;">Gestionale COLF</div>
                 </div>
             {% endif %}
-            <div class="sidebar-toggle-edge" onclick="toggleNavLayout()" title="Passa a topbar">☰</div>
+            <div class="sidebar-toggle-edge" onclick="toggleNavLayout()" title="Passa a topbar">â˜°</div>
         </div>
 
         <nav class="flex-grow-1 overflow-auto">
@@ -151,7 +151,7 @@
                     <a id="nav_tabelle_casse" href="/tabella/tabelle-casse/" class="nav-link-custom {% if '/tabella/tabelle-casse/' in request.path %}active{% endif %}"><i class="bi bi-cash-stack"></i> Tabella Casse{% if shortcut_badges.nav_tabelle_casse %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tabelle_casse }}</span>{% endif %}</a>
                     <a id="nav_contributi_inps" href="/tabella/contributi-inps/" class="nav-link-custom {% if '/tabella/contributi-inps/' in request.path %}active{% endif %}"><i class="bi bi-percent"></i> Contributi INPS{% if shortcut_badges.nav_contributi_inps %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_contributi_inps }}</span>{% endif %}</a>
                     <a id="nav_tabella_malattia" href="/tabella/malattia/" class="nav-link-custom {% if '/tabella/malattia/' in request.path %}active{% endif %}"><i class="bi bi-heart-pulse"></i> Tabella Malattia{% if shortcut_badges.nav_tabella_malattia %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tabella_malattia }}</span>{% endif %}</a>
-                    <a id="nav_scatti_anzianita" href="/tabella/scatti-anzianita/" class="nav-link-custom {% if '/tabella/scatti-anzianita/' in request.path %}active{% endif %}"><i class="bi bi-arrow-up-circle"></i> Scatti Anzianità{% if shortcut_badges.nav_scatti_anzianita %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_scatti_anzianita }}</span>{% endif %}</a>
+                    <a id="nav_scatti_anzianita" href="/tabella/scatti-anzianita/" class="nav-link-custom {% if '/tabella/scatti-anzianita/' in request.path %}active{% endif %}"><i class="bi bi-arrow-up-circle"></i> Scatti AnzianitÃ {% if shortcut_badges.nav_scatti_anzianita %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_scatti_anzianita }}</span>{% endif %}</a>
                     <a id="nav_tipo_progetto" href="/tabella/tipi-progetto/" class="nav-link-custom {% if '/tabella/tipi-progetto/' in request.path %}active{% endif %}"><i class="bi bi-tags"></i> Tipo Progetto{% if shortcut_badges.nav_tipo_progetto %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tipo_progetto }}</span>{% endif %}</a>
                     <a id="nav_livelli" href="/tabella/livelli/" class="nav-link-custom {% if '/tabella/livelli/' in request.path %}active{% endif %}"><i class="bi bi-layers"></i> Livelli{% if shortcut_badges.nav_livelli %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_livelli }}</span>{% endif %}</a>
                     <a id="nav_modelli_lista" href="/tabella/modelli-lista/" class="nav-link-custom {% if '/tabella/modelli-lista/' in request.path %}active{% endif %}"><i class="bi bi-file-earmark-spreadsheet"></i> Modelli Lista{% if shortcut_badges.nav_modelli_lista %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_modelli_lista }}</span>{% endif %}</a>
@@ -259,7 +259,7 @@
         {% if db_profile != 'default' %}
         <div class="sidebar-footer-user"><i class="bi bi-database"></i> {{ db_profile }}</div>
         {% else %}
-        <div class="sidebar-footer-user"><i class="bi bi-person"></i> {{ user.get_full_name|default:user.username }}{% if ruolo_utente %} · <span style="color:#5E6AD2;font-weight:600;font-size:10px;">{{ ruolo_utente }}</span>{% endif %}</div>
+        <div class="sidebar-footer-user"><i class="bi bi-person"></i> {{ user.get_full_name|default:user.username }}{% if ruolo_utente %} Â· <span style="color:#5E6AD2;font-weight:600;font-size:10px;">{{ ruolo_utente }}</span>{% endif %}</div>
         {% endif %}
     </div>
     </div>
@@ -289,8 +289,8 @@
                 </div>
             </div>
             <div style="padding:8px 14px;border-top:1px solid #27282D;display:flex;gap:14px;font-size:10px;color:#545;flex-shrink:0;flex-wrap:wrap;">
-                <span><span style="color:#5E6AD2;">↑↓</span> Naviga</span>
-                <span><span style="color:#5E6AD2;">↵</span> Seleziona</span>
+                <span><span style="color:#5E6AD2;">â†‘â†“</span> Naviga</span>
+                <span><span style="color:#5E6AD2;">â†µ</span> Seleziona</span>
                 <span><span style="color:#5E6AD2;">Esc</span> Chiudi</span>
                 <span><span style="color:#5E6AD2;">Ctrl+1-9</span> Vai a</span>
             </div>
@@ -339,7 +339,7 @@
     {# --- Modal Modifica/Duplica Progetto --- #}
     <div class="modal fade" id="progettoModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content" style="background:#17181C;border:1px solid #27282D;border-radius:14px;">
+            <div class="modal-content" class="class="card-dark"">
                 <div class="modal-header" style="border-bottom:1px solid #27282D;padding:20px 28px;">
                     <h5 class="modal-title fw-bold text-white" id="progettoModalTitle" style="font-size:15px;">Modifica Progetto</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="opacity:0.5;transition:opacity 0.2s;"></button>
@@ -394,7 +394,7 @@
                         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:rgba(248,113,113,0.12);display:flex;align-items:center;justify-content:center;font-size:20px;color:#f87171;"><i class="bi bi-exclamation-triangle-fill"></i></div>
                         <div>
                             <div style="font-size:14px;font-weight:700;color:#EDEDED;margin-bottom:2px;">Conferma eliminazione</div>
-                            <div style="font-size:11px;color:#8A8F98;">L'operazione non può essere annullata.</div>
+                            <div style="font-size:11px;color:#8A8F98;">L'operazione non puÃ² essere annullata.</div>
                         </div>
                     </div>
                     <div style="padding:10px 12px;background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:16px;">
@@ -414,7 +414,7 @@
     <!-- CCNL Occhio Modal -->
     <div class="modal fade" id="modaleCcnlOcchioGlobale" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+        <div class="modal-content" class="class="card-alt"">
           <div class="modal-body" id="modaleCcnlOcchioGlobaleBody" style="padding:0;">
             <div class="text-center py-5" style="color:#8A8F98;font-size:13px;">
               <i class="bi bi-eye" style="font-size:32px;color:#5E6AD2;display:block;margin-bottom:8px;"></i>
@@ -438,149 +438,11 @@
         <div id="actionPanelBody" style="padding:14px 18px;overflow-y:auto;max-height:55vh;"></div>
     </div>
 
+    <script src="{% static 'js/paghe.js' %}" defer></script>
     <script>
     window.SHORTCUT_MAP = {{ shortcut_map_json|safe }};
     window.AJAX_URLS = {{ js_urls|safe }};
-    // --- Action Panel (clickable rows) ---
-    window.closeActionPanel = function() {
-        document.getElementById('actionPanelOverlay').style.display = 'none';
-        document.getElementById('actionPanel').style.display = 'none';
-    };
-    window._renderActionBtn = function(a, defaultStyle) {
-        var style = a.style || defaultStyle;
-        var icon = a.icon ? '<i class="bi ' + a.icon + '" style="font-size:14px;"></i> ' : '';
-        if (a.type === 'link') {
-            return '<a href="' + a.url + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-        } else if (a.type === 'link_blank') {
-            return '<a href="' + a.url + '" target="_blank" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-        } else if (a.type === 'js') {
-            return '<a href="#" onclick="event.preventDefault();closeActionPanel();' + a.code + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-        } else if (a.type === 'delete') {
-            var _url = (a.url || '').replace(/'/g, '&#39;');
-            var _tp = (a.deleteTipo || '').replace(/'/g, '&#39;');
-            var _nm = (a.deleteNome || '').replace(/'/g, '&#39;');
-            var _im = (a.deleteImpatto || '').replace(/'/g, '&#39;');
-            return '<a href="#" data-delete-btn="1" data-delete-url="' + _url + '" data-delete-tipo="' + _tp + '" data-delete-nome="' + _nm + '" data-delete-impatto="' + _im + '" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-        } else if (a.type === 'duplica') {
-            return '<a href="#" onclick="event.preventDefault();closeActionPanel();loadAjaxForm(\'' + a.url + '\', \'Duplica ' + (a.titolo || '') + '\');" style="display:flex;align-items:center;gap:8px;' + style + 'border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;color:#34d399;text-decoration:none;transition:all 0.15s;">' + icon + a.label + '</a>';
-        } else if (a.type === 'custom') {
-            return a.html;
-        }
-        return '';
-    };
-
-    window.openActionPanel = function(title, subtitle, actions, meta) {
-        document.getElementById('actionPanelTitle').textContent = (title || '').replace(/\s*\|\s*/g, '\n');
-        document.getElementById('actionPanelSubtitle').textContent = subtitle || '';
-        var body = document.getElementById('actionPanelBody');
-        var html = '';
-
-        // Metadati informativi
-        if (meta) {
-            html += '<div style="margin-bottom:10px;padding:10px 12px;background:#0E0F11;border:1px solid #27282D;border-radius:8px;font-size:11px;">';
-
-            // Badge stato
-            if (meta.stato) {
-                var sc = '#8A8F98';
-                if (meta.stato === 'Attivo' || meta.stato === 'attivo' || meta.stato === 'ATTIVO') sc = '#34d399';
-                else if (meta.stato === 'Cessato' || meta.stato === 'cessato' || meta.stato === 'CESSATO') sc = '#f87171';
-                else if (meta.stato === 'Indeterminato') sc = '#60a5fa';
-                else if (meta.stato === 'Determinato') sc = '#fbbf24';
-                html += '<div style="margin-bottom:6px;"><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:' + sc + '20;color:' + sc + ';border:1px solid ' + sc + '40;"><span style="width:6px;height:6px;border-radius:50%;background:' + sc + ';"></span> ' + meta.stato + '</span></div>';
-            }
-
-            // Griglia info
-            if (meta.info && meta.info.length > 0) {
-                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;">';
-                for (var i = 0; i < meta.info.length; i++) {
-                    var inf = meta.info[i];
-                    if (inf.v && inf.v !== '-' && inf.v !== '') {
-                        html += '<div><span style="color:#5C5F66;">' + inf.l + ':</span> <span style="color:#ccc;">' + inf.v + '</span></div>';
-                    }
-                }
-                html += '</div>';
-            }
-
-            // Date
-            if (meta.creatoIl || meta.modificatoIl) {
-                html += '<div style="margin-top:6px;padding-top:6px;border-top:1px solid #27282D;display:flex;gap:12px;font-size:10px;color:#5C5F66;">';
-                if (meta.creatoIl) html += '<span><i class="bi bi-plus-circle me-1"></i>' + meta.creatoIl + '</span>';
-                if (meta.modificatoIl) html += '<span><i class="bi bi-pencil me-1"></i>' + meta.modificatoIl + '</span>';
-                html += '</div>';
-            }
-
-            html += '</div>';
-        }
-
-        // Raggruppa azioni per riga (se presente campo row) o per categoria (fallback)
-        var hasRow = false;
-        for (var _i = 0; _i < actions.length; _i++) {
-            if (actions[_i] && actions[_i].row !== undefined) { hasRow = true; break; }
-        }
-
-        if (hasRow) {
-            var rows = {};
-            for (var _i = 0; _i < actions.length; _i++) {
-                var a = actions[_i];
-                if (!a) continue;
-                var r = a.row || 0;
-                if (!rows[r]) rows[r] = [];
-                rows[r].push(a);
-            }
-            var rowKeys = Object.keys(rows).sort(function(x,y) { return parseInt(x)-parseInt(y); });
-            for (var _ri = 0; _ri < rowKeys.length; _ri++) {
-                var items = rows[rowKeys[_ri]];
-                var cols = items.length;
-                var hasDanger = false;
-                for (var _j = 0; _j < items.length; _j++) {
-                    if (items[_j].cat === 'danger') { hasDanger = true; break; }
-                }
-                html += '<div style="display:grid;grid-template-columns:repeat(' + cols + ',1fr);gap:6px;margin-bottom:6px;' + (hasDanger ? 'border-top:1px solid rgba(248,113,113,0.15);padding-top:6px;' : '') + '">';
-                for (var _j = 0; _j < items.length; _j++) {
-                    var it = items[_j];
-                    var ds;
-                    if (it.cat === 'primary') ds = 'background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);';
-                    else if (it.cat === 'danger') ds = 'background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);color:#f87171;';
-                    else ds = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);';
-                    html += _renderActionBtn(it, ds);
-                }
-                html += '</div>';
-            }
-        } else {
-            var primary = [], secondary = [], danger = [];
-            for (var i = 0; i < actions.length; i++) {
-                var a = actions[i];
-                if (a.cat === 'primary') primary.push(a);
-                else if (a.cat === 'danger') danger.push(a);
-                else secondary.push(a);
-            }
-            if (primary.length > 0) {
-                html += '<div style="display:grid;grid-template-columns:repeat(' + Math.min(primary.length, 2) + ',1fr);gap:6px;margin-bottom:6px;">';
-                for (var i = 0; i < primary.length; i++) {
-                    html += _renderActionBtn(primary[i], 'background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);');
-                }
-                html += '</div>';
-            }
-            if (secondary.length > 0) {
-                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">';
-                for (var i = 0; i < secondary.length; i++) {
-                    html += _renderActionBtn(secondary[i], 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);');
-                }
-                html += '</div>';
-            }
-            if (danger.length > 0) {
-                html += '<div style="border-top:1px solid rgba(248,113,113,0.15);margin-top:6px;padding-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
-                for (var i = 0; i < danger.length; i++) {
-                    html += _renderActionBtn(danger[i], 'background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.15);color:#f87171;');
-                }
-                html += '</div>';
-            }
-        }
-
-        body.innerHTML = html;
-        document.getElementById('actionPanelOverlay').style.display = 'block';
-        document.getElementById('actionPanel').style.display = 'block';
-    };
+    // --- Action Panel (clickable rows) — funzioni in static/js/paghe.js ---
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeActionPanel();
     });
@@ -609,166 +471,7 @@
             if (data) openActionPanel(data.title, data.subtitle, data.actions, data.meta || null);
         }
     });
-    window._buildInfoMeta = function(tr, extra) {
-        var info = [];
-        var email = tr.getAttribute('data-email');
-        var tel = tr.getAttribute('data-telefono');
-        var comune = tr.getAttribute('data-comune');
-        if (email) info.push({l:'Email', v:email});
-        if (tel) info.push({l:'Tel', v:tel});
-        if (comune) info.push({l:'Comune', v:comune});
-        if (extra) { for (var _i = 0; _i < extra.length; _i++) info.push(extra[_i]); }
-        var meta = {};
-        if (info.length > 0) meta.info = info;
-        return meta;
-    };
-
-    window.getActionsForRow = function(tr) {
-        var type = tr.getAttribute('data-type');
-        var pk = tr.getAttribute('data-pk');
-        var title = tr.getAttribute('data-title') || '';
-        var sub = tr.getAttribute('data-sub') || '';
-        if (!type || !pk) return null;
-
-        if (type === 'datore' || type === 'lavoratore' || type === 'beneficiario') {
-            var entity = type;
-            var entityLabel = type.charAt(0).toUpperCase() + type.slice(1);
-            var modUrl = '/ajax/modifica-' + entity + '/' + pk + '/';
-            var docUrl = '/documenti/?' + entity + '_pk=' + pk;
-            var dupUrl = '/ajax/duplica-anagrafica/' + entity + '/' + pk + '/';
-            var delUrl = '/ajax/elimina-anagrafica/' + entity + '/' + pk + '/';
-            return {
-                title: title, subtitle: sub,
-                meta: _buildInfoMeta(tr),
-                actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', code:"loadAjaxForm('" + modUrl + "','Modifica " + entityLabel + "')"},
-                    {icon:'bi-files', label:'Duplica', type:'duplica', url:dupUrl, titolo:entityLabel},
-                    {icon:'bi-file-earmark', label:'Documenti', type:'link', url:docUrl, style:'background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.3);'},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl, deleteTipo:entityLabel, deleteNome:title, deleteImpatto:'Il record viene spostato nella pagina Eliminati (ripristinabile).'},
-                ]
-            };
-        }
-
-        if (type === 'contratto_cessato') {
-            var docUrl2 = '/documenti/?contratto_pk=' + pk;
-            var modUrl2 = '/ajax/modifica-contratto/' + pk + '/';
-            var dupUrlCess = '/ajax/duplica-anagrafica/contratto/' + pk + '/';
-            var delUrl2 = '/ajax/elimina-contratto/' + pk + '/';
-            var metaCess = _buildInfoMeta(tr, [{l:'Stato', v:'Cessato'}]);
-            return {
-                title: title, subtitle: sub,
-                meta: metaCess,
-                actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', code:"loadAjaxForm('" + modUrl2 + "','Modifica Contratto')"},
-                    {icon:'bi-files', label:'Duplica', type:'duplica', url:dupUrlCess, titolo:'Contratto'},
-                    {icon:'bi-file-earmark', label:'Documenti', type:'link', url:docUrl2},
-                    {icon:'bi-arrow-repeat', label:'Riattiva', type:'js', code:"riattivaContratto(" + pk + ", null)", style:'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399;'},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl2, deleteTipo:'Contratto cessato', deleteNome:title, deleteImpatto:'Eliminazione definitiva del contratto.'},
-                ]
-            };
-        }
-
-        if (type === 'contratto') {
-            var table = tr.closest('table');
-            var mp = table ? table.getAttribute('data-mp') : '';
-            var mc = table ? table.getAttribute('data-mc') : '';
-            var ms = table ? table.getAttribute('data-ms') : '';
-            var ap = table ? table.getAttribute('data-ap') : '';
-            var ac = table ? table.getAttribute('data-ac') : '';
-            var as_ = table ? table.getAttribute('data-as') : '';
-            var modUrl3 = '/ajax/modifica-contratto/' + pk + '/';
-            var docUrl3 = '/documenti/?contratto_pk=' + pk;
-            var dupUrl3 = '/ajax/duplica-anagrafica/contratto/' + pk + '/';
-            var delUrl3 = '/ajax/elimina-anagrafica/contratto/' + pk + '/';
-            var metaCont = _buildInfoMeta(tr, [
-                {l:'Tipo', v:tr.getAttribute('data-tipo-contratto')||'-'},
-                {l:'Livello', v:tr.getAttribute('data-livello')||'-'},
-                {l:'Assunzione', v:tr.getAttribute('data-data-assunzione')||'-'},
-                {l:'Fine', v:tr.getAttribute('data-data-fine')||'-'},
-            ]);
-            metaCont.stato = tr.getAttribute('data-stato') || 'Attivo';
-            return {
-                title: title, subtitle: sub,
-                meta: metaCont,
-                actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', row:1, code:"loadAjaxForm('" + modUrl3 + "','Modifica Contratto')"},
-                    mp ? {icon:'bi-calculator', label:'Busta < ' + mp, type:'link', row:2, url:'/calcoli/?contratto=' + pk + '&mese=' + mp + '&anno=' + ap} : null,
-                    mc ? {icon:'bi-calculator', label:'Busta ' + mc, type:'link', row:2, url:'/calcoli/?contratto=' + pk + '&mese=' + mc + '&anno=' + ac, style:'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);'} : null,
-                    ms ? {icon:'bi-calculator', label:'Busta > ' + ms, type:'link', row:2, url:'/calcoli/?contratto=' + pk + '&mese=' + ms + '&anno=' + as_} : null,
-                    {icon:'bi-files', label:'Duplica', type:'duplica', row:3, url:dupUrl3, titolo:'Contratto'},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', row:3, url:delUrl3, deleteTipo:'Contratto', deleteNome:title, deleteImpatto:'Il contratto viene spostato in Contratti Cessati.'},
-                    {icon:'bi-folder2-open', label:'Documenti arch.', type:'link', row:4, url:docUrl3},
-                    {icon:'bi-file-pdf', label:'Genera documento', type:'js', row:4, code:"apriGeneraDocumento(" + pk + ")", style:'background:rgba(250,204,21,0.12);border:1px solid rgba(250,204,21,0.3);'},
-                ].filter(function(x) { return x !== null; })
-            };
-        }
-
-        if (type === 'documento') {
-            var seeUrl = '/ajax/vedi-documento/' + pk + '/';
-            var cartellaUrl = '/apri-cartella-documento/' + pk + '/';
-            var delUrl4 = '/ajax/elimina-documento/' + pk + '/';
-            var hasContratto = tr.getAttribute('data-has-contratto') === '1';
-            var actions = [
-                {icon:'bi-eye', label:'Vedi', type:'js', cat:'primary', code:"apriNelPannello('" + seeUrl + "', " + pk + ")"},
-                {icon:'bi-download', label:'Scarica', type:'link', url:seeUrl},
-                {icon:'bi-printer', label:'Stampa', type:'js', code:"stampaDocumento(" + pk + ", null)"},
-                {icon:'bi-folder2-open', label:'Apri cartella', type:'link', url:cartellaUrl}
-            ];
-            if (!hasContratto) {
-                actions.push({icon:'bi-link-45deg', label:'Collega contratto', type:'js', code:"apriCollegaContratto(" + pk + ")"});
-            }
-            actions.push({icon:'bi-envelope', label:'Invia Email', type:'js', code:"apriInvioDocumento(" + pk + ")"});
-            actions.push({icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl4, deleteTipo:'Documento', deleteNome:title, deleteImpatto:'Il documento viene eliminato definitivamente.'});
-            var metaDoc = {};
-            var creato = tr.getAttribute('data-creato');
-            var fileSize = tr.getAttribute('data-file-size');
-            if (creato || fileSize) {
-                metaDoc.info = [];
-                if (creato) metaDoc.info.push({l:'Creato', v:creato});
-                if (fileSize) metaDoc.info.push({l:'Dimensione', v:fileSize});
-            }
-            return {title: title, subtitle: sub, meta: metaDoc, actions: actions};
-        }
-
-        if (type === 'tabella') {
-            var table = tr.closest('table');
-            var tipo = table ? table.getAttribute('data-tipo') : '';
-            if (!tipo) return null;
-            var modUrl = '/ajax/modifica-tabella/' + tipo + '/' + pk + '/';
-            var dupUrl = '/ajax/duplica-tabella/' + tipo + '/' + pk + '/';
-            var delUrl = '/ajax/elimina-tabella/' + tipo + '/' + pk + '/';
-            return {
-                title: title, subtitle: sub,
-                actions: [
-                    {icon:'bi-pencil-fill', label:'Modifica', type:'js', cat:'primary', code:"loadAjaxForm('" + modUrl + "','Modifica')"},
-                    {icon:'bi-files', label:'Duplica', type:'duplica', url:dupUrl, titolo:''},
-                    {icon:'bi-trash3', label:'Elimina', type:'delete', cat:'danger', url:delUrl, deleteTipo:'Record', deleteNome:title, deleteImpatto:'Eliminazione definitiva.'},
-                ]
-            };
-        }
-
-        if (type === 'backup') {
-            return {
-                title: title, subtitle: sub,
-                actions: [
-                    {icon:'bi-arrow-counterclockwise', label:'Ripristina', type:'js', cat:'primary', code:"ripristinaBackup(" + pk + ", null)"},
-                    {icon:'bi-trash3', label:'Elimina', type:'js', cat:'danger', code:"eliminaBackup(" + pk + ")"}
-                ]
-            };
-        }
-
-        if (type === 'eliminato') {
-            return {
-                title: title, subtitle: sub,
-                actions: [
-                    {icon:'bi-eye', label:'Vedi', type:'js', cat:'primary', code:"apriVediEliminato(" + pk + ")"},
-                    {icon:'bi-arrow-repeat', label:'Ripristina', type:'js', code:"confermaRipristino(" + pk + ", null)", style:'background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);color:#34d399;'},
-                    {icon:'bi-trash3-fill', label:'Elimina definitivamente', type:'js', cat:'danger', code:"eliminaDefinitivamente(" + pk + ", null)"}
-                ]
-            };
-        }
-        return null;
-    };
+    // _buildInfoMeta e getActionsForRow sono in static/js/paghe.js
 
     // --- Unsaved changes guard ---
     let formDirty = false;
@@ -969,7 +672,7 @@
             .catch(error => {
                 container.innerHTML = `
                     <div class="alert alert-danger mt-4" style="background-color: rgba(220,53,69,0.1); border-color: rgba(220,53,69,0.2); color:#ff6b6b;">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i><b>Ops! C'è un intoppo nel backend.</b><br><br><span style="font-size:13px;">${error.message}</span><br><br>
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i><b>Ops! C'Ã¨ un intoppo nel backend.</b><br><br><span style="font-size:13px;">${error.message}</span><br><br>
                     </div>`;
             });
     }
@@ -1125,12 +828,12 @@
                     '<div style="margin-bottom:10px;">' +
                         '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#8A8F98;margin-bottom:8px;"><i class="bi bi-file-text me-1"></i>Riepilogo contratto origine</div>' +
                         '<div class="row g-1" style="font-size:11px;color:#EDEDED;">' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Datore:</span> ' + (data.datore ? document.querySelector('select[name="datore"] option[value="' + data.datore + '"]')?.textContent || '#' + data.datore : '—') + '</div>' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Lavoratore:</span> ' + (data.lavoratore ? document.querySelector('select[name="lavoratore"] option[value="' + data.lavoratore + '"]')?.textContent || '#' + data.lavoratore : '—') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Datore:</span> ' + (data.datore ? document.querySelector('select[name="datore"] option[value="' + data.datore + '"]')?.textContent || '#' + data.datore : 'â€”') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Lavoratore:</span> ' + (data.lavoratore ? document.querySelector('select[name="lavoratore"] option[value="' + data.lavoratore + '"]')?.textContent || '#' + data.lavoratore : 'â€”') + '</div>' +
                             '<div class="col-6"><span style="color:#8A8F98;">Stato:</span> ' + (data.stato === 'ATTIVO' ? '<span style="color:#34d399;">Attivo</span>' : '<span style="color:#f87171;">Cessato</span>') + '</div>' +
                             '<div class="col-6"><span style="color:#8A8F98;">Tipo:</span> ' + (data.tipo_contratto === 'INDETERMINATO' ? 'Indeterminato' : 'Determinato') + '</div>' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Data ass.:</span> ' + (data.data_assunzione || '—') + '</div>' +
-                            '<div class="col-6"><span style="color:#8A8F98;">Cod. INPS:</span> ' + (data.codice_rapporto_inps || '—') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Data ass.:</span> ' + (data.data_assunzione || 'â€”') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Cod. INPS:</span> ' + (data.codice_rapporto_inps || 'â€”') + '</div>' +
                             (data.parametri_minimi ? '<div class="col-6"><span style="color:#8A8F98;">Parametri:</span> ' + (document.querySelector('select[name="parametri_minimi"] option[value="' + data.parametri_minimi + '"]')?.textContent || '#' + data.parametri_minimi) + '</div>' : '') +
                             (data.progetto && data.progetto.length ? '<div class="col-12"><span style="color:#8A8F98;">Progetti:</span> ' + data.progetto.length + ' selezionati</div>' : '') +
                         '</div>' +
@@ -1657,11 +1360,11 @@
         if (!cb || !sel || !lbl) return;
         var attivo = cb.checked;
         sel.value = attivo ? 'ATTIVO' : 'CESSATO';
-        lbl.innerHTML = attivo ? '● Attivo' : '● Cessato';
+        lbl.innerHTML = attivo ? 'â— Attivo' : 'â— Cessato';
         lbl.style.color = attivo ? '#34d399' : '#f87171';
         var rs = document.getElementById('riepilogoStato');
         if (rs) {
-            rs.textContent = attivo ? '● ATTIVO' : '● CESSATO';
+            rs.textContent = attivo ? 'â— ATTIVO' : 'â— CESSATO';
             rs.style.background = attivo ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)';
             rs.style.color = attivo ? '#34d399' : '#f87171';
         }
@@ -1693,7 +1396,7 @@
         var cb = document.getElementById('scattiToggle');
         var lbl = document.getElementById('scattiLabel');
         if (!cb || !lbl) return;
-        lbl.textContent = cb.checked ? '● Sì' : '○ No';
+        lbl.textContent = cb.checked ? 'â— SÃ¬' : 'â—‹ No';
         if (window.aggiornaInfoScatti) window.aggiornaInfoScatti();
     }
     document.addEventListener('change', function(e) {
@@ -1704,7 +1407,7 @@
         var cb = document.getElementById('rivalutazioneTfrToggle');
         var lbl = document.getElementById('rivalutazioneTfrLabel');
         if (!cb || !lbl) return;
-        lbl.textContent = cb.checked ? '● Sì' : '○ No';
+        lbl.textContent = cb.checked ? 'â— SÃ¬' : 'â—‹ No';
     }
     document.addEventListener('change', function(e) {
         if (e.target.id === 'rivalutazioneTfrToggle') syncRivalutazioneTfr();
@@ -1761,7 +1464,7 @@
         if (budget > 0 && pagaTot > 0) ore = Math.ceil(budget / pagaTot);
         var lordaMensile = lordaConScatti * ore;
         var partiBiennio = bienni > 0 ? bienni + (anni % 2 === 0 ? '' : '+') : '';
-        infoEl.textContent = bienni + ' bienni × €' + valScatto.toFixed(4) + ' = €' + scattoMensile.toFixed(4) + '/h · Lorda €' + lordaConScatti.toFixed(4) + '/h × ' + ore + 'h = €' + lordaMensile.toFixed(2);
+        infoEl.textContent = bienni + ' bienni Ã— â‚¬' + valScatto.toFixed(4) + ' = â‚¬' + scattoMensile.toFixed(4) + '/h Â· Lorda â‚¬' + lordaConScatti.toFixed(4) + '/h Ã— ' + ore + 'h = â‚¬' + lordaMensile.toFixed(2);
     };
 
     // Navigazione contratti (prev/next senza salvare)
@@ -1867,7 +1570,7 @@
         if (curPk === null) return;
         var sel = document.getElementById('nav' + entity.charAt(0).toUpperCase() + entity.slice(1) + 'Select');
         if (!sel) return;
-        sel.innerHTML = '<option value="" style="color:#8A8F98;font-weight:400;">—</option>';
+        sel.innerHTML = '<option value="" style="color:#8A8F98;font-weight:400;">â€”</option>';
         data.forEach(function(c) {
             var opt = document.createElement('option');
             opt.value = c.pk;
@@ -1910,7 +1613,7 @@
     window.updateRiepilogo = function updateRiepilogo() {
         function txt(id, val) {
             var el = document.getElementById(id);
-            if (el) el.textContent = val || '—';
+            if (el) el.textContent = val || 'â€”';
         }
         function selText(name) {
             var s = document.querySelector('select[name="' + name + '"]');
@@ -1932,10 +1635,10 @@
             var b = cb.dataset.beneficiario;
             if (b) benSet.add(b);
         });
-        txt('riepilogoBeneficiario', benSet.size ? Array.from(benSet).join(', ') : '—');
+        txt('riepilogoBeneficiario', benSet.size ? Array.from(benSet).join(', ') : 'â€”');
         // data assunzione formatted as GG/MM/AAAA
         var da = document.querySelector('input[name="data_assunzione"]');
-        var daVal = '—';
+        var daVal = 'â€”';
         if (da && da.value) {
             var d = new Date(da.value + 'T00:00:00');
             if (!isNaN(d)) daVal = d.toLocaleDateString('it-IT');
@@ -1943,7 +1646,7 @@
         txt('riepilogoDataAss', daVal);
         // codice rapporto inps
         var cr = document.querySelector('input[name="codice_rapporto_inps"]');
-        txt('riepilogoCodice', cr && cr.value ? cr.value : '—');
+        txt('riepilogoCodice', cr && cr.value ? cr.value : 'â€”');
         // ore mav (hide if 0 or empty)
         var om = document.querySelector('input[name="ore_mav_custom"]');
         var omv = om ? om.value : '';
@@ -1973,7 +1676,7 @@
         }
         // data inizio TFR
         var dit = document.querySelector('input[name="data_inizio_tfr"]');
-        var ditVal = '—';
+        var ditVal = 'â€”';
         if (dit && dit.value) {
             var d2 = new Date(dit.value + 'T00:00:00');
             if (!isNaN(d2)) ditVal = d2.toLocaleDateString('it-IT');
@@ -1989,17 +1692,17 @@
         if (t13Cb && t13Cb.checked) parts.push('13ma');
         if (ferieCb && ferieCb.checked) parts.push('Ferie');
         if (festCb && festCb.checked) parts.push('Festivi');
-        txt('riepilogoPagheAbilitate', parts.length ? parts.join(' \u00B7 ') : '—');
+        txt('riepilogoPagheAbilitate', parts.length ? parts.join(' \u00B7 ') : 'â€”');
         // progetti
         var progCbs = document.querySelectorAll('.progetto-checkbox:checked');
         var budgetTot = 0;
         progCbs.forEach(function(cb) {
             budgetTot += parseFloat(cb.getAttribute('data-budget')) || 0;
         });
-        txt('riepilogoProgetti', progCbs.length ? progCbs.length + ' prog. (\u20AC ' + budgetTot.toFixed(2) + ')' : '—');
+        txt('riepilogoProgetti', progCbs.length ? progCbs.length + ' prog. (\u20AC ' + budgetTot.toFixed(2) + ')' : 'â€”');
         // note
         var note = document.querySelector('textarea[name="note_post_it"]');
-        txt('riepilogoNote', note && note.value ? note.value : '—');
+        txt('riepilogoNote', note && note.value ? note.value : 'â€”');
         // accordion: datore/lavoratore data from JSON
         var form = document.getElementById('dynamicForm');
         if (form) {
@@ -2010,24 +1713,24 @@
                 var datorePk = selVal('datore');
                 if (datorePk && dd[datorePk]) {
                     var info = dd[datorePk];
-                    txt('riepilogoDatoreEmail', info.email || '—');
-                    txt('riepilogoDatoreTel', info.telefono || '—');
-                    txt('riepilogoDatoreIndirizzo', info.indirizzo || '—');
-                    txt('riepilogoDatoreComune', info.comune || '—');
-                    txt('riepilogoDatoreProv', info.provincia || '—');
-                    txt('riepilogoDatoreCap', info.cap || '—');
-                    txt('riepilogoDatoreDataNascita', info.data_nascita || '—');
-                    txt('riepilogoDatoreSesso', info.sesso || '—');
-                    txt('riepilogoDatoreComuneNascita', info.comune_nascita || '—');
-                    txt('riepilogoDatoreProvNascita', info.provincia_nascita || '—');
-                    txt('riepilogoDatorePatrono', info.patrono || '—');
+                    txt('riepilogoDatoreEmail', info.email || 'â€”');
+                    txt('riepilogoDatoreTel', info.telefono || 'â€”');
+                    txt('riepilogoDatoreIndirizzo', info.indirizzo || 'â€”');
+                    txt('riepilogoDatoreComune', info.comune || 'â€”');
+                    txt('riepilogoDatoreProv', info.provincia || 'â€”');
+                    txt('riepilogoDatoreCap', info.cap || 'â€”');
+                    txt('riepilogoDatoreDataNascita', info.data_nascita || 'â€”');
+                    txt('riepilogoDatoreSesso', info.sesso || 'â€”');
+                    txt('riepilogoDatoreComuneNascita', info.comune_nascita || 'â€”');
+                    txt('riepilogoDatoreProvNascita', info.provincia_nascita || 'â€”');
+                    txt('riepilogoDatorePatrono', info.patrono || 'â€”');
                 } else {
-                    txt('riepilogoDatoreEmail', '—'); txt('riepilogoDatoreTel', '—');
-                    txt('riepilogoDatoreIndirizzo', '—'); txt('riepilogoDatoreComune', '—');
-                    txt('riepilogoDatoreProv', '—'); txt('riepilogoDatoreCap', '—');
-                    txt('riepilogoDatoreDataNascita', '—'); txt('riepilogoDatoreSesso', '—');
-                    txt('riepilogoDatoreComuneNascita', '—'); txt('riepilogoDatoreProvNascita', '—');
-                    txt('riepilogoDatorePatrono', '—');
+                    txt('riepilogoDatoreEmail', 'â€”'); txt('riepilogoDatoreTel', 'â€”');
+                    txt('riepilogoDatoreIndirizzo', 'â€”'); txt('riepilogoDatoreComune', 'â€”');
+                    txt('riepilogoDatoreProv', 'â€”'); txt('riepilogoDatoreCap', 'â€”');
+                    txt('riepilogoDatoreDataNascita', 'â€”'); txt('riepilogoDatoreSesso', 'â€”');
+                    txt('riepilogoDatoreComuneNascita', 'â€”'); txt('riepilogoDatoreProvNascita', 'â€”');
+                    txt('riepilogoDatorePatrono', 'â€”');
                 }
             } catch(e) {}
             if (ldStr) try {
@@ -2035,24 +1738,24 @@
                 var lavPk = selVal('lavoratore');
                 if (lavPk && ld[lavPk]) {
                     var info2 = ld[lavPk];
-                    txt('riepilogoLavoratoreEmail', info2.email || '—');
-                    txt('riepilogoLavoratoreTel', info2.telefono || '—');
-                    txt('riepilogoLavoratoreIndirizzo', info2.indirizzo || '—');
-                    txt('riepilogoLavoratoreComune', info2.comune || '—');
-                    txt('riepilogoLavoratoreProv', info2.provincia || '—');
-                    txt('riepilogoLavoratoreCap', info2.cap || '—');
-                    txt('riepilogoLavoratoreDataNascita', info2.data_nascita || '—');
-                    txt('riepilogoLavoratoreSesso', info2.sesso || '—');
-                    txt('riepilogoLavoratoreComuneNascita', info2.comune_nascita || '—');
-                    txt('riepilogoLavoratoreProvNascita', info2.provincia_nascita || '—');
-                    txt('riepilogoLavoratorePatrono', info2.patrono || '—');
+                    txt('riepilogoLavoratoreEmail', info2.email || 'â€”');
+                    txt('riepilogoLavoratoreTel', info2.telefono || 'â€”');
+                    txt('riepilogoLavoratoreIndirizzo', info2.indirizzo || 'â€”');
+                    txt('riepilogoLavoratoreComune', info2.comune || 'â€”');
+                    txt('riepilogoLavoratoreProv', info2.provincia || 'â€”');
+                    txt('riepilogoLavoratoreCap', info2.cap || 'â€”');
+                    txt('riepilogoLavoratoreDataNascita', info2.data_nascita || 'â€”');
+                    txt('riepilogoLavoratoreSesso', info2.sesso || 'â€”');
+                    txt('riepilogoLavoratoreComuneNascita', info2.comune_nascita || 'â€”');
+                    txt('riepilogoLavoratoreProvNascita', info2.provincia_nascita || 'â€”');
+                    txt('riepilogoLavoratorePatrono', info2.patrono || 'â€”');
                 } else {
-                    txt('riepilogoLavoratoreEmail', '—'); txt('riepilogoLavoratoreTel', '—');
-                    txt('riepilogoLavoratoreIndirizzo', '—'); txt('riepilogoLavoratoreComune', '—');
-                    txt('riepilogoLavoratoreProv', '—'); txt('riepilogoLavoratoreCap', '—');
-                    txt('riepilogoLavoratoreDataNascita', '—'); txt('riepilogoLavoratoreSesso', '—');
-                    txt('riepilogoLavoratoreComuneNascita', '—'); txt('riepilogoLavoratoreProvNascita', '—');
-                    txt('riepilogoLavoratorePatrono', '—');
+                    txt('riepilogoLavoratoreEmail', 'â€”'); txt('riepilogoLavoratoreTel', 'â€”');
+                    txt('riepilogoLavoratoreIndirizzo', 'â€”'); txt('riepilogoLavoratoreComune', 'â€”');
+                    txt('riepilogoLavoratoreProv', 'â€”'); txt('riepilogoLavoratoreCap', 'â€”');
+                    txt('riepilogoLavoratoreDataNascita', 'â€”'); txt('riepilogoLavoratoreSesso', 'â€”');
+                    txt('riepilogoLavoratoreComuneNascita', 'â€”'); txt('riepilogoLavoratoreProvNascita', 'â€”');
+                    txt('riepilogoLavoratorePatrono', 'â€”');
                 }
             } catch(e) {}
         }
@@ -2127,7 +1830,7 @@
         .catch(function(err) { if (err.name !== 'AbortError' && callback) callback(null); });
     };
 
-    // Decode comune di residenza → provincia + CAP
+    // Decode comune di residenza â†’ provincia + CAP
     window._comuneController = null;
     window.decodificaComuneAsync = function(q, callback) {
         if (window._comuneController) window._comuneController.abort();
@@ -2166,15 +1869,15 @@
         var elComuneRes = document.getElementById('r_comune');
         var elProvRes = document.getElementById('r_provincia');
         var elCapRes = document.getElementById('r_cap');
-        if (no && co && elNome) elNome.textContent = (no.value + ' ' + co.value).trim() || '—';
-        if (tel && elTel) elTel.textContent = tel.value || '—';
-        if (em && elEmail) elEmail.textContent = em.value || '—';
-        if (ind && elInd) elInd.textContent = ind.value || '—';
-        if (elComuneRes) elComuneRes.textContent = comuneField ? (comuneField.value || '—') : '—';
-        if (elProvRes) elProvRes.textContent = provField ? (provField.value || '—') : '—';
-        if (elCapRes) elCapRes.textContent = capField ? (capField.value || '—') : '—';
+        if (no && co && elNome) elNome.textContent = (no.value + ' ' + co.value).trim() || 'â€”';
+        if (tel && elTel) elTel.textContent = tel.value || 'â€”';
+        if (em && elEmail) elEmail.textContent = em.value || 'â€”';
+        if (ind && elInd) elInd.textContent = ind.value || 'â€”';
+        if (elComuneRes) elComuneRes.textContent = comuneField ? (comuneField.value || 'â€”') : 'â€”';
+        if (elProvRes) elProvRes.textContent = provField ? (provField.value || 'â€”') : 'â€”';
+        if (elCapRes) elCapRes.textContent = capField ? (capField.value || 'â€”') : 'â€”';
         if (cf) {
-            if (elCf) elCf.textContent = cf.value.toUpperCase() || '—';
+            if (elCf) elCf.textContent = cf.value.toUpperCase() || 'â€”';
             var decoded = window.decodaCF(cf.value);
             if (decoded) {
                 if (elData) elData.textContent = decoded.data;
@@ -2184,14 +1887,14 @@
                 if (inpD) inpD.value = decoded.data;
                 if (inpS) inpS.value = decoded.sesso;
             } else {
-                if (elData) elData.textContent = '—';
-                if (elSesso) elSesso.textContent = '—';
+                if (elData) elData.textContent = 'â€”';
+                if (elSesso) elSesso.textContent = 'â€”';
             }
             // Async per comune/provincia
             window.decodificaCFAsync(cf.value, function(full) {
                 if (full) {
-                    if (elComuneNasc) elComuneNasc.textContent = full.comune_nascita || '—';
-                    if (elProvNasc) elProvNasc.textContent = full.provincia_nascita || '—';
+                    if (elComuneNasc) elComuneNasc.textContent = full.comune_nascita || 'â€”';
+                    if (elProvNasc) elProvNasc.textContent = full.provincia_nascita || 'â€”';
                     var inpC = document.getElementById('cf_comune_nascita');
                     var inpP = document.getElementById('cf_provincia');
                     if (inpC) inpC.value = full.comune_nascita || '';
@@ -2325,7 +2028,7 @@
     window.updateRiepilogoProgetto = function() {
         function txt(id, val) {
             var el = document.getElementById(id);
-            if (el) el.textContent = val || '—';
+            if (el) el.textContent = val || 'â€”';
         }
         var ben = document.querySelector('select[name="beneficiario"]');
         var ba = document.querySelector('input[name="budget_annuale"]');
@@ -2335,14 +2038,14 @@
         var me = document.querySelector('input[name="mesi"]');
         var tp = document.querySelector('select[name="tipo"]');
 
-        txt('r_beneficiario', ben && ben.options[ben.selectedIndex] ? ben.options[ben.selectedIndex].text : '—');
-        txt('r_budget_annuale', ba && ba.value ? '€ ' + parseFloat(ba.value).toFixed(2) : '—');
-        txt('r_budget_mensile', bm && bm.value ? '€ ' + parseFloat(bm.value).toFixed(2) : '—');
-        txt('r_data_inizio', di && di.value ? new Date(di.value + 'T00:00:00').toLocaleDateString('it-IT') : '—');
-        txt('r_data_fine', df && df.value ? new Date(df.value + 'T00:00:00').toLocaleDateString('it-IT') : '—');
+        txt('r_beneficiario', ben && ben.options[ben.selectedIndex] ? ben.options[ben.selectedIndex].text : 'â€”');
+        txt('r_budget_annuale', ba && ba.value ? 'â‚¬ ' + parseFloat(ba.value).toFixed(2) : 'â€”');
+        txt('r_budget_mensile', bm && bm.value ? 'â‚¬ ' + parseFloat(bm.value).toFixed(2) : 'â€”');
+        txt('r_data_inizio', di && di.value ? new Date(di.value + 'T00:00:00').toLocaleDateString('it-IT') : 'â€”');
+        txt('r_data_fine', df && df.value ? new Date(df.value + 'T00:00:00').toLocaleDateString('it-IT') : 'â€”');
 
         var mesiVal = me ? parseInt(me.value) || 0 : 0;
-        txt('r_mesi', mesiVal ? mesiVal + ' mesi' : '—');
+        txt('r_mesi', mesiVal ? mesiVal + ' mesi' : 'â€”');
 
         // Durata: calcola mesi tra data_inizio e data_fine
         if (di && di.value && df && df.value) {
@@ -2351,13 +2054,13 @@
             if (!isNaN(d1) && !isNaN(d2) && d2 > d1) {
                 var diffMesi = (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
                 txt('r_durata', diffMesi + ' mesi');
-            } else { txt('r_durata', '—'); }
-        } else { txt('r_durata', '—'); }
+            } else { txt('r_durata', 'â€”'); }
+        } else { txt('r_durata', 'â€”'); }
 
-        txt('r_tipo', tp && tp.options[tp.selectedIndex] ? tp.options[tp.selectedIndex].text : '—');
+        txt('r_tipo', tp && tp.options[tp.selectedIndex] ? tp.options[tp.selectedIndex].text : 'â€”');
 
         var countEl = document.querySelectorAll('#dynamicForm .contratto-link').length;
-        txt('r_contratti_count', countEl ? countEl + ' contratti' : '—');
+        txt('r_contratti_count', countEl ? countEl + ' contratti' : 'â€”');
     };
 
     window.calcolaBudgetDaAnnuale = function() {
@@ -2398,11 +2101,11 @@
         if (!opt || !opt.value) { card.style.display = 'none'; return; }
         card.style.display = '';
         var el;
-        el = document.getElementById('ben_cf'); if (el) el.textContent = opt.dataset.cf || '—';
-        el = document.getElementById('ben_indirizzo'); if (el) el.textContent = opt.dataset.indirizzo || '—';
-        el = document.getElementById('ben_comune'); if (el) el.textContent = opt.dataset.comune || '—';
-        el = document.getElementById('ben_provincia'); if (el) el.textContent = opt.dataset.provincia || '—';
-        el = document.getElementById('ben_cap'); if (el) el.textContent = opt.dataset.cap || '—';
+        el = document.getElementById('ben_cf'); if (el) el.textContent = opt.dataset.cf || 'â€”';
+        el = document.getElementById('ben_indirizzo'); if (el) el.textContent = opt.dataset.indirizzo || 'â€”';
+        el = document.getElementById('ben_comune'); if (el) el.textContent = opt.dataset.comune || 'â€”';
+        el = document.getElementById('ben_provincia'); if (el) el.textContent = opt.dataset.provincia || 'â€”';
+        el = document.getElementById('ben_cap'); if (el) el.textContent = opt.dataset.cap || 'â€”';
     };
 
     window.aggiornaTipoDesc = function() {
@@ -2615,46 +2318,46 @@
 
     var PDF_EMOJI = [
         {title:'Spunte / Croci', items:[
-            {text:'✅ OK',          code:'✅'},
-            {text:'☑ Sbarrato',    code:'☑'},
-            {text:'☐ Da fare',     code:'☐'},
-            {text:'❌ No',          code:'❌'},
-            {text:'☒ Vietato',     code:'☒'},
+            {text:'âœ… OK',          code:'âœ…'},
+            {text:'â˜‘ Sbarrato',    code:'â˜‘'},
+            {text:'â˜ Da fare',     code:'â˜'},
+            {text:'âŒ No',          code:'âŒ'},
+            {text:'â˜’ Vietato',     code:'â˜’'},
         ]},
         {title:'Simboli / Avvisi', items:[
-            {text:'⚠ Attenzione',  code:'⚠'},
-            {text:'ℹ Info',        code:'ℹ'},
-            {text:'❗ Importante',  code:'❗'},
-            {text:'❓ Dubbio',     code:'❓'},
-            {text:'★ Stella',      code:'★'},
-            {text:'♥ Cuore',       code:'♥'},
+            {text:'âš  Attenzione',  code:'âš '},
+            {text:'â„¹ Info',        code:'â„¹'},
+            {text:'â— Importante',  code:'â—'},
+            {text:'â“ Dubbio',     code:'â“'},
+            {text:'â˜… Stella',      code:'â˜…'},
+            {text:'â™¥ Cuore',       code:'â™¥'},
         ]},
         {title:'Frecce', items:[
-            {text:'→ Destra',      code:'→'},
-            {text:'← Sinistra',    code:'←'},
-            {text:'↑ Su',          code:'↑'},
-            {text:'↓ Giù',         code:'↓'},
-            {text:'➡ Grande',      code:'➡'},
+            {text:'â†’ Destra',      code:'â†’'},
+            {text:'â† Sinistra',    code:'â†'},
+            {text:'â†‘ Su',          code:'â†‘'},
+            {text:'â†“ GiÃ¹',         code:'â†“'},
+            {text:'âž¡ Grande',      code:'âž¡'},
         ]},
         {title:'Comunicazione', items:[
-            {text:'✉ Email',       code:'✉'},
-            {text:'📧 Messaggio',  code:'📧'},
-            {text:'☎ Telefono',   code:'☎'},
-            {text:'📞 Tel moderno',code:'📞'},
-            {text:'📱 Cellulare',  code:'📱'},
+            {text:'âœ‰ Email',       code:'âœ‰'},
+            {text:'ðŸ“§ Messaggio',  code:'ðŸ“§'},
+            {text:'â˜Ž Telefono',   code:'â˜Ž'},
+            {text:'ðŸ“ž Tel moderno',code:'ðŸ“ž'},
+            {text:'ðŸ“± Cellulare',  code:'ðŸ“±'},
         ]},
         {title:'Documenti / Ufficio', items:[
-            {text:'📄 Documento',  code:'📄'},
-            {text:'📋 Appunti',    code:'📋'},
-            {text:'📌 Puntina',    code:'📌'},
-            {text:'✏ Matita',     code:'✏'},
-            {text:'🔒 Lucchetto',  code:'🔒'},
-            {text:'🔑 Chiave',     code:'🔑'},
-            {text:'🏠 Casa',       code:'🏠'},
-            {text:'💶 Euro',       code:'💶'},
-            {text:'💻 Computer',   code:'💻'},
-            {text:'👤 Persona',    code:'👤'},
-            {text:'👥 Persone',    code:'👥'},
+            {text:'ðŸ“„ Documento',  code:'ðŸ“„'},
+            {text:'ðŸ“‹ Appunti',    code:'ðŸ“‹'},
+            {text:'ðŸ“Œ Puntina',    code:'ðŸ“Œ'},
+            {text:'âœ Matita',     code:'âœ'},
+            {text:'ðŸ”’ Lucchetto',  code:'ðŸ”’'},
+            {text:'ðŸ”‘ Chiave',     code:'ðŸ”‘'},
+            {text:'ðŸ  Casa',       code:'ðŸ '},
+            {text:'ðŸ’¶ Euro',       code:'ðŸ’¶'},
+            {text:'ðŸ’» Computer',   code:'ðŸ’»'},
+            {text:'ðŸ‘¤ Persona',    code:'ðŸ‘¤'},
+            {text:'ðŸ‘¥ Persone',    code:'ðŸ‘¥'},
         ]},
     ];
 
@@ -2891,30 +2594,30 @@
             var fname = el.getAttribute('data-field');
             var checkbox = el.closest('.toggle-switch').querySelector('.toggle-input');
             var valore = vals[fname] || 0;
-            el.textContent = '€ ' + valore.toFixed(4);
+            el.textContent = 'â‚¬ ' + valore.toFixed(4);
             if (checkbox && checkbox.checked && valore > 0) {
                 somma += valore;
                 var label = el.closest('.toggle-switch').querySelector('.toggle-label');
-                items.push('<span style="color:#34d399;">&#10003;</span> ' + (label ? label.textContent.trim() : fname) + ' <span style="color:#8A8F98;">€ ' + valore.toFixed(4) + '</span>');
+                items.push('<span style="color:#34d399;">&#10003;</span> ' + (label ? label.textContent.trim() : fname) + ' <span style="color:#8A8F98;">â‚¬ ' + valore.toFixed(4) + '</span>');
             }
         });
         var summary = document.getElementById('opzioniSummary');
         if (items.length > 0) {
             summary.style.display = 'block';
             document.getElementById('opzioniSummaryList').innerHTML = items.join('<br>');
-            document.getElementById('opzioniSummaryTotale').textContent = '€ ' + somma.toFixed(4);
+            document.getElementById('opzioniSummaryTotale').textContent = 'â‚¬ ' + somma.toFixed(4);
         } else {
             summary.style.display = 'none';
         }
         var pr = document.getElementById('riepilogoParametri');
-        if (pr) { pr.textContent = vals.livello || '—'; pr.style.color = vals.livello_colore || '#EDEDED'; }
+        if (pr) { pr.textContent = vals.livello || 'â€”'; pr.style.color = vals.livello_colore || '#EDEDED'; }
         var pd = document.getElementById('riepilogoDescrizione');
         if (pd) pd.textContent = vals.descrizione_corta || '';
         var pb = document.getElementById('riepilogoPagaBase');
-        if (pb) pb.textContent = '€ ' + (vals.paga_base || 0).toFixed(4);
+        if (pb) pb.textContent = 'â‚¬ ' + (vals.paga_base || 0).toFixed(4);
         var pt = document.getElementById('riepilogoTotale');
-        if (pt) pt.textContent = '€ ' + ((vals.paga_base || 0) + somma).toFixed(4);
-        // Voci economiche orarie — INCLUSO / NON INCLUSO
+        if (pt) pt.textContent = 'â‚¬ ' + ((vals.paga_base || 0) + somma).toFixed(4);
+        // Voci economiche orarie â€” INCLUSO / NON INCLUSO
         var _r = function(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
         function _setIncluso(id, fieldName) {
             var el = document.getElementById(id);
@@ -2928,7 +2631,7 @@
                 el.style.color = '#f87171';
             }
         }
-        // TFR con 3 modalità
+        // TFR con 3 modalitÃ 
         var tfrEl = document.getElementById('riepilogoPagaTfr');
         if (tfrEl) {
             var mtInput = document.getElementById('id_modalita_tfr');
@@ -2937,7 +2640,7 @@
             else if (mt === 'SEPARATO_70') { tfrEl.textContent = 'ANTICIPO 70%'; tfrEl.style.color = '#fbbf24'; }
             else if (mt === 'SEPARATO_100') { tfrEl.textContent = 'ACCANTONATO'; tfrEl.style.color = '#f87171'; }
         }
-        // Aggiungi TFR a somma in base alla modalità
+        // Aggiungi TFR a somma in base alla modalitÃ 
         var tfrRateo = vals.paga_tfr || 0;
         if (tfrRateo > 0 && mtInput) {
             var mtVal = mtInput.value;
@@ -2946,12 +2649,12 @@
             else if (mtVal === 'SEPARATO_70') tfrIncluso = tfrRateo * 0.7;
             if (tfrIncluso > 0) {
                 somma += tfrIncluso;
-                items.push('<span style="color:#34d399;">&#10003;</span> TFR <span style="color:#8A8F98;">€ ' + tfrIncluso.toFixed(4) + '</span>');
+                items.push('<span style="color:#34d399;">&#10003;</span> TFR <span style="color:#8A8F98;">â‚¬ ' + tfrIncluso.toFixed(4) + '</span>');
             }
             document.getElementById('opzioniSummaryList').innerHTML = items.join('<br>');
-            document.getElementById('opzioniSummaryTotale').textContent = '€ ' + somma.toFixed(4);
+            document.getElementById('opzioniSummaryTotale').textContent = 'â‚¬ ' + somma.toFixed(4);
             var pt = document.getElementById('riepilogoTotale');
-            if (pt) pt.textContent = '€ ' + ((vals.paga_base || 0) + somma).toFixed(4);
+            if (pt) pt.textContent = 'â‚¬ ' + ((vals.paga_base || 0) + somma).toFixed(4);
         }
         var accCol = document.getElementById('riepilogoAccantonatoTfrCol');
         var accEl = document.getElementById('riepilogoTfrAccumulato');
@@ -2961,7 +2664,7 @@
             if (isSep) {
                 var _form = document.getElementById('dynamicForm');
                 var cumTfr = parseFloat(_form ? _form.getAttribute('data-tfr-accantonato') : '0') || 0;
-                accEl.textContent = '€ ' + cumTfr.toFixed(2);
+                accEl.textContent = 'â‚¬ ' + cumTfr.toFixed(2);
                 accCol.style.display = '';
             } else {
                 accCol.style.display = 'none';
@@ -2975,11 +2678,11 @@
         if (mmft) mmft.textContent = (vals.minimo_mensile_ft || 0).toFixed(2);
         var mmpt = document.getElementById('val_minimo_mensile_pt');
         if (mmpt) mmpt.textContent = (vals.minimo_mensile_pt || 0).toFixed(2);
-        _r('riepilogoMinMensileFt', vals.minimo_mensile_ft ? '€ ' + Number(vals.minimo_mensile_ft).toFixed(2) : '—');
-        _r('riepilogoMinMensilePt', vals.minimo_mensile_pt ? '€ ' + Number(vals.minimo_mensile_pt).toFixed(2) : '—');
+        _r('riepilogoMinMensileFt', vals.minimo_mensile_ft ? 'â‚¬ ' + Number(vals.minimo_mensile_ft).toFixed(2) : 'â€”');
+        _r('riepilogoMinMensilePt', vals.minimo_mensile_pt ? 'â‚¬ ' + Number(vals.minimo_mensile_pt).toFixed(2) : 'â€”');
 
         // Calcolo ore da budget / paga_oraria_totale
-        // Scatti anzianità
+        // Scatti anzianitÃ 
         var scattoMensile = 0;
         var calcBienni = 0;
         var scattiCb = document.getElementById('scattiToggle');
@@ -2998,7 +2701,7 @@
                     var valScatto = parseFloat(vals.valore_scatto) || 0;
                     scattoMensile = bienni * valScatto;
                     if (scattoMensile > 0) {
-                        items.push('<span style="color:#f59e0b;">&#9733;</span> Scatti anzianit\u00E0 (' + bienni + ' bienni) <span style="color:#8A8F98;">€ ' + scattoMensile.toFixed(4) + '</span>');
+                        items.push('<span style="color:#f59e0b;">&#9733;</span> Scatti anzianit\u00E0 (' + bienni + ' bienni) <span style="color:#8A8F98;">â‚¬ ' + scattoMensile.toFixed(4) + '</span>');
                         somma += scattoMensile;
                     }
                 }
@@ -3007,7 +2710,7 @@
         // riepilogo scatti
         var scattiAbilitati = scattiCb && scattiCb.checked;
         var scattiVal = scattiAbilitati && scattoMensile > 0 ? scattoMensile.toFixed(4) : null;
-        _r('riepilogoScatti', scattiVal ? calcBienni + ' bienni x €' + Number(vals.valore_scatto||0).toFixed(4) + ' = €' + scattiVal : '—');
+        _r('riepilogoScatti', scattiVal ? calcBienni + ' bienni x â‚¬' + Number(vals.valore_scatto||0).toFixed(4) + ' = â‚¬' + scattiVal : 'â€”');
 
         var budget = 0;
         document.querySelectorAll('.progetto-checkbox:checked').forEach(function(cb) {
@@ -3298,7 +3001,7 @@
         });
     });
 
-    // Sidebar ↔ Topbar layout toggle
+    // Sidebar â†” Topbar layout toggle
     function toggleNavLayout() {
         var b = document.body;
         b.classList.toggle('topbar-mode');
@@ -3350,8 +3053,8 @@
             if (!ca || !cb) return 0;
             let va = ca.getAttribute('data-sort') || ca.textContent.trim();
             let vb = cb.getAttribute('data-sort') || cb.textContent.trim();
-            const na = parseFloat(va.replace(/[€\s]/g, '').replace(',', '.'));
-            const nb = parseFloat(vb.replace(/[€\s]/g, '').replace(',', '.'));
+            const na = parseFloat(va.replace(/[â‚¬\s]/g, '').replace(',', '.'));
+            const nb = parseFloat(vb.replace(/[â‚¬\s]/g, '').replace(',', '.'));
             if (!isNaN(na) && !isNaN(nb)) { va = na; vb = nb; }
             else {
                 const da = Date.parse(va);
@@ -3876,9 +3579,9 @@
             h += '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">';
             h += '<td style="padding:5px 8px;">' + r.anno + '</td>';
             h += '<td style="padding:5px 8px;text-align:right;">' + r.mesi + '</td>';
-            h += '<td style="padding:5px 8px;text-align:right;">€ ' + r.accantonato.toFixed(2) + '</td>';
-            h += '<td style="padding:5px 8px;text-align:right;" ' + rivClass + '>€ ' + r.rivalutazione.toFixed(2) + '</td>';
-            h += '<td style="padding:5px 8px;text-align:right;font-weight:600;">€ ' + r.totale_progressivo.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;">â‚¬ ' + r.accantonato.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;" ' + rivClass + '>â‚¬ ' + r.rivalutazione.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;font-weight:600;">â‚¬ ' + r.totale_progressivo.toFixed(2) + '</td>';
             h += '</tr>';
           });
           h += '</tbody></table>';
@@ -3886,9 +3589,9 @@
           riassunto.style.display = 'block';
           var label = d.applica_rivalutazione ? ' (con rivalutazione)' : ' (senza rivalutazione)';
           riassunto.innerHTML = '<div style="display:flex;gap:16px;flex-wrap:wrap;">' +
-            '<span><span style="color:#8A8F98;">Accantonato:</span> <strong>€ ' + d.solo_accantonato.toFixed(2) + '</strong></span>' +
-            '<span><span style="color:#8A8F98;">Rivalutazione:</span> <strong style="color:#a78bfa;">€ ' + d.rivalutazione_totale.toFixed(2) + '</strong></span>' +
-            '<span><span style="color:#8A8F98;">Totale' + label + ':</span> <strong style="color:#34d399;">€ ' + d.totale.toFixed(2) + '</strong></span></div>';
+            '<span><span style="color:#8A8F98;">Accantonato:</span> <strong>â‚¬ ' + d.solo_accantonato.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Rivalutazione:</span> <strong style="color:#a78bfa;">â‚¬ ' + d.rivalutazione_totale.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Totale' + label + ':</span> <strong style="color:#34d399;">â‚¬ ' + d.totale.toFixed(2) + '</strong></span></div>';
         })
         .catch(function(err) {
           content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;">Errore di caricamento: ' + err.message + '</div>';
@@ -4585,7 +4288,7 @@
             });
     };
 
-    // ===== MULTI-STEP FORM (contratto) — lightweight init =====
+    // ===== MULTI-STEP FORM (contratto) â€” lightweight init =====
     window.initStepForm = function(container) {
         var form = container.querySelector('#dynamicForm');
         if (!form) return;
@@ -4742,7 +4445,7 @@
                         riepilogoOpzioni.innerHTML += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:4px;font-size:12px;font-weight:700;color:#34d399;">Totale: ' + summaryTotale.textContent + '</div>';
                     }
                 } else {
-                    riepilogoOpzioni.textContent = '—';
+                    riepilogoOpzioni.textContent = 'â€”';
                 }
             }
             // Ensure opzioni summary is visible when step 3 is shown
@@ -4812,8 +4515,8 @@
     <style>
     .sortable th { cursor: pointer; user-select: none; }
     .sortable th::after { content: ''; margin-left: 4px; font-size: 10px; opacity: 0.3; }
-    .sortable th.sort-asc::after { content: '▲'; opacity: 0.8; }
-    .sortable th.sort-desc::after { content: '▼'; opacity: 0.8; }
+    .sortable th.sort-asc::after { content: 'â–²'; opacity: 0.8; }
+    .sortable th.sort-desc::after { content: 'â–¼'; opacity: 0.8; }
     .sortable th:hover::after { opacity: 0.6; }
     .anagrafica-result-item:hover { background: rgba(94,106,210,0.12) !important; }
     .custom-table td { font-size: 12px; padding: 6px 10px !important; }
@@ -4884,7 +4587,7 @@
 <!-- Modale Invio Documento (globale) -->
 <div class="modal fade" id="modaleInvioDocumento" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invia Documento via Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

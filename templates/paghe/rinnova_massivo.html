@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load tabelle_tags %}
 
 {% block breadcrumb %}
@@ -120,16 +120,16 @@
                 <td>
                     {% if progetti %}
                         {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.beneficiario.nome_cognome }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
-                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                    {% else %}<span class="text-secondary small">â€”</span>{% endif %}
                 </td>
                 <td>
                     {% if progetti %}
                         {% for p in progetti %}{% with colore=p.tipo.colore|default:'#10b981' %}<span style="display:inline-block; margin:1px 0; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ p.tipo.nome|default:"N/D" }}</span>{% endwith %}{% if not forloop.last %}<br>{% endif %}{% endfor %}
-                    {% else %}<span class="text-secondary small">—</span>{% endif %}
+                    {% else %}<span class="text-secondary small">â€”</span>{% endif %}
                 </td>
                 <td><span style="background:rgba(94,106,210,0.15); color:#9ca3ff; padding:2px 8px; border-radius:6px; font-size:12px; font-weight:600; white-space:nowrap;">{{ ccnl_attuale.livello.codice }}</span></td>
                 <td class="small">{{ c.data_assunzione|date:"d/m/y" }}</td>
-                <td class="small">{{ c.data_fine|date:"d/m/y"|default:"—" }}</td>
+                <td class="small">{{ c.data_fine|date:"d/m/y"|default:"â€”" }}</td>
                 <td class="small">{{ ccnl_attuale.anno }}</td>
                 <td class="small" style="color:#10b981; font-weight:600;">{{ ccnl_nuovo.anno }}</td>
             </tr>
@@ -145,25 +145,25 @@
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Rinnova Contratti
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Rinnova Contratti
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Permette il <b>rinnovo massivo</b> di più contratti contemporaneamente. I nuovi contratti ereditano tutti i parametri (progetti, retribuzione, ecc.) da quelli originali, aggiornando automaticamente i <b>parametri CCNL all'ultimo anno disponibile</b> per lo stesso livello.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        Permette il <b>rinnovo massivo</b> di piÃ¹ contratti contemporaneamente. I nuovi contratti ereditano tutti i parametri (progetti, retribuzione, ecc.) da quelli originali, aggiornando automaticamente i <b>parametri CCNL all'ultimo anno disponibile</b> per lo stesso livello.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Spunta i contratti da rinnovare (o usa <i class="bi bi-check2-square"></i> per selezionare tutti quelli visibili).<br>
         <b>2.</b> Imposta la <b>Data Rinnovo</b> (nuova data assunzione).<br>
-        <b>3.</b> Inserisci la <b>Data Fine</b> se il nuovo contratto è a termine; se lasciata vuota sarà <b>Indeterminato</b>.<br>
+        <b>3.</b> Inserisci la <b>Data Fine</b> se il nuovo contratto Ã¨ a termine; se lasciata vuota sarÃ  <b>Indeterminato</b>.<br>
         <b>4.</b> Clicca <b>Rinnova Selezionati</b> e conferma.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;">Cosa viene copiato</b><br>
-        Tutti i parametri del contratto originale (retribuzione, ore, indennità, note), i <b>progetti collegati</b>, e il <b>CCNL più recente</b> disponibile per lo stesso livello. Il campo <i>contratto_rinnovato_da</i> memorizza il riferimento al contratto originale.</p>
+        Tutti i parametri del contratto originale (retribuzione, ore, indennitÃ , note), i <b>progetti collegati</b>, e il <b>CCNL piÃ¹ recente</b> disponibile per lo stesso livello. Il campo <i>contratto_rinnovato_da</i> memorizza il riferimento al contratto originale.</p>
       </div>
     </div>
   </div>
@@ -179,7 +179,7 @@
       <div class="modal-body" style="padding:18px;color:#8A8F98;font-size:13px;" id="confermaBody">
         Stai per rinnovare <strong id="contaSel">0</strong> contratti.<br>
         Data rinnovo: <strong id="confDataR"></strong><br>
-        Data fine: <strong id="confDataF">— (indeterminato)</strong>
+        Data fine: <strong id="confDataF">â€” (indeterminato)</strong>
       </div>
       <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;">
         <button type="button" class="btn" data-bs-dismiss="modal" style="background:rgba(255,255,255,0.05);color:#8A8F98;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:6px 16px;font-size:12px;">Annulla</button>
@@ -295,7 +295,7 @@ function confermaRinnovo() {
     var dataF = document.getElementById('dataFine').value;
     document.getElementById('contaSel').textContent = pks.length;
     document.getElementById('confDataR').textContent = dataR;
-    document.getElementById('confDataF').textContent = dataF || '— (indeterminato)';
+    document.getElementById('confDataF').textContent = dataF || 'â€” (indeterminato)';
     var modal = new bootstrap.Modal(document.getElementById('modaleConferma'));
     modal.show();
 }

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}{% load tabelle_tags %}
+﻿{% extends 'base.html' %}{% load tabelle_tags %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -79,7 +79,7 @@ function inviaEmailPagopa() {
   <div class="p-4 card-simple" style="margin-bottom:20px;">
     <div class="d-flex align-items-start gap-3">
       <div class="flex-grow-1">
-        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" style="color:#5E6AD2;"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" style="color:#5E6AD2;"></i>Crea PAGOPA â€” Avviso di Pagamento INPS</h4>
         <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto attivo e il trimestre per generare il riepilogo contributivo o avviare l'automazione sul sito INPS.</p>
       </div>
       <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
@@ -89,9 +89,9 @@ function inviaEmailPagopa() {
   <!-- RIGA 1: SELEZIONE (sx) + AUTOMAZIONE (dx) -->
   <div class="row g-3 mb-3">
 
-    <!-- CARD 1 — Selezione Contratto -->
+    <!-- CARD 1 â€” Selezione Contratto -->
     <div class="col-md-6">
-      <div class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;height:100%;">
+      <div class="p-4" class="class="card-dark h-100"">
         <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-search me-2" style="color:#5E6AD2;"></i>SELEZIONE CONTRATTO</h5>
         <div class="row g-3">
           <div class="col-12">
@@ -149,9 +149,9 @@ function inviaEmailPagopa() {
       </div>
     </div>
 
-    <!-- CARD 4 — Automazione INPS -->
+    <!-- CARD 4 â€” Automazione INPS -->
     <div class="col-md-6">
-      <div class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;height:100%;">
+      <div class="p-4" class="class="card-dark h-100"">
         <div class="d-flex align-items-start gap-3 mb-3">
           <h5 style="color:#EDEDED;font-size:14px;margin-bottom:0;"><i class="bi bi-robot me-2" style="color:#10b981;"></i>AUTOMAZIONE INPS</h5>
           <span id="ctrlInvioBadge" style="display:none;margin-left:auto;color:#f87171;font-size:11px;font-weight:700;background:rgba(248,113,113,0.12);padding:6px 12px;border-radius:8px;border:1px solid rgba(248,113,113,0.25);white-space:nowrap;">
@@ -183,7 +183,7 @@ function inviaEmailPagopa() {
             <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">SFONDO</span>
           </label>
           <label class="toggle-ore" style="margin-left:0;">
-            <input type="checkbox" id="toggleNascondiChromium" onchange="var me=this;if(me.checked){var sf=document.getElementById('toggleBackgroundMode');if(sf){sf.checked=false;localStorage.setItem('pagopa_background_mode','0')}var ac=document.getElementById('toggleAutoClose');if(ac){ac.checked=true;localStorage.setItem('pagopa_auto_close','1')}var ap=document.getElementById('toggleAutoShowPdf');if(ap){ap.checked=true;localStorage.setItem('pagopa_auto_show_pdf','1')}}localStorage.setItem('pagopa_nascondi_chromium', me.checked?'1':'0')" title="Esegue Playwright in modalità headless (nessuna finestra), CAPTCHA inline nel CRUD. Forza CHIUDI BROWSER e MOSTRA PDF">
+            <input type="checkbox" id="toggleNascondiChromium" onchange="var me=this;if(me.checked){var sf=document.getElementById('toggleBackgroundMode');if(sf){sf.checked=false;localStorage.setItem('pagopa_background_mode','0')}var ac=document.getElementById('toggleAutoClose');if(ac){ac.checked=true;localStorage.setItem('pagopa_auto_close','1')}var ap=document.getElementById('toggleAutoShowPdf');if(ap){ap.checked=true;localStorage.setItem('pagopa_auto_show_pdf','1')}}localStorage.setItem('pagopa_nascondi_chromium', me.checked?'1':'0')" title="Esegue Playwright in modalitÃ  headless (nessuna finestra), CAPTCHA inline nel CRUD. Forza CHIUDI BROWSER e MOSTRA PDF">
             <span class="slider"></span>
             <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">RIDUCI CHROMIUM</span>
           </label>
@@ -213,7 +213,7 @@ function inviaEmailPagopa() {
               <button class="btn btn-sm" onclick="copiaConsole()" id="btnCopiaConsole" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:6px;padding:6px 14px;font-size:11px;font-weight:600;">
                 <i class="bi bi-clipboard me-1"></i> Copia
               </button>
-              <span id="copiaFeedback" style="color:#34d399;font-size:11px;display:none;">✅ Copiato!</span>
+              <span id="copiaFeedback" style="color:#34d399;font-size:11px;display:none;">âœ… Copiato!</span>
             </div>
             <div id="automationLog" style="background:#0D0E10;border:1px solid #27282D;border-radius:8px;padding:12px;font-size:12px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;color:#cccccc;max-height:300px;overflow-y:auto;margin-bottom:12px;line-height:1.6;">
             </div>
@@ -252,7 +252,7 @@ function inviaEmailPagopa() {
   <!-- RIGA 3: DOCUMENTI (sx) + MODIFICA ORE (dx) -->
   <div class="row g-3 mb-3">
     <div class="col-md-6">
-      <div class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;height:100%;">
+      <div class="p-4" class="class="card-dark h-100"">
         <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark me-2" style="color:#5E6AD2;"></i>DOCUMENTI</h5>
         <div class="d-flex flex-wrap gap-2">
           <button class="btn" onclick="scaricaPdfPagopa()" id="btnScaricaPdf" style="background:#5E6AD2;color:white;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:600;">
@@ -335,7 +335,7 @@ function apriPdfPagopa() {
                 document.getElementById('pdfPreviewFrame').srcdoc = '\
                     <div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:sans-serif;background:#1a1a1e;color:#ccc;">\
                         <div style="text-align:center;padding:40px;">\
-                            <div style="font-size:48px;margin-bottom:16px;">📄</div>\
+                            <div style="font-size:48px;margin-bottom:16px;">ðŸ“„</div>\
                             <h2 style="color:#f87171;font-size:18px;margin-bottom:8px;">PDF PagoPA non trovato</h2>\
                             <p style="color:#8A8F98;font-size:14px;max-width:320px;line-height:1.5;">\
                                 Completa prima l\'automazione con <b style="color:#34d399;">Avvia INPS</b><br>\
@@ -347,11 +347,11 @@ function apriPdfPagopa() {
                 document.getElementById('pdfPreviewFloating').style.display = 'flex';
                 _initPdfPreviewDrag();
             } else {
-                logPagopa('❌ Errore recupero PDF PagoPA (HTTP ' + r.status + ')', 'err');
+                logPagopa('âŒ Errore recupero PDF PagoPA (HTTP ' + r.status + ')', 'err');
             }
         })
         .catch(function(err) {
-            logPagopa('❌ Errore di rete recupero PDF PagoPA: ' + err.message, 'err');
+            logPagopa('âŒ Errore di rete recupero PDF PagoPA: ' + err.message, 'err');
         });
 }
 
@@ -379,18 +379,18 @@ function chiudiPagopa(silent) {
     .then(function(r) { return r.json(); })
     .then(function(d) {
         if (d.success) {
-            logPagopa('🛑 Finestra Chromium chiusa. Playwright arrestato.', 'warn');
+            logPagopa('ðŸ›‘ Finestra Chromium chiusa. Playwright arrestato.', 'warn');
             document.getElementById('stepActions').style.display = 'none';
             document.getElementById('btnAvvia').disabled = false;
             document.getElementById('btnChiudiFinestra').disabled = true;
             (function(){var b1=document.getElementById('ctrlInvioBadge');if(b1)b1.style.display='none';})();
         } else {
-            logPagopa('❌ ERRORE chiusura: ' + (d.error || 'sconosciuto'), 'err');
+            logPagopa('âŒ ERRORE chiusura: ' + (d.error || 'sconosciuto'), 'err');
         }
         return d;
     })
     .catch(function(err) {
-        logPagopa('❌ ERRORE DI RETE chiusura: ' + err.message, 'err');
+        logPagopa('âŒ ERRORE DI RETE chiusura: ' + err.message, 'err');
     });
 }
 
@@ -493,14 +493,14 @@ function aggiornaColoriTrimestri(d) {
         if (mesiEl && info.settimane) {
             mesiEl.innerHTML = info.settimane.map(function(w,i) {
                 var checks = '';
-                for (var c=0;c<w;c++) checks += '✓';
+                for (var c=0;c<w;c++) checks += 'âœ“';
                 return '<div class="trim-mese"><span class="trim-mese-label">' + mesiNomi[mesiPerTrim[q][i]] + '</span> <span class="trim-mese-sett">' + w + ' (' + checks + ')</span></div>';
             }).join('');
         }
         var badge = document.getElementById('trim_badge_' + q);
         if (badge) {
-            if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = '✓ COMPLETO'; }
-            else { badge.className = 'trim-badge trim-badge-parziale'; badge.textContent = '⚠ PARZIALE'; }
+            if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = 'âœ“ COMPLETO'; }
+            else { badge.className = 'trim-badge trim-badge-parziale'; badge.textContent = 'âš  PARZIALE'; }
         }
         var card = document.querySelector('#trimestreRadioGroup .radio-card[data-trimestre="' + q + '"]');
         if (card) {
@@ -518,17 +518,17 @@ function renderRiepilogo(d) {
     html += '<div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">DATORE DI LAVORO</div>';
     html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_d_nome">' + escapeHtml(d.nome_datore) + '</span><button class="pm-cb" data-copy="r_d_nome">COPIA</button></div>';
     html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_d_cf">' + escapeHtml(d.cf_datore) + '</span><button class="pm-cb" data-copy="r_d_cf">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_d_indirizzo">' + escapeHtml(d.indirizzo_datore || '—') + '</span><button class="pm-cb" data-copy="r_d_indirizzo">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="r_d_beneficiario">' + escapeHtml(d.beneficiario || '—') + '</span><button class="pm-cb" data-copy="r_d_beneficiario">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="r_d_progetti">' + escapeHtml(d.progetti || '—') + '</span><button class="pm-cb" data-copy="r_d_progetti">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_d_indirizzo">' + escapeHtml(d.indirizzo_datore || 'â€”') + '</span><button class="pm-cb" data-copy="r_d_indirizzo">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="r_d_beneficiario">' + escapeHtml(d.beneficiario || 'â€”') + '</span><button class="pm-cb" data-copy="r_d_beneficiario">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="r_d_progetti">' + escapeHtml(d.progetti || 'â€”') + '</span><button class="pm-cb" data-copy="r_d_progetti">COPIA</button></div>';
     html += '</div><div class="col-6" style="padding:10px 14px;">';
     html += '<div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">LAVORATORE</div>';
     html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_l_nome">' + escapeHtml(d.nome_lavoratore) + '</span><button class="pm-cb" data-copy="r_l_nome">COPIA</button></div>';
     html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_l_cf">' + escapeHtml(d.cf_lavoratore) + '</span><button class="pm-cb" data-copy="r_l_cf">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="r_l_cod_rapporto">' + escapeHtml(d.codice_rapporto_inps || '—') + '</span><button class="pm-cb" data-copy="r_l_cod_rapporto">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_l_indirizzo">' + escapeHtml(d.indirizzo_lavoratore || '—') + '</span><button class="pm-cb" data-copy="r_l_indirizzo">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="r_l_cassa">' + escapeHtml(d.cassa_label || '—') + '</span><button class="pm-cb" data-copy="r_l_cassa">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="r_l_data_assunzione">' + escapeHtml(d.data_assunzione || '—') + '</span><button class="pm-cb" data-copy="r_l_data_assunzione">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="r_l_cod_rapporto">' + escapeHtml(d.codice_rapporto_inps || 'â€”') + '</span><button class="pm-cb" data-copy="r_l_cod_rapporto">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_l_indirizzo">' + escapeHtml(d.indirizzo_lavoratore || 'â€”') + '</span><button class="pm-cb" data-copy="r_l_indirizzo">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="r_l_cassa">' + escapeHtml(d.cassa_label || 'â€”') + '</span><button class="pm-cb" data-copy="r_l_cassa">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="r_l_data_assunzione">' + escapeHtml(d.data_assunzione || 'â€”') + '</span><button class="pm-cb" data-copy="r_l_data_assunzione">COPIA</button></div>';
     html += '</div></div></div></div>';
 
     html += '<div class="col-12" style="margin-bottom:16px;"><div class="p-4" class="card-simple">';
@@ -788,27 +788,27 @@ function avviaPagopa() {
         document.getElementById('btnAvvia').innerHTML = '<i class="bi bi-robot me-1"></i> Avvia INPS';
 
         if (!d.success) {
-            logPagopa('❌ ERRORE avvio automazione: ' + d.error, 'err');
-            if (d.url) logPagopa('📍 Pagina: ' + d.url, '');
+            logPagopa('âŒ ERRORE avvio automazione: ' + d.error, 'err');
+            if (d.url) logPagopa('ðŸ“ Pagina: ' + d.url, '');
             document.getElementById('btnAvvia').disabled = false;
             document.getElementById('btnAvvia').innerHTML = '<i class="bi bi-robot me-1"></i> Avvia INPS';
             return;
         }
 
-        logPagopa('✅ Chromium avviato (Playwright, finestra 960×1080)', 'ok');
-        logPagopa('🌐 Navigato: ' + (d.url || 'sito INPS PagoPA'), 'ok');
-        logPagopa('👤 Inseriti CF Datore e Codice Rapporto INPS', 'ok');
+        logPagopa('âœ… Chromium avviato (Playwright, finestra 960Ã—1080)', 'ok');
+        logPagopa('ðŸŒ Navigato: ' + (d.url || 'sito INPS PagoPA'), 'ok');
+        logPagopa('ðŸ‘¤ Inseriti CF Datore e Codice Rapporto INPS', 'ok');
 
         if (d.captcha_image) {
             document.getElementById('captchaContainer').style.display = 'block';
             document.getElementById('captchaImage').src = 'data:image/png;base64,' + d.captcha_image;
             document.getElementById('captchaInput').value = '';
             document.getElementById('captchaInput').focus();
-            logPagopa('🔐 Inserisci il codice CAPTGRAPH mostrato qui sotto e clicca "Invia CAPTCHA"', 'warn');
-            logPagopa('💡 Il browser Chromium è in esecuzione in background.', '');
+            logPagopa('ðŸ” Inserisci il codice CAPTGRAPH mostrato qui sotto e clicca "Invia CAPTCHA"', 'warn');
+            logPagopa('ðŸ’¡ Il browser Chromium Ã¨ in esecuzione in background.', '');
         } else {
-            logPagopa('🔐 Attesa risoluzione CAPTCHA — premi Ctrl+Invio nella finestra Chromium per proseguire', 'warn');
-            logPagopa('💡 Il browser è in primo piano. Risolvi il CAPTGRAPH e premi Ctrl+Invio.', '');
+            logPagopa('ðŸ” Attesa risoluzione CAPTCHA â€” premi Ctrl+Invio nella finestra Chromium per proseguire', 'warn');
+            logPagopa('ðŸ’¡ Il browser Ã¨ in primo piano. Risolvi il CAPTGRAPH e premi Ctrl+Invio.', '');
             document.getElementById('captchaContainer').style.display = 'none';
         }
 
@@ -829,7 +829,7 @@ function avviaPagopa() {
     .catch(function(err) {
         document.getElementById('btnAvvia').disabled = false;
         document.getElementById('btnAvvia').innerHTML = '<i class="bi bi-robot me-1"></i> Avvia INPS';
-        logPagopa('❌ ERRORE DI RETE: ' + err.message + ' (Verifica che il server Django sia in esecuzione)', 'err');
+        logPagopa('âŒ ERRORE DI RETE: ' + err.message + ' (Verifica che il server Django sia in esecuzione)', 'err');
     });
 }
 
@@ -872,10 +872,10 @@ function proseguiPagopa() {
         _pagopaInFlight = false;
 
         if (!d.success) {
-            logPagopa('❌ ERRORE (' + _pagopaStep + '): ' + d.error, 'err');
+            logPagopa('âŒ ERRORE (' + _pagopaStep + '): ' + d.error, 'err');
             mostraLogsBackend(d);
             if (d.url && d.title) {
-                logPagopa('📄 Pagina browser: "' + d.title + '" — ' + d.url, '');
+                logPagopa('ðŸ“„ Pagina browser: "' + d.title + '" â€” ' + d.url, '');
             }
             aggiornaStepActions(_pagopaStep, d.step_num, d.step_total, d.error, false);
             _pagopaCaptchaText = '';
@@ -894,19 +894,19 @@ function proseguiPagopa() {
         var nextStep = d.step;
         _pagopaStep = nextStep;
 
-        logPagopa('✅ ' + (d.message || 'Step completato'), 'ok');
+        logPagopa('âœ… ' + (d.message || 'Step completato'), 'ok');
         if (d.url && d.title) {
-            logPagopa('📄 Pagina browser: "' + d.title + '"', '');
-            logPagopa('🔗 URL: ' + d.url, '');
+            logPagopa('ðŸ“„ Pagina browser: "' + d.title + '"', '');
+            logPagopa('ðŸ”— URL: ' + d.url, '');
         }
         if (d.ore !== undefined) {
-            logPagopa('📊 Ore trimestre: ' + d.ore + 'h | Paga: ' + d.paga + ' €/h | Cassa: ' + d.codice_cassa, '');
+            logPagopa('ðŸ“Š Ore trimestre: ' + d.ore + 'h | Paga: ' + d.paga + ' â‚¬/h | Cassa: ' + d.codice_cassa, '');
         }
         if (d.warning_pagopa) {
-            logPagopa('⚠️ ' + d.warning_pagopa, 'warn');
+            logPagopa('âš ï¸ ' + d.warning_pagopa, 'warn');
         }
         if (d.totale_inps) {
-            logPagopa('💰 Totale INPS: € ' + d.totale_inps.toFixed(2) + ' | Calcolato: € ' + (d.contrib_totali || 0).toFixed(2), '');
+            logPagopa('ðŸ’° Totale INPS: â‚¬ ' + d.totale_inps.toFixed(2) + ' | Calcolato: â‚¬ ' + (d.contrib_totali || 0).toFixed(2), '');
             var match = Math.abs(d.totale_inps - (d.contrib_totali || 0)) <= 0.50;
             var row = document.getElementById('inpsCompareRow');
             var val = document.getElementById('inpsCompareVal');
@@ -914,18 +914,18 @@ function proseguiPagopa() {
             if (row && val) {
                 row.style.display = '';
                 if (match) {
-                    val.innerHTML = '<span style="color:#34d399;font-size:14px;font-weight:700;">✅ OK</span>';
+                    val.innerHTML = '<span style="color:#34d399;font-size:14px;font-weight:700;">âœ… OK</span>';
                     label.style.color = '#34d399';
                 } else {
-                    val.innerHTML = '<span style="color:#f59e0b;font-size:14px;font-weight:700;">⚠️ INPS \u20ac ' + d.totale_inps.toFixed(2) + '</span>';
+                    val.innerHTML = '<span style="color:#f59e0b;font-size:14px;font-weight:700;">âš ï¸ INPS \u20ac ' + d.totale_inps.toFixed(2) + '</span>';
                     label.style.color = '#f59e0b';
                 }
             }
         }
 
         if (nextStep === 'done') {
-            logPagopa('📁 PDF salvato: ' + (d.file || ''), 'ok');
-            logPagopa('🏁 Automazione completata con successo!', 'ok');
+            logPagopa('ðŸ“ PDF salvato: ' + (d.file || ''), 'ok');
+            logPagopa('ðŸ Automazione completata con successo!', 'ok');
             (function(){var b1=document.getElementById('ctrlInvioBadge');if(b1)b1.style.display='none';})();
             document.getElementById('stepActions').style.display = 'none';
 
@@ -955,7 +955,7 @@ function proseguiPagopa() {
         } else {
             var nextLabel = _pagopaStepLabels[nextStep] || nextStep;
             var prog = (d.step_num || '?') + '/' + (d.step_total || '?');
-            logPagopa('➡️ Prossimo step [' + prog + ']: ' + nextLabel + ' — esecuzione in ' + (_pagopaAutoDelay / 1000).toFixed(1) + 's...', '');
+            logPagopa('âž¡ï¸ Prossimo step [' + prog + ']: ' + nextLabel + ' â€” esecuzione in ' + (_pagopaAutoDelay / 1000).toFixed(1) + 's...', '');
             aggiornaStepActions(nextStep, d.step_num, d.step_total, d.message || 'Step completato.', true);
             if (nextStep !== 'captcha') {
                 setTimeout(function() { proseguiPagopa(); }, _pagopaAutoDelay);
@@ -964,8 +964,8 @@ function proseguiPagopa() {
     })
     .catch(function(err) {
         _pagopaInFlight = false;
-        logPagopa('❌ ERRORE DI RETE: ' + err.message + ' (Il server Django potrebbe aver riavviato il thread)', 'err');
-        logPagopa('💡 Ricarica la pagina e riavvia l\'automazione se il problema persiste.', 'warn');
+        logPagopa('âŒ ERRORE DI RETE: ' + err.message + ' (Il server Django potrebbe aver riavviato il thread)', 'err');
+        logPagopa('ðŸ’¡ Ricarica la pagina e riavvia l\'automazione se il problema persiste.', 'warn');
     });
 }
 
@@ -1016,7 +1016,7 @@ function _chiudiPdfPreview() {
 
     aggiornaCounter();
 
-    // Click handler per radio-card → auto-ricarica
+    // Click handler per radio-card â†’ auto-ricarica
     document.querySelectorAll('#trimestreRadioGroup .radio-card').forEach(function(el) {
         el.addEventListener('click', function() {
             var val = this.querySelector('input').value;
@@ -1025,12 +1025,12 @@ function _chiudiPdfPreview() {
         });
     });
 
-    // Change anno → auto-ricarica
+    // Change anno â†’ auto-ricarica
     document.getElementById('selAnno').addEventListener('change', function() {
         caricaDatiPagopa();
     });
 
-    // Change contratto → auto-ricarica
+    // Change contratto â†’ auto-ricarica
     document.getElementById('selContratto').addEventListener('change', function() {
         aggiornaCounter();
         caricaDatiPagopa();

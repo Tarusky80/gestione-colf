@@ -132,3 +132,117 @@
 
 /* --- TOGGLE ITEM (comune a tutte le pagine calcoli) --- */
 .toggle-item { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+
+/* --- GRIGLIE --- */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.grid-auto { display: grid; grid-auto-flow: column; gap: 6px; }
+
+/* --- FLEX HELPERS --- */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-gap-xs { display: flex; align-items: center; gap: 6px; }
+.flex-gap-sm { display: flex; align-items: center; gap: 8px; }
+.flex-gap-md { display: flex; align-items: center; gap: 12px; }
+.flex-gap-lg { display: flex; align-items: center; gap: 16px; }
+.flex-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* --- TEXT HELPERS --- */
+.text-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-uppercase { text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* --- PADDING HELPERS --- */
+.p-12 { padding: 12px; }
+.p-14 { padding: 14px; }
+.p-16 { padding: 16px; }
+.p-18 { padding: 18px; }
+.p-24 { padding: 24px; }
+.px-18 { padding-left: 18px; padding-right: 18px; }
+.py-14 { padding-top: 14px; padding-bottom: 14px; }
+
+/* --- BADGE CATEGORIA COLORATO (usa style="--c:#hex" per colore dinamico) --- */
+.badge-cat { display: inline-block; margin: 1px 0; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; background: color-mix(in srgb, var(--c, #10b981) 12%, transparent); color: var(--c, #10b981); }
+
+/* --- ACTION BUTTON (action panel, bottoni dinamici) --- */
+.btn-action { display: inline-flex; align-items: center; gap: 8px; border-radius: 8px; padding: 9px 12px; font-size: 12px; font-weight: 600; text-decoration: none; transition: all 0.15s; cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #8A8F98; }
+.btn-action:hover { background: rgba(255,255,255,0.08); color: #EDEDED; }
+.btn-action i { font-size: 14px; }
+.btn-action-primary { background: rgba(96,165,250,0.1); border-color: rgba(96,165,250,0.25); color: #9ca3ff; }
+.btn-action-primary:hover { background: rgba(96,165,250,0.2); color: white; }
+.btn-action-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.15); color: #f87171; }
+.btn-action-danger:hover { background: rgba(248,113,113,0.15); color: #ff9999; }
+.btn-action-success { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10b981; }
+.btn-action-success:hover { background: rgba(16,185,129,0.2); color: #34d399; }
+.btn-action-yellow { background: rgba(250,204,21,0.12); border-color: rgba(250,204,21,0.3); color: #fbbf24; }
+.btn-action-yellow:hover { background: rgba(250,204,21,0.2); color: #ffe082; }
+.btn-action-duplica { color: #34d399; }
+.btn-action-duplica:hover { color: #6ee7b7; }
+
+/* --- PULSANTI GHOST (legacy, per retrocompatibilita) --- */
+.btn-ghost { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 9px 12px; font-size: 12px; font-weight: 600; color: #8A8F98; text-decoration: none; transition: all 0.15s; cursor: pointer; }
+.btn-ghost:hover { background: rgba(255,255,255,0.08); color: #EDEDED; }
+.btn-ghost-primary { background: rgba(94,106,210,0.1); border: 1px solid rgba(94,106,210,0.25); color: #9ca3ff; }
+.btn-ghost-primary:hover { background: rgba(94,106,210,0.2); border-color: #9ca3ff; }
+.btn-ghost-success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #10b981; }
+.btn-ghost-success:hover { background: rgba(16,185,129,0.2); }
+.btn-ghost-danger { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.15); color: #f87171; }
+.btn-ghost-danger:hover { background: rgba(248,113,113,0.15); }
+.btn-ghost-yellow { background: rgba(250,204,21,0.12); border: 1px solid rgba(250,204,21,0.3); color: #fbbf24; }
+.btn-ghost-yellow:hover { background: rgba(250,204,21,0.2); }
+
+/* --- CARD SCURA (sostituisce style="background:#17181C;border:1px solid #27282D;border-radius:14px;") --- */
+.card-dark { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
+.card-dark-sm { border-radius: var(--radius-md); }
+.card-dark-padded { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; }
+
+/* --- DIVIDER --- */
+.divider { height: 1px; background: var(--border-color); margin: 6px 0; }
+.divider-light { height: 1px; background: rgba(255,255,255,0.04); margin: 6px 0; }
+
+/* --- SEZIONE INFO METADATI (action panel) --- */
+.meta-box { margin-bottom: 10px; padding: 10px 12px; background: var(--bg-base); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 11px; }
+
+/* --- BADGE STATO --- */
+.badge-stato { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+.badge-stato-attivo { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
+.badge-stato-cessato { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+.badge-stato-indeterminato { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+.badge-stato-determinato { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+.badge-stato .dot { width: 6px; height: 6px; border-radius: 50%; }
+.badge-stato-attivo .dot { background: #34d399; }
+.badge-stato-cessato .dot { background: #f87171; }
+.badge-stato-indeterminato .dot { background: #60a5fa; }
+.badge-stato-determinato .dot { background: #fbbf24; }
+
+/* --- SEPARATORE SEZIONE --- */
+.section-sep { border-top: 1px solid var(--border-color); margin-top: 6px; padding-top: 6px; }
+
+/* --- GRIGLIA INFO (action panel meta) --- */
+.grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
+
+/* --- DATA META (action panel date) --- */
+.meta-date { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border-color); display: flex; gap: 12px; font-size: 10px; color: var(--text-muted); }
+
+/* --- SCROLLBAR SCURO --- */
+.scrollbar-dark::-webkit-scrollbar { width: 6px; }
+.scrollbar-dark::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-dark::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+.scrollbar-dark::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* --- TOAST NOTIFICA --- */
+.toast-dark { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 18px; font-size: 13px; color: var(--text-primary); box-shadow: 0 8px 32px rgba(0,0,0,0.4); display: none; }
+.toast-dark.show { display: block; animation: toastIn 0.3s ease; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- HOVER LIFT --- */
+.hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+
+/* --- STATO NASCOSTO --- */
+[hidden] { display: none !important; }
+
+/* --- LINK DISCRETO --- */
+.link-muted { color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+.link-muted:hover { color: var(--text-primary); }

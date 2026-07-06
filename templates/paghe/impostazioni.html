@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% block search_bar %}{% endblock %}
 {% load static %}
 
@@ -231,7 +231,7 @@
         <div class="form-group">
           <label>{{ form.email_mittente.label }}</label>
           {{ form.email_mittente }}
-          <div class="help-text">L'indirizzo che apparirà come mittente</div>
+          <div class="help-text">L'indirizzo che apparirÃ  come mittente</div>
           {% for e in form.email_mittente.errors %}<div class="errors">{{ e }}</div>{% endfor %}
         </div>
         <div class="form-group inline-check">
@@ -246,7 +246,7 @@
         <div class="form-group full-width inline-check">
           {{ form.notifiche_scadenze_attive }}
           <label for="{{ form.notifiche_scadenze_attive.id_for_label }}">Notifiche scadenze attive</label>
-          <div class="help-text" style="margin:0;">Se attivo, ogni lunedì alle 08:00 invia un promemoria email delle scadenze imminenti</div>
+          <div class="help-text" style="margin:0;">Se attivo, ogni lunedÃ¬ alle 08:00 invia un promemoria email delle scadenze imminenti</div>
         </div>
         <div class="form-group full-width" style="margin-top:8px;">
           <button type="button" id="btnTestEmail" onclick="testSMTP()" style="background:rgba(6,182,212,0.12);color:#06b6d4;border:1px solid rgba(6,182,212,0.25);border-radius:8px;padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer;">
@@ -591,24 +591,24 @@ function sfogliaExeLettore() {
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Impostazioni
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Impostazioni
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
         Qui puoi configurare tutte le <b>opzioni generali</b> del gestionale. Le impostazioni sono raggruppate in sezioni tematiche.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sezioni</b><br>
-        <b>Generali</b> — nome programma, versione, logo, colore e opzioni di visualizzazione.<br>
-        <b>Percorsi</b> — cartella documenti, percorso dell'exe del client di posta (es. Thunderbird) e del lettore PDF.<br>
-        <b>Email</b> — configurazione SMTP per l'invio email direttamente dal gestionale. Usa il pulsante <b>Invia email di prova</b> per testare la configurazione.<br>
-        <b>Collegamenti</b> — imposta l'indirizzo dello studio e il link esterno INPS per le procedure.<br>
-        <b>Calcolo</b> — parametri di calcolo buste paga e soglie.<br>
-        <b>Studio</b> — nome studio, indirizzo studio, recapiti (telefono, email, IBAN) e testi preimpostati.</p>
+        <b>Generali</b> â€” nome programma, versione, logo, colore e opzioni di visualizzazione.<br>
+        <b>Percorsi</b> â€” cartella documenti, percorso dell'exe del client di posta (es. Thunderbird) e del lettore PDF.<br>
+        <b>Email</b> â€” configurazione SMTP per l'invio email direttamente dal gestionale. Usa il pulsante <b>Invia email di prova</b> per testare la configurazione.<br>
+        <b>Collegamenti</b> â€” imposta l'indirizzo dello studio e il link esterno INPS per le procedure.<br>
+        <b>Calcolo</b> â€” parametri di calcolo buste paga e soglie.<br>
+        <b>Studio</b> â€” nome studio, indirizzo studio, recapiti (telefono, email, IBAN) e testi preimpostati.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salvataggio</b><br>
         Le modifiche vengono salvate singolarmente per ogni sezione. Clicca <b>Salva</b> in fondo a ogni blocco per applicare le modifiche.</p>

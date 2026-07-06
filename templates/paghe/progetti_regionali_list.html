@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load tabelle_tags %}
 
 {% block breadcrumb %}
@@ -21,7 +21,7 @@
     </div>
     <div class="d-flex gap-2 align-items-center">
         <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal"></span></span>
-        <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" style="background:rgba(94,106,210,0.1);color:#9ca3ff;border:1px solid rgba(94,106,210,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-download me-1"></i> Export XLSX</a>
+        <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" class="class="btn-xlsx""><i class="bi bi-download me-1"></i> Export XLSX</a>
         <button class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-upload me-1"></i> Importa</button>
         <button class="btn btn-sm" onclick="loadAjaxForm('/ajax/nuovo-tabella/progetti-regionali/', 'Nuovo {{ titolo }}')" style="background: #5E6AD2; color: white; border: none; border-radius: 8px; padding: 8px 20px; font-size: 12px; font-weight: 600;">
             <i class="bi bi-plus-lg me-1"></i> Nuovo
@@ -68,7 +68,7 @@
         </div>
         <div class="row g-3 mt-1">
             <div class="col-md-12">
-                <label class="mb-1 fw-bold" class="c-10-up">Budget Mensile (€)</label>
+                <label class="mb-1 fw-bold" class="c-10-up">Budget Mensile (â‚¬)</label>
                 <div class="d-flex align-items-center gap-3">
                     <span id="rangeValDa" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
                     <div style="flex:1; position:relative; height:40px;">
@@ -110,9 +110,9 @@
                             {% with colore=obj.tipo.colore|default:'#10b981' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
                         {% elif val.type == 'bool' and val.value %}<i class="bi bi-check-circle-fill text-success"></i>
                         {% elif val.type == 'bool' and not val.value %}<i class="bi bi-x-circle-fill text-secondary"></i>
-                        {% elif val.type == 'none' %}<span class="text-secondary small">—</span>
+                        {% elif val.type == 'none' %}<span class="text-secondary small">â€”</span>
                         {% elif val.type == 'date' %}{{ val.value|date:"d/m/Y" }}
-                        {% elif val.type == 'number' %}{% if 'budget' in f.name %}€ {{ val.value|floatformat:2 }}{% else %}{{ val.value|floatformat:0 }}{% endif %}
+                        {% elif val.type == 'number' %}{% if 'budget' in f.name %}â‚¬ {{ val.value|floatformat:2 }}{% else %}{{ val.value|floatformat:0 }}{% endif %}
                         {% else %}{{ val.value }}{% endif %}
                     </td>
                     {% endwith %}
@@ -206,7 +206,7 @@ function filteraProgetti() {
             if (c0.indexOf(testo) === -1 && c1.indexOf(testo) === -1) mostra = false;
         }
 
-        // Tipo (colonna 1) — dropdown
+        // Tipo (colonna 1) â€” dropdown
         if (mostra && tipoFiltro) {
             var c1 = (cells[1].textContent || '').toUpperCase();
             if (c1.indexOf(tipoFiltro) === -1) mostra = false;
@@ -215,7 +215,7 @@ function filteraProgetti() {
         // Data Inizio (colonna 2)
         if (mostra && (inizioDa || inizioA)) {
             var raw2 = cells[2].textContent.trim();
-            var d2 = raw2 && raw2 !== '—' ? parseDateIt(raw2) : null;
+            var d2 = raw2 && raw2 !== 'â€”' ? parseDateIt(raw2) : null;
             if (inizioDa && (!d2 || d2 < new Date(inizioDa + 'T00:00:00'))) mostra = false;
             if (mostra && inizioA && (!d2 || d2 > new Date(inizioA + 'T23:59:59'))) mostra = false;
         }
@@ -223,9 +223,9 @@ function filteraProgetti() {
         // Budget Mensile (colonna 6)
         if (mostra && (bMenDa > 0 || bMenA < 5000)) {
             var raw6 = cells[6].textContent.trim();
-            if (raw6 && raw6 !== '—') {
+            if (raw6 && raw6 !== 'â€”') {
                 // Supporta sia formato italiano (1.234,56) che inglese (1234.56)
-                var cleaned = raw6.replace('€', '').trim().replace(/\./g, '').replace(',', '.');
+                var cleaned = raw6.replace('â‚¬', '').trim().replace(/\./g, '').replace(',', '.');
                 var val6 = parseFloat(cleaned);
                 if (!isNaN(val6)) {
                     if (val6 < bMenDa || val6 > bMenA) mostra = false;
@@ -261,7 +261,7 @@ function svuotaFiltri() {
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
       <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — {{ titolo|default:"Progetti Regionali" }}</h5>
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” {{ titolo|default:"Progetti Regionali" }}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">

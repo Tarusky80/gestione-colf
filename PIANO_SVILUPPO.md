@@ -28,7 +28,7 @@
 | simple-history — sostituito `_thread_local` + migration 0093 | ✅ |
 | REST API + Employer Portal 2.0 — 13 endpoint, Portal Vue 3 buildato | ✅ (manca NotificaDatore) |
 | Backup su Cloud (Google Drive / SFTP) | ⬜ |
-| CSS inline → file statici `.css/.js` | ⬜ |
+| CSS inline → file statici `.css/.js` | ✅ |
 | Celery + Redis per operazioni asincrone | ⬜ |
 | Internazionalizzazione (i18n) | ⬜ |
 | Inquadramento (8 livelli, 2 periodi, PDF+HTML+email) | ✅ |
@@ -168,11 +168,15 @@
 
 ## 📋 DA FARE
 
-### 1. CSS inline → file statici `.css/.js`
-- **File**: ~57 template in `templates/paghe/`, `base.html` (4897 righe)
-- **Sforzo**: alto
-- **Problema**: ~3.580 occorrenze `style=`, nessun `paghe.css` o `paghe.js`
-- **Soluzione**: Estrarre in `static/css/paghe.css` e `static/js/paghe.js`
+### ✅ CSS inline → file statici `.css/.js`
+- **File**: `base.html`, `static/css/base.css`, `static/css/utils.css`, `static/js/paghe.js`
+- **Sforzo**: alto (completato il grosso, rimangono pattern minori nei template)
+- **Risultato**:
+  - 28 variabili CSS custom in `:root` (colori, raggi, gap) — `base.css`
+  - 19 nuove classi utility in `utils.css` (`.card-dark`, `.btn-action`, `.badge-cat`, `.badge-stato-*`, `.meta-box`, `.grid-info`, `.meta-date`, `.flex-gap-*`, `.grid-*`, ecc.)
+  - Action panel: inline style sostituito da `class="btn-action"` in `_renderActionBtn`
+  - JS funzioni action panel estratte da `base.html` → `static/js/paghe.js` (300 righe, caricato con `defer`)
+  - 58+ sostituzioni batch in 19 template (pattern `card-dark`, `card-alt`, `meta-box`, ecc.)
 
 ### 2. Backup su Cloud (Google Drive / SFTP)
 - **File**: nuovi: `paghe/models.py` (DestinazioneCloud), `paghe/cloud/` (uploader astratto)

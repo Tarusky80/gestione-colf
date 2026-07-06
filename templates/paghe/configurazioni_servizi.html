@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -42,7 +42,7 @@
         {% endif %}
         {% if compatible is not None %}
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
-          Compatibilità Chrome:
+          CompatibilitÃ  Chrome:
           {% if compatible %}
             <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Compatibile</span>
           {% else %}
@@ -130,7 +130,7 @@
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
           Iscrizione:
           {% if link_iscrizione_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span style="color:#8A8F98;">â€”</span>
           {% elif link_iscrizione_ok %}
             <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
@@ -140,7 +140,7 @@
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
           Cessazione:
           {% if link_cessazione_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span style="color:#8A8F98;">â€”</span>
           {% elif link_cessazione_ok %}
             <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
@@ -150,7 +150,7 @@
         <div style="font-size:12px;color:#8A8F98;">
           PAGOPA:
           {% if link_pagopa_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span style="color:#8A8F98;">â€”</span>
           {% elif link_pagopa_ok %}
             <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
@@ -205,7 +205,7 @@
           {% if web_config.chrome_user_data_dir %}
             <span style="color:#EDEDED;">{{ web_config.chrome_user_data_dir }}</span>
           {% else %}
-            <span style="color:#8A8F98;"><i>— default temporaneo</i></span>
+            <span style="color:#8A8F98;"><i>â€” default temporaneo</i></span>
           {% endif %}
         </div>
       </div>
@@ -216,12 +216,12 @@
       <div class="p-3" class="card-alt-12">
         <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-link me-2"></i>Link Cessazione INPS</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
-          {{ web_config.link_inps_cessazione|default:"—" }}
+          {{ web_config.link_inps_cessazione|default:"â€”" }}
         </div>
         <div style="font-size:12px;color:#8A8F98;">
-          Raggiungibilità:
+          RaggiungibilitÃ :
           {% if link_cessazione_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span style="color:#8A8F98;">â€”</span>
           {% elif link_cessazione_ok %}
             <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
@@ -236,12 +236,12 @@
       <div class="p-3" class="card-alt-12">
         <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-credit-card-2-front me-2"></i>Link PagoPA INPS</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
-          {{ web_config.link_inps_pagopa|default:"—" }}
+          {{ web_config.link_inps_pagopa|default:"â€”" }}
         </div>
         <div style="font-size:12px;color:#8A8F98;">
-          Raggiungibilità:
+          RaggiungibilitÃ :
           {% if link_pagopa_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span style="color:#8A8F98;">â€”</span>
           {% elif link_pagopa_ok %}
             <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
@@ -276,7 +276,7 @@
             {% if cartella_screenshot_esiste %}
               <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Presente</span>
             {% else %}
-              <span style="color:#8A8F98;"><i class="bi bi-circle"></i> Verrà creata al primo screenshot</span>
+              <span style="color:#8A8F98;"><i class="bi bi-circle"></i> VerrÃ  creata al primo screenshot</span>
             {% endif %}
           </div>
         </div>
@@ -296,24 +296,24 @@
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Configurazioni Servizi Web
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Configurazioni Servizi Web
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
         Configurazioni per i <b>servizi web</b> utilizzati dalle procedure automatizzate: Chromedriver (Selenium), Playwright, login INPS e opzioni di automazione.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sezioni</b><br>
-        <b>Chromedriver</b> — percorso dell'eseguibile chromedriver.exe per l'automazione Selenium.<br>
-        <b>Playwright</b> — percorso del browser Chromium installato da Playwright.<br>
-        <b>Login INPS</b> — username, password, PIN e codice fiscale per l'accesso automatizzato al sito INPS.<br>
-        <b>Automazione</b> — scegli il motore (Playwright o Selenium), imposta i delay tra le operazioni e la risoluzione dello schermo.<br>
-        <b>Link INPS</b> — URL di riferimento per le procedure di iscrizione/cessazione e PagoPA.<br>
-        <b>Cartelle</b> — percorsi delle cartella PDF e screenshot generati dalle automationi.</p>
+        <b>Chromedriver</b> â€” percorso dell'eseguibile chromedriver.exe per l'automazione Selenium.<br>
+        <b>Playwright</b> â€” percorso del browser Chromium installato da Playwright.<br>
+        <b>Login INPS</b> â€” username, password, PIN e codice fiscale per l'accesso automatizzato al sito INPS.<br>
+        <b>Automazione</b> â€” scegli il motore (Playwright o Selenium), imposta i delay tra le operazioni e la risoluzione dello schermo.<br>
+        <b>Link INPS</b> â€” URL di riferimento per le procedure di iscrizione/cessazione e PagoPA.<br>
+        <b>Cartelle</b> â€” percorsi delle cartella PDF e screenshot generati dalle automationi.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Dove si modificano</b><br>
         Alcune impostazioni sensibili (login, PIN) sono modificabili solo dall'<b>admin Django</b> cliccando il link in fondo alla pagina.</p>

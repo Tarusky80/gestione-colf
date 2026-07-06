@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 {% block extra_css %}
 <style>
@@ -38,7 +38,7 @@
     <div style="display:flex;gap:6px;">
         <a href="{{ request.path }}?{{ request.GET.urlencode }}&export=xlsx" id="btnExportBuste"
            class="btn btn-sm" title="Scarica Excel"
-           style="background:rgba(94,106,210,0.1);color:#9ca3ff;border:1px solid rgba(94,106,210,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;">
+           class="class="btn-xlsx"">
             <i class="bi bi-file-earmark-spreadsheet me-1"></i> Scarica Excel
         </a>
         <a href="{% url 'documenti_list' %}" class="btn btn-outline-secondary btn-sm" title="Archivio Documenti">
@@ -151,7 +151,7 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                     {% if b.documento %}
                     <a href="#" onclick="event.preventDefault();apriNelPannello('/ajax/vedi-documento/{{ b.documento.pk }}/', {{ b.documento.pk }})" class="text-decoration-none" title="Apri PDF"><i class="bi bi-file-pdf" style="color:#ef4444;font-size:18px;"></i></a>
                     {% else %}
-                    <span class="text-muted" style="font-size:12px;">—</span>
+                    <span class="text-muted" style="font-size:12px;">â€”</span>
                     {% endif %}
                 </td>
                 <td>
@@ -170,14 +170,14 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                         <span class="toggle-slider toggle-vis-knob" style="position:absolute;inset:0;background:{% if b.documento.visibile_al_datore %}#34C759{% else %}#3a3b40{% endif %};border:none;border-radius:12px;cursor:pointer;transition:background 0.25s ease;z-index:1;"></span>
                     </div>
                     {% else %}
-                    <span class="text-muted" style="font-size:12px;">—</span>
+                    <span class="text-muted" style="font-size:12px;">â€”</span>
                     {% endif %}
                 </td>
                 <td class="text-center" style="white-space:nowrap;">
                     {% if b.documento %}
                     <i class="stampa-badge bi {% if b.documento.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ b.pk }}" title="{% if b.documento.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
                     {% else %}
-                    <span class="text-muted" style="font-size:12px;">—</span>
+                    <span class="text-muted" style="font-size:12px;">â€”</span>
                     {% endif %}
                 </td>
                 <td>
@@ -320,25 +320,25 @@ function apriCcnlOcchioBusta(pk, anno) {
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Buste Paga</h5>
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Archivio Buste Paga</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        L'Archivio Buste Paga contiene tutte le buste paga salvate dal pulsante <b>SALVA BUSTA</b> presente nelle pagine di calcolo. Ogni busta è associata a un contratto, un periodo, un tipo di calcolo e un documento PDF.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        L'Archivio Buste Paga contiene tutte le buste paga salvate dal pulsante <b>SALVA BUSTA</b> presente nelle pagine di calcolo. Ogni busta Ã¨ associata a un contratto, un periodo, un tipo di calcolo e un documento PDF.</p>
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Filtri</b><br>
         Puoi filtrare per tipo di calcolo (Standard, Non Convivente, Conviventi CCNL, ecc.), stato (Bozza/Approvata/Archiviata), datore, lavoratore, mese e anno.</p>
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Azioni</b><br>
-        <b>VEDI</b> (<i class="bi bi-eye" style="color:#5bc0de;"></i>) — apre la pagina di calcolo corrispondente ricaricando i dati.<br>
-        <b>APPROVA</b> (<i class="bi bi-check-lg" style="color:#10b981;"></i>) — cambia lo stato in "Approvata".<br>
-        <b>ARCHIVIA</b> (<i class="bi bi-archive" style="color:#5E6AD2;"></i>) — cambia lo stato in "Archiviata".<br>
-        <b>BOZZA</b> (<i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i>) — riporta la busta a stato "Bozza".<br>
-        <b>ELIMINA</b> (<i class="bi bi-trash" style="color:#ef4444;"></i>) — elimina definitivamente la busta.<br>
-        <b>VISIBILE DATORE</b> (<span class="toggle-switch" style="display:inline-block;width:28px;height:14px;position:relative;vertical-align:middle;border:none;background:none;padding:0;"><span style="position:absolute;inset:0;background:#5E6AD2;border-radius:7px;"></span></span>) — attiva/disattiva la visibilit&agrave; della busta paga nell'area riservata del datore di lavoro (<b>/datore/</b>).</p>
+        <b>VEDI</b> (<i class="bi bi-eye" style="color:#5bc0de;"></i>) â€” apre la pagina di calcolo corrispondente ricaricando i dati.<br>
+        <b>APPROVA</b> (<i class="bi bi-check-lg" style="color:#10b981;"></i>) â€” cambia lo stato in "Approvata".<br>
+        <b>ARCHIVIA</b> (<i class="bi bi-archive" style="color:#5E6AD2;"></i>) â€” cambia lo stato in "Archiviata".<br>
+        <b>BOZZA</b> (<i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i>) â€” riporta la busta a stato "Bozza".<br>
+        <b>ELIMINA</b> (<i class="bi bi-trash" style="color:#ef4444;"></i>) â€” elimina definitivamente la busta.<br>
+        <b>VISIBILE DATORE</b> (<span class="toggle-switch" style="display:inline-block;width:28px;height:14px;position:relative;vertical-align:middle;border:none;background:none;padding:0;"><span style="position:absolute;inset:0;background:#5E6AD2;border-radius:7px;"></span></span>) â€” attiva/disattiva la visibilit&agrave; della busta paga nell'area riservata del datore di lavoro (<b>/datore/</b>).</p>
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">PDF</b><br>
-        Se è presente un documento PDF associato, puoi aprirlo cliccando sull'icona <i class="bi bi-file-pdf" style="color:#ef4444;"></i>.</p>
+        Se Ã¨ presente un documento PDF associato, puoi aprirlo cliccando sull'icona <i class="bi bi-file-pdf" style="color:#ef4444;"></i>.</p>
       </div>
     </div>
   </div>

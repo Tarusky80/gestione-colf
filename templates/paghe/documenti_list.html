@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 {% load tabelle_tags %}
 {% block search_bar %}{% endblock %}
@@ -118,7 +118,7 @@
     {% if filtro_datore_pk %}datore #{{ filtro_datore_pk }}{% endif %}
     {% if filtro_lavoratore_pk %}lavoratore #{{ filtro_lavoratore_pk }}{% endif %}
     {% if filtro_beneficiario_pk %}beneficiario #{{ filtro_beneficiario_pk }}{% endif %}
-    — <a href="{% url 'documenti_list' %}" style="color:#fff;text-decoration:underline;">Rimuovi filtro</a>
+    â€” <a href="{% url 'documenti_list' %}" style="color:#fff;text-decoration:underline;">Rimuovi filtro</a>
   </div>
   {% endif %}
 
@@ -150,7 +150,7 @@
     </thead>
     <tbody>
       {% for d in documenti %}
-      <tr class="clickable-row" data-type="documento" data-pk="{{ d.pk }}" data-has-contratto="{% if d.contratto %}1{% else %}0{% endif %}" data-title="{{ d.get_tipo_display }}: {{ d.titolo }}" data-sub="{% if d.datore %}{{ d.datore.nome_cognome }}{% elif d.contratto %}{{ d.contratto.datore.nome_cognome }} → {{ d.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}"{% if d.datore and d.datore.email %} data-email="{{ d.datore.email }}"{% elif d.contratto and d.contratto.datore.email %} data-email="{{ d.contratto.datore.email }}"{% endif %} data-creato="{{ d.creato_il|date:'d/m/Y H:i' }}" data-file-size="{{ d.file_size|filesizeformat }}">
+      <tr class="clickable-row" data-type="documento" data-pk="{{ d.pk }}" data-has-contratto="{% if d.contratto %}1{% else %}0{% endif %}" data-title="{{ d.get_tipo_display }}: {{ d.titolo }}" data-sub="{% if d.datore %}{{ d.datore.nome_cognome }}{% elif d.contratto %}{{ d.contratto.datore.nome_cognome }} â†’ {{ d.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}"{% if d.datore and d.datore.email %} data-email="{{ d.datore.email }}"{% elif d.contratto and d.contratto.datore.email %} data-email="{{ d.contratto.datore.email }}"{% endif %} data-creato="{{ d.creato_il|date:'d/m/Y H:i' }}" data-file-size="{{ d.file_size|filesizeformat }}">
         <td class="check-col"><input type="checkbox" class="docCheck" value="{{ d.pk }}" onchange="aggiornaMassivoBar()"></td>
         <td><span class="badge-tipo" style="background:rgba({% with c=tipo_colori|get_item:d.tipo|default:'#60a5fa' %}{{ c|hex_to_rgb }}{% endwith %},0.12);color:{{ tipo_colori|get_item:d.tipo|default:'#60a5fa' }};">{{ d.get_tipo_display }}</span></td>
         <td><strong>{{ d.titolo }}</strong>{% if d.note %}<br><span style="font-size:11px;color:#8A8F98;">{{ d.note|truncatechars:40 }}</span>{% endif %}</td>
@@ -200,7 +200,7 @@
 <!-- Paginazione -->
 {% if page_obj.paginator.num_pages > 1 %}
 <div class="pagination-bar">
-  <span class="pagination-info">{{ page_obj.start_index }}–{{ page_obj.end_index }} di {{ page_obj.paginator.count }}</span>
+  <span class="pagination-info">{{ page_obj.start_index }}â€“{{ page_obj.end_index }} di {{ page_obj.paginator.count }}</span>
   <div class="pagination-links">
     {% if page_obj.has_previous %}
     <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page=1" class="page-link" title="Prima">&laquo;</a>
@@ -222,7 +222,7 @@
 <!-- Modale Nuovo Documento -->
 <div class="modal fade" id="modaleNuovoDocumento" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Nuovo Documento</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -237,7 +237,7 @@
 <!-- Modale Invio Email -->
 <div class="modal fade" id="modaleInvioEmail" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invia Documento via Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -251,7 +251,7 @@
 <!-- Modale Invio Massivo -->
 <div class="modal fade" id="modaleInvioMassivo" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invio Massivo Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -265,7 +265,7 @@
 <!-- Modale Invio Raggruppato -->
 <div class="modal fade" id="modaleInvioRaggruppato" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Allega in una mail</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -279,7 +279,7 @@
 <!-- Modale Collega Contratto -->
 <div class="modal fade" id="modaleCollegaContratto" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content" class="class="card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Collega Documento a Contratto</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -769,30 +769,30 @@ function toggleVisibileDatore(el, documentoPk) {
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Documenti
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Archivio Documenti
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Archivio centrale di tutti i <b>documenti PDF</b> generati dal gestionale: buste paga, certificazioni uniche, ricevute, lettere, PagoPA, ecc. Ogni documento è associato a un contratto e ha un tipo specifico.</p>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
+        Archivio centrale di tutti i <b>documenti PDF</b> generati dal gestionale: buste paga, certificazioni uniche, ricevute, lettere, PagoPA, ecc. Ogni documento Ã¨ associato a un contratto e ha un tipo specifico.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
         <b>1.</b> Usa i <b>filtri</b> in alto per cercare per tipo documento, contratto, datore, lavoratore, periodo (da/a) o stato invio.<br>
         <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi, Scarica, Stampa, Apri cartella, Collega contratto, Invia Email, Elimina.<br>
-        <b>3.</b> Seleziona più documenti con le <b>checkbox</b> per azioni massive: Invio email massivo, Download ZIP.</p>
+        <b>3.</b> Seleziona piÃ¹ documenti con le <b>checkbox</b> per azioni massive: Invio email massivo, Download ZIP.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Stati del documento</b><br>
-        Ogni documento può avere uno stato: <b>Inviato</b> (spedito via email), <b>Stampato</b>, <b>Non inviato</b> (solo generato). I badge colore aiutano a identificare rapidamente lo stato.</p>
+        Ogni documento puÃ² avere uno stato: <b>Inviato</b> (spedito via email), <b>Stampato</b>, <b>Non inviato</b> (solo generato). I badge colore aiutano a identificare rapidamente lo stato.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Visibile al datore</b><br>
         La colonna <b>VISIBILE</b> con il toggle verde permette di rendere il documento accessibile al datore di lavoro nella sua area riservata (<b>/datore/</b>). Attiva il toggle per i documenti che il datore deve poter scaricare autonomamente.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Collega Contratto</b><br>
-        Se un documento non è ancora associato a un contratto (es. caricato manualmente), puoi collegarlo usando l'apposita funzione dal pannello azioni.</p>
+        Se un documento non Ã¨ ancora associato a un contratto (es. caricato manualmente), puoi collegarlo usando l'apposita funzione dal pannello azioni.</p>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
 {% block extra_css %}
@@ -111,8 +111,8 @@
 
         <span class="vr"></span>
 
-        <!-- Indennità -->
-        <span class="c-9-up-fw" style="color:#5C5F66;">Indennità</span>
+        <!-- IndennitÃ  -->
+        <span class="c-9-up-fw" style="color:#5C5F66;">IndennitÃ </span>
         <span class="toggle-item">
             <span>Funzione</span>
             <label class="toggle-switch">
@@ -128,21 +128,21 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span>Più Assistiti</span>
+            <span>PiÃ¹ Assistiti</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="indPiuAssistiti" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
             </label>
         </span>
         <span class="toggle-item">
-            <span>Cert. Qualità</span>
+            <span>Cert. QualitÃ </span>
             <label class="toggle-switch">
                 <input type="checkbox" id="indCertQualita" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
             </label>
         </span>
         <span class="toggle-item">
-            <span>Scatti Anzianità</span>
+            <span>Scatti AnzianitÃ </span>
             <label class="toggle-switch">
                 <input type="checkbox" id="toggleScatti" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -163,7 +163,7 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span>13ª</span>
+            <span>13Âª</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateo13ma" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -225,43 +225,43 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Conviventi CCNL</h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto â€” Busta Conviventi CCNL</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
 Qui si calcola la busta paga per collaboratori domestici <b>conviventi</b> (che vivono con il datore) usando i <b>minimi tabellari mensili del CCNL</b>, non il budget dei progetti regionali.<br><br>
-<b>Differenza rispetto alla Busta Standard:</b> la pagina "Busta Paga Standard" usa il budget dei progetti regionali (quanto la Regione paga per quel lavoratore). Qui invece si usano i <b>minimi previsti dal CCNL</b> per ogni livello (A, AS, B, BS, C, CS, D, DS). Questa pagina è utile quando il lavoratore convivente viene pagato secondo il minimo del contratto collettivo, indipendentemente dal budget dei progetti.</p>
+<b>Differenza rispetto alla Busta Standard:</b> la pagina "Busta Paga Standard" usa il budget dei progetti regionali (quanto la Regione paga per quel lavoratore). Qui invece si usano i <b>minimi previsti dal CCNL</b> per ogni livello (A, AS, B, BS, C, CS, D, DS). Questa pagina Ã¨ utile quando il lavoratore convivente viene pagato secondo il minimo del contratto collettivo, indipendentemente dal budget dei progetti.</p>
 
 <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
 <b>1.</b> Scegli un contratto dal menu.<br>
 <b>2.</b> Seleziona il <b>tipo orario</b>: FT (full-time, 54 ore/settimana) o PT (part-time, 30 ore/settimana). Il sistema carica automaticamente il minimo tabellare corrispondente al livello del contratto.<br>
-<b>3.</b> Regola le opzioni: ratei, indennità, scatti, vitto/alloggio.<br>
+<b>3.</b> Regola le opzioni: ratei, indennitÃ , scatti, vitto/alloggio.<br>
 <b>4.</b> Leggi la busta paga.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Minimi Tabellari CCNL — Livelli e Orari</b><br>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Minimi Tabellari CCNL â€” Livelli e Orari</b><br>
 Il CCNL Lavoro Domestico prevede <b>8 livelli</b> (A, AS, B, BS, C, CS, D, DS). Ogni livello ha due minimi mensili:<br>
-— <b>Full-time (FT):</b> 54 ore settimanali (circa 234 ore/mese).<br>
-— <b>Part-time (PT):</b> 30 ore settimanali (circa 130 ore/mese).<br><br>
-Il calcolo parte dal <b>minimo tabellare</b> del livello + <b>indennità di funzione</b> (se spetta) + <b>vitto e alloggio forfettario</b>.<br><br>
+â€” <b>Full-time (FT):</b> 54 ore settimanali (circa 234 ore/mese).<br>
+â€” <b>Part-time (PT):</b> 30 ore settimanali (circa 130 ore/mese).<br><br>
+Il calcolo parte dal <b>minimo tabellare</b> del livello + <b>indennitÃ  di funzione</b> (se spetta) + <b>vitto e alloggio forfettario</b>.<br><br>
 Il sistema calcola poi la <b>paga oraria</b> dividendo il minimo mensile per le ore del contratto, e su questa base applica ratei e contributi.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Vitto e Alloggio — Indennità Sostitutiva</b><br>
-Per il lavoratore convivente, il datore deve fornire vitto e alloggio. Se invece dà un'indennità in denaro, i valori giornalieri sono:<br>
-— <b>Pranzo:</b> €2,33 al giorno.<br>
-— <b>Cena:</b> €2,33 al giorno.<br>
-— <b>Alloggio:</b> €2,00 al giorno.<br><br>
-I giorni di convivenza sono di default 26 (lun-sab). Se il datore fornisce vitto/alloggio direttamente (in natura), disabilita i toggle perché l'indennità non va pagata.</p>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Vitto e Alloggio â€” IndennitÃ  Sostitutiva</b><br>
+Per il lavoratore convivente, il datore deve fornire vitto e alloggio. Se invece dÃ  un'indennitÃ  in denaro, i valori giornalieri sono:<br>
+â€” <b>Pranzo:</b> â‚¬2,33 al giorno.<br>
+â€” <b>Cena:</b> â‚¬2,33 al giorno.<br>
+â€” <b>Alloggio:</b> â‚¬2,00 al giorno.<br><br>
+I giorni di convivenza sono di default 26 (lun-sab). Se il datore fornisce vitto/alloggio direttamente (in natura), disabilita i toggle perchÃ© l'indennitÃ  non va pagata.</p>
 
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei, Indennità e Scatti</b><br>
-Vedi la spiegazione nella modale "Busta Paga Standard" per i dettagli su TFR, 13ª, Ferie, Festivi, indennità e scatti di anzianità — le regole sono le stesse.</p>
+<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei, IndennitÃ  e Scatti</b><br>
+Vedi la spiegazione nella modale "Busta Paga Standard" per i dettagli su TFR, 13Âª, Ferie, Festivi, indennitÃ  e scatti di anzianitÃ  â€” le regole sono le stesse.</p>
 
 <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Contributi INPS</b><br>
 Come per le altre pagine, i contributi si calcolano sulle ore INPS (ore mensili arrotondate per eccesso). L'aliquota dipende dalla fascia oraria settimanale (sopra/sotto 24h). Si aggiunge la quota cassa/ente bilaterale.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <b>SALVA BUSTA</b> â€” salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta giÃ  salvata per lo stesso periodo cliccando di nuovo.<br>
+        <b>Archivio Buste</b> â€” consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lÃ¬ puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
       </div>
     </div>
   </div>
@@ -428,7 +428,7 @@ function renderBustaConviventiCCNL(d) {
     var sabatiStr = '';
     for (var si = 0; si < d.num_sabati; si++) sabatiStr += '\u2713';
 
-    var html = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;">';
+    var html = '<div class="class="card-dark" style="overflow:hidden;"">';
 
     // Header
     html += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
@@ -478,7 +478,7 @@ function renderBustaConviventiCCNL(d) {
     html += '<span style="font-size:12px;color:#EDEDED;">Paga base <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
     html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
 
-    // Indennità CCNL (mostrate come voci separate nel lordo)
+    // IndennitÃ  CCNL (mostrate come voci separate nel lordo)
     if (d.indennita_ccnl && d.indennita_ccnl.length > 0) {
         for (var i = 0; i < d.indennita_ccnl.length; i++) {
             var indCcnl = d.indennita_ccnl[i];
@@ -503,7 +503,7 @@ function renderBustaConviventiCCNL(d) {
         html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
 
-    // Totale indennità e ratei inclusi
+    // Totale indennitÃ  e ratei inclusi
     var totalIndennitaRatei = d.totale_indennita + d.totale_ratei_inclusi;
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:11px;color:#8A8F98;font-style:italic;">Indennit\u00e0 e Ratei pagati</span>';
@@ -646,7 +646,7 @@ function renderBustaConviventiCCNL(d) {
 
     html += '</div></div>';
 
-    // ── Dettaglio Progetti (se presenti) ──
+    // â”€â”€ Dettaglio Progetti (se presenti) â”€â”€
     if (d.progetti_data && d.progetti_data.righe && d.progetti_data.righe.length > 0) {
         html += '<div style="margin-top:24px;background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;">';
         html += '<div style="padding:16px 24px;">';

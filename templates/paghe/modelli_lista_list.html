@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load tabelle_tags %}
 
 {% block breadcrumb %}
@@ -221,7 +221,7 @@ function renderizzaCampiDisponibili() {
 }
 
 function iconaTipo(tipo) {
-    var m = { 'string': 'Aa', 'integer': '#', 'decimal': '.#', 'date': '📅', 'boolean': '✓', 'currency': '€' };
+    var m = { 'string': 'Aa', 'integer': '#', 'decimal': '.#', 'date': 'ðŸ“…', 'boolean': 'âœ“', 'currency': 'â‚¬' };
     return m[tipo] || '?';
 }
 
@@ -273,7 +273,7 @@ function renderizzaColonneSelezionate() {
     COLONNE_ATTUALI.forEach(function(col, idx) {
         html += '<div class="column-item" data-index="' + idx + '" style="background:rgba(255,255,255,0.03); border:1px solid #27282D; border-radius:8px; padding:8px 10px;">';
         html += '<div class="d-flex align-items-center gap-2">';
-        html += '<span class="drag-handle" style="font-size:14px; line-height:1;">⠿</span>';
+        html += '<span class="drag-handle" style="font-size:14px; line-height:1;">â ¿</span>';
         html += '<div style="flex:1;">';
         html += '<div class="d-flex align-items-center gap-2 mb-1">';
         html += '<input type="text" value="' + col.label.replace(/"/g, '&quot;') + '" onchange="COLONNE_ATTUALI[' + idx + '].label = this.value" style="flex:1; background:#09090B; border:1px solid #27282D; color:#ffffff; border-radius:4px; padding:3px 6px; font-size:11px; font-weight:500;">';
@@ -374,24 +374,24 @@ document.addEventListener('DOMContentLoaded', filteraTabella);
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Modelli Lista
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Modelli Lista
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨ questa pagina</b><br>
         I <b>Modelli Lista</b> sono template di stampa personalizzabili che definiscono quali colonne visualizzare nelle liste (stampe riepilogative). Puoi creare modelli diversi per esigenze diverse.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> <b>Nuovo</b> — crea un nuovo modello. Scegli un nome e seleziona i campi (colonne) da includere.<br>
+        <b>1.</b> <b>Nuovo</b> â€” crea un nuovo modello. Scegli un nome e seleziona i campi (colonne) da includere.<br>
         <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica (cambia nome o campi), Duplica, Elimina.<br>
         <b>3.</b> I modelli creati diventano selezionabili nella pagina <b>Liste Stampe</b> per generare i PDF con la configurazione scelta.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Configurazione colonne</b><br>
-        Cliccando <b>Configura colonne</b> su un modello esistente, puoi scegliere l'ordine e la visibilità di ogni colonna tramite checkbox. I campi disponibili dipendono dal tipo di lista (datori, lavoratori, contratti, ecc.).</p>
+        Cliccando <b>Configura colonne</b> su un modello esistente, puoi scegliere l'ordine e la visibilitÃ  di ogni colonna tramite checkbox. I campi disponibili dipendono dal tipo di lista (datori, lavoratori, contratti, ecc.).</p>
       </div>
     </div>
   </div>

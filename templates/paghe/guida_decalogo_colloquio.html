@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% block search_bar %}{% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -36,7 +36,7 @@
 <p style="color:#8A8F98;font-size:14px;margin-bottom:24px;">{{ guide.subtitle }}</p>
 {% endif %}
 
-<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:24px;">
+<div class="class="card-dark" style="padding:24px;"">
     {% autoescape off %}{{ html_content }}{% endautoescape %}
 </div>
 

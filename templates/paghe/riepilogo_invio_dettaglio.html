@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% block title %}Dettaglio Invio{% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -14,7 +14,7 @@
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <div>
         <h1 class="h3 fw-bold mb-1">DETTAGLIO INVIO</h1>
-        <p class="text-secondary small mb-0">{{ riepilogo.creato_il|date:"d/m/Y H:i" }} — {{ riepilogo.get_mese_display }} {{ riepilogo.anno }}</p>
+        <p class="text-secondary small mb-0">{{ riepilogo.creato_il|date:"d/m/Y H:i" }} â€” {{ riepilogo.get_mese_display }} {{ riepilogo.anno }}</p>
     </div>
     <div class="d-flex align-items-center gap-2">
         <button class="btn btn-sm" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal" style="class="btn btn-sm btn-help""><i class="bi bi-question-lg"></i></button>
@@ -36,7 +36,7 @@
     <div class="col-md-3">
         <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
             <div class="small text-secondary mb-1">Creato da</div>
-            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.creato_da|default:"—" }}</div>
+            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.creato_da|default:"â€”" }}</div>
         </div>
     </div>
     <div class="col-md-2">
@@ -91,7 +91,7 @@
             <tr>
                 <td>{{ entry.datore }}</td>
                 <td>{{ entry.lavoratore }}</td>
-                <td class="small">{{ entry.email_destinatario|default:"—" }}</td>
+                <td class="small">{{ entry.email_destinatario|default:"â€”" }}</td>
                 <td>
                     {% if entry.inviato %}
                     <span style="color:#10b981;font-weight:600;"><i class="bi bi-check-circle me-1"></i> Inviato</span>
@@ -106,7 +106,7 @@
                     {% if entry.documento_pk %}
                     <i class="stampa-badge bi {% if entry.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ entry.documento_pk }}" title="{% if entry.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
                     {% else %}
-                    <span class="text-muted" style="font-size:12px;">—</span>
+                    <span class="text-muted" style="font-size:12px;">â€”</span>
                     {% endif %}
                 </td>
                 <td>
@@ -142,18 +142,18 @@ function eliminaInvio(pk) {
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Dettaglio Invio</h5>
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Dettaglio Invio</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Dettaglio Invio</b><br>
-        Questa pagina mostra l'elenco completo dei contratti inclusi in una specifica generazione massiva di buste paga. Per ogni contratto puoi vedere il datore, il lavoratore, l'email a cui è stato inviato e lo stato della spedizione.</p>
+        Questa pagina mostra l'elenco completo dei contratti inclusi in una specifica generazione massiva di buste paga. Per ogni contratto puoi vedere il datore, il lavoratore, l'email a cui Ã¨ stato inviato e lo stato della spedizione.</p>
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Stati</b><br>
-        <span style="color:#10b981;"><i class="bi bi-check-circle"></i> Inviato</span> — la busta è stata generata e inviata con successo.<br>
-        <span style="color:#dc2626;"><i class="bi bi-x-circle"></i> Errore</span> — si è verificato un problema durante l'invio.<br>
-        <span class="text-secondary"><i class="bi bi-file-pdf"></i> Solo PDF</span> — la busta è stata generata in PDF ma non inviata via email.</p>
+        <span style="color:#10b981;"><i class="bi bi-check-circle"></i> Inviato</span> â€” la busta Ã¨ stata generata e inviata con successo.<br>
+        <span style="color:#dc2626;"><i class="bi bi-x-circle"></i> Errore</span> â€” si Ã¨ verificato un problema durante l'invio.<br>
+        <span class="text-secondary"><i class="bi bi-file-pdf"></i> Solo PDF</span> â€” la busta Ã¨ stata generata in PDF ma non inviata via email.</p>
       </div>
     </div>
   </div>

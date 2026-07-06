@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load static %}{% load tabelle_tags %}
-{% block title %}{% if is_new %}NUOVO{% else %}MODIFICA{% endif %} — {{ tipo_label }}{% endblock %}
+{% block title %}{% if is_new %}NUOVO{% else %}MODIFICA{% endif %} â€” {{ tipo_label }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css">
 <style>
@@ -62,9 +62,9 @@ select.form-control option { background:#09090b; color:#e2e8f0; }
 
   <div class="doc-breadcrumb" style="font-size:12px;color:#5C5F66;margin-bottom:10px;">
     <a href="{% url 'documentale_root' %}" style="color:var(--tipo-colore,#5E6AD2);text-decoration:none;">Modelli</a>
-    <span style="margin:0 6px;color:#3a3b40;">›</span>
+    <span style="margin:0 6px;color:#3a3b40;">â€º</span>
     <a href="{% url 'documentale_list' tipo_corrente %}" style="color:var(--tipo-colore,#5E6AD2);text-decoration:none;">{{ tipo_label }}</a>
-    <span style="margin:0 6px;color:#3a3b40;">›</span>
+    <span style="margin:0 6px;color:#3a3b40;">â€º</span>
     <span style="color:#8A8F98;">{% if is_new %}Nuovo{% else %}{{ modello.codice|default:'Modifica' }}{% endif %}</span>
   </div>
 
@@ -396,27 +396,27 @@ window.filtraVariabili = function(q) {
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content" style="background:#1a1a1e;border:1px solid #27282D;border-radius:14px;">
+    <div class="modal-content" class="class="card-alt"">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Modifica Modello
+          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto â€” Modifica Modello
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'Ã¨</b><br>
         Qui puoi creare o modificare un modello documentale. I modelli usano <b>variabili</b> tra doppie graffe (es. <code>{{datore.nome}}</code>) che vengono sostituite con i dati reali al momento della generazione.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> <b>CODICE</b> — identificatore univoco (sola lettura in modifica).<br>
-        <b>2.</b> <b>TITOLO</b> — nome descrittivo del modello.<br>
+        <b>1.</b> <b>CODICE</b> â€” identificatore univoco (sola lettura in modifica).<br>
+        <b>2.</b> <b>TITOLO</b> â€” nome descrittivo del modello.<br>
         <b>3.</b> Usa l'editor <b>CKEditor</b> per scrivere il contenuto con formattazione ricca.<br>
         <b>4.</b> Clicca <b>"Variabili"</b> per aprire il pannello con tutte le variabili disponibili. Clicca su una variabile per inserirla nel testo.<br>
         <b>5.</b> Seleziona un <b>contratto di anteprima</b> per vedere il modello compilato con dati reali.<br>
         <b>6.</b> Clicca <b>"PDF"</b> per generare un'anteprima PDF del modello.</p>
 
         <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Variabili disponibili</b><br>
-        Le variabili sono organizzate per categorie (Datore, Lavoratore, Contratto, Calcoli…). Cerca per nome nella barra di ricerca. Le variabili vengono sostituite solo al momento dell'uso dal modello.</p>
+        Le variabili sono organizzate per categorie (Datore, Lavoratore, Contratto, Calcoliâ€¦). Cerca per nome nella barra di ricerca. Le variabili vengono sostituite solo al momento dell'uso dal modello.</p>
       </div>
     </div>
   </div>
