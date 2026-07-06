@@ -1,6 +1,6 @@
 # PIANO DI SVILUPPO — GESTIONECOLF
 
-> Aggiornato: 01/07/2026
+> Aggiornato: 06/07/2026
 
 ---
 
@@ -29,6 +29,7 @@
 | REST API + Employer Portal 2.0 — 13 endpoint, Portal Vue 3 buildato | ✅ (manca NotificaDatore) |
 | Backup su Cloud (Google Drive / SFTP) | ⬜ |
 | CSS inline → file statici `.css/.js` | ✅ |
+| Fix encoding UTF-8 mojibake in template (1029 fix in 59 file) | ✅ |
 | Celery + Redis per operazioni asincrone | ⬜ |
 | Internazionalizzazione (i18n) | ⬜ |
 | Inquadramento (8 livelli, 2 periodi, PDF+HTML+email) | ✅ |
