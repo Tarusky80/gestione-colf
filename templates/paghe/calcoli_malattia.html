@@ -282,6 +282,7 @@ window.calcola = function() {
     renderMalattia(d);
     _lastData = d;
     document.getElementById('btnPdf').disabled = false;
+    document.getElementById('btnStampa').disabled = false;
     var warn = document.getElementById('bustaEsistenteWarning');
     if (warn) warn.style.display = d.busta_esistente ? 'block' : 'none';
   })

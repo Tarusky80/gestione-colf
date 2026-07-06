@@ -317,6 +317,7 @@ window.selezionaContratto = function() {
         }
         renderBusta(d);
         document.getElementById('btnPdf').disabled = false;
+        document.getElementById('btnStampa').disabled = false;
         window._lastStdData = d;
         var warn = document.getElementById('bustaEsistenteWarning');
         if (warn) warn.style.display = d.busta_esistente ? 'block' : 'none';
