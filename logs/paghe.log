@@ -19421,3 +19421,164 @@ INFO 2026-07-06 11:47:29,435 paghe.apps [Playwright] Controllo pacchetto Python.
 INFO 2026-07-06 11:47:29,437 paghe.apps [Playwright] OK (1.61.0)
 INFO 2026-07-06 11:47:29,438 paghe.apps [Playwright] Controllo browser Chromium...
 INFO 2026-07-06 11:47:30,469 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-06 12:06:47,546 paghe.apps ============================================================
+INFO 2026-07-06 12:06:47,549 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-06 12:06:47,550 paghe.apps ============================================================
+INFO 2026-07-06 12:06:47,555 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-06 12:06:47,595 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-06 12:06:48,020 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-06 12:06:48,021 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-06 12:06:48,266 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-06 12:06:48,267 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-06 12:06:48,274 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-06 12:06:48,274 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-06 12:06:49,491 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-06 12:07:10,768 paghe.apps ============================================================
+INFO 2026-07-06 12:07:10,769 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-06 12:07:10,771 paghe.apps ============================================================
+INFO 2026-07-06 12:07:10,772 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-06 12:07:10,811 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-06 12:07:11,124 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-06 12:07:11,127 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-06 12:07:11,224 paghe.apps ============================================================
+INFO 2026-07-06 12:07:11,227 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-06 12:07:11,228 paghe.apps ============================================================
+INFO 2026-07-06 12:07:11,232 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-06 12:07:11,306 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-06 12:07:11,458 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-06 12:07:11,459 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-06 12:07:11,468 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-06 12:07:11,470 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-06 12:07:11,697 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-06 12:07:11,698 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-06 12:07:11,938 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-06 12:07:11,938 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-06 12:07:11,942 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-06 12:07:11,942 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-06 12:07:12,624 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-06 12:07:12,634 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-06 12:07:39,449 paghe.apps ============================================================
+INFO 2026-07-06 12:07:39,452 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-06 12:07:39,453 paghe.apps ============================================================
+INFO 2026-07-06 12:07:39,457 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-06 12:07:39,494 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-06 12:07:40,084 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-06 12:07:40,085 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-06 12:07:41,304 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-06 12:07:41,305 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-06 12:07:41,308 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-06 12:07:41,309 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-06 12:07:45,509 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-06 12:07:45,652 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-06 12:07:45,654 paghe.apps ============================================================
+INFO 2026-07-06 12:07:45,655 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-06 12:07:45,656 paghe.apps ============================================================
+INFO 2026-07-06 12:08:11,999 paghe.apps [Scheduler] Fermato con successo.
+ERROR 2026-07-06 12:09:13,452 django.request Internal Server Error: /ajax/ccnl-occhio-busta/74/
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\GESTIONECOLF\paghe\views\_tabelle.py", line 627, in ajax_ccnl_occhio_busta
+    busta_data = _calcola_busta_data(
+        contratto, mese=mese, anno=anno,
+        toggles=toggles_dict, convivenza_items=convivenza_items,
+        parametri_override=parametri, ore_override=ore_simulate,
+    )
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in _calcola_busta_data
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                              ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in <genexpr>
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                                  ~^^^^^^^^^^
+KeyError: 'totale'
+ERROR 2026-07-06 12:09:22,316 django.request Internal Server Error: /ajax/ccnl-occhio-busta/74/
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\GESTIONECOLF\paghe\views\_tabelle.py", line 627, in ajax_ccnl_occhio_busta
+    busta_data = _calcola_busta_data(
+        contratto, mese=mese, anno=anno,
+        toggles=toggles_dict, convivenza_items=convivenza_items,
+        parametri_override=parametri, ore_override=ore_simulate,
+    )
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in _calcola_busta_data
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                              ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in <genexpr>
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                                  ~^^^^^^^^^^
+KeyError: 'totale'
+ERROR 2026-07-06 12:09:24,470 django.request Internal Server Error: /ajax/ccnl-occhio-busta/74/
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\GESTIONECOLF\paghe\views\_tabelle.py", line 627, in ajax_ccnl_occhio_busta
+    busta_data = _calcola_busta_data(
+        contratto, mese=mese, anno=anno,
+        toggles=toggles_dict, convivenza_items=convivenza_items,
+        parametri_override=parametri, ore_override=ore_simulate,
+    )
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in _calcola_busta_data
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                              ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in <genexpr>
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                                  ~^^^^^^^^^^
+KeyError: 'totale'
+ERROR 2026-07-06 12:09:26,209 django.request Internal Server Error: /ajax/ccnl-occhio-busta/74/
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\GESTIONECOLF\paghe\views\_tabelle.py", line 627, in ajax_ccnl_occhio_busta
+    busta_data = _calcola_busta_data(
+        contratto, mese=mese, anno=anno,
+        toggles=toggles_dict, convivenza_items=convivenza_items,
+        parametri_override=parametri, ore_override=ore_simulate,
+    )
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in _calcola_busta_data
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                              ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\paghe\views\_calcoli_core.py", line 343, in <genexpr>
+    'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
+                                  ~^^^^^^^^^^
+KeyError: 'totale'
+INFO 2026-07-06 12:15:55,488 paghe.apps ============================================================
+INFO 2026-07-06 12:15:55,488 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-06 12:15:55,489 paghe.apps ============================================================
+INFO 2026-07-06 12:15:55,490 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-06 12:15:55,504 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-06 12:15:55,597 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-06 12:15:55,598 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-06 12:15:55,701 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-06 12:15:55,701 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-06 12:15:55,705 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-06 12:15:55,706 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-06 12:15:56,220 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-06 12:29:50,640 paghe.apps ============================================================
+INFO 2026-07-06 12:29:50,641 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-06 12:29:50,641 paghe.apps ============================================================
+INFO 2026-07-06 12:29:50,642 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-06 12:29:50,655 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-06 12:29:50,740 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-06 12:29:50,741 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-06 12:29:50,827 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-06 12:29:50,828 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-06 12:29:50,830 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-06 12:29:50,830 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-06 12:29:51,537 paghe.apps [Scheduler] Fermato con successo.
