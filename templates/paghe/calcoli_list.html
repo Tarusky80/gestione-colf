@@ -142,7 +142,7 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span>13Âª</span>
+            <span>13ª</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateo13ma" onchange="selezionaContratto()">
                 <span class="toggle-slider"></span>
@@ -183,32 +183,32 @@
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa — 3 passi semplici</b><br>
         <b>1.</b> Scegli un contratto dal menu a tendina "Contratto". Il sistema carica automaticamente i dati del lavoratore, del datore e dei progetti collegati.<br>
-        <b>2.</b> Regola le opzioni sotto il contratto: ratei (TFR, 13Âª, Ferie, Festivi), indennità (funzione, bambini sotto i 6 anni, più assistiti, certificazione qualità), vitto/alloggio (pranzo, cena, alloggio con i relativi giorni), scatti di anzianità.<br>
+        <b>2.</b> Regola le opzioni sotto il contratto: ratei (TFR, 13ª, Ferie, Festivi), indennità (funzione, bambini sotto i 6 anni, più assistiti, certificazione qualità), vitto/alloggio (pranzo, cena, alloggio con i relativi giorni), scatti di anzianità.<br>
         <b>3.</b> Leggi la busta paga che appare: vedrai il Totale Lordo, i Contributi INPS, l'Ente Bilaterale, le Trattenute (vitto/alloggio e ratei accantonati) e infine il <b>Netto in busta</b>, cioè quanto il datore deve effettivamente pagare al lavoratore.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Budget e Ore — le basi del calcolo</b><br>
         Il <b>budget mensile</b> è la somma di tutti i budget mensili dei progetti collegati a quel contratto. Per esempio, se il contratto ha due progetti da €400 e €100 al mese, il budget totale sarà €500.<br><br>
         Le <b>ore mensili</b> sono quelle scritte nel contratto (es. 120 ore al mese).<br><br>
         Da queste due cose il sistema calcola la <b>paga oraria base</b>:<br>
-        <code>budget Ã· ore = paga oraria</code><br>
-        Esempio: €500 Ã· 120 h = €4,1667 all'ora.<br><br>
-        Le ore INPS (usate per calcolare i contributi) sono le ore mensili arrotondate per eccesso all'unità superiore. Se il contratto prevede 25 ore alla settimana, il sistema calcola le ore mensili come 25 × 52 settimane Ã· 12 mesi = 108,33 h, arrotondate a 109 h per l'INPS.</p>
+        <code>budget ÷ ore = paga oraria</code><br>
+        Esempio: €500 ÷ 120 h = €4,1667 all'ora.<br><br>
+        Le ore INPS (usate per calcolare i contributi) sono le ore mensili arrotondate per eccesso all'unità superiore. Se il contratto prevede 25 ore alla settimana, il sistema calcola le ore mensili come 25 × 52 settimane ÷ 12 mesi = 108,33 h, arrotondate a 109 h per l'INPS.</p>
 
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Prorating — cosa succede se il budget non basta</b><br>
         Il sistema prima calcola il "lordo ideale", cioè tutto quello che il lavoratore guadagnerebbe se non ci fossero limiti di budget (paga base + indennità + ratei).<br><br>
         Poi confronta questo lordo con il budget disponibile:<br>
-        — Se il budget è <b>uguale o maggiore</b> del lordo ideale â†’ tutto ok, il lavoratore prende quello che ha maturato.<br>
-        — Se il budget è <b>minore</b> del lordo ideale â†’ il sistema applica il <b>prorating</b>, cioè scala proporzionalmente TUTTE le componenti (paga base, indennità, ratei) della stessa percentuale, finché il totale non rientra nel budget.<br><br>
-        Esempio pratico: budget €500, lordo ideale €600 â†’ prorata = 500/600 = 0,833. Ogni voce viene moltiplicata per 0,833. Il lavoratore prenderà l'83,3% di quanto maturato.</p>
+        — Se il budget è <b>uguale o maggiore</b> del lordo ideale → tutto ok, il lavoratore prende quello che ha maturato.<br>
+        — Se il budget è <b>minore</b> del lordo ideale → il sistema applica il <b>prorating</b>, cioè scala proporzionalmente TUTTE le componenti (paga base, indennità, ratei) della stessa percentuale, finché il totale non rientra nel budget.<br><br>
+        Esempio pratico: budget €500, lordo ideale €600 → prorata = 500/600 = 0,833. Ogni voce viene moltiplicata per 0,833. Il lavoratore prenderà l'83,3% di quanto maturato.</p>
 
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">I Ratei — TFR, 13Âª, Ferie, Festivi</b><br>
+        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">I Ratei — TFR, 13ª, Ferie, Festivi</b><br>
         I <b>ratei</b> sono quote di retribuzione che maturano mese dopo mese e vengono pagate in momenti specifici dell'anno o alla fine del rapporto di lavoro.<br><br>
         Per ogni rateo puoi scegliere tra <b>3 modalità</b>:<br>
-        <span style="color:#34d399;">âœ“ Incluso nel lordo</span> — Il rateo viene calcolato e pagato direttamente in busta paga ogni mese. Il lavoratore lo riceve subito.<br>
-        <span style="color:#f59e0b;">âŸ³ Accantonato</span> — Il rateo viene calcolato ma <b>non pagato</b> in busta: viene trattenuto e accantonato per essere liquidato alla fine del rapporto (TFR) o alla scadenza (13Âª a Natale, ferie non godute).<br>
-        <span style="color:#5C5F66;">âœ• Disabilitato</span> — Il rateo non viene né calcolato né pagato.<br><br>
+        <span style="color:#34d399;">✓ Incluso nel lordo</span> — Il rateo viene calcolato e pagato direttamente in busta paga ogni mese. Il lavoratore lo riceve subito.<br>
+        <span style="color:#f59e0b;">âŸ³ Accantonato</span> — Il rateo viene calcolato ma <b>non pagato</b> in busta: viene trattenuto e accantonato per essere liquidato alla fine del rapporto (TFR) o alla scadenza (13ª a Natale, ferie non godute).<br>
+        <span style="color:#5C5F66;">✕ Disabilitato</span> — Il rateo non viene né calcolato né pagato.<br><br>
         <b>TFR (Trattamento di Fine Rapporto):</b> è la "liquidazione" che spetta al lavoratore quando finisce il rapporto di lavoro. Si accumula mese per mese.<br>
-        <b>13Âª mensilità:</b> è la "tredicesima", pagata solitamente a dicembre.<br>
+        <b>13ª mensilità:</b> è la "tredicesima", pagata solitamente a dicembre.<br>
         <b>Ferie:</b> sono i giorni di ferie maturati e non goduti.<br>
         <b>Festivi:</b> sono le festività non godute (es. Pasqua, 1° Maggio, etc.).</p>
 
@@ -532,7 +532,7 @@ function renderBusta(d) {
 
     html += '</div></div></div></div>'; // fine colonne
 
-    // â”€â”€ Footer: Note â†’ Firma â†’ Pagamento â†’ Dati Studio â†’ Copyright â”€â”€
+    // â”€â”€ Footer: Note → Firma → Pagamento → Dati Studio → Copyright â”€â”€
     html += '<div style="padding:16px 24px;border-top:1px solid #27282D;">';
 
     if (d.note_datore) {

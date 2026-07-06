@@ -289,8 +289,8 @@
                 </div>
             </div>
             <div style="padding:8px 14px;border-top:1px solid #27282D;display:flex;gap:14px;font-size:10px;color:#545;flex-shrink:0;flex-wrap:wrap;">
-                <span><span style="color:#5E6AD2;">â†‘â†“</span> Naviga</span>
-                <span><span style="color:#5E6AD2;">â†µ</span> Seleziona</span>
+                <span><span style="color:#5E6AD2;">↑↓</span> Naviga</span>
+                <span><span style="color:#5E6AD2;">↵</span> Seleziona</span>
                 <span><span style="color:#5E6AD2;">Esc</span> Chiudi</span>
                 <span><span style="color:#5E6AD2;">Ctrl+1-9</span> Vai a</span>
             </div>
@@ -1830,7 +1830,7 @@
         .catch(function(err) { if (err.name !== 'AbortError' && callback) callback(null); });
     };
 
-    // Decode comune di residenza â†’ provincia + CAP
+    // Decode comune di residenza → provincia + CAP
     window._comuneController = null;
     window.decodificaComuneAsync = function(q, callback) {
         if (window._comuneController) window._comuneController.abort();
@@ -2330,13 +2330,13 @@
             {text:'â— Importante',  code:'â—'},
             {text:'â“ Dubbio',     code:'â“'},
             {text:'â˜… Stella',      code:'â˜…'},
-            {text:'â™¥ Cuore',       code:'â™¥'},
+            {text:'♥ Cuore',       code:'♥'},
         ]},
         {title:'Frecce', items:[
-            {text:'â†’ Destra',      code:'â†’'},
+            {text:'→ Destra',      code:'→'},
             {text:'â† Sinistra',    code:'â†'},
-            {text:'â†‘ Su',          code:'â†‘'},
-            {text:'â†“ Giù',         code:'â†“'},
+            {text:'↑ Su',          code:'↑'},
+            {text:'↓ Giù',         code:'↓'},
             {text:'âž¡ Grande',      code:'âž¡'},
         ]},
         {title:'Comunicazione', items:[
@@ -4515,8 +4515,8 @@
     <style>
     .sortable th { cursor: pointer; user-select: none; }
     .sortable th::after { content: ''; margin-left: 4px; font-size: 10px; opacity: 0.3; }
-    .sortable th.sort-asc::after { content: 'â–²'; opacity: 0.8; }
-    .sortable th.sort-desc::after { content: 'â–¼'; opacity: 0.8; }
+    .sortable th.sort-asc::after { content: '▲'; opacity: 0.8; }
+    .sortable th.sort-desc::after { content: '▼'; opacity: 0.8; }
     .sortable th:hover::after { opacity: 0.6; }
     .anagrafica-result-item:hover { background: rgba(94,106,210,0.12) !important; }
     .custom-table td { font-size: 12px; padding: 6px 10px !important; }

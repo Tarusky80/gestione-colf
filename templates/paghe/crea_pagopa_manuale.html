@@ -374,13 +374,13 @@ function aggiornaCampi(d, daAjax) {
     if (mesiEl && info.settimane) {
       mesiEl.innerHTML = info.settimane.map(function(w,i) {
         var checks = '';
-        for (var c=0;c<w;c++) checks += 'âœ“';
+        for (var c=0;c<w;c++) checks += '✓';
         return '<div class="trim-mese"><span class="trim-mese-label">' + mesiNomi[mesiPerTrim[q][i]] + '</span> <span class="trim-mese-sett">' + w + ' (' + checks + ')</span></div>';
       }).join('');
     }
     var badge = document.getElementById('trim_badge_' + q);
     if (badge) {
-      if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = 'âœ“ COMPLETO'; }
+      if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = '✓ COMPLETO'; }
       else { badge.className = 'trim-badge trim-badge-parziale'; badge.textContent = 'âš  PARZIALE'; }
     }
     var card = document.querySelector('#trimestreRadioGroup .radio-card[data-trimestre="' + q + '"]');
@@ -518,7 +518,7 @@ document.querySelectorAll('.pm-cb').forEach(function(b) {
     navigator.clipboard.writeText(t).then(function() {
       b.classList.add('copied');
       var o = b.textContent;
-      b.textContent = 'âœ“ COPIATO';
+      b.textContent = '✓ COPIATO';
       setTimeout(function() { b.textContent = o; b.classList.remove('copied'); }, 1200);
     }).catch(function() {});
   });

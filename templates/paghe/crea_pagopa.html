@@ -493,13 +493,13 @@ function aggiornaColoriTrimestri(d) {
         if (mesiEl && info.settimane) {
             mesiEl.innerHTML = info.settimane.map(function(w,i) {
                 var checks = '';
-                for (var c=0;c<w;c++) checks += 'âœ“';
+                for (var c=0;c<w;c++) checks += '✓';
                 return '<div class="trim-mese"><span class="trim-mese-label">' + mesiNomi[mesiPerTrim[q][i]] + '</span> <span class="trim-mese-sett">' + w + ' (' + checks + ')</span></div>';
             }).join('');
         }
         var badge = document.getElementById('trim_badge_' + q);
         if (badge) {
-            if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = 'âœ“ COMPLETO'; }
+            if (info.completo) { badge.className = 'trim-badge trim-badge-completo'; badge.textContent = '✓ COMPLETO'; }
             else { badge.className = 'trim-badge trim-badge-parziale'; badge.textContent = 'âš  PARZIALE'; }
         }
         var card = document.querySelector('#trimestreRadioGroup .radio-card[data-trimestre="' + q + '"]');
@@ -1016,7 +1016,7 @@ function _chiudiPdfPreview() {
 
     aggiornaCounter();
 
-    // Click handler per radio-card â†’ auto-ricarica
+    // Click handler per radio-card → auto-ricarica
     document.querySelectorAll('#trimestreRadioGroup .radio-card').forEach(function(el) {
         el.addEventListener('click', function() {
             var val = this.querySelector('input').value;
@@ -1025,12 +1025,12 @@ function _chiudiPdfPreview() {
         });
     });
 
-    // Change anno â†’ auto-ricarica
+    // Change anno → auto-ricarica
     document.getElementById('selAnno').addEventListener('change', function() {
         caricaDatiPagopa();
     });
 
-    // Change contratto â†’ auto-ricarica
+    // Change contratto → auto-ricarica
     document.getElementById('selContratto').addEventListener('change', function() {
         aggiornaCounter();
         caricaDatiPagopa();

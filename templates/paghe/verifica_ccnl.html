@@ -66,7 +66,7 @@
         <td>{{ c.ccnl }}</td>
         <td class="col-db">{{ c.db }}</td>
         <td>
-          {% if c.stato == 'ok' %}<span class="cell-ok" style="padding:1px 8px;border-radius:4px;">âœ“ Ok</span>{% endif %}
+          {% if c.stato == 'ok' %}<span class="cell-ok" style="padding:1px 8px;border-radius:4px;">✓ Ok</span>{% endif %}
           {% if c.stato == 'diff' %}<span class="cell-diff" style="padding:1px 8px;border-radius:4px;">âœ— {{ c.ccnl }} â‰  {{ c.db }}</span>{% endif %}
           {% if c.stato == 'solo_ccnl' %}<span class="cell-solo-ccnl" style="padding:1px 8px;border-radius:4px;">solo CCNL</span>{% endif %}
           {% if c.stato == 'solo_db' %}<span class="cell-solo-db" style="padding:1px 8px;border-radius:4px;">solo DB</span>{% endif %}
