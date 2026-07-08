@@ -15,7 +15,7 @@
 {% block search_bar %}{% endblock %}
 <div class="mb-4">
     <h1 class="h3 fw-bold mb-1">LISTE STAMPE
-      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+      <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </h1>
     <p class="text-secondary small mb-0">Genera elenchi PDF in formato orizzontale.</p>
 </div>
@@ -30,7 +30,7 @@
                 <h5 class="card-lista-title">Datori di Lavoro</h5>
                 <p class="card-lista-desc">Anagrafica completa dei datori di lavoro con CF, indirizzo, telefono, email e note.</p>
             </div>
-            <button class="btn-genera-pdf" onclick="generaLista('datori')">
+            <button type="button" class="btn-genera-pdf" onclick="generaLista('datori')">
                 <i class="bi bi-filetype-pdf"></i> Genera PDF
             </button>
         </div>
@@ -44,7 +44,7 @@
                 <h5 class="card-lista-title">Lavoratori</h5>
                 <p class="card-lista-desc">Anagrafica completa dei lavoratori con CF, sesso, data nascita, indirizzo, telefono, email.</p>
             </div>
-            <button class="btn-genera-pdf" onclick="generaLista('lavoratori')">
+            <button type="button" class="btn-genera-pdf" onclick="generaLista('lavoratori')">
                 <i class="bi bi-filetype-pdf"></i> Genera PDF
             </button>
         </div>
@@ -58,7 +58,7 @@
                 <h5 class="card-lista-title">Beneficiari</h5>
                 <p class="card-lista-desc">Anagrafica completa dei beneficiari con CF, data nascita, indirizzo e telefono.</p>
             </div>
-            <button class="btn-genera-pdf" onclick="generaLista('beneficiari')">
+            <button type="button" class="btn-genera-pdf" onclick="generaLista('beneficiari')">
                 <i class="bi bi-filetype-pdf"></i> Genera PDF
             </button>
         </div>
@@ -80,7 +80,7 @@
                     </select>
                 </div>
             </div>
-            <button class="btn-genera-pdf" onclick="generaLista('progetti')">
+            <button type="button" class="btn-genera-pdf" onclick="generaLista('progetti')">
                 <i class="bi bi-filetype-pdf"></i> Genera PDF
             </button>
         </div>
@@ -114,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn-genera-pdf" onclick="generaLista('contratti-attivi')">
+            <button type="button" class="btn-genera-pdf" onclick="generaLista('contratti-attivi')">
                 <i class="bi bi-filetype-pdf"></i> Genera PDF
             </button>
         </div>
@@ -136,7 +136,7 @@
                     </select>
                 </div>
             </div>
-            <button class="btn-genera-pdf" onclick="generaLista('pagopa-inps')">
+            <button type="button" class="btn-genera-pdf" onclick="generaLista('pagopa-inps')">
                 <i class="bi bi-filetype-pdf"></i> Genera PDF
             </button>
         </div>

@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block search_bar %}{% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -38,7 +38,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 fw-bold mb-1">AGENDA APPUNTAMENTI
-          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
     </div>
 </div>
@@ -58,17 +58,17 @@
         <a href="{% url 'agenda_pdf' %}?mese={{ mese }}&anno={{ anno }}" target="_blank" class="btn btn-sm btn-ghost" style="padding:8px 14px;font-size:11px;">
             <i class="bi bi-printer me-1"></i> PDF
         </a>
-        <button class="btn btn-sm btn-ghost-primary" onclick="apriModalAgenda(null)">
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriModalAgenda(null)">
             <i class="bi bi-plus-lg me-1"></i> Nuovo Appuntamento
         </button>
     </div>
 </div>
 
 <div class="d-flex gap-2 mb-3 flex-wrap">
-    <button class="btn btn-sm btn-ghost-primary agenda-filtro" data-filtro="tutti" onclick="filtraAgenda('tutti')" style="padding:4px 12px;font-size:11px;">Tutti</button>
-    <button class="btn btn-sm agenda-filtro btn-ghost-warning" data-filtro="SCADENZA" onclick="filtraAgenda('SCADENZA')" style="padding:4px 12px;font-size:11px;">Scadenze</button>
-    <button class="btn btn-sm agenda-filtro btn-ghost-primary" data-filtro="APPUNTAMENTO" onclick="filtraAgenda('APPUNTAMENTO')" style="padding:4px 12px;font-size:11px;">Appuntamenti</button>
-    <button class="btn btn-sm agenda-filtro btn-ghost-success" data-filtro="PROMEMORIA" onclick="filtraAgenda('PROMEMORIA')" style="padding:4px 12px;font-size:11px;">Promemoria</button>
+    <button type="button" class="btn btn-sm btn-ghost-primary agenda-filtro" data-filtro="tutti" onclick="filtraAgenda('tutti')" style="padding:4px 12px;font-size:11px;">Tutti</button>
+    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-warning" data-filtro="SCADENZA" onclick="filtraAgenda('SCADENZA')" style="padding:4px 12px;font-size:11px;">Scadenze</button>
+    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-primary" data-filtro="APPUNTAMENTO" onclick="filtraAgenda('APPUNTAMENTO')" style="padding:4px 12px;font-size:11px;">Appuntamenti</button>
+    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-success" data-filtro="PROMEMORIA" onclick="filtraAgenda('PROMEMORIA')" style="padding:4px 12px;font-size:11px;">Promemoria</button>
 </div>
 
 {% if prossime_scadenze %}
@@ -89,7 +89,7 @@
         {% endif %}
         </div>
     </div>
-    <button onclick="this.closest('#agenda-allerta-scadenze').style.display='none';sessionStorage.setItem('agenda_allerta_chiusa','1');" style="background:transparent;border:none;color:#8A8F98;font-size:14px;cursor:pointer;padding:0;line-height:1;" title="Chiudi">&times;</button>
+    <button type="button" onclick="this.closest('#agenda-allerta-scadenze').style.display='none';sessionStorage.setItem('agenda_allerta_chiusa','1');" style="background:transparent;border:none;color:#8A8F98;font-size:14px;cursor:pointer;padding:0;line-height:1;" title="Chiudi">&times;</button>
 </div>
 {% endif %}
 
@@ -165,7 +165,7 @@
         <span style="font-size:11px;color:#8A8F98;margin-left:8px;display:none;" id="agenda-giorno-label"></span>
     </div>
     <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-ghost" onclick="deselezionaGiorno()" id="agenda-mostra-tutti" style="display:none;padding:4px 10px;font-size:11px;">
+        <button type="button" class="btn btn-sm btn-ghost" onclick="deselezionaGiorno()" id="agenda-mostra-tutti" style="display:none;padding:4px 10px;font-size:11px;">
             <i class="bi bi-x-lg me-1"></i> Mostra tutti
         </button>
     </div>
@@ -199,10 +199,10 @@
     </div>
     <div style="flex-shrink:0;display:flex;gap:4px;">
         {% if app.pk %}
-        <button onclick="event.stopPropagation();toggleCompletato({{ app.pk }})" class="btn btn-sm {% if app.completato %}btn-ghost-success{% else %}btn-ghost{% endif %}" style="padding:4px 8px;font-size:11px;">
+        <button type="button" onclick="event.stopPropagation();toggleCompletato({{ app.pk }})" class="btn btn-sm {% if app.completato %}btn-ghost-success{% else %}btn-ghost{% endif %}" style="padding:4px 8px;font-size:11px;">
             <i class="bi {% if app.completato %}bi-check-circle-fill{% else %}bi-circle{% endif %}"></i>
         </button>
-        <button onclick="event.stopPropagation();eliminaAgenda({{ app.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:4px 8px;font-size:11px;">
+        <button type="button" onclick="event.stopPropagation();eliminaAgenda({{ app.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:4px 8px;font-size:11px;">
             <i class="bi bi-trash3"></i>
         </button>
         {% else %}
@@ -214,7 +214,7 @@
 <div class="text-center py-5" class="card-simple">
     <i class="bi bi-calendar-check fs-1 mb-3 d-block text-muted"></i>
     <div class="text-secondary">Nessun appuntamento per questo mese.</div>
-    <button class="btn btn-sm btn-ghost-primary mt-3" onclick="apriModalAgenda(null)">
+    <button type="button" class="btn btn-sm btn-ghost-primary mt-3" onclick="apriModalAgenda(null)">
         <i class="bi bi-plus-lg me-1"></i> Crea il primo
     </button>
 </div>

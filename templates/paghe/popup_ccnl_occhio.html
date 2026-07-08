@@ -29,7 +29,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
   <div style="font-size:48px;color:#f87171;margin-bottom:16px;"><i class="bi bi-exclamation-triangle-fill"></i></div>
   <h5 style="color:#EDEDED;margin-bottom:8px;">Parametri CCNL non disponibili</h5>
   <p style="color:#8A8F98;font-size:13px;max-width:400px;">{{ errore }}</p>
-  <button class="btn btn-ghost-primary" onclick="window.close()" style="margin-top:16px;">Chiudi</button>
+  <button type="button" class="btn btn-ghost-primary" onclick="window.close()" style="margin-top:16px;">Chiudi</button>
 </div>
 {% elif parametri %}
 
@@ -45,7 +45,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
         <span style="font-size:14px;font-weight:700;color:#EDEDED;">Colpo d'Occhio CCNL</span>
         <span style="font-size:11px;color:#8A8F98;background:rgba(255,255,255,0.04);padding:2px 8px;border-radius:4px;">{{ parametri.anno }}</span>
       </div>
-      <button onclick="window.close()" style="background:none;border:none;color:#8A8F98;font-size:16px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:4px;"><i class="bi bi-x-lg"></i></button>
+      <button type="button" onclick="window.close()" style="background:none;border:none;color:#8A8F98;font-size:16px;cursor:pointer;padding:2px 6px;line-height:1;border-radius:4px;"><i class="bi bi-x-lg"></i></button>
     </div>
 
     <div style="display:flex;flex-wrap:wrap;gap:6px;">
@@ -287,7 +287,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
           <div class="ccnl-sum-totale" style="font-size:16px;font-weight:700;color:#5E6AD2;">€ {{ paga_oraria_lorda|floatformat:4 }}</div>
         </div>
       </div>
-      <button class="btn btn-ghost-primary" onclick="ccnlOcchioDownloadRiepilogo()" style="flex-shrink:0;">
+      <button type="button" class="btn btn-ghost-primary" onclick="ccnlOcchioDownloadRiepilogo()" style="flex-shrink:0;">
         <i class="bi bi-file-pdf"></i> Scarica Riepilogo CCNL
       </button>
       {% if livello_contratto %}

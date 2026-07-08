@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block search_bar %}{% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -29,7 +29,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 fw-bold mb-0"><i class="bi bi-check2-square me-2" style="color:#5E6AD2;"></i>Checklist Mensile
-          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
 </div>
 
@@ -54,7 +54,7 @@
                     <div class="progress-bar" style="width:{{ progresso_pct }}%;background:{% if progresso_pct == 100 %}#10b981{% elif progresso_pct > 50 %}#5E6AD2{% else %}#f59e0b{% endif %};border-radius:4px;transition:width 0.5s;"></div>
                 </div>
             </div>
-            <button class="btn btn-sm btn-ghost-danger" onclick="resettaMese({{ anno }},{{ mese }})" style="padding:6px 12px;font-size:11px;">
+            <button type="button" class="btn btn-sm btn-ghost-danger" onclick="resettaMese({{ anno }},{{ mese }})" style="padding:6px 12px;font-size:11px;">
                 <i class="bi bi-arrow-counterclockwise me-1"></i>Resetta
             </button>
             <label class="toggle-switch" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-left:8px;font-size:11px;color:#8A8F98;user-select:none;">
@@ -82,7 +82,7 @@
         {% if c.completato_il %}{{ c.completato_il|date:"d/m H:i" }}{% endif %}
         {% if c.completato_da %}<br>{{ c.completato_da.username }}{% endif %}
     </div>
-    <button class="btn btn-sm btn-ghost" onclick="editChecklistNote({{ c.pk }})" title="Aggiungi nota" style="padding:4px 8px;font-size:11px;"><i class="bi bi-pencil"></i></button>
+    <button type="button" class="btn btn-sm btn-ghost" onclick="editChecklistNote({{ c.pk }})" title="Aggiungi nota" style="padding:4px 8px;font-size:11px;"><i class="bi bi-pencil"></i></button>
 </div>
 {% endwith %}
 {% empty %}

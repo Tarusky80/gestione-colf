@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}{% load tabelle_tags %}
+{% extends 'base.html' %}{% load tabelle_tags %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -82,7 +82,7 @@ function inviaEmailPagopa() {
         <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" style="color:#5E6AD2;"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
         <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto attivo e il trimestre per generare il riepilogo contributivo o avviare l'automazione sul sito INPS.</p>
       </div>
-      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+      <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </div>
   </div>
 
@@ -97,7 +97,7 @@ function inviaEmailPagopa() {
           <div class="col-12">
             <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
             <div class="d-flex gap-2 align-items-center">
-              <button class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrevContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
+              <button type="button" class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrevContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
                 <i class="bi bi-chevron-left"></i>
               </button>
               <select id="selContratto" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
@@ -106,7 +106,7 @@ function inviaEmailPagopa() {
                 </option>
                 {% endfor %}
               </select>
-              <button class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNextContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
+              <button type="button" class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNextContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
                 <i class="bi bi-chevron-right"></i>
               </button>
               <span id="contrattoCounter" style="font-size:11px;color:#5C5F66;white-space:nowrap;min-width:50px;text-align:center;"></span>
@@ -159,10 +159,10 @@ function inviaEmailPagopa() {
           </span>
         </div>
         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-          <button class="btn btn-ghost-success" onclick="avviaPagopa()" id="btnAvvia">
+          <button type="button" class="btn btn-ghost-success" onclick="avviaPagopa()" id="btnAvvia">
             <i class="bi bi-robot me-1"></i> Avvia INPS
           </button>
-          <button class="btn btn-ghost-danger" onclick="chiudiPagopa()" id="btnChiudiFinestra" disabled>
+          <button type="button" class="btn btn-ghost-danger" onclick="chiudiPagopa()" id="btnChiudiFinestra" disabled>
             <i class="bi bi-x-circle me-1"></i> Chiudi finestra INPS
           </button>
         </div>
@@ -197,7 +197,7 @@ function inviaEmailPagopa() {
           </div>
           <div class="d-flex gap-2 align-items-center flex-wrap">
             <input type="text" id="captchaInput" autocomplete="off" placeholder="Inserisci il codice CAPTGRAPH..." class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:14px;border-radius:8px;padding:10px 14px;max-width:260px;font-weight:600;">
-<button class="btn btn-ghost-success" onclick="inviaCaptcha()" id="btnInviaCaptcha">
+<button type="button" class="btn btn-ghost-success" onclick="inviaCaptcha()" id="btnInviaCaptcha">
             <i class="bi bi-send me-1"></i> Invia Codice Captcha
           </button>
             <span style="font-size:11px;color:#8A8F98;"><i class="bi bi-arrow-repeat me-1"></i> Premi Invio per inviare</span>
@@ -207,10 +207,10 @@ function inviaEmailPagopa() {
           <div class="p-3" style="background:#0D0E10;border:1px solid #27282D;border-radius:10px;">
             <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
               <h6 style="color:#EDEDED;font-size:12px;margin-bottom:0;"><i class="bi bi-terminal me-2" style="color:#10b981;"></i>CONSOLE AUTOMAZIONE</h6>
-              <button class="btn btn-sm btn-ghost" onclick="pulisciConsole()" style="padding:6px 14px;font-size:11px;margin-left:auto;">
+              <button type="button" class="btn btn-sm btn-ghost" onclick="pulisciConsole()" style="padding:6px 14px;font-size:11px;margin-left:auto;">
                 <i class="bi bi-eraser me-1"></i> Pulisci
               </button>
-              <button class="btn btn-sm btn-ghost" onclick="copiaConsole()" id="btnCopiaConsole" style="padding:6px 14px;font-size:11px;">
+              <button type="button" class="btn btn-sm btn-ghost" onclick="copiaConsole()" id="btnCopiaConsole" style="padding:6px 14px;font-size:11px;">
                 <i class="bi bi-clipboard me-1"></i> Copia
               </button>
               <span id="copiaFeedback" style="color:#34d399;font-size:11px;display:none;">âœ… Copiato!</span>
@@ -255,19 +255,19 @@ function inviaEmailPagopa() {
       <div class="p-4" class="class="card-dark h-100"">
         <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark me-2" style="color:#5E6AD2;"></i>DOCUMENTI</h5>
         <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-ghost-primary" onclick="scaricaPdfPagopa()" id="btnScaricaPdf">
+          <button type="button" class="btn btn-ghost-primary" onclick="scaricaPdfPagopa()" id="btnScaricaPdf">
             <i class="bi bi-filetype-pdf me-1"></i> Scarica riepilogo PDF
           </button>
-          <button class="btn btn-ghost-info" onclick="inviaEmailPagopa()" id="btnInviaEmailPagopa">
+          <button type="button" class="btn btn-ghost-info" onclick="inviaEmailPagopa()" id="btnInviaEmailPagopa">
             <i class="bi bi-envelope me-1"></i> Invia Email
           </button>
-          <button class="btn btn-ghost" onclick="apriPdfPagopa()" id="btnApriPdf" disabled>
+          <button type="button" class="btn btn-ghost" onclick="apriPdfPagopa()" id="btnApriPdf" disabled>
             <i class="bi bi-file-earmark-pdf me-1"></i> Apri PDF
           </button>
-          <button class="btn btn-ghost-warning" onclick="stampaDocumento(_pagopaDocPk, this)" id="btnStampaPagopa" disabled>
+          <button type="button" class="btn btn-ghost-warning" onclick="stampaDocumento(_pagopaDocPk, this)" id="btnStampaPagopa" disabled>
             <i class="bi bi-printer me-1"></i> Stampa PDF
           </button>
-          <button class="btn btn-ghost" onclick="fetch('/ajax/apri-cartella-documenti/?contratto_pk=' + _pagopaContrattoPk).then(function(r){return r.json()}).then(function(d){if(!d.success){mostraToast(d.error, false)}})">
+          <button type="button" class="btn btn-ghost" onclick="fetch('/ajax/apri-cartella-documenti/?contratto_pk=' + _pagopaContrattoPk).then(function(r){return r.json()}).then(function(d){if(!d.success){mostraToast(d.error, false)}})">
             <i class="bi bi-folder-symlink me-1"></i> Apri cartella
           </button>
         </div>
@@ -285,9 +285,9 @@ function inviaEmailPagopa() {
             </label>
             <input type="number" id="orePagopaInput" value="" placeholder="Lascia vuoto per ore calcolate" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;border-radius:8px;padding:8px 12px;max-width:180px;">
             <span style="font-size:11px;color:#8A8F98;">ore trimestre</span>
-            <button class="btn btn-ghost-warning" onclick="caricaOreModificate()"><i class="bi bi-upload me-1"></i> CARICA ORE MODIFICATE!</button>
-            <button class="btn btn-ghost-info" onclick="salvaOreContratto()"><i class="bi bi-floppy me-1"></i> Salva nel contratto</button>
-            <button class="btn btn-ghost" onclick="resettaOrePagopa()"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina originali</button>
+            <button type="button" class="btn btn-ghost-warning" onclick="caricaOreModificate()"><i class="bi bi-upload me-1"></i> CARICA ORE MODIFICATE!</button>
+            <button type="button" class="btn btn-ghost-info" onclick="salvaOreContratto()"><i class="bi bi-floppy me-1"></i> Salva nel contratto</button>
+            <button type="button" class="btn btn-ghost" onclick="resettaOrePagopa()"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina originali</button>
             <span id="orePagopaStatus" style="font-size:11px;color:#8A8F98;"></span>
           </div>
         </div>
@@ -516,19 +516,19 @@ function renderRiepilogo(d) {
     html += '<div class="col-md-6" style="margin-bottom:16px;"><div class="pm-mcrd" style="padding:0;">';
     html += '<div class="row g-0"><div class="col-6" style="border-right:1px solid #27282D;padding:10px 14px;">';
     html += '<div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">DATORE DI LAVORO</div>';
-    html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_d_nome">' + escapeHtml(d.nome_datore) + '</span><button class="pm-cb" data-copy="r_d_nome">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_d_cf">' + escapeHtml(d.cf_datore) + '</span><button class="pm-cb" data-copy="r_d_cf">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_d_indirizzo">' + escapeHtml(d.indirizzo_datore || '—') + '</span><button class="pm-cb" data-copy="r_d_indirizzo">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="r_d_beneficiario">' + escapeHtml(d.beneficiario || '—') + '</span><button class="pm-cb" data-copy="r_d_beneficiario">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="r_d_progetti">' + escapeHtml(d.progetti || '—') + '</span><button class="pm-cb" data-copy="r_d_progetti">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_d_nome">' + escapeHtml(d.nome_datore) + '</span><button type="button" class="pm-cb" data-copy="r_d_nome">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_d_cf">' + escapeHtml(d.cf_datore) + '</span><button type="button" class="pm-cb" data-copy="r_d_cf">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_d_indirizzo">' + escapeHtml(d.indirizzo_datore || '—') + '</span><button type="button" class="pm-cb" data-copy="r_d_indirizzo">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="r_d_beneficiario">' + escapeHtml(d.beneficiario || '—') + '</span><button type="button" class="pm-cb" data-copy="r_d_beneficiario">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="r_d_progetti">' + escapeHtml(d.progetti || '—') + '</span><button type="button" class="pm-cb" data-copy="r_d_progetti">COPIA</button></div>';
     html += '</div><div class="col-6" style="padding:10px 14px;">';
     html += '<div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">LAVORATORE</div>';
-    html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_l_nome">' + escapeHtml(d.nome_lavoratore) + '</span><button class="pm-cb" data-copy="r_l_nome">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_l_cf">' + escapeHtml(d.cf_lavoratore) + '</span><button class="pm-cb" data-copy="r_l_cf">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="r_l_cod_rapporto">' + escapeHtml(d.codice_rapporto_inps || '—') + '</span><button class="pm-cb" data-copy="r_l_cod_rapporto">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_l_indirizzo">' + escapeHtml(d.indirizzo_lavoratore || '—') + '</span><button class="pm-cb" data-copy="r_l_indirizzo">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="r_l_cassa">' + escapeHtml(d.cassa_label || '—') + '</span><button class="pm-cb" data-copy="r_l_cassa">COPIA</button></div>';
-    html += '<div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="r_l_data_assunzione">' + escapeHtml(d.data_assunzione || '—') + '</span><button class="pm-cb" data-copy="r_l_data_assunzione">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_l_nome">' + escapeHtml(d.nome_lavoratore) + '</span><button type="button" class="pm-cb" data-copy="r_l_nome">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="r_l_cf">' + escapeHtml(d.cf_lavoratore) + '</span><button type="button" class="pm-cb" data-copy="r_l_cf">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="r_l_cod_rapporto">' + escapeHtml(d.codice_rapporto_inps || '—') + '</span><button type="button" class="pm-cb" data-copy="r_l_cod_rapporto">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="r_l_indirizzo">' + escapeHtml(d.indirizzo_lavoratore || '—') + '</span><button type="button" class="pm-cb" data-copy="r_l_indirizzo">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="r_l_cassa">' + escapeHtml(d.cassa_label || '—') + '</span><button type="button" class="pm-cb" data-copy="r_l_cassa">COPIA</button></div>';
+    html += '<div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="r_l_data_assunzione">' + escapeHtml(d.data_assunzione || '—') + '</span><button type="button" class="pm-cb" data-copy="r_l_data_assunzione">COPIA</button></div>';
     html += '</div></div></div></div>';
 
     html += '<div class="col-12" style="margin-bottom:16px;"><div class="p-4" class="card-simple">';
@@ -542,7 +542,7 @@ function renderRiepilogo(d) {
     html += '<tr><td style="color:#8A8F98;padding:2px 0;">Paga base oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.paga_base.toFixed(4) + '</td></tr>';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;">Tredicesima oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.tredicesima_oraria.toFixed(4) + '</td></tr>';
     var pagaInpsVal = d.paga_oraria_inps.toFixed(2);
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;border-bottom:1px solid #27282D;">Paga oraria INPS</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;"><b>\u20ac ' + pagaInpsVal + '</b> <span style="color:#5C5F66;font-size:10px;">(troncata)</span> <button onclick="copiaAppunti(\'' + pagaInpsVal + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;border-bottom:1px solid #27282D;">Paga oraria INPS</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;"><b>\u20ac ' + pagaInpsVal + '</b> <span style="color:#5C5F66;font-size:10px;">(troncata)</span> <button type="button" onclick="copiaAppunti(\'' + pagaInpsVal + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;padding-top:6px;">Soglia</td><td style="text-align:right;color:#EDEDED;padding-top:6px;">&gt; ' + d.soglia_ore + ' h/sett</td></tr>';
     var sopraColor = d.is_sopra_soglia ? '#34d399' : '#f87171';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;">Fascia</td><td style="text-align:right;color:' + sopraColor + ';"><b>' + escapeHtml(d.fascia_desc) + '</b></td></tr>';
@@ -553,13 +553,13 @@ function renderRiepilogo(d) {
     html += '<div class="col-md-6"><div class="pm-mcrd">';
     html += '<div class="pm-mcrd-title">QUOTE ' + _pagopaTrimestre + ' ' + _pagopaAnno + ' (' + trimLabel + ')</div>';
     html += '<table style="width:100%;font-size:12px;">';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore trimestrali</td><td style="text-align:right;color:#EDEDED;">' + d.ore_trim + ' h <button onclick="copiaAppunti(\'' + d.ore_trim + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore trimestrali</td><td style="text-align:right;color:#EDEDED;">' + d.ore_trim + ' h <button type="button" onclick="copiaAppunti(\'' + d.ore_trim + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;">Quota associativa oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.cassa_orario.toFixed(4) + '</td></tr>';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;">Quota associativa trim.</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.imp_cassa_trim.toFixed(2) + '</td></tr>';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;">Aliquota INPS oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.aliquota_inps_orario.toFixed(4) + '</td></tr>';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;border-bottom:1px solid #27282D;">Stima contributi trim.</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;">\u20ac ' + d.stima_contrib_trim.toFixed(2) + '</td></tr>';
     var contribTotaliVal = d.contrib_totali.toFixed(2);
-    html += '<tr id="contribTotaliRow"><td style="color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">CONTRIBUTI TOTALI</td><td style="text-align:right;color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">\u20ac ' + contribTotaliVal + ' <button onclick="copiaAppunti(\'' + contribTotaliVal + '\', this)" style="background:none;border:none;color:#34d399;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr id="contribTotaliRow"><td style="color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">CONTRIBUTI TOTALI</td><td style="text-align:right;color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">\u20ac ' + contribTotaliVal + ' <button type="button" onclick="copiaAppunti(\'' + contribTotaliVal + '\', this)" style="background:none;border:none;color:#34d399;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
     html += '<tr id="inpsCompareRow" style="display:none;"><td id="inpsCompareLabel" style="color:#8A8F98;font-size:12px;padding:2px 0;">Verifica INPS</td><td id="inpsCompareVal" style="text-align:right;font-size:12px;padding:2px 0;"></td></tr>';
     html += '</table>';
     html += '</div></div>';
@@ -687,8 +687,8 @@ function caricaStoricoPagopa() {
             html += '<td style="padding:8px;color:#EDEDED;">' + escapeHtml(doc.anno) + '</td>';
             html += '<td style="padding:8px;color:#8A8F98;">' + tipoLabel + '</td>';
             html += '<td style="padding:8px;color:#8A8F98;">' + escapeHtml(doc.creato_il) + '</td>';
-            html += '<td style="padding:8px;text-align:right;"><button onclick="apriPdfStorico(\'' + doc.trimestre + '\',\'' + doc.anno + '\')" style="color:#5E6AD2;background:none;border:none;font-weight:600;cursor:pointer;"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</button></td>';
-            html += '<td style="padding:8px;text-align:center;"><button onclick="eliminaDocStorico(' + doc.doc_pk + ', this)" style="background:none;border:none;color:#f87171;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;" title="Elimina"><i class="bi bi-trash"></i></button></td>';
+            html += '<td style="padding:8px;text-align:right;"><button type="button" onclick="apriPdfStorico(\'' + doc.trimestre + '\',\'' + doc.anno + '\')" style="color:#5E6AD2;background:none;border:none;font-weight:600;cursor:pointer;"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</button></td>';
+            html += '<td style="padding:8px;text-align:center;"><button type="button" onclick="eliminaDocStorico(' + doc.doc_pk + ', this)" style="background:none;border:none;color:#f87171;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;" title="Elimina"><i class="bi bi-trash"></i></button></td>';
             html += '</tr>';
         }
         html += '</tbody></table>';

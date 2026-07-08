@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}Riepilogo Invii{% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -16,7 +16,7 @@
         <p class="text-secondary small mb-0">Storico delle generazioni massive di buste paga.</p>
     </div>
     <div class="d-flex align-items-center gap-3">
-        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         <a href="{% url 'stampe_invii' %}" class="btn btn-sm btn-ghost">
             <i class="bi bi-arrow-left me-1"></i> TORNA A STAMPE E INVII
         </a>
@@ -60,7 +60,7 @@
                     <a href="{% url 'riepilogo_invio_dettaglio' r.pk %}" class="btn btn-sm btn-ghost-info" style="padding:3px 10px;font-size:11px;text-decoration:none;">
                         <i class="bi bi-eye"></i> Dettaglio
                     </a>
-                    <button onclick="eliminaInvio({{ r.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:3px 10px;font-size:11px;">
+                    <button type="button" onclick="eliminaInvio({{ r.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:3px 10px;font-size:11px;">
                         <i class="bi bi-trash3"></i>
                     </button>
                 </td>

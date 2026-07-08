@@ -64,45 +64,45 @@
         {% endfor %}
       </select>
       <div class="d-flex gap-2">
-        <button id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+        <button type="button" id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:6px;">
           <i class="bi bi-window-stack"></i>APRI POPUP DATI
         </button>
         <a id="openInpsBtn" href="{{ opzioni.link_inps_iscrizione }}" target="_blank" rel="noopener" class="btn btn-ghost-primary" style="white-space:nowrap;display:flex;align-items:center;gap:6px;">
           <i class="bi bi-box-arrow-up-right"></i>APRI SITO INPS
         </a>
-        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
       </div>
     </div>
     <div id="inpsFields" class="inps-fields">
       <div class="inps-mcrd">
         <div class="inps-mcrd-title">DATORE DI LAVORO</div>
-        <div class="inps-row"><span class="inps-label">Cognome</span><span class="inps-val" id="v_d_cognome">—</span><button class="inps-cb" data-copy="v_d_cognome">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Nome</span><span class="inps-val" id="v_d_nome">—</span><button class="inps-cb" data-copy="v_d_nome">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Indirizzo</span><span class="inps-val" id="v_d_indirizzo">—</span><button class="inps-cb" data-copy="v_d_indirizzo">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Comune</span><span class="inps-val" id="v_d_comune">—</span><button class="inps-cb" data-copy="v_d_comune">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Cognome</span><span class="inps-val" id="v_d_cognome">—</span><button type="button" class="inps-cb" data-copy="v_d_cognome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Nome</span><span class="inps-val" id="v_d_nome">—</span><button type="button" class="inps-cb" data-copy="v_d_nome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Indirizzo</span><span class="inps-val" id="v_d_indirizzo">—</span><button type="button" class="inps-cb" data-copy="v_d_indirizzo">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Comune</span><span class="inps-val" id="v_d_comune">—</span><button type="button" class="inps-cb" data-copy="v_d_comune">COPIA</button></div>
       </div>
       <div class="inps-mcrd">
         <div class="inps-mcrd-title">LAVORATORE</div>
-        <div class="inps-row"><span class="inps-label">CF</span><span class="inps-val" id="v_l_cf">—</span><button class="inps-cb" data-copy="v_l_cf">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Cognome</span><span class="inps-val" id="v_l_cognome">—</span><button class="inps-cb" data-copy="v_l_cognome">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Nome</span><span class="inps-val" id="v_l_nome">—</span><button class="inps-cb" data-copy="v_l_nome">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Data nascita</span><span class="inps-val" id="v_l_data_nascita">—</span><button class="inps-cb" data-copy="v_l_data_nascita">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Sesso</span><span class="inps-val" id="v_l_sesso">—</span><button class="inps-cb" data-copy="v_l_sesso">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Indirizzo</span><span class="inps-val" id="v_l_indirizzo">—</span><button class="inps-cb" data-copy="v_l_indirizzo">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Comune</span><span class="inps-val" id="v_l_comune">—</span><button class="inps-cb" data-copy="v_l_comune">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">CF</span><span class="inps-val" id="v_l_cf">—</span><button type="button" class="inps-cb" data-copy="v_l_cf">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Cognome</span><span class="inps-val" id="v_l_cognome">—</span><button type="button" class="inps-cb" data-copy="v_l_cognome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Nome</span><span class="inps-val" id="v_l_nome">—</span><button type="button" class="inps-cb" data-copy="v_l_nome">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Data nascita</span><span class="inps-val" id="v_l_data_nascita">—</span><button type="button" class="inps-cb" data-copy="v_l_data_nascita">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Sesso</span><span class="inps-val" id="v_l_sesso">—</span><button type="button" class="inps-cb" data-copy="v_l_sesso">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Indirizzo</span><span class="inps-val" id="v_l_indirizzo">—</span><button type="button" class="inps-cb" data-copy="v_l_indirizzo">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Comune</span><span class="inps-val" id="v_l_comune">—</span><button type="button" class="inps-cb" data-copy="v_l_comune">COPIA</button></div>
       </div>
       <div class="inps-mcrd">
         <div class="inps-mcrd-title">CONTRATTO</div>
-        <div class="inps-row"><span class="inps-label">Tipo</span><span class="inps-val" id="v_c_tipo">—</span><button class="inps-cb" data-copy="v_c_tipo">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Assunzione</span><span class="inps-val" id="v_c_data_ass">—</span><button class="inps-cb" data-copy="v_c_data_ass">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Data fine</span><span class="inps-val" id="v_c_data_fine">—</span><button class="inps-cb" data-copy="v_c_data_fine">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Ore/sett</span><span class="inps-val" id="v_c_ore">—</span><button class="inps-cb" data-copy="v_c_ore">COPIA</button></div>
-        <div class="inps-row"><span class="inps-label">Paga INPS</span><span class="inps-val" id="v_c_paga">—</span><button class="inps-cb" data-copy="v_c_paga">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Tipo</span><span class="inps-val" id="v_c_tipo">—</span><button type="button" class="inps-cb" data-copy="v_c_tipo">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Assunzione</span><span class="inps-val" id="v_c_data_ass">—</span><button type="button" class="inps-cb" data-copy="v_c_data_ass">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Data fine</span><span class="inps-val" id="v_c_data_fine">—</span><button type="button" class="inps-cb" data-copy="v_c_data_fine">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Ore/sett</span><span class="inps-val" id="v_c_ore">—</span><button type="button" class="inps-cb" data-copy="v_c_ore">COPIA</button></div>
+        <div class="inps-row"><span class="inps-label">Paga INPS</span><span class="inps-val" id="v_c_paga">—</span><button type="button" class="inps-cb" data-copy="v_c_paga">COPIA</button></div>
         <div class="inps-row" style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;">
           <span class="inps-label" style="min-width:auto;">Cod.INPS</span>
           <input id="v_c_codice_inps" style="background:#09090B;border:1px solid #333;color:#EDEDED;border-radius:4px;padding:2px 6px;font-size:12px;flex:1;min-width:80px;" placeholder="Codice rapporto" value="">
-          <button class="incolla-btn" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">INCOLLA</button>
-          <button class="btn btn-sm btn-ghost-success salva-codice-btn" style="padding:0 10px;font-size:10px;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
+          <button type="button" class="incolla-btn" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">INCOLLA</button>
+          <button type="button" class="btn btn-sm btn-ghost-success salva-codice-btn" style="padding:0 10px;font-size:10px;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
           <span class="salva-feedback" style="font-size:11px;color:#10b981;font-weight:600;display:none;">✓</span>
         </div>
       </div>

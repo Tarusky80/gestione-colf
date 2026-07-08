@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block search_bar %}{% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -13,7 +13,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 fw-bold mb-1">GESTIONE BACKUP
-          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
         <p class="text-secondary small mb-0">Crea, scarica e ripristina i salvataggi dei dati in formato JSON e ZIP del database.</p>
     </div>
@@ -136,7 +136,7 @@
                             <a href="{% url 'scarica_backup_db' backup.pk %}" class="text-info text-decoration-none" style="font-size: 11px;">
                                 <i class="bi bi-database"></i> Scarica DB
                             </a>
-                            <button onclick="event.stopPropagation(); ripristinaDb({{ backup.pk }}, this)" class="btn btn-sm btn-ghost-warning" style="padding:2px 8px; font-size:11px;">
+                            <button type="button" onclick="event.stopPropagation(); ripristinaDb({{ backup.pk }}, this)" class="btn btn-sm btn-ghost-warning" style="padding:2px 8px; font-size:11px;">
                                 <i class="bi bi-arrow-clockwise"></i> Ripristina DB
                             </button>
                         </div>
@@ -146,7 +146,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <button onclick="event.stopPropagation(); eliminaBackup({{ backup.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:2px 8px; font-size:11px;">
+                    <button type="button" onclick="event.stopPropagation(); eliminaBackup({{ backup.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:2px 8px; font-size:11px;">
                         <i class="bi bi-trash3"></i>
                     </button>
                 </td>

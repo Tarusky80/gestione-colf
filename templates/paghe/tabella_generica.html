@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block search_bar %}{% endblock %}
 {% load tabelle_tags %}
 
@@ -16,16 +16,16 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 fw-bold mb-1">{{ titolo|upper }}
-          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
         <p class="text-secondary small mb-0">Gestione {{ verbose_name|default:titolo|lower }}.</p>
     </div>
     <div class="d-flex gap-2">
         {% if tipo_url == 'progetti-regionali' %}
         <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" class="class="btn-xlsx""><i class="bi bi-download me-1"></i> Export XLSX</a>
-        <button class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-upload me-1"></i> Importa</button>
+        <button type="button" class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-upload me-1"></i> Importa</button>
         {% endif %}
-        <button class="btn btn-sm btn-ghost-primary" onclick="loadAjaxForm('/ajax/nuovo-tabella/{{ tipo_url }}/', 'Nuovo {{ titolo }}')">
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="loadAjaxForm('/ajax/nuovo-tabella/{{ tipo_url }}/', 'Nuovo {{ titolo }}')">
             <i class="bi bi-plus-lg me-1"></i> Nuovo
         </button>
         {% if tipo_url == 'parametri-ccnl' %}

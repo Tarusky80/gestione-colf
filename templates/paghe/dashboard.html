@@ -10,7 +10,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
     <div>
         <h1 class="h3 fw-bold mb-1"><i class="bi bi-speedometer2 me-2 c-accent"></i>Riepilogo Ufficio
-          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
         <p class="text-secondary small mb-0">
             <i class="bi bi-person-circle me-1"></i>{{ request.user.get_full_name|default:request.user.username }}
@@ -235,7 +235,7 @@
                         <option value="{{ c }}">{{ c }}</option>
                         {% endfor %}
                     </select>
-                    <button class="btn btn-sm btn-ghost-primary" onclick="caricaMappaDash()" style="padding:4px 12px;font-size:11px;height:32px;">🗺️ Carica mappa</button>
+                    <button type="button" class="btn btn-sm btn-ghost-primary" onclick="caricaMappaDash()" style="padding:4px 12px;font-size:11px;height:32px;">🗺️ Carica mappa</button>
                     <a href="/beneficiari/?view=mappa" class="btn btn-sm btn-xlsx" style="border-radius:6px;padding:4px 10px;height:32px;text-decoration:none;display:inline-flex;align-items:center;"><i class="bi bi-box-arrow-up-right me-1"></i> Apri Mappa</a>
                 </div>
             </div>
@@ -473,7 +473,7 @@
 <div class="alert-panel" id="alertPanel">
     <div class="alert-panel-header">
         <h5><i class="bi bi-bell-fill me-2"></i>Alert e Scadenze</h5>
-        <button class="alert-panel-close" onclick="closeAlertPanel()">&times;</button>
+        <button type="button" class="alert-panel-close" onclick="closeAlertPanel()">&times;</button>
     </div>
     <div class="alert-panel-body">
 

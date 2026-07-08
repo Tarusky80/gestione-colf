@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}{% load tabelle_tags %}
+{% extends 'base.html' %}{% load tabelle_tags %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -83,7 +83,7 @@
         <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-2" style="color:#5E6AD2;"></i>Certificazione Unica — Lavoro Domestico</h4>
         <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Genera, salva e invia la Certificazione Unica annuale.</p>
       </div>
-      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+      <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </div>
   </div>
 
@@ -91,15 +91,15 @@
   <div class="p-4" class="card-simple" style="margin-bottom:20px;">
     <div class="d-flex gap-2 align-items-center mb-3">
       <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Modalità:</span>
-      <button class="btn-tab active" data-mode="1" onclick="setMode(1)"><i class="bi bi-magic me-1"></i> Automatica</button>
-      <button class="btn-tab" data-mode="2" onclick="setMode(2)"><i class="bi bi-pencil me-1"></i> Semi-Automatica (13 mensilità)</button>
-      <button class="btn-tab" data-mode="3" onclick="setMode(3)"><i class="bi bi-hand-index me-1"></i> Manuale</button>
+      <button type="button" class="btn-tab active" data-mode="1" onclick="setMode(1)"><i class="bi bi-magic me-1"></i> Automatica</button>
+      <button type="button" class="btn-tab" data-mode="2" onclick="setMode(2)"><i class="bi bi-pencil me-1"></i> Semi-Automatica (13 mensilità)</button>
+      <button type="button" class="btn-tab" data-mode="3" onclick="setMode(3)"><i class="bi bi-hand-index me-1"></i> Manuale</button>
     </div>
     <div class="row g-3 align-items-end">
       <div class="col-md-8">
         <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
         <div class="d-flex gap-2 align-items-center">
-          <button class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrev" style="padding:8px 14px;font-size:16px;line-height:1;">
+          <button type="button" class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrev" style="padding:8px 14px;font-size:16px;line-height:1;">
             <i class="bi bi-chevron-left"></i>
           </button>
           <select id="selContratto" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
@@ -108,7 +108,7 @@
             </option>
             {% endfor %}
           </select>
-          <button class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNext" style="padding:8px 14px;font-size:16px;line-height:1;">
+          <button type="button" class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNext" style="padding:8px 14px;font-size:16px;line-height:1;">
             <i class="bi bi-chevron-right"></i>
           </button>
           <span id="contrattoCounter" style="font-size:11px;color:#5C5F66;white-space:nowrap;min-width:50px;text-align:center;"></span>
@@ -159,9 +159,9 @@
       <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-collection me-1"></i>Operazioni batch</span>
       <span id="badgeContrattoCorrente" class="badge-contratto" style="display:none;"></span>
       <div style="flex:1;"></div>
-      <button onclick="generaBatchPdf()" id="btnBatchPdf" disabled class="btn btn-sm btn-ghost-primary" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-files me-1"></i> Genera PDF selezionati (0)</button>
-      <button onclick="inviaMassivoCu()" id="btnBatchEmail" disabled class="btn btn-sm btn-ghost-info" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-envelope-paper me-1"></i> Invia email selezionati (0)</button>
-      <button onclick="toggleBatchTable()" style="background:transparent;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-list-ul"></i></button>
+      <button type="button" onclick="generaBatchPdf()" id="btnBatchPdf" disabled class="btn btn-sm btn-ghost-primary" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-files me-1"></i> Genera PDF selezionati (0)</button>
+      <button type="button" onclick="inviaMassivoCu()" id="btnBatchEmail" disabled class="btn btn-sm btn-ghost-info" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-envelope-paper me-1"></i> Invia email selezionati (0)</button>
+      <button type="button" onclick="toggleBatchTable()" style="background:transparent;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-list-ul"></i></button>
     </div>
     <div id="batchSectionBody" style="display:none;margin-top:10px;">
       <div style="max-height:200px;overflow-y:auto;border:1px solid #27282D;border-radius:8px;">
@@ -199,7 +199,7 @@
 
       {# Verifica quadratura #}
       <div style="margin-top:12px;margin-bottom:12px;">
-        <button class="btn btn-ghost-warning" onclick="verificaQuadratura()" id="btnVerificaCu" style="padding:8px 18px;font-size:12px;">
+        <button type="button" class="btn btn-ghost-warning" onclick="verificaQuadratura()" id="btnVerificaCu" style="padding:8px 18px;font-size:12px;">
           <i class="bi bi-search-check me-1"></i> Verifica quadratura
         </button>
         <div id="verificaCuContainer" style="display:none;margin-top:10px;"></div>
@@ -228,13 +228,13 @@
 
       {# Azioni #}
       <div class="d-flex flex-wrap gap-3 align-items-center">
-        <button class="btn btn-ghost-primary" onclick="apriAnteprimaCuPdf()" id="btnGeneraPdf" style="padding:10px 24px;font-size:13px;">
+        <button type="button" class="btn btn-ghost-primary" onclick="apriAnteprimaCuPdf()" id="btnGeneraPdf" style="padding:10px 24px;font-size:13px;">
           <i class="bi bi-filetype-pdf me-1"></i> Anteprima PDF
         </button>
-        <button class="btn btn-ghost-success" onclick="generaCuPdf(true)" id="btnSalvaPdf" style="padding:10px 24px;font-size:13px;">
+        <button type="button" class="btn btn-ghost-success" onclick="generaCuPdf(true)" id="btnSalvaPdf" style="padding:10px 24px;font-size:13px;">
           <i class="bi bi-save me-1"></i> Salva PDF
         </button>
-        <button class="btn btn-ghost-info" onclick="inviaCuEmail()" id="btnInviaEmail" style="padding:10px 24px;font-size:13px;">
+        <button type="button" class="btn btn-ghost-info" onclick="inviaCuEmail()" id="btnInviaEmail" style="padding:10px 24px;font-size:13px;">
           <i class="bi bi-envelope me-1"></i> Invia Email
         </button>
         <select id="cuModelloEmail" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#8A8F98;font-size:12px;border-radius:8px;max-width:220px;">
@@ -291,8 +291,8 @@
         <div class="modal-header border-0 pb-0" style="flex-shrink:0;">
           <h5 class="modal-title fw-bold" style="color:#EDEDED;"><i class="bi bi-filetype-pdf me-2" style="color:#5E6AD2;"></i>Anteprima Certificazione Unica</h5>
           <div class="d-flex gap-2">
-            <button class="btn btn-sm btn-ghost-success" onclick="salvaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-save me-1"></i> Salva</button>
-            <button class="btn btn-sm btn-ghost-info" onclick="inviaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-envelope me-1"></i> Invia</button>
+            <button type="button" class="btn btn-sm btn-ghost-success" onclick="salvaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-save me-1"></i> Salva</button>
+            <button type="button" class="btn btn-sm btn-ghost-info" onclick="inviaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-envelope me-1"></i> Invia</button>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
         </div>

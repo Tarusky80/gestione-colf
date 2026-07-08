@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block search_bar %}{% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -25,7 +25,7 @@
         <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'guida_cessazione_pdf' %}', 0)" class="btn btn-sm btn-ghost" style="padding:8px 14px;font-size:11px;">
             <i class="bi bi-file-earmark-pdf me-1"></i> Scarica PDF
         </a>
-        <button onclick="apriModaleInvioGuida('cessazione')" class="btn btn-sm btn-ghost" style="padding:8px 14px;font-size:11px;">
+        <button type="button" onclick="apriModaleInvioGuida('cessazione')" class="btn btn-sm btn-ghost" style="padding:8px 14px;font-size:11px;">
             <i class="bi bi-envelope me-1"></i> Invia Email
         </button>
     </div>

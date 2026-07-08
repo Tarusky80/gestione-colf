@@ -14,7 +14,7 @@
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <div>
         <h1 class="h3 fw-bold mb-1">BUSTE PAGA MASSIVE
-          <button class="btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
         <p class="text-secondary small mb-0">Genera e invia buste paga per più contratti contemporaneamente.</p>
     </div>
@@ -275,7 +275,7 @@ function elaboraRisultatoGenerazione(d) {
             if (!e.errore && e.documento_pk) {
                 html += '<a href="#" onclick="event.preventDefault();apriNelPannello(\'/ajax/vedi-documento/' + e.documento_pk + '/\')" class="btn btn-sm btn-ghost py-0 px-1 ms-1" title="Apri PDF">👁 APRI PDF</a>';
                 html += '<a href="/ajax/vedi-documento/' + e.documento_pk + '/" target="_blank" class="btn btn-sm btn-ghost py-0 px-1" title="Scarica PDF">⬇ SCARICA PDF</a>';
-                html += '<button class="btn btn-ghost-warning btn-sm ms-1" onclick="stampaDocumento(' + e.documento_pk + ', this)" title="Stampa alla stampante"><i class="bi bi-printer"></i> Stampa</button>';
+                html += '<button type="button" class="btn btn-ghost-warning btn-sm ms-1" onclick="stampaDocumento(' + e.documento_pk + ', this)" title="Stampa alla stampante"><i class="bi bi-printer"></i> Stampa</button>';
             }
             if (e.errore) html += '<br><small class="text-danger">' + e.errore + '</small>';
             html += '</div>';

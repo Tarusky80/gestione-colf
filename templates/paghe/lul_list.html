@@ -12,7 +12,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
     <div>
         <h1 class="h3 fw-bold mb-1"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Libro Unico del Lavoro
-        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button></h1>
+        <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button></h1>
         <p class="text-secondary small mb-0">Registro mensile obbligatorio (D.Lgs. 151/2015)</p>
     </div>
 </div>
@@ -75,7 +75,7 @@
                     <a href="#" onclick="event.preventDefault();apriNelPannello('/ajax/vedi-documento/{{ d.pk }}/', {{ d.pk }})" class="btn btn-sm btn-ghost-primary" style="padding:4px 12px;font-size:11px;">
                         <i class="bi bi-download me-1"></i> PDF
                     </a>
-                    <button onclick="eliminaLul({{ d.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:4px 8px;font-size:11px;margin-left:4px;">
+                    <button type="button" onclick="eliminaLul({{ d.pk }})" class="btn btn-sm btn-ghost-danger" style="padding:4px 8px;font-size:11px;margin-left:4px;">
                         <i class="bi bi-trash"></i>
                     </button>
                 </td>

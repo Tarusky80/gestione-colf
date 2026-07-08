@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% block extra_css %}
 <style>
@@ -32,7 +32,7 @@
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
     <div>
         <h1 class="h3 fw-bold mb-1"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Archivio Buste Paga
-        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button></h1>
+        <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button></h1>
         <p class="text-secondary small mb-0">{{ buste|length }} buste trovate</p>
     </div>
     <div style="display:flex;gap:6px;">
@@ -198,17 +198,17 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                         <a href="{% url 'calcoli_tfr' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
                         {% endif %}
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg" style="color:#10b981;"></i></button>
-                            <button class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive" style="color:#5E6AD2;"></i></button>
-                            <button class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i></button>
-                            <button class="btn btn-ghost btn-sm px-2" onclick="eliminaBusta({{ b.pk }})" title="Elimina"><i class="bi bi-trash" style="color:#ef4444;"></i></button>
+                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg" style="color:#10b981;"></i></button>
+                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive" style="color:#5E6AD2;"></i></button>
+                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i></button>
+                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="eliminaBusta({{ b.pk }})" title="Elimina"><i class="bi bi-trash" style="color:#ef4444;"></i></button>
                         </div>
-                        <button class="btn btn-sm px-2 btn-ghost-primary" onclick="apriCcnlOcchioBusta({{ b.contratto.pk }}, {{ b.anno }})" title="Vedi parametri CCNL" style="font-size:11px;"><i class="bi bi-eye me-1"></i>CCNL</button>
-                        <button class="btn btn-sm px-2 btn-ghost-success" onclick="window.open('{% url 'download_ricevuta_pdf' b.pk %}')" title="Ricevuta pagamento"><i class="bi bi-receipt me-1"></i>RICEVUTA</button>
+                        <button type="button" class="btn btn-sm px-2 btn-ghost-primary" onclick="apriCcnlOcchioBusta({{ b.contratto.pk }}, {{ b.anno }})" title="Vedi parametri CCNL" style="font-size:11px;"><i class="bi bi-eye me-1"></i>CCNL</button>
+                        <button type="button" class="btn btn-sm px-2 btn-ghost-success" onclick="window.open('{% url 'download_ricevuta_pdf' b.pk %}')" title="Ricevuta pagamento"><i class="bi bi-receipt me-1"></i>RICEVUTA</button>
                         {% if b.documento %}
-                        <button class="btn btn-ghost-warning btn-sm px-2" onclick="stampaBusta({{ b.pk }}, this)" title="Stampa busta alla stampante" data-label="STAMPA BUSTA"><i class="bi bi-printer me-1"></i>STAMPA BUSTA</button>
+                        <button type="button" class="btn btn-ghost-warning btn-sm px-2" onclick="stampaBusta({{ b.pk }}, this)" title="Stampa busta alla stampante" data-label="STAMPA BUSTA"><i class="bi bi-printer me-1"></i>STAMPA BUSTA</button>
                         {% else %}
-                        <button class="btn btn-ghost-success btn-sm px-2" onclick="generaPdfBusta({{ b.pk }}, this)" title="Genera e apri PDF" data-contratto="{{ b.contratto.pk }}" data-mese="{{ b.mese }}" data-anno="{{ b.anno }}"><i class="bi bi-file-earmark-arrow-down me-1"></i>GENERA PDF</button>
+                        <button type="button" class="btn btn-ghost-success btn-sm px-2" onclick="generaPdfBusta({{ b.pk }}, this)" title="Genera e apri PDF" data-contratto="{{ b.contratto.pk }}" data-mese="{{ b.mese }}" data-anno="{{ b.anno }}"><i class="bi bi-file-earmark-arrow-down me-1"></i>GENERA PDF</button>
                         {% endif %}
                     </div>
                 </td>

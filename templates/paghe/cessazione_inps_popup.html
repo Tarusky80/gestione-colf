@@ -62,35 +62,35 @@
 
 <div class="card">
   <div class="card-title"><span class="icon">&#9670;</span> DATORE DI LAVORO</div>
-  <div class="row"><span class="label">Cognome</span><span class="value" id="d_cognome">{{ d.datore.cognome }}</span><button class="cb" data-t="d_cognome">COPIA</button></div>
-  <div class="row"><span class="label">Nome</span><span class="value" id="d_nome">{{ d.datore.nome }}</span><button class="cb" data-t="d_nome">COPIA</button></div>
-  <div class="row"><span class="label">Indirizzo</span><span class="value" id="d_indirizzo">{{ d.datore.indirizzo|default:"—" }}</span><button class="cb" data-t="d_indirizzo">COPIA</button></div>
-  <div class="row"><span class="label">Comune</span><span class="value" id="d_comune">{{ d.datore.comune|default:"—" }}</span><button class="cb" data-t="d_comune">COPIA</button></div>
+  <div class="row"><span class="label">Cognome</span><span class="value" id="d_cognome">{{ d.datore.cognome }}</span><button type="button" class="cb" data-t="d_cognome">COPIA</button></div>
+  <div class="row"><span class="label">Nome</span><span class="value" id="d_nome">{{ d.datore.nome }}</span><button type="button" class="cb" data-t="d_nome">COPIA</button></div>
+  <div class="row"><span class="label">Indirizzo</span><span class="value" id="d_indirizzo">{{ d.datore.indirizzo|default:"—" }}</span><button type="button" class="cb" data-t="d_indirizzo">COPIA</button></div>
+  <div class="row"><span class="label">Comune</span><span class="value" id="d_comune">{{ d.datore.comune|default:"—" }}</span><button type="button" class="cb" data-t="d_comune">COPIA</button></div>
 </div>
 
 <div class="card">
   <div class="card-title"><span class="icon">&#9671;</span> LAVORATORE</div>
-  <div class="row"><span class="label">CF</span><span class="value" id="l_cf">{{ d.lavoratore.cf }}</span><button class="cb" data-t="l_cf">COPIA</button></div>
-  <div class="row"><span class="label">Cognome</span><span class="value" id="l_cognome">{{ d.lavoratore.cognome }}</span><button class="cb" data-t="l_cognome">COPIA</button></div>
-  <div class="row"><span class="label">Nome</span><span class="value" id="l_nome">{{ d.lavoratore.nome }}</span><button class="cb" data-t="l_nome">COPIA</button></div>
-  <div class="row"><span class="label">Data nascita</span><span class="value" id="l_data_nascita">{{ d.lavoratore.data_nascita|default:"—" }}</span><button class="cb" data-t="l_data_nascita">COPIA</button></div>
-  <div class="row"><span class="label">Sesso</span><span class="value" id="l_sesso">{{ d.lavoratore.sesso|default:"—" }}</span><button class="cb" data-t="l_sesso">COPIA</button></div>
-  <div class="row"><span class="label">Indirizzo</span><span class="value" id="l_indirizzo">{{ d.lavoratore.indirizzo|default:"—" }}</span><button class="cb" data-t="l_indirizzo">COPIA</button></div>
-  <div class="row"><span class="label">Comune</span><span class="value" id="l_comune">{{ d.lavoratore.comune|default:"—" }}</span><button class="cb" data-t="l_comune">COPIA</button></div>
+  <div class="row"><span class="label">CF</span><span class="value" id="l_cf">{{ d.lavoratore.cf }}</span><button type="button" class="cb" data-t="l_cf">COPIA</button></div>
+  <div class="row"><span class="label">Cognome</span><span class="value" id="l_cognome">{{ d.lavoratore.cognome }}</span><button type="button" class="cb" data-t="l_cognome">COPIA</button></div>
+  <div class="row"><span class="label">Nome</span><span class="value" id="l_nome">{{ d.lavoratore.nome }}</span><button type="button" class="cb" data-t="l_nome">COPIA</button></div>
+  <div class="row"><span class="label">Data nascita</span><span class="value" id="l_data_nascita">{{ d.lavoratore.data_nascita|default:"—" }}</span><button type="button" class="cb" data-t="l_data_nascita">COPIA</button></div>
+  <div class="row"><span class="label">Sesso</span><span class="value" id="l_sesso">{{ d.lavoratore.sesso|default:"—" }}</span><button type="button" class="cb" data-t="l_sesso">COPIA</button></div>
+  <div class="row"><span class="label">Indirizzo</span><span class="value" id="l_indirizzo">{{ d.lavoratore.indirizzo|default:"—" }}</span><button type="button" class="cb" data-t="l_indirizzo">COPIA</button></div>
+  <div class="row"><span class="label">Comune</span><span class="value" id="l_comune">{{ d.lavoratore.comune|default:"—" }}</span><button type="button" class="cb" data-t="l_comune">COPIA</button></div>
 </div>
 
 <div class="card">
   <div class="card-title"><span class="icon">&#9632;</span> CONTRATTO</div>
-  <div class="row"><span class="label">Tipo</span><span class="value" id="c_tipo">{{ d.contratto.tipo }}</span><button class="cb" data-t="c_tipo">COPIA</button></div>
-  <div class="row"><span class="label">Data assunzione</span><span class="value" id="c_data_ass">{{ d.contratto.data_assunzione }}</span><button class="cb" data-t="c_data_ass">COPIA</button></div>
-  <div class="row"><span class="label">Data fine</span><span class="value" id="c_data_fine">{{ d.contratto.data_fine|default:"—" }}</span><button class="cb" data-t="c_data_fine">COPIA</button></div>
-  <div class="row"><span class="label">Ore settimanali</span><span class="value" id="c_ore">{{ d.contratto.ore_settimanali }}</span><button class="cb" data-t="c_ore">COPIA</button></div>
-  <div class="row"><span class="label">Paga INPS</span><span class="value" id="c_paga">€ {{ d.contratto.paga_inps }}/h</span><button class="cb" data-t="c_paga">COPIA</button></div>
+  <div class="row"><span class="label">Tipo</span><span class="value" id="c_tipo">{{ d.contratto.tipo }}</span><button type="button" class="cb" data-t="c_tipo">COPIA</button></div>
+  <div class="row"><span class="label">Data assunzione</span><span class="value" id="c_data_ass">{{ d.contratto.data_assunzione }}</span><button type="button" class="cb" data-t="c_data_ass">COPIA</button></div>
+  <div class="row"><span class="label">Data fine</span><span class="value" id="c_data_fine">{{ d.contratto.data_fine|default:"—" }}</span><button type="button" class="cb" data-t="c_data_fine">COPIA</button></div>
+  <div class="row"><span class="label">Ore settimanali</span><span class="value" id="c_ore">{{ d.contratto.ore_settimanali }}</span><button type="button" class="cb" data-t="c_ore">COPIA</button></div>
+  <div class="row"><span class="label">Paga INPS</span><span class="value" id="c_paga">€ {{ d.contratto.paga_inps }}/h</span><button type="button" class="cb" data-t="c_paga">COPIA</button></div>
   <div class="row" style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;">
     <span class="label" style="min-width:auto;font-size:11px;">Cod.INPS</span>
     <input id="v_c_codice_inps" style="background:#09090B;border:1px solid #333;color:#EDEDED;border-radius:4px;padding:2px 6px;font-size:12px;flex:1;min-width:60px;" placeholder="Codice rapporto" value="{{ d.contratto.codice_rapporto_inps }}">
-    <button class="incolla-btn" id="incollaBtn">INCOLLA</button>
-    <button class="btn btn-sm btn-ghost-danger" id="salvaBtn">SALVA</button>
+    <button type="button" class="incolla-btn" id="incollaBtn">INCOLLA</button>
+    <button type="button" class="btn btn-sm btn-ghost-danger" id="salvaBtn">SALVA</button>
     <span class="salva-fbk" id="salvaFbk">✓</span>
   </div>
 </div>

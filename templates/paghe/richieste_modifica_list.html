@@ -1,10 +1,10 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block title %}Richieste Modifica Datori{% endblock %}
 {% block content %}
 <div class="container-fluid py-3 px-4">
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
     <h5 style="color:#EDEDED;font-weight:700;margin:0;"><i class="bi bi-inbox me-2" style="color:#5E6AD2;"></i> Richieste Modifica Datori
-      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+      <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </h5>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <a href="{% url 'richieste_modifica_list' %}" class="btn btn-sm {% if not stato_f %}btn-ghost{% else %}btn-ghost{% endif %}" style="border-radius:8px;font-size:12px;">Tutte</a>
@@ -48,13 +48,13 @@
           </td>
           <td>
             {% if r.eliminata %}
-            <button class="btn btn-sm btn-ghost-success px-2 py-1" onclick="event.stopPropagation();ripristinaRichiesta({{ r.pk }})" title="Ripristina" style="font-size:11px;"><i class="bi bi-arrow-counterclockwise"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost-success px-2 py-1" onclick="event.stopPropagation();ripristinaRichiesta({{ r.pk }})" title="Ripristina" style="font-size:11px;"><i class="bi bi-arrow-counterclockwise"></i></button>
             {% else %}
             {% if r.stato == 'INVIATA' %}
-            <button class="btn btn-sm btn-ghost-info px-2 py-1" onclick="event.stopPropagation();gestisciRichiesta({{ r.pk }}, 'VISTA')" title="Segna come vista" style="font-size:11px;">Vista</button>
+            <button type="button" class="btn btn-sm btn-ghost-info px-2 py-1" onclick="event.stopPropagation();gestisciRichiesta({{ r.pk }}, 'VISTA')" title="Segna come vista" style="font-size:11px;">Vista</button>
             {% endif %}
-            <button class="btn btn-sm btn-ghost-danger px-2 py-1" onclick="event.stopPropagation();eliminaRichiesta({{ r.pk }})" title="Elimina" style="font-size:11px;"><i class="bi bi-trash"></i></button>
-            <button class="btn btn-sm btn-ghost px-2 py-1" onclick="event.stopPropagation();apriDettaglioRichiesta(this)" title="Dettaglio" style="font-size:11px;"><i class="bi bi-eye"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost-danger px-2 py-1" onclick="event.stopPropagation();eliminaRichiesta({{ r.pk }})" title="Elimina" style="font-size:11px;"><i class="bi bi-trash"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost px-2 py-1" onclick="event.stopPropagation();apriDettaglioRichiesta(this)" title="Dettaglio" style="font-size:11px;"><i class="bi bi-eye"></i></button>
             {% endif %}
           </td>
         </tr>
@@ -147,8 +147,8 @@ function apriDettaglioRichiesta(el) {
     var azioniDiv = document.getElementById('richiestaAzioniAdmin');
     azioniDiv.innerHTML = '';
     if (stato === 'INVIATA' || stato === 'VISTA') {
-        azioniDiv.innerHTML += '<button onclick="gestisciRichiesta(' + _richiestaPk + ', \'ACCETTATA\')" class="btn btn-sm btn-ghost-success" style="padding:8px 16px;font-size:12px;cursor:pointer;"><i class="bi bi-check-lg me-1"></i> Accetta</button>';
-        azioniDiv.innerHTML += '<button onclick="gestisciRichiesta(' + _richiestaPk + ', \'RIFIUTATA\')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-x-lg me-1"></i> Rifiuta</button>';
+        azioniDiv.innerHTML += '<button type="button" onclick="gestisciRichiesta(' + _richiestaPk + ', \'ACCETTATA\')" class="btn btn-sm btn-ghost-success" style="padding:8px 16px;font-size:12px;cursor:pointer;"><i class="bi bi-check-lg me-1"></i> Accetta</button>';
+        azioniDiv.innerHTML += '<button type="button" onclick="gestisciRichiesta(' + _richiestaPk + ', \'RIFIUTATA\')" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-x-lg me-1"></i> Rifiuta</button>';
     }
 
     new bootstrap.Modal(document.getElementById('modaleDettaglioRichiesta')).show();

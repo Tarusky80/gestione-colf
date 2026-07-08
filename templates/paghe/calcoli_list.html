@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load tabelle_tags %}
 
 {% block extra_css %}
@@ -23,32 +23,32 @@
         <p class="text-secondary small mb-0">Calcolo busta paga e contributi per contratto.</p>
     </div>
     <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm btn-ghost-warning" onclick="salvaBusta()" id="btnSalvaBusta" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-warning" onclick="salvaBusta()" id="btnSalvaBusta" disabled>
             <i class="bi bi-save me-1"></i> SALVA BUSTA
         </button>
-        <button class="btn btn-sm btn-ghost-success" onclick="vaiContratto()" id="btnContratto" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-success" onclick="vaiContratto()" id="btnContratto" disabled>
             <i class="bi bi-box-arrow-up-right me-1"></i> VAI AL CONTRATTO
         </button>
-        <button class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" id="btnCcnlOcchio" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" id="btnCcnlOcchio" disabled>
             <i class="bi bi-eye me-1"></i> CCNL
         </button>
         <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
             <i class="bi bi-journal-text me-1"></i> Archivio Buste
         </a>
-        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         <select id="fBustaTemplate" class="form-control bg-input" onchange="salvaBustaTemplate()" style="font-size:11px;padding:6px 10px;max-width:220px;" disabled>
             <option value="">— Standard (ReportLab) —</option>
             {% for t in template_busta_paga %}
             <option value="{{ t.pk }}">{{ t.codice }}</option>
             {% endfor %}
         </select>
-        <button class="btn btn-sm btn-ghost-primary" onclick="downloadPdf()" id="btnPdf" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="downloadPdf()" id="btnPdf" disabled>
             <i class="bi bi-file-pdf me-1"></i> PDF
         </button>
         <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap" style="margin-right:4px;">
             <input type="checkbox" id="chkAllegaLul" class="c-checkbox"> Allega LUL
         </label>
-        <button class="btn btn-sm btn-ghost-warning" onclick="stampaBustaCalcolo(this)" id="btnStampa" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-warning" onclick="stampaBustaCalcolo(this)" id="btnStampa" disabled>
             <i class="bi bi-printer me-1"></i> STAMPA
         </button>
     </div>
@@ -163,7 +163,7 @@
             </label>
         </span>
 
-        <button onclick="resetToggles()" title="Ripristina valori contratto" style="background:transparent;border:1px solid #5E6AD2;color:#5E6AD2;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;margin-left:auto;"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+        <button type="button" onclick="resetToggles()" title="Ripristina valori contratto" style="background:transparent;border:1px solid #5E6AD2;color:#5E6AD2;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;margin-left:auto;"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
     </div>
 </div>
 

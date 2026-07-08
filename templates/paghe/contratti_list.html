@@ -22,11 +22,11 @@
 {% block content %}
 <div class="mb-4">
     <h1 class="h3 fw-bold mb-1">CONTRATTI ATTIVI
-      <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+      <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
       <div class="d-inline-block float-end">
         <span id="fCount" class="badge-filter"><i class="bi bi-list-ul"></i> <span id="fCountVal">{{ count }}</span></span>
-        <button onclick="esportaExcelContratti()" class="btn btn-sm btn-xlsx"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Scarica Excel</button>
-        <button class="btn btn-sm btn-ghost-success" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalContratti')).show();" style="padding:5px 12px;font-size:11px;margin-left:4px;"><i class="bi bi-upload me-1"></i> Importa</button>
+        <button type="button" onclick="esportaExcelContratti()" class="btn btn-sm btn-xlsx"><i class="bi bi-file-earmark-spreadsheet me-1"></i> Scarica Excel</button>
+        <button type="button" class="btn btn-sm btn-ghost-success" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalContratti')).show();" style="padding:5px 12px;font-size:11px;margin-left:4px;"><i class="bi bi-upload me-1"></i> Importa</button>
       </div>
     </h1>
     <p class="text-secondary small mb-0">Elenco dei contratti attualmente attivi.</p>
@@ -481,7 +481,7 @@ function apriDocumentiContratto(pk) {
                 html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn btn-sm btn-ghost-info" style="padding:3px 10px;font-size:11px;"><i class="bi bi-eye"></i></a>';
                 html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" download class="btn btn-sm btn-ghost-success" style="padding:3px 10px;font-size:11px;"><i class="bi bi-download"></i></a>';
                 html += '<a href="/apri-cartella-documento/' + doc.pk + '/" class="btn btn-sm btn-ghost" style="padding:3px 10px;font-size:11px;text-decoration:none;"><i class="bi bi-folder2-open"></i></a>';
-                html += '<button onclick="eliminaDocContratto(' + doc.pk + ', this)" class="btn btn-sm btn-ghost-danger" style="padding:3px 10px;font-size:11px;"><i class="bi bi-trash3"></i></button>';
+                html += '<button type="button" onclick="eliminaDocContratto(' + doc.pk + ', this)" class="btn btn-sm btn-ghost-danger" style="padding:3px 10px;font-size:11px;"><i class="bi bi-trash3"></i></button>';
                 html += '</div></div>';
             });
             html += '</div>';

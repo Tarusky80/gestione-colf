@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -74,13 +74,13 @@
           <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto e un trimestre, copia i dati manualmente sul sito INPS e carica il PDF ottenuto.</p>
         </div>
         <div class="d-flex gap-2 align-items-center flex-shrink-0">
-          <button id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;">
+          <button type="button" id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;">
             <i class="bi bi-window-stack"></i>APRI POPUP DATI
           </button>
           <a id="openPagopaBtn" href="{{ opzioni.link_inps_mav }}" target="_blank" rel="noopener" class="btn btn-ghost-primary" style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px;">
             <i class="bi bi-box-arrow-up-right"></i>APRI SITO PAGOPA
           </a>
-          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </div>
       </div>
     </div>
@@ -96,14 +96,14 @@
             <div class="col-12">
               <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
               <div class="d-flex gap-2 align-items-center">
-                <button class="nav-arrow btn" onclick="navigaContratto(-1)" id="btnPrevContratto"><i class="bi bi-chevron-left"></i></button>
+                <button type="button" class="nav-arrow btn" onclick="navigaContratto(-1)" id="btnPrevContratto"><i class="bi bi-chevron-left"></i></button>
                 <select id="contrattoSelect" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
                   <option value="">— Seleziona contratto —</option>
                   {% for c in contratti_data %}
                   <option value="{{ c.pk }}">{{ c.contratto_option }}</option>
                   {% endfor %}
                 </select>
-                <button class="nav-arrow btn" onclick="navigaContratto(1)" id="btnNextContratto"><i class="bi bi-chevron-right"></i></button>
+                <button type="button" class="nav-arrow btn" onclick="navigaContratto(1)" id="btnNextContratto"><i class="bi bi-chevron-right"></i></button>
                 <span id="contrattoCounter" style="font-size:11px;color:#5C5F66;white-space:nowrap;min-width:50px;text-align:center;"></span>
               </div>
             </div>
@@ -153,20 +153,20 @@
               <div class="row g-0">
                 <div class="col-6" style="border-right:1px solid #27282D;padding:10px 14px;">
                   <div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">DATORE DI LAVORO</div>
-                  <div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="v_d_nome">—</span><button class="pm-cb" data-copy="v_d_nome">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="v_d_cf">—</span><button class="pm-cb" data-copy="v_d_cf">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="v_d_indirizzo">—</span><button class="pm-cb" data-copy="v_d_indirizzo">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="v_d_beneficiario">—</span><button class="pm-cb" data-copy="v_d_beneficiario">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="v_d_progetti">—</span><button class="pm-cb" data-copy="v_d_progetti">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="v_d_nome">—</span><button type="button" class="pm-cb" data-copy="v_d_nome">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="v_d_cf">—</span><button type="button" class="pm-cb" data-copy="v_d_cf">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="v_d_indirizzo">—</span><button type="button" class="pm-cb" data-copy="v_d_indirizzo">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Beneficiario</span><span class="pm-val" id="v_d_beneficiario">—</span><button type="button" class="pm-cb" data-copy="v_d_beneficiario">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Progetti</span><span class="pm-val" id="v_d_progetti">—</span><button type="button" class="pm-cb" data-copy="v_d_progetti">COPIA</button></div>
                 </div>
                 <div class="col-6" style="padding:10px 14px;">
                   <div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">LAVORATORE</div>
-                  <div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="v_l_nome">—</span><button class="pm-cb" data-copy="v_l_nome">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="v_l_cf">—</span><button class="pm-cb" data-copy="v_l_cf">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="v_l_cod_rapporto">—</span><button class="pm-cb" data-copy="v_l_cod_rapporto">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="v_l_indirizzo">—</span><button class="pm-cb" data-copy="v_l_indirizzo">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="v_l_cassa">—</span><button class="pm-cb" data-copy="v_l_cassa">COPIA</button></div>
-                  <div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="v_l_data_assunzione">—</span><button class="pm-cb" data-copy="v_l_data_assunzione">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="v_l_nome">—</span><button type="button" class="pm-cb" data-copy="v_l_nome">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">CF</span><span class="pm-val" id="v_l_cf">—</span><button type="button" class="pm-cb" data-copy="v_l_cf">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Cod.INPS</span><span class="pm-val" id="v_l_cod_rapporto">—</span><button type="button" class="pm-cb" data-copy="v_l_cod_rapporto">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Indirizzo</span><span class="pm-val" id="v_l_indirizzo">—</span><button type="button" class="pm-cb" data-copy="v_l_indirizzo">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Cassa</span><span class="pm-val" id="v_l_cassa">—</span><button type="button" class="pm-cb" data-copy="v_l_cassa">COPIA</button></div>
+                  <div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="v_l_data_assunzione">—</span><button type="button" class="pm-cb" data-copy="v_l_data_assunzione">COPIA</button></div>
                 </div>
               </div>
             </div>
@@ -187,7 +187,7 @@
                 <div class="pm-mcrd-title">PAGA INPS</div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="pm-val" id="v_p_paga_inps" data-raw="">—</span>
-                  <button class="pm-cb" data-copy="v_p_paga_inps">COPIA</button>
+                  <button type="button" class="pm-cb" data-copy="v_p_paga_inps">COPIA</button>
                 </div>
               </div>
             </div>
@@ -196,7 +196,7 @@
                 <div class="pm-mcrd-title">ORE TRIM.</div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="pm-val" id="v_p_ore_trim">—</span>
-                  <button class="pm-cb" data-copy="v_p_ore_trim">COPIA</button>
+                  <button type="button" class="pm-cb" data-copy="v_p_ore_trim">COPIA</button>
                 </div>
               </div>
             </div>
@@ -205,7 +205,7 @@
                 <div class="pm-mcrd-title">CONTRIBUTI</div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="pm-val" id="v_p_contrib">—</span>
-                  <button class="pm-cb" data-copy="v_p_contrib">COPIA</button>
+                  <button type="button" class="pm-cb" data-copy="v_p_contrib">COPIA</button>
                 </div>
               </div>
             </div>
@@ -214,7 +214,7 @@
                 <div class="pm-mcrd-title">CASSA</div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="pm-val" id="v_p_cassa">—</span>
-                  <button class="pm-cb" data-copy="v_p_cassa">COPIA</button>
+                  <button type="button" class="pm-cb" data-copy="v_p_cassa">COPIA</button>
                 </div>
               </div>
             </div>
@@ -223,7 +223,7 @@
                 <div class="pm-mcrd-title">TOTALE</div>
                 <div class="d-flex align-items-center gap-2">
                   <span class="pm-val" id="v_p_totale">—</span>
-                  <button class="pm-cb" data-copy="v_p_totale">COPIA</button>
+                  <button type="button" class="pm-cb" data-copy="v_p_totale">COPIA</button>
                 </div>
               </div>
             </div>
@@ -242,8 +242,8 @@
               </label>
               <input type="number" id="orePagopaInput" value="" placeholder="Lascia vuoto per ore calcolate" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;padding:6px 10px;max-width:150px;">
               <span style="font-size:10px;color:#8A8F98;">ore trim.</span>
-              <button class="btn btn-ghost-warning" onclick="caricaOreModificate()" style="padding:5px 14px;font-size:11px;"><i class="bi bi-upload me-1"></i> CARICA ORE</button>
-              <button class="btn btn-ghost" onclick="resettaOrePagopa()" style="padding:5px 14px;font-size:11px;"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina</button>
+              <button type="button" class="btn btn-ghost-warning" onclick="caricaOreModificate()" style="padding:5px 14px;font-size:11px;"><i class="bi bi-upload me-1"></i> CARICA ORE</button>
+              <button type="button" class="btn btn-ghost" onclick="resettaOrePagopa()" style="padding:5px 14px;font-size:11px;"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina</button>
               <span id="orePagopaStatus" style="font-size:10px;color:#8A8F98;"></span>
             </div>
           </div>
@@ -268,7 +268,7 @@
           </div>
           <div style="font-size:11px;color:#5C5F66;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <span><i class="bi bi-folder me-1"></i> I PDF scaricati da INPS sono in: <code style="color:#8A8F98;background:#1E1F23;padding:1px 6px;border-radius:3px;">{{ download_folder }}</code></span>
-            <button onclick="fetch('/ajax/apri-cartella-download/').then(function(r){return r.json()}).then(function(d){if(!d.success&&d.error)mostraToast(d.error, false)})" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:4px;padding:3px 10px;font-size:10px;cursor:pointer;"><i class="bi bi-folder-symlink me-1"></i>Apri</button>
+            <button type="button" onclick="fetch('/ajax/apri-cartella-download/').then(function(r){return r.json()}).then(function(d){if(!d.success&&d.error)mostraToast(d.error, false)})" style="background:#27282D;color:#8A8F98;border:1px solid #3B3C42;border-radius:4px;padding:3px 10px;font-size:10px;cursor:pointer;"><i class="bi bi-folder-symlink me-1"></i>Apri</button>
           </div>
 
           <div id="uploadFeedback" style="display:none;font-size:12px;padding:8px 12px;border-radius:6px;margin-top:8px;"></div>

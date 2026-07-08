@@ -56,30 +56,30 @@
 
 <div class="card">
   <div class="card-title"><span class="icon">&#9670;</span> DATORE DI LAVORO</div>
-  <div class="row"><span class="label">Nome</span><span class="value" id="d_nome">{{ d.nome_datore }}</span><button class="cb" data-t="d_nome">COPIA</button></div>
-  <div class="row"><span class="label">CF</span><span class="value" id="d_cf">{{ d.cf_datore }}</span><button class="cb" data-t="d_cf">COPIA</button></div>
-  <div class="row"><span class="label">Indirizzo</span><span class="value" id="d_indirizzo">{{ d.indirizzo_datore|default:"—" }}</span><button class="cb" data-t="d_indirizzo">COPIA</button></div>
-  <div class="row"><span class="label">Beneficiario</span><span class="value" id="d_beneficiario">{{ d.beneficiario|default:"—" }}</span><button class="cb" data-t="d_beneficiario">COPIA</button></div>
-  <div class="row"><span class="label">Progetti</span><span class="value" id="d_progetti">{{ d.progetti|default:"—" }}</span><button class="cb" data-t="d_progetti">COPIA</button></div>
+  <div class="row"><span class="label">Nome</span><span class="value" id="d_nome">{{ d.nome_datore }}</span><button type="button" class="cb" data-t="d_nome">COPIA</button></div>
+  <div class="row"><span class="label">CF</span><span class="value" id="d_cf">{{ d.cf_datore }}</span><button type="button" class="cb" data-t="d_cf">COPIA</button></div>
+  <div class="row"><span class="label">Indirizzo</span><span class="value" id="d_indirizzo">{{ d.indirizzo_datore|default:"—" }}</span><button type="button" class="cb" data-t="d_indirizzo">COPIA</button></div>
+  <div class="row"><span class="label">Beneficiario</span><span class="value" id="d_beneficiario">{{ d.beneficiario|default:"—" }}</span><button type="button" class="cb" data-t="d_beneficiario">COPIA</button></div>
+  <div class="row"><span class="label">Progetti</span><span class="value" id="d_progetti">{{ d.progetti|default:"—" }}</span><button type="button" class="cb" data-t="d_progetti">COPIA</button></div>
 </div>
 
 <div class="card">
   <div class="card-title"><span class="icon">&#9671;</span> LAVORATORE</div>
-  <div class="row"><span class="label">Nome</span><span class="value" id="l_nome">{{ d.nome_lavoratore }}</span><button class="cb" data-t="l_nome">COPIA</button></div>
-  <div class="row"><span class="label">CF</span><span class="value" id="l_cf">{{ d.cf_lavoratore }}</span><button class="cb" data-t="l_cf">COPIA</button></div>
-  <div class="row"><span class="label">Cod.INPS</span><span class="value" id="l_cod_rapporto">{{ d.codice_rapporto_inps|default:"—" }}</span><button class="cb" data-t="l_cod_rapporto">COPIA</button></div>
-  <div class="row"><span class="label">Indirizzo</span><span class="value" id="l_indirizzo">{{ d.indirizzo_lavoratore|default:"—" }}</span><button class="cb" data-t="l_indirizzo">COPIA</button></div>
-  <div class="row"><span class="label">Cassa</span><span class="value" id="l_cassa">{{ d.cassa_label|default:"—" }}</span><button class="cb" data-t="l_cassa">COPIA</button></div>
-  <div class="row"><span class="label">Assunzione</span><span class="value" id="l_assunzione">{{ d.data_assunzione|default:"—" }}</span><button class="cb" data-t="l_assunzione">COPIA</button></div>
+  <div class="row"><span class="label">Nome</span><span class="value" id="l_nome">{{ d.nome_lavoratore }}</span><button type="button" class="cb" data-t="l_nome">COPIA</button></div>
+  <div class="row"><span class="label">CF</span><span class="value" id="l_cf">{{ d.cf_lavoratore }}</span><button type="button" class="cb" data-t="l_cf">COPIA</button></div>
+  <div class="row"><span class="label">Cod.INPS</span><span class="value" id="l_cod_rapporto">{{ d.codice_rapporto_inps|default:"—" }}</span><button type="button" class="cb" data-t="l_cod_rapporto">COPIA</button></div>
+  <div class="row"><span class="label">Indirizzo</span><span class="value" id="l_indirizzo">{{ d.indirizzo_lavoratore|default:"—" }}</span><button type="button" class="cb" data-t="l_indirizzo">COPIA</button></div>
+  <div class="row"><span class="label">Cassa</span><span class="value" id="l_cassa">{{ d.cassa_label|default:"—" }}</span><button type="button" class="cb" data-t="l_cassa">COPIA</button></div>
+  <div class="row"><span class="label">Assunzione</span><span class="value" id="l_assunzione">{{ d.data_assunzione|default:"—" }}</span><button type="button" class="cb" data-t="l_assunzione">COPIA</button></div>
 </div>
 
   <div class="card">
     <div class="card-title"><span class="icon">&#9632;</span> PAGOPA {{ d.trimestre }} {{ d.anno }}</div>
-    <div class="row"><span class="label">Paga INPS</span><span class="value" id="p_paga_inps" data-raw="{{ d.paga_oraria_inps|floatformat:2 }}">€ {{ d.paga_oraria_inps|floatformat:2 }}/h</span><button class="cb" data-t="p_paga_inps">COPIA</button></div>
-    <div class="row"><span class="label">Ore trim.</span><span class="value" id="p_ore_trim">{{ d.ore_trim }}</span><button class="cb" data-t="p_ore_trim">COPIA</button></div>
-    <div class="row"><span class="label">Cassa</span><span class="value" id="p_cassa">€ {{ d.imp_cassa_trim|floatformat:2 }}</span><button class="cb" data-t="p_cassa">COPIA</button></div>
-    <div class="row"><span class="label">Contributi</span><span class="value" id="p_contrib">€ {{ d.stima_contrib_trim|floatformat:2 }}</span><button class="cb" data-t="p_contrib">COPIA</button></div>
-    <div class="row"><span class="label">Totale</span><span class="value" id="p_totale">€ {{ d.contrib_totali|floatformat:2 }}</span><button class="cb" data-t="p_totale">COPIA</button></div>
+    <div class="row"><span class="label">Paga INPS</span><span class="value" id="p_paga_inps" data-raw="{{ d.paga_oraria_inps|floatformat:2 }}">€ {{ d.paga_oraria_inps|floatformat:2 }}/h</span><button type="button" class="cb" data-t="p_paga_inps">COPIA</button></div>
+    <div class="row"><span class="label">Ore trim.</span><span class="value" id="p_ore_trim">{{ d.ore_trim }}</span><button type="button" class="cb" data-t="p_ore_trim">COPIA</button></div>
+    <div class="row"><span class="label">Cassa</span><span class="value" id="p_cassa">€ {{ d.imp_cassa_trim|floatformat:2 }}</span><button type="button" class="cb" data-t="p_cassa">COPIA</button></div>
+    <div class="row"><span class="label">Contributi</span><span class="value" id="p_contrib">€ {{ d.stima_contrib_trim|floatformat:2 }}</span><button type="button" class="cb" data-t="p_contrib">COPIA</button></div>
+    <div class="row"><span class="label">Totale</span><span class="value" id="p_totale">€ {{ d.contrib_totali|floatformat:2 }}</span><button type="button" class="cb" data-t="p_totale">COPIA</button></div>
     {% if d.trimestre_parziale %}
     <div style="margin-top:10px;padding:8px 10px;background:rgba(248,113,113,0.1);border:1px solid #f87171;border-radius:8px;font-size:11px;color:#f87171;font-weight:600;">
       <i class="bi bi-exclamation-triangle-fill me-1"></i>

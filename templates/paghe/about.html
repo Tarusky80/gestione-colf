@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -123,7 +123,7 @@
     <div class="about-logo-placeholder"><i class="bi bi-cpu-fill"></i></div>
   {% endif %}
   <div class="about-title">{{ opzioni.nome_programma|default:"GESTIONE PAGHE" }}
-    <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+    <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
   </div>
   <div class="about-version">v{{ opzioni.versione_programma|default:"1.1" }}</div>
   <div class="about-desc">

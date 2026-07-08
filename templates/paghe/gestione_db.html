@@ -150,7 +150,7 @@ body { background: var(--bg-base); }
         </ol>
       </nav>
     </div>
-    <button class="btn-help" onclick="apriHelp()" title="Guida"><i class="bi bi-question-lg"></i></button>
+    <button type="button" class="btn-help" onclick="apriHelp()" title="Guida"><i class="bi bi-question-lg"></i></button>
   </div>
 
   <div class="db-grid">
@@ -203,10 +203,10 @@ body { background: var(--bg-base); }
             {% elif p.exists and not p.active %}
             <a href="{% url 'attiva_db_redirect' profile=p.key %}" class="btn btn-sm btn-ghost-primary"><i class="bi bi-toggle-on me-1"></i> Attiva</a>
             {% if not p.is_default %}
-            <button class="btn btn-sm btn-ghost-danger" onclick="eliminaDatabase('{{ p.key }}')"><i class="bi bi-trash me-1"></i> Elimina</button>
+            <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaDatabase('{{ p.key }}')"><i class="bi bi-trash me-1"></i> Elimina</button>
             {% endif %}
             {% elif not p.exists and not p.is_default %}
-            <button class="btn btn-ghost-primary btn-crea-db" data-profile="{{ p.key }}" style="padding:8px 14px;font-size:12px;"><i class="bi bi-plus-lg me-1"></i> Crea Database</button>
+            <button type="button" class="btn btn-ghost-primary btn-crea-db" data-profile="{{ p.key }}" style="padding:8px 14px;font-size:12px;"><i class="bi bi-plus-lg me-1"></i> Crea Database</button>
             {% endif %}
           </div>
         </li>
@@ -235,7 +235,7 @@ body { background: var(--bg-base); }
   <div class="hm-box">
     <div class="hm-header">
       <span><i class="bi bi-question-circle" style="color:var(--accent-color);"></i> Guida &mdash; Gestione Database</span>
-      <button class="hm-close" onclick="chiudiHelp()"><i class="bi bi-x-lg"></i></button>
+      <button type="button" class="hm-close" onclick="chiudiHelp()"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="hm-body">
       <div class="hm-section">

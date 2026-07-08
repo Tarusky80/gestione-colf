@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}{% load static %}{% load tabelle_tags %}
+{% extends 'base.html' %}{% load static %}{% load tabelle_tags %}
 {% block title %}Busta TFR{% endblock %}
 {% block extra_css %}
 <style>
@@ -39,7 +39,7 @@
         <button type="button" id="btnVediContratto" onclick="apriContratto()" class="btn btn-sm btn-ghost-primary" style="display:none;padding:8px 14px;font-size:13px;">
           <i class="bi bi-box-arrow-up-right me-1"></i> Contratto
         </button>
-        <button class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" style="padding:8px 14px;font-size:12px;" id="btnCcnlOcchio" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" style="padding:8px 14px;font-size:12px;" id="btnCcnlOcchio" disabled>
             <i class="bi bi-eye me-1"></i> CCNL
         </button>
         <button type="button" onclick="calcola()" class="btn btn-sm btn-ghost-warning" style="padding:8px 20px;font-size:13px;">
@@ -54,7 +54,7 @@
         <button type="button" id="btnStampa" disabled onclick="stampaBustaCalcolo(this)" class="btn btn-sm btn-ghost-warning">
           <i class="bi bi-printer me-1"></i> STAMPA
         </button>
-        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         <a href="{% url 'calcoli_list' %}" class="btn btn-sm btn-ghost-success" style="padding:8px 14px;font-size:13px;">
           <i class="bi bi-file-earmark-text"></i> Standard
         </a>
@@ -66,14 +66,14 @@
         <div class="col-md-5">
           <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-person-vcard me-1"></i>Contratto</label>
           <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9664;</button>
+            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9664;</button>
             <select id="fContratto" class="form-control" onchange="onCambioContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;width:100%;">
               <option value="">— Seleziona contratto —</option>
               {% for c in contratti %}
               <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
               {% endfor %}
             </select>
-            <button class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9654;</button>
+            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9654;</button>
           </div>
         </div>
         <div class="col-md-4">

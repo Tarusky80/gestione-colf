@@ -79,45 +79,45 @@
         {% endfor %}
       </select>
       <div class="d-flex gap-2">
-        <button id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:6px;">
+        <button type="button" id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:6px;">
           <i class="bi bi-window-stack"></i>APRI POPUP DATI
         </button>
         <a id="openCessBtn" href="{{ web_config.link_inps_cessazione }}" target="_blank" rel="noopener" class="btn btn-ghost-primary" style="white-space:nowrap;display:flex;align-items:center;gap:6px;">
           <i class="bi bi-box-arrow-up-right"></i>APRI SITO INPS
         </a>
-        <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+        <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
       </div>
     </div>
     <div id="cesFields" class="ces-fields">
       <div class="ces-mcrd">
         <div class="ces-mcrd-title">DATORE DI LAVORO</div>
-        <div class="ces-row"><span class="ces-label">Cognome</span><span class="ces-val" id="v_d_cognome">—</span><button class="ces-cb" data-copy="v_d_cognome">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Nome</span><span class="ces-val" id="v_d_nome">—</span><button class="ces-cb" data-copy="v_d_nome">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Indirizzo</span><span class="ces-val" id="v_d_indirizzo">—</span><button class="ces-cb" data-copy="v_d_indirizzo">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Comune</span><span class="ces-val" id="v_d_comune">—</span><button class="ces-cb" data-copy="v_d_comune">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Cognome</span><span class="ces-val" id="v_d_cognome">—</span><button type="button" class="ces-cb" data-copy="v_d_cognome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Nome</span><span class="ces-val" id="v_d_nome">—</span><button type="button" class="ces-cb" data-copy="v_d_nome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Indirizzo</span><span class="ces-val" id="v_d_indirizzo">—</span><button type="button" class="ces-cb" data-copy="v_d_indirizzo">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Comune</span><span class="ces-val" id="v_d_comune">—</span><button type="button" class="ces-cb" data-copy="v_d_comune">COPIA</button></div>
       </div>
       <div class="ces-mcrd">
         <div class="ces-mcrd-title">LAVORATORE</div>
-        <div class="ces-row"><span class="ces-label">CF</span><span class="ces-val" id="v_l_cf">—</span><button class="ces-cb" data-copy="v_l_cf">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Cognome</span><span class="ces-val" id="v_l_cognome">—</span><button class="ces-cb" data-copy="v_l_cognome">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Nome</span><span class="ces-val" id="v_l_nome">—</span><button class="ces-cb" data-copy="v_l_nome">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Data nascita</span><span class="ces-val" id="v_l_data_nascita">—</span><button class="ces-cb" data-copy="v_l_data_nascita">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Sesso</span><span class="ces-val" id="v_l_sesso">—</span><button class="ces-cb" data-copy="v_l_sesso">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Indirizzo</span><span class="ces-val" id="v_l_indirizzo">—</span><button class="ces-cb" data-copy="v_l_indirizzo">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Comune</span><span class="ces-val" id="v_l_comune">—</span><button class="ces-cb" data-copy="v_l_comune">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">CF</span><span class="ces-val" id="v_l_cf">—</span><button type="button" class="ces-cb" data-copy="v_l_cf">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Cognome</span><span class="ces-val" id="v_l_cognome">—</span><button type="button" class="ces-cb" data-copy="v_l_cognome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Nome</span><span class="ces-val" id="v_l_nome">—</span><button type="button" class="ces-cb" data-copy="v_l_nome">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Data nascita</span><span class="ces-val" id="v_l_data_nascita">—</span><button type="button" class="ces-cb" data-copy="v_l_data_nascita">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Sesso</span><span class="ces-val" id="v_l_sesso">—</span><button type="button" class="ces-cb" data-copy="v_l_sesso">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Indirizzo</span><span class="ces-val" id="v_l_indirizzo">—</span><button type="button" class="ces-cb" data-copy="v_l_indirizzo">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Comune</span><span class="ces-val" id="v_l_comune">—</span><button type="button" class="ces-cb" data-copy="v_l_comune">COPIA</button></div>
       </div>
       <div class="ces-mcrd">
         <div class="ces-mcrd-title">CONTRATTO</div>
-        <div class="ces-row"><span class="ces-label">Tipo</span><span class="ces-val" id="v_c_tipo">—</span><button class="ces-cb" data-copy="v_c_tipo">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Assunzione</span><span class="ces-val" id="v_c_data_ass">—</span><button class="ces-cb" data-copy="v_c_data_ass">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Data fine</span><span class="ces-val" id="v_c_data_fine">—</span><button class="ces-cb" data-copy="v_c_data_fine">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Ore/sett</span><span class="ces-val" id="v_c_ore">—</span><button class="ces-cb" data-copy="v_c_ore">COPIA</button></div>
-        <div class="ces-row"><span class="ces-label">Paga INPS</span><span class="ces-val" id="v_c_paga">—</span><button class="ces-cb" data-copy="v_c_paga">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Tipo</span><span class="ces-val" id="v_c_tipo">—</span><button type="button" class="ces-cb" data-copy="v_c_tipo">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Assunzione</span><span class="ces-val" id="v_c_data_ass">—</span><button type="button" class="ces-cb" data-copy="v_c_data_ass">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Data fine</span><span class="ces-val" id="v_c_data_fine">—</span><button type="button" class="ces-cb" data-copy="v_c_data_fine">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Ore/sett</span><span class="ces-val" id="v_c_ore">—</span><button type="button" class="ces-cb" data-copy="v_c_ore">COPIA</button></div>
+        <div class="ces-row"><span class="ces-label">Paga INPS</span><span class="ces-val" id="v_c_paga">—</span><button type="button" class="ces-cb" data-copy="v_c_paga">COPIA</button></div>
         <div class="ces-row" style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;">
           <span class="ces-label" style="min-width:auto;">Cod.INPS</span>
           <input id="v_c_codice_inps" style="background:#09090B;border:1px solid #333;color:#EDEDED;border-radius:4px;padding:2px 6px;font-size:12px;flex:1;min-width:80px;" placeholder="Codice rapporto" value="">
-          <button class="incolla-btn" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">INCOLLA</button>
-          <button class="btn btn-sm btn-ghost-success salva-codice-btn" style="padding:0 10px;font-size:10px;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
+          <button type="button" class="incolla-btn" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:4px;padding:0 8px;font-size:10px;cursor:pointer;line-height:22px;height:22px;white-space:nowrap;">INCOLLA</button>
+          <button type="button" class="btn btn-sm btn-ghost-success salva-codice-btn" style="padding:0 10px;font-size:10px;line-height:22px;height:22px;white-space:nowrap;">SALVA</button>
           <span class="salva-feedback" style="font-size:11px;color:#10b981;font-weight:600;display:none;">✓</span>
         </div>
       </div>
@@ -172,7 +172,7 @@
           <div class="small-hint">Seleziona la causale per calcolare il preavviso.</div>
         </div>
         <div style="display:flex;gap:6px;margin-top:6px;">
-          <button id="btnSalvaCessazione" class="btn btn-ghost-success" style="padding:5px 20px;font-size:12px;"><i class="bi bi-check2 me-1"></i>SALVA</button>
+          <button type="button" id="btnSalvaCessazione" class="btn btn-ghost-success" style="padding:5px 20px;font-size:12px;"><i class="bi bi-check2 me-1"></i>SALVA</button>
           <span id="salvaCessFbk" style="font-size:12px;color:#10b981;font-weight:600;display:none;align-self:center;">✓</span>
         </div>
       </div>

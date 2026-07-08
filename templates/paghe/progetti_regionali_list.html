@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load tabelle_tags %}
 
 {% block breadcrumb %}
@@ -15,15 +15,15 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 fw-bold mb-1">{{ titolo|upper }}
-          <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+          <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         </h1>
         <p class="text-secondary small mb-0">Gestione {{ verbose_name|default:titolo|lower }}.</p>
     </div>
     <div class="d-flex gap-2 align-items-center">
         <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal"></span></span>
         <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" class="class="btn-xlsx""><i class="bi bi-download me-1"></i> Export XLSX</a>
-        <button class="btn btn-sm btn-ghost-success" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="padding:5px 12px;font-size:11px;"><i class="bi bi-upload me-1"></i> Importa</button>
-        <button class="btn btn-sm btn-ghost-primary" onclick="loadAjaxForm('/ajax/nuovo-tabella/progetti-regionali/', 'Nuovo {{ titolo }}')">
+        <button type="button" class="btn btn-sm btn-ghost-success" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="padding:5px 12px;font-size:11px;"><i class="bi bi-upload me-1"></i> Importa</button>
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="loadAjaxForm('/ajax/nuovo-tabella/progetti-regionali/', 'Nuovo {{ titolo }}')">
             <i class="bi bi-plus-lg me-1"></i> Nuovo
         </button>
     </div>

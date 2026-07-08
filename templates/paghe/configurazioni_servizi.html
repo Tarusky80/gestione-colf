@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
     <ol class="breadcrumb-list">
@@ -12,7 +12,7 @@
 {% block search_bar %}{% endblock %}
 <div class="container-fluid p-4">
   <h4 class="mb-4" style="color:#EDEDED;"><i class="bi bi-gear-wide-connected me-2"></i>Configurazioni Servizi Web
-    <button class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
+    <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
   </h4>
 
   <div class="row g-4">
@@ -261,7 +261,7 @@
           <div class="d-flex align-items-center gap-2" style="margin-top:4px;">
             {% if cartella_documenti_esiste %}
               <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Presente</span>
-              <button class="btn btn-sm btn-ghost" onclick="fetch('/ajax/apri-cartella-documenti/').then(function(r){return r.json()}).then(function(d){if(!d.success){mostraToast(d.error, false)}})" style="padding:4px 12px;font-size:11px;">
+              <button type="button" class="btn btn-sm btn-ghost" onclick="fetch('/ajax/apri-cartella-documenti/').then(function(r){return r.json()}).then(function(d){if(!d.success){mostraToast(d.error, false)}})" style="padding:4px 12px;font-size:11px;">
                 <i class="bi bi-folder-symlink me-1"></i> Apri cartella
               </button>
             {% else %}

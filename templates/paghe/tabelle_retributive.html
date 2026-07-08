@@ -28,7 +28,7 @@
         <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'tabelle_retributive_pdf' %}', 0)" class="btn btn-ghost-primary" style="text-decoration:none;">
             <i class="bi bi-download"></i> Scarica PDF
         </a>
-        <button class="btn btn-ghost-success" onclick="apriModaleInvioTabelle()">
+        <button type="button" class="btn btn-ghost-success" onclick="apriModaleInvioTabelle()">
             <i class="bi bi-envelope"></i> Invia Email
         </button>
         <a href="{% url 'verifica_ccnl' %}" class="btn btn-ghost-primary" style="text-decoration:none;">
