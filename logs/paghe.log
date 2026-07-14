@@ -20215,3 +20215,32 @@ INFO 2026-07-14 10:49:06,730 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drive
 INFO 2026-07-14 10:49:06,732 paghe.apps ============================================================
 INFO 2026-07-14 10:49:06,732 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
 INFO 2026-07-14 10:49:06,732 paghe.apps ============================================================
+INFO 2026-07-14 10:57:56,506 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-14 10:57:59,186 paghe.apps ============================================================
+INFO 2026-07-14 10:57:59,188 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-14 10:57:59,193 paghe.apps ============================================================
+INFO 2026-07-14 10:57:59,196 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-14 10:57:59,224 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-14 10:57:59,483 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-14 10:57:59,483 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-14 10:57:59,614 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-14 10:57:59,618 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-14 10:57:59,626 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-14 10:57:59,645 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-14 10:58:01,511 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-14 10:58:01,608 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-14 10:58:01,609 paghe.apps ============================================================
+INFO 2026-07-14 10:58:01,610 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-14 10:58:01,610 paghe.apps ============================================================
+INFO 2026-07-14 10:58:19,860 paghe.apps ============================================================
+INFO 2026-07-14 10:58:19,861 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-14 10:58:19,861 paghe.apps ============================================================
+INFO 2026-07-14 10:58:19,862 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-14 10:58:19,874 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-14 10:58:20,044 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-14 10:58:20,044 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-14 10:58:20,165 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-14 10:58:20,166 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-14 10:58:20,168 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-14 10:58:20,169 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-14 10:58:21,035 paghe.apps [Scheduler] Fermato con successo.

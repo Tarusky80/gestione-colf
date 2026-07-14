@@ -339,7 +339,7 @@ def _calcola_busta_data(contratto, mese, anno, is_convivente=True, sostituzione=
         'paga_base': {'orario': paga_base_oraria, 'totale': paga_base_totale},
         'paga_effettiva_inps_oraria': round(paga_base_oraria + float(p.tredicesima_oraria), 4),
         'paga_effettiva_inps_mensile': round((paga_base_oraria + float(p.tredicesima_oraria)) * ore_mensili, 4),
-        'indennita': indennita,
+        'indennita': [{'label': i['label'], 'orario': round(i['totale'] / ore_mensili, 4) if ore_mensili > 0 else 0, 'totale': round(i['totale'], 4)} for i in indennita],
         'totale_indennita': round(sum(i['totale'] for i in indennita), 4),
         'scatti_anzianita': {'valore': round(scatti_totale, 4), 'orario': round(scatti_orario, 4), 'dettaglio': scatti_dettaglio},
         'ratei_pagati': ratei_pagati,
