@@ -46,7 +46,7 @@ def _calcola_indennita(contratto, p, toggles, attr_overrides=None, default_overr
         if default_overrides and key in default_overrides:
             campo_default = default_overrides[key]
         if toggles.get(key, getattr(contratto, campo_default, False) if campo_default else False):
-            indennita.append({'label': label, 'importo': v})
+            indennita.append({'label': label, 'totale': v})
             totale += v
     return indennita, totale
 
@@ -409,8 +409,8 @@ def _calcola_busta_inversa_data(contratto, mese, anno, ore_mensili=None, ore_set
             ratei_accantonati_out.append({'label': l, 'orario': v, 'totale': tot})
             totale_accantonati += tot
         for i in indennita:
-            i['orario'] = round(i['importo'] / ore, 4) if ore > 0 else 0
-            i['totale'] = round(i['importo'], 4)
+            i['orario'] = round(i['totale'] / ore, 4) if ore > 0 else 0
+            i['totale'] = round(i['totale'], 4)
         ratei_pagati = _build_ratei_pagati(ratei_inclusi_out, ratei_accantonati_out, ore)
         lordo = round(paga_base_totale + totale_indennita_mensile + scatti_totale + sum(r['totale'] for r in ratei_inclusi_out), 2)
         contributi = _calcola_contributi(contratto, opzioni, ore_inps, ore_sett, paga_eff_inps_oraria)
@@ -628,7 +628,7 @@ def _calcola_busta_conviventi_ccnl_data(contratto, mese, anno, tipo_orario='FT',
         'paga_base': {'orario': paga_base_oraria, 'totale': round(paga_base_oraria * ore_mensili, 4)},
         'paga_effettiva_inps_oraria': round(paga_base_oraria + float(p.tredicesima_oraria), 4),
         'paga_effettiva_inps_mensile': round((paga_base_oraria + float(p.tredicesima_oraria)) * ore_mensili, 4),
-        'indennita': [{'label': i['label'], 'orario': round(i['importo'] / ore_mensili, 4) if ore_mensili > 0 else 0, 'totale': round(i['importo'], 4)} for i in indennita],
+        'indennita': [{'label': i['label'], 'orario': round(i['totale'] / ore_mensili, 4) if ore_mensili > 0 else 0, 'totale': round(i['totale'], 4)} for i in indennita],
         'totale_indennita': round(totale_indennita_mensile, 4),
         'scatti_anzianita': {'valore': round(scatti_totale, 4), 'orario': round(scatti_orario, 4), 'dettaglio': scatti_dettaglio},
         'minimo_ccnl': minimo_mensile,
