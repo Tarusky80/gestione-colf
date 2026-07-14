@@ -62,9 +62,9 @@ select.form-control option { background:#09090b; color:#e2e8f0; }
 
   <div class="doc-breadcrumb" style="font-size:12px;color:#5C5F66;margin-bottom:10px;">
     <a href="{% url 'documentale_root' %}" style="color:var(--tipo-colore,#5E6AD2);text-decoration:none;">Modelli</a>
-    <span style="margin:0 6px;color:#3a3b40;">â€º</span>
+    <span style="margin:0 6px;color:#3a3b40;">&rsaquo;</span>
     <a href="{% url 'documentale_list' tipo_corrente %}" style="color:var(--tipo-colore,#5E6AD2);text-decoration:none;">{{ tipo_label }}</a>
-    <span style="margin:0 6px;color:#3a3b40;">â€º</span>
+    <span style="margin:0 6px;color:#3a3b40;">&rsaquo;</span>
     <span style="color:#8A8F98;">{% if is_new %}Nuovo{% else %}{{ modello.codice|default:'Modifica' }}{% endif %}</span>
   </div>
 
