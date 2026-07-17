@@ -90,6 +90,26 @@
 
 ### 13. ✅ Pulizia console.log/DEBUG
 - ✅ 36 occorrenze rimosse/sostituite in 14 file
+
+### 14. ✅ JS estratti da base.html
+- ✅ `sort-table.js`, `nav-layout.js`, `csrf-utils.js`, `toast.js`, `table-filters.js`
+
+### 15. ✅ Style→classe CSS parziale
+- ✅ `.ml-auto`, `.fw-8`, `.fs-16/18/20/22`, `.empty-state`, `.error-state`, `.label-info`, etc.
+
+### 16. ✅ Versione Mobile
+- ✅ Interfaccia touch-first con `/m/` — dashboard, datori, lavoratori, contratti, buste, documenti
+- ✅ Dettaglio entità, filtri a chips, pull-to-refresh, swipe-to-action
+- ✅ Grafica: topbar gradient, bottom nav pill, card bordo colorato, tap ripple
+
+### 17. ✅ Help/Aiuto unificati
+- ✅ Standardizzati tutti i ~44 modali Aiuto con struttura `modal-linear` + `help-section`
+- ✅ Contenuti completi riscritti (descrizione, come usare, parametri, scorciatoie)
+- ✅ CSS `.help-section` / `.help-section-title` in `utils.css`
+- ✅ `gestione_db.html` convertito da overlay custom a Bootstrap modal
+- ✅ Pushato su GitHub (`8640bd6`)
+
+## Prossimi miglioramenti proposti
 - ✅ `ajax_helpers.js`: 3 debug log rimossi
 - ✅ `base.html`: 19 console rimossi (DEBUG step, progetti, TinyMCE, RigeneraCessazione)
 - ✅ 7 template calcolo: console.error(e) rimossi (ridondanti con mostraToast già presenti)
