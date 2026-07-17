@@ -3,42 +3,41 @@
 {% block m_topbar_title %}Archivio Buste{% endblock %}
 {% block m_content %}
 
-<div style="display:flex;gap:8px;margin-bottom:12px;">
-    <select id="f-mese" class="m-select" style="flex:1;" onchange="filtra()">
-        <option value="">Mese</option>
-        {% for m in mesi_range %}
-        <option value="{{ m }}" {% if m == mese %}selected{% endif %}>{{ m }}</option>
-        {% endfor %}
-    </select>
-    <select id="f-anno" class="m-select" style="flex:1;" onchange="filtra()">
-        <option value="">Anno</option>
-        {% for a in anni_range %}
-        <option value="{{ a }}" {% if a == anno %}selected{% endif %}>{{ a }}</option>
-        {% endfor %}
-    </select>
+<div class="m-chips" id="m-chips-mese">
+    <span class="m-chip {% if not request.GET.mese %}active{% endif %}" data-val="">Tutti</span>
+    {% for m in mesi_range %}
+    <span class="m-chip {% if m|stringformat:'i' == request.GET.mese %}active{% endif %}" data-val="{{ m }}">{{ m }}</span>
+    {% endfor %}
+</div>
+<div class="m-chips" id="m-chips-anno">
+    {% for a in anni_range %}
+    <span class="m-chip {% if a|stringformat:'i' == request.GET.anno %}active{% endif %}" data-val="{{ a }}">{{ a }}</span>
+    {% endfor %}
 </div>
 
 <div id="mobile-list">
 {% for b in buste %}
-<a class="m-card" href="/?busta={{ b.pk }}" style="display:block;">
-    <div style="font-size:12px;color:#8A8F98;">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
-    <div class="m-list-title" style="margin:2px 0;">{{ b.contratto.lavoratore.nome_cognome|default:"?" }}</div>
-    <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }}</div>
-    <div style="display:flex;gap:6px;margin-top:6px;">
-        <span class="m-badge m-badge-gray">{{ b.tipo_calcolo }}</span>
-        {% if b.stato == 'APPROVATA' %}
-        <span class="m-badge m-badge-green">Approvata</span>
-        {% elif b.stato == 'ARCHIVIATA' %}
-        <span class="m-badge m-badge-gray">Archiviata</span>
-        {% else %}
-        <span class="m-badge m-badge-gray">Bozza</span>
+<div class="m-swipe-wrap" data-busta="{{ b.pk }}">
+    <div class="m-swipe-actions">
+        {% if b.documento %}
+        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriPDF({{ b.documento.pk }})"><i class="bi bi-file-pdf" style="font-size:18px;"></i></button>
         {% endif %}
     </div>
-    <div style="display:flex;gap:8px;margin-top:6px;font-size:12px;">
-        <span>Lordo: € {{ b.totale_lordo }}</span>
-        <span>Netto: € {{ b.netto }}</span>
+    <div class="m-swipe-card m-card m-card-busta" href="#">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:12px;color:#8A8F98;">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
+                <div class="m-list-title" style="margin:2px 0;">{{ b.contratto.lavoratore.nome_cognome|default:"?" }}</div>
+                <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }} · {{ b.tipo_calcolo }}</div>
+            </div>
+            <span class="m-badge {% if b.stato == 'APPROVATA' %}m-badge-green{% elif b.stato == 'ARCHIVIATA' %}m-badge-gray{% else %}m-badge-gray{% endif %}">{{ b.stato }}</span>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px;font-size:13px;">
+            <span>Lordo: <strong>€ {{ b.totale_lordo }}</strong></span>
+            <span>Netto: <strong>€ {{ b.netto }}</strong></span>
+        </div>
     </div>
-</a>
+</div>
 {% empty %}
 <div class="m-empty"><i class="bi bi-calculator"></i>Nessuna busta trovata</div>
 {% endfor %}
@@ -48,13 +47,58 @@
 <a class="m-btn m-btn-outline" href="/buste/archivio/">Versione desktop →</a>
 
 <script>
-function filtra(){
-    const m = document.getElementById('f-mese').value;
-    const a = document.getElementById('f-anno').value;
-    const params = new URLSearchParams();
+/* ── Chips filter ── */
+document.querySelectorAll('.m-chips').forEach(function(chips){
+    chips.addEventListener('click', function(e){
+        var chip = e.target.closest('.m-chip');
+        if(!chip) return;
+        chips.querySelectorAll('.m-chip').forEach(function(c){ c.classList.remove('active'); });
+        chip.classList.add('active');
+        filtraBuste();
+    });
+});
+function filtraBuste(){
+    var m = document.querySelector('#m-chips-mese .m-chip.active').dataset.val;
+    var a = document.querySelector('#m-chips-anno .m-chip.active').dataset.val;
+    var params = new URLSearchParams();
     if(m) params.set('mese', m);
     if(a) params.set('anno', a);
     location.href = '/m/buste/archivio/?' + params.toString();
 }
+function apriPDF(pk){
+    window.open('/documenti/?focus='+pk, '_blank');
+}
+
+/* ── Swipe-to-action ── */
+(function(){
+    var startX = 0, currentX = 0, swiping = null;
+    document.addEventListener('touchstart', function(e){
+        var wrap = e.target.closest('.m-swipe-wrap');
+        if(!wrap) return;
+        var card = wrap.querySelector('.m-swipe-card');
+        if(!card) return;
+        startX = e.touches[0].clientX;
+        swiping = { wrap: wrap, card: card, dx: 0 };
+    }, {passive:true});
+    document.addEventListener('touchmove', function(e){
+        if(!swiping) return;
+        currentX = e.touches[0].clientX;
+        swiping.dx = currentX - startX;
+        if(swiping.dx < -20){
+            swiping.card.style.transform = 'translateX('+Math.max(swiping.dx, -120)+'px)';
+        } else if(swiping.dx > 20){
+            swiping.card.style.transform = 'translateX(0px)';
+        }
+    }, {passive:true});
+    document.addEventListener('touchend', function(){
+        if(!swiping) return;
+        if(swiping.dx < -60){
+            swiping.card.style.transform = 'translateX(-120px)';
+        } else {
+            swiping.card.style.transform = 'translateX(0)';
+        }
+        swiping = null;
+    }, {passive:true});
+})();
 </script>
 {% endblock %}

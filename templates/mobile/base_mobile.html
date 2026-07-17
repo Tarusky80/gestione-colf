@@ -16,33 +16,93 @@
     <div style="width:32px;"></div>
     {% endblock %}
     <div class="m-topbar-title">{% block m_topbar_title %}Gestione Colf{% endblock %}</div>
+    {% block m_topbar_right %}
     <div style="width:32px;"></div>
+    {% endblock %}
+</div>
+
+<!-- Pull-to-refresh indicator -->
+<div id="m-pull-indicator" class="m-pull-indicator">
+    <div class="spinner"></div>
 </div>
 
 <!-- Content -->
-<div class="m-content">
+<div class="m-content" id="m-content">
     {% block m_content %}{% endblock %}
 </div>
 
 <!-- Bottom nav -->
-<nav class="m-bottom-nav">
-    <a href="/m/" class="m-nav-item {% if m_nav == 'dash' %}active{% endif %}">
+<nav class="m-bottom-nav" id="m-bottom-nav">
+    <div class="m-nav-pill" id="m-nav-pill"></div>
+    <a href="/m/" class="m-nav-item {% if m_nav == 'dash' %}active{% endif %}" data-nav="dash">
         <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
     </a>
-    <a href="/m/datori/" class="m-nav-item {% if m_nav == 'datori' %}active{% endif %}">
+    <a href="/m/datori/" class="m-nav-item {% if m_nav == 'datori' %}active{% endif %}" data-nav="datori">
         <i class="bi bi-building"></i><span>Datori</span>
     </a>
-    <a href="/m/lavoratori/" class="m-nav-item {% if m_nav == 'lav' %}active{% endif %}">
+    <a href="/m/lavoratori/" class="m-nav-item {% if m_nav == 'lav' %}active{% endif %}" data-nav="lav">
         <i class="bi bi-people"></i><span>Lavor.</span>
     </a>
-    <a href="/m/buste/" class="m-nav-item {% if m_nav == 'buste' %}active{% endif %}">
+    <a href="/m/buste/" class="m-nav-item {% if m_nav == 'buste' %}active{% endif %}" data-nav="buste">
         <i class="bi bi-calculator"></i><span>Buste</span>
     </a>
-    <a href="/m/documenti/" class="m-nav-item {% if m_nav == 'docs' %}active{% endif %}">
+    <a href="/m/documenti/" class="m-nav-item {% if m_nav == 'docs' %}active{% endif %}" data-nav="docs">
         <i class="bi bi-folder"></i><span>Doc.</span>
     </a>
 </nav>
 
+<script>
+/* ── Pill animata ── */
+(function(){
+    var pill = document.getElementById('m-nav-pill');
+    function posizionaPill(){
+        var active = document.querySelector('.m-nav-item.active');
+        if(!active) return;
+        var nav = document.getElementById('m-bottom-nav');
+        pill.style.left = active.offsetLeft + 'px';
+        pill.style.width = active.offsetWidth + 'px';
+    }
+    posizionaPill();
+    window.addEventListener('resize', posizionaPill);
+})();
+
+/* ── Tap ripple ── */
+document.addEventListener('pointerdown', function(e){
+    var t = e.target.closest('.m-card, .m-dash-card, .m-btn, .m-chip');
+    if(!t) return;
+    var r = t.getBoundingClientRect();
+    t.style.setProperty('--x', ((e.clientX - r.left)/r.width*100)+'%');
+    t.style.setProperty('--y', ((e.clientY - r.top)/r.height*100)+'%');
+});
+
+/* ── Pull-to-refresh ── */
+(function(){
+    var content = document.getElementById('m-content');
+    var indicator = document.getElementById('m-pull-indicator');
+    if(!content) return;
+    var startY = 0, pulling = false, moved = false;
+    content.addEventListener('touchstart', function(e){
+        if(content.scrollTop <= 0){ startY = e.touches[0].clientY; pulling = true; moved = false; }
+    }, {passive:true});
+    content.addEventListener('touchmove', function(e){
+        if(!pulling) return;
+        var dy = e.touches[0].clientY - startY;
+        if(dy > 0){
+            moved = true;
+            indicator.classList.add('visible');
+            if(dy > 60){ indicator.innerHTML = '<span style="font-weight:600;color:#5E6AD2;">Rilascia per aggiornare</span>'; }
+            else { indicator.innerHTML = '<div class="spinner"></div>'; }
+        }
+    }, {passive:true});
+    content.addEventListener('touchend', function(e){
+        if(!pulling) return;
+        pulling = false;
+        var dy = e.changedTouches[0].clientY - startY;
+        indicator.classList.remove('visible');
+        if(dy > 60 && moved){ location.reload(); }
+    }, {passive:true});
+})();
+</script>
 {% block m_extra_js %}{% endblock %}
 </body>
 </html>

@@ -4,16 +4,16 @@
 {% block m_content %}
 <div class="m-search-wrap">
     <i class="bi bi-search"></i>
-    <input class="m-search" type="search" placeholder="Cerca lavoratore..." oninput="filterMobileList(this.value)">
+    <input class="m-search" type="search" placeholder="Cerca lavoratore..." oninput="filterMobileList(this.value)" id="m-search-input">
 </div>
 <div id="mobile-list">
 {% for l in lavoratori %}
-    <a class="m-card" href="#" style="display:block;">
-        <div class="m-list-item" style="border:none;padding:0;">
-            <div><i class="bi bi-person" style="font-size:20px;color:#5E6AD2;"></i></div>
-            <div style="flex:1;">
+    <a class="m-card m-card-lav" href="/m/lavoratori/{{ l.pk }}/">
+        <div class="m-list-item">
+            <div><i class="bi bi-person" style="font-size:20px;color:#10b981;"></i></div>
+            <div style="flex:1;min-width:0;">
                 <div class="m-list-title">{{ l.nome_cognome }}</div>
-                <div class="m-list-sub">{{ l.comune_domicilio_fiscale|default:"" }} — {{ l.cf|default:"" }}</div>
+                <div class="m-list-sub">{{ l.comune_domicilio_fiscale|default:"" }}{% if l.codice_fiscale %} · {{ l.codice_fiscale }}{% endif %}</div>
             </div>
             <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
         </div>
@@ -25,7 +25,7 @@
 <a class="m-fab" href="#" title="Nuovo lavoratore"><i class="bi bi-plus"></i></a>
 <script>
 function filterMobileList(q){
-    document.querySelectorAll('#mobile-list .m-card').forEach(c=>{
+    document.querySelectorAll('#mobile-list .m-card').forEach(function(c){
         c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'block':'none';
     });
 }

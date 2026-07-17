@@ -3,20 +3,18 @@
 {% block m_topbar_title %}Documenti{% endblock %}
 {% block m_content %}
 
-<div style="margin-bottom:12px;">
-    <select id="f-tipo" class="m-select" onchange="filtra()">
-        <option value="">Tutti i tipi</option>
-        {% for t in tipi_documento %}
-        <option value="{{ t }}" {% if t == tipo_filtro %}selected{% endif %}>{{ t }}</option>
-        {% endfor %}
-    </select>
+<div class="m-chips" id="m-chips-tipo">
+    <span class="m-chip {% if not tipo_filtro %}active{% endif %}" data-val="">Tutti</span>
+    {% for t in tipi_documento %}
+    <span class="m-chip {% if t == tipo_filtro %}active{% endif %}" data-val="{{ t }}">{{ t }}</span>
+    {% endfor %}
 </div>
 
 <div id="mobile-list">
 {% for d in documenti %}
-<a class="m-card" href="/m/documenti/" style="display:block;">
+<a class="m-card m-card-doc" href="#">
     <div style="display:flex;align-items:center;gap:10px;">
-        <div><i class="bi bi-file-earmark" style="font-size:22px;color:#5E6AD2;"></i></div>
+        <div><i class="bi bi-file-earmark" style="font-size:22px;color:#f59e0b;"></i></div>
         <div style="flex:1;min-width:0;">
             <div class="m-list-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ d.titolo|default:"Senza titolo" }}</div>
             <div class="m-list-sub">
@@ -40,9 +38,18 @@
 <a class="m-btn m-btn-outline" href="/documenti/">Versione desktop →</a>
 
 <script>
-function filtra(){
-    const t = document.getElementById('f-tipo').value;
-    const params = new URLSearchParams();
+document.querySelectorAll('.m-chips').forEach(function(chips){
+    chips.addEventListener('click', function(e){
+        var chip = e.target.closest('.m-chip');
+        if(!chip) return;
+        chips.querySelectorAll('.m-chip').forEach(function(c){ c.classList.remove('active'); });
+        chip.classList.add('active');
+        filtraDoc();
+    });
+});
+function filtraDoc(){
+    var t = document.querySelector('#m-chips-tipo .m-chip.active').dataset.val;
+    var params = new URLSearchParams();
     if(t) params.set('tipo', t);
     location.href = '/m/documenti/?' + params.toString();
 }

@@ -1,0 +1,29 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}{{ d.nome_cognome }} — Gestione Colf{% endblock %}
+{% block m_topbar_left %}<a href="/m/datori/" class="m-topbar-back"><i class="bi bi-chevron-left"></i></a>{% endblock %}
+{% block m_topbar_title %}{{ d.nome_cognome }}{% endblock %}
+{% block m_content %}
+<div class="m-card m-card-datore">
+    <div class="m-detail-row"><span class="label">Codice Fiscale</span><span class="value">{{ d.codice_fiscale|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Residenza</span><span class="value">{{ d.comune_residenza|default:"—" }}{% if d.prov_residenza %} ({{ d.prov_residenza }}){% endif %}</span></div>
+    <div class="m-detail-row"><span class="label">Indirizzo</span><span class="value">{{ d.indirizzo_residenza|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">CAP</span><span class="value">{{ d.cap_residenza|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Telefono</span><span class="value">{{ d.telefono|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Email</span><span class="value">{{ d.email|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Cellulare</span><span class="value">{{ d.cellulare|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">PEC</span><span class="value">{{ d.pec|default:"—" }}</span></div>
+</div>
+
+<h3 style="font-size:14px;margin:14px 0 8px;color:#8A8F98;">Contratti</h3>
+{% for c in contratti %}
+<a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-contr">
+    <div class="m-list-title">{{ c.lavoratore.nome_cognome|default:"?" }}</div>
+    <div class="m-list-sub">{{ c.ccnl|default:"" }} — {{ c.mansione|default:"" }}</div>
+</a>
+{% empty %}
+<div class="m-empty"><i class="bi bi-file-earmark-text"></i>Nessun contratto</div>
+{% endfor %}
+
+<a class="m-btn m-btn-outline" href="/m/datori/" style="margin-top:10px;">← Elenco datori</a>
+<a class="m-btn m-btn-outline" href="/">Versione desktop →</a>
+{% endblock %}

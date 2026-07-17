@@ -116,10 +116,16 @@
 ### 16. 📱 Responsive Design — Versione Mobile Separata
 - ✅ Piano definito: prefisso `/m/`, template in `templates/mobile/`, CSS in `static/css/mobile.css`
 - ✅ **Step 1**: `base_mobile.html` + `mobile.css` + rilevatore redirect in `<head>` di base.html
-- ✅ **Step 2**: Dashboard mobile (`/m/`) — 4 card grid, totale contratti, ultimi 3 mesi contributi
-- ✅ **Step 3**: Datori / Lavoratori / Contratti lista con ricerca testuale + FAB + scheletro base
-- ⏳ **Step 4**: Calcoli Busta mobile
-- ⏳ **Step 5**: Archivio Buste + Documenti
+- ✅ **Step 2**: Dashboard mobile (`/m/`) — 4 card grid, totale contratti, trend 3 mesi
+- ✅ **Step 3**: Datori / Lavoratori / Contratti lista + FAB + link a dettaglio
+- ✅ **Step 4**: Calcoli Busta — select contratto + chips mese/anno → calcola → Lordo/Contributi/Netto
+- ✅ **Step 5**: Archivio Buste + Documenti — filtri a chips, swipe-to-action PDF
+- ✅ **Dettaglio entità**: 3 pagine (`/m/datori/<pk>/`, `/m/lavoratori/<pk>/`, `/m/contratti/<pk>/`)
+- ✅ **Grafica**: topbar gradient, bottom nav pill animata, card bordo colorato, tap ripple, skeleton fluido
+- ✅ **Filtri a chips**: chips orizzontali scrollabili per mese/anno/tipo
+- ✅ **Pull-to-refresh**: trascina giù per ricaricare
+- ✅ **Swipe-to-action**: swipe sinistra nelle buste mostra pulsante PDF
+- ✅ **Link versione mobile nella sidebar** desktop (base.html)
 
 ### 17. ✅ Loading skeletons per pagine lista
 - ✅ `datori_list.html` — 5 scheletri su 8 colonne, fade-out 400ms

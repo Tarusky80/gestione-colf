@@ -21195,3 +21195,318 @@ INFO 2026-07-17 12:36:49,812 paghe.apps [Playwright] Controllo pacchetto Python.
 INFO 2026-07-17 12:36:49,818 paghe.apps [Playwright] OK (1.61.0)
 INFO 2026-07-17 12:36:49,819 paghe.apps [Playwright] Controllo browser Chromium...
 INFO 2026-07-17 12:36:50,632 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:46:43,398 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:46:45,223 paghe.apps ============================================================
+INFO 2026-07-17 12:46:45,225 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:46:45,225 paghe.apps ============================================================
+INFO 2026-07-17 12:46:45,228 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:46:45,266 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:46:45,485 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:46:45,486 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:46:45,713 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:46:45,714 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:46:45,718 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:46:45,719 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:46:47,080 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:46:47,150 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:46:47,151 paghe.apps ============================================================
+INFO 2026-07-17 12:46:47,152 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:46:47,152 paghe.apps ============================================================
+INFO 2026-07-17 12:46:56,519 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:46:57,744 paghe.apps ============================================================
+INFO 2026-07-17 12:46:57,744 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:46:57,745 paghe.apps ============================================================
+INFO 2026-07-17 12:46:57,746 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:46:57,770 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:46:57,868 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:46:57,868 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:46:57,976 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:46:57,977 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:46:57,978 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:46:57,979 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:46:58,608 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:46:58,635 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:46:58,635 paghe.apps ============================================================
+INFO 2026-07-17 12:46:58,635 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:46:58,636 paghe.apps ============================================================
+INFO 2026-07-17 12:48:35,333 paghe.apps ============================================================
+INFO 2026-07-17 12:48:35,334 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:48:35,335 paghe.apps ============================================================
+INFO 2026-07-17 12:48:35,336 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:48:35,360 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:48:35,491 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:48:35,492 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:48:35,646 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:48:35,647 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:48:35,650 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:48:35,650 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:48:36,745 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:51:34,396 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:51:34,634 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:51:41,760 paghe.apps ============================================================
+INFO 2026-07-17 12:51:41,761 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:51:41,761 paghe.apps ============================================================
+INFO 2026-07-17 12:51:41,762 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:51:41,777 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:51:41,854 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:51:41,855 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:51:41,932 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:51:41,932 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:51:41,934 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:51:41,935 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:51:42,452 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:51:43,971 paghe.apps ============================================================
+INFO 2026-07-17 12:51:43,972 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:51:43,972 paghe.apps ============================================================
+INFO 2026-07-17 12:51:43,973 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:51:43,993 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:51:44,062 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:51:44,063 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:51:44,122 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:51:44,123 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:51:44,124 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:51:44,124 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:51:44,553 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:51:44,662 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:51:44,662 paghe.apps ============================================================
+INFO 2026-07-17 12:51:44,663 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:51:44,663 paghe.apps ============================================================
+INFO 2026-07-17 12:51:44,831 paghe.apps ============================================================
+INFO 2026-07-17 12:51:44,832 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:51:44,832 paghe.apps ============================================================
+INFO 2026-07-17 12:51:44,832 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:51:44,851 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:51:44,918 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:51:44,918 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:51:45,011 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:51:45,012 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:51:45,014 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:51:45,015 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:51:45,538 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:51:45,561 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:51:45,561 paghe.apps ============================================================
+INFO 2026-07-17 12:51:45,561 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:51:45,562 paghe.apps ============================================================
+INFO 2026-07-17 12:52:41,388 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:52:42,933 paghe.apps ============================================================
+INFO 2026-07-17 12:52:42,933 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:52:42,934 paghe.apps ============================================================
+INFO 2026-07-17 12:52:42,935 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:52:42,953 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:52:43,048 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:52:43,048 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:52:43,175 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:52:43,177 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:52:43,180 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:52:43,180 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:52:44,876 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:52:44,957 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:52:44,959 paghe.apps ============================================================
+INFO 2026-07-17 12:52:44,960 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:52:44,960 paghe.apps ============================================================
+INFO 2026-07-17 12:52:51,223 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:52:52,476 paghe.apps ============================================================
+INFO 2026-07-17 12:52:52,476 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:52:52,476 paghe.apps ============================================================
+INFO 2026-07-17 12:52:52,478 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:52:52,494 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:52:52,578 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:52:52,578 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:52:52,670 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:52:52,671 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:52:52,673 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:52:52,673 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:52:53,288 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:52:53,321 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:52:53,322 paghe.apps ============================================================
+INFO 2026-07-17 12:52:53,323 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:52:53,323 paghe.apps ============================================================
+INFO 2026-07-17 12:52:59,151 paghe.apps ============================================================
+INFO 2026-07-17 12:52:59,151 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:52:59,151 paghe.apps ============================================================
+INFO 2026-07-17 12:52:59,152 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:52:59,170 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:52:59,236 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:52:59,236 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:52:59,340 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:52:59,340 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:52:59,342 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:52:59,343 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:52:59,742 paghe.apps [Scheduler] Fermato con successo.
+ERROR 2026-07-17 12:54:59,239 django.request Internal Server Error: /m/datori/CRNGRL80E04G113P/
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\paghe\views\_mobile.py", line 118, in mobile_datore_detail
+    datore = get_object_or_404(DatoreLavoro, pk=int(identifier))
+                                                ~~~^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'CRNGRL80E04G113P'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\GESTIONECOLF\paghe\views\_mobile.py", line 120, in mobile_datore_detail
+    datore = get_object_or_404(DatoreLavoro, cf=identifier)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 625, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+                                                        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 1542, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 1560, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 1570, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1676, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1708, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1556, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1363, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1842, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'cf' into field. Choices are: accesso, cap, codice_fiscale, cognome, comune, contratti_come_datore, documenti_archiviati, email, indirizzo, invio_digitale_documenti, nome, nome_cognome, note_datore, pin_inps, provincia, richieste_modifica, telefono, visibile_a
+ERROR 2026-07-17 12:55:15,396 django.request Internal Server Error: /m/datori/CRNGRL80E04G113P/
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\paghe\views\_mobile.py", line 118, in mobile_datore_detail
+    datore = get_object_or_404(DatoreLavoro, pk=int(identifier))
+                                                ~~~^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: 'CRNGRL80E04G113P'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\GESTIONECOLF\paghe\views\_mobile.py", line 120, in mobile_datore_detail
+    datore = get_object_or_404(DatoreLavoro, cf=identifier)
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\shortcuts.py", line 90, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 625, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+                                                        ~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 1542, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 1560, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\query.py", line 1570, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1676, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1708, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1556, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1363, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GESTIONECOLF\.venv\Lib\site-packages\django\db\models\sql\query.py", line 1842, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'cf' into field. Choices are: accesso, cap, codice_fiscale, cognome, comune, contratti_come_datore, documenti_archiviati, email, indirizzo, invio_digitale_documenti, nome, nome_cognome, note_datore, pin_inps, provincia, richieste_modifica, telefono, visibile_a
+INFO 2026-07-17 12:55:31,262 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:55:32,708 paghe.apps ============================================================
+INFO 2026-07-17 12:55:32,709 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:55:32,709 paghe.apps ============================================================
+INFO 2026-07-17 12:55:32,711 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:55:32,728 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:55:32,800 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:55:32,800 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:55:32,893 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:55:32,893 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:55:32,896 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:55:32,896 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:55:33,434 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:55:33,460 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:55:33,460 paghe.apps ============================================================
+INFO 2026-07-17 12:55:33,461 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:55:33,461 paghe.apps ============================================================
+INFO 2026-07-17 12:56:20,723 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:56:22,172 paghe.apps ============================================================
+INFO 2026-07-17 12:56:22,173 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:56:22,173 paghe.apps ============================================================
+INFO 2026-07-17 12:56:22,174 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:56:22,194 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:56:22,279 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:56:22,280 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:56:22,383 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:56:22,383 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:56:22,385 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:56:22,386 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:56:22,975 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:56:23,003 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:56:23,003 paghe.apps ============================================================
+INFO 2026-07-17 12:56:23,004 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:56:23,004 paghe.apps ============================================================
+INFO 2026-07-17 12:56:50,214 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 12:56:51,621 paghe.apps ============================================================
+INFO 2026-07-17 12:56:51,621 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:56:51,622 paghe.apps ============================================================
+INFO 2026-07-17 12:56:51,623 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:56:51,637 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:56:51,711 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:56:51,712 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:56:51,793 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:56:51,794 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:56:51,797 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:56:51,797 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:56:53,368 paghe.apps [Playwright] OK (C:\Users\coron\AppData\Local\ms-playwright\chromium-1228\chrome-win64\chrome.exe)
+INFO 2026-07-17 12:56:53,433 paghe.apps [Chromedriver] OK (C:\GESTIONECOLF\drivers\chromedriver.exe)
+INFO 2026-07-17 12:56:53,434 paghe.apps ============================================================
+INFO 2026-07-17 12:56:53,435 paghe.apps   VERIFICA COMPLETATA — Sistema pronto
+INFO 2026-07-17 12:56:53,435 paghe.apps ============================================================
+INFO 2026-07-17 12:57:15,983 paghe.apps ============================================================
+INFO 2026-07-17 12:57:15,983 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 12:57:15,983 paghe.apps ============================================================
+INFO 2026-07-17 12:57:15,984 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 12:57:16,003 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 12:57:16,071 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 12:57:16,071 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 12:57:16,157 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 12:57:16,158 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 12:57:16,159 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 12:57:16,159 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 12:57:16,547 paghe.apps [Scheduler] Fermato con successo.

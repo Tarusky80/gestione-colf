@@ -110,3 +110,36 @@ def mobile_documenti(request):
         'tipi_documento': DocumentoArchiviato.objects.values_list('tipo', flat=True).distinct().order_by('tipo'),
         'tipo_filtro': tipo or '',
     })
+
+
+@login_required
+def mobile_datore_detail(request, identifier):
+    datore = get_object_or_404(DatoreLavoro, pk=identifier)
+    contratti = ContrattoAttivo.objects.filter(datore=datore).select_related('lavoratore')[:10]
+    return render(request, 'mobile/datore_detail.html', {
+        'm_nav': 'datori',
+        'd': datore,
+        'contratti': contratti,
+    })
+
+
+@login_required
+def mobile_lavoratore_detail(request, identifier):
+    lav = get_object_or_404(Lavoratore, pk=identifier)
+    contratti = ContrattoAttivo.objects.filter(lavoratore=lav).select_related('datore')[:10]
+    return render(request, 'mobile/lavoratore_detail.html', {
+        'm_nav': 'lav',
+        'l': lav,
+        'contratti': contratti,
+    })
+
+
+@login_required
+def mobile_contratto_detail(request, pk):
+    c = get_object_or_404(ContrattoAttivo.objects.select_related('datore', 'lavoratore', 'parametri_minimi__livello'), pk=pk)
+    buste = BustaPaga.objects.filter(contratto=c).order_by('-anno', '-mese')[:5]
+    return render(request, 'mobile/contratto_detail.html', {
+        'm_nav': 'contr',
+        'c': c,
+        'buste': buste,
+    })
