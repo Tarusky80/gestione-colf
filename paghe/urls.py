@@ -111,6 +111,7 @@ urlpatterns = [
     path('ajax/busta-malattia-pdf/<int:pk>/', views.download_busta_malattia_pdf, name='download_busta_malattia_pdf'),
     path('ajax/liquidazione-tfr/<int:pk>/', views.liquidazione_tfr, name='liquidazione_tfr'),
     path('ajax/ricevuta-busta-pdf/<int:pk>/', views.download_ricevuta_pdf, name='download_ricevuta_pdf'),
+    path('ajax/genera-riepilogo-pdf/', views.ajax_genera_riepilogo_pdf, name='ajax_genera_riepilogo_pdf'),
 
     # === BUSTE — SALVATAGGIO / TEMPLATE ===
     path('ajax/salva-busta-template/<int:contratto_pk>/', views.ajax_salva_busta_template, name='ajax_salva_busta_template'),
@@ -369,4 +370,7 @@ urlpatterns = [
 
     # === Employer Portal SPA (tutti i sotto-path vanno al frontend Vue) ===
     re_path(r'^portal/', views.portal_spa, name='portal_spa'),
+
+    # === Mobile version ===
+    path('m/', include('paghe.urls_mobile')),
 ]

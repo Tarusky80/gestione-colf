@@ -1,0 +1,33 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Lavoratori — Gestione Colf{% endblock %}
+{% block m_topbar_title %}Lavoratori{% endblock %}
+{% block m_content %}
+<div class="m-search-wrap">
+    <i class="bi bi-search"></i>
+    <input class="m-search" type="search" placeholder="Cerca lavoratore..." oninput="filterMobileList(this.value)">
+</div>
+<div id="mobile-list">
+{% for l in lavoratori %}
+    <a class="m-card" href="#" style="display:block;">
+        <div class="m-list-item" style="border:none;padding:0;">
+            <div><i class="bi bi-person" style="font-size:20px;color:#5E6AD2;"></i></div>
+            <div style="flex:1;">
+                <div class="m-list-title">{{ l.nome_cognome }}</div>
+                <div class="m-list-sub">{{ l.comune_domicilio_fiscale|default:"" }} — {{ l.cf|default:"" }}</div>
+            </div>
+            <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
+        </div>
+    </a>
+{% empty %}
+    <div class="m-empty"><i class="bi bi-people"></i>Nessun lavoratore trovato</div>
+{% endfor %}
+</div>
+<a class="m-fab" href="#" title="Nuovo lavoratore"><i class="bi bi-plus"></i></a>
+<script>
+function filterMobileList(q){
+    document.querySelectorAll('#mobile-list .m-card').forEach(c=>{
+        c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'block':'none';
+    });
+}
+</script>
+{% endblock %}

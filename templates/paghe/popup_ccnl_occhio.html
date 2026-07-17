@@ -457,13 +457,13 @@ function ccnlOcchioRichiediBusta() {
         .then(function(data) {
             _bustaXhr = null;
             if (loading) loading.classList.remove('active');
-            if (data.errore) { console.error('Busta errore:', data.errore); return; }
+            if (data.errore) { mostraToast(data.errore, false); return; }
             ccnlOcchioAggiornaBustaDOM(data);
         })
         .catch(function(err) {
             _bustaXhr = null;
             if (loading) loading.classList.remove('active');
-            if (err.name !== 'AbortError') console.error(err);
+            if (err.name !== 'AbortError') mostraToast('Errore di rete', false);
         });
 }
 

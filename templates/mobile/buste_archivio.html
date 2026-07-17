@@ -1,0 +1,60 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Archivio Buste — Gestione Colf{% endblock %}
+{% block m_topbar_title %}Archivio Buste{% endblock %}
+{% block m_content %}
+
+<div style="display:flex;gap:8px;margin-bottom:12px;">
+    <select id="f-mese" class="m-select" style="flex:1;" onchange="filtra()">
+        <option value="">Mese</option>
+        {% for m in mesi_range %}
+        <option value="{{ m }}" {% if m == mese %}selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+    </select>
+    <select id="f-anno" class="m-select" style="flex:1;" onchange="filtra()">
+        <option value="">Anno</option>
+        {% for a in anni_range %}
+        <option value="{{ a }}" {% if a == anno %}selected{% endif %}>{{ a }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div id="mobile-list">
+{% for b in buste %}
+<a class="m-card" href="/?busta={{ b.pk }}" style="display:block;">
+    <div style="font-size:12px;color:#8A8F98;">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
+    <div class="m-list-title" style="margin:2px 0;">{{ b.contratto.lavoratore.nome_cognome|default:"?" }}</div>
+    <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }}</div>
+    <div style="display:flex;gap:6px;margin-top:6px;">
+        <span class="m-badge m-badge-gray">{{ b.tipo_calcolo }}</span>
+        {% if b.stato == 'APPROVATA' %}
+        <span class="m-badge m-badge-green">Approvata</span>
+        {% elif b.stato == 'ARCHIVIATA' %}
+        <span class="m-badge m-badge-gray">Archiviata</span>
+        {% else %}
+        <span class="m-badge m-badge-gray">Bozza</span>
+        {% endif %}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:6px;font-size:12px;">
+        <span>Lordo: € {{ b.totale_lordo }}</span>
+        <span>Netto: € {{ b.netto }}</span>
+    </div>
+</a>
+{% empty %}
+<div class="m-empty"><i class="bi bi-calculator"></i>Nessuna busta trovata</div>
+{% endfor %}
+</div>
+
+<a class="m-btn m-btn-outline" href="/m/buste/" style="margin-top:10px;">← Nuovo calcolo</a>
+<a class="m-btn m-btn-outline" href="/buste/archivio/">Versione desktop →</a>
+
+<script>
+function filtra(){
+    const m = document.getElementById('f-mese').value;
+    const a = document.getElementById('f-anno').value;
+    const params = new URLSearchParams();
+    if(m) params.set('mese', m);
+    if(a) params.set('anno', a);
+    location.href = '/m/buste/archivio/?' + params.toString();
+}
+</script>
+{% endblock %}

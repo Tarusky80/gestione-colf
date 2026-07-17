@@ -142,7 +142,7 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                 <td><div class="fw-bold">{{ b.contratto.datore.nome_cognome }}</div></td>
                 <td><div class="text-secondary">{{ b.contratto.lavoratore.nome_cognome }}</div></td>
                 <td><span class="fw-semibold">{{ b.mese|stringformat:"02d" }}/{{ b.anno }}</span></td>
-                <td><span class="badge bg-opacity-25 px-2 py-1" style="background:{% if b.tipo_calcolo == 'STANDARD' %}rgba(94,106,210,0.15){% elif b.tipo_calcolo == 'CONVIVENTE' %}rgba(16,185,129,0.15){% elif b.tipo_calcolo == 'NON_CONVIVENTE' %}rgba(245,158,11,0.15){% elif b.tipo_calcolo == 'SOSTITUZIONE' %}rgba(139,92,246,0.15){% elif b.tipo_calcolo == 'NOTTURNO' %}rgba(56,189,248,0.15){% elif b.tipo_calcolo == 'MALATTIA' %}rgba(248,113,113,0.15){% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %}rgba(251,191,36,0.15){% elif b.tipo_calcolo == 'TFR' %}rgba(244,114,182,0.15){% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %}rgba(52,211,153,0.15){% else %}rgba(139,92,246,0.15){% endif %};color:{% if b.tipo_calcolo == 'STANDARD' %}#5E6AD2{% elif b.tipo_calcolo == 'CONVIVENTE' %}#10b981{% elif b.tipo_calcolo == 'NON_CONVIVENTE' %}#f59e0b{% elif b.tipo_calcolo == 'SOSTITUZIONE' %}#8b5cf6{% elif b.tipo_calcolo == 'NOTTURNO' %}#38bdf8{% elif b.tipo_calcolo == 'MALATTIA' %}#ef4444{% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %}#fbbf24{% elif b.tipo_calcolo == 'TFR' %}#ec4899{% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %}#34d399{% else %}#8b5cf6{% endif %};">{{ b.tipo_calcolo }}</span></td>
+                <td><span class="badge badge-calcolo{% if b.tipo_calcolo == 'STANDARD' %} badge-calcolo-standard{% elif b.tipo_calcolo == 'CONVIVENTE' %} badge-calcolo-convivente{% elif b.tipo_calcolo == 'NON_CONVIVENTE' %} badge-calcolo-non-convivente{% elif b.tipo_calcolo == 'SOSTITUZIONE' %} badge-calcolo-sostituzione{% elif b.tipo_calcolo == 'NOTTURNO' %} badge-calcolo-notturno{% elif b.tipo_calcolo == 'MALATTIA' %} badge-calcolo-malattia{% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %} badge-calcolo-inverso{% elif b.tipo_calcolo == 'TFR' %} badge-calcolo-tfr{% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %} badge-calcolo-conviventi-ccnl{% endif %}">{{ b.tipo_calcolo }}</span></td>
                 <td>&euro; {{ b.budget_mensile|floatformat:0 }}</td>
                 <td>{{ b.ore_mensili|floatformat:0 }}h</td>
                 <td>&euro; {{ b.totale_lordo|floatformat:2 }}</td>
@@ -323,7 +323,7 @@ function apriCcnlOcchioBusta(pk, anno) {
     <div class="modal-content card-alt">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Buste Paga</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>

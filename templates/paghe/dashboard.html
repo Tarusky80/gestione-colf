@@ -465,6 +465,23 @@
         </div>
     </div>
     {% endif %}
+
+    {% if documenti_per_tipo %}
+    <div class="row g-4 mb-4 mt-2">
+        <div class="col-md-6">
+            <div class="mini-card">
+                <h4><i class="bi bi-file-earmark me-1"></i> Documenti per tipo</h4>
+                <div class="chart-wrap" style="height:180px;"><canvas id="chartDocumentiTipo"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mini-card">
+                <h4><i class="bi bi-graph-up me-1"></i> Trend Contributi (12 mesi)</h4>
+                <div class="chart-wrap" style="height:180px;"><canvas id="chartContributiTrend"></canvas></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     </div>
 </div>
 
@@ -1339,6 +1356,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Doughnut: Documenti per tipo
+    var ctxDoc = document.getElementById('chartDocumentiTipo');
+    if (ctxDoc && typeof Chart !== 'undefined') {
+        var docLabels = [{% for d in documenti_per_tipo %}'{{ d.tipo|default:"Altro" }}'{% if not forloop.last %},{% endif %}{% endfor %}];
+        var docData = [{% for d in documenti_per_tipo %}{{ d.count }}{% if not forloop.last %},{% endif %}{% endfor %}];
+        var docColors = ['#5E6AD2','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6b7280'];
+        new Chart(ctxDoc, {
+            type: 'doughnut',
+            data: { labels: docLabels, datasets: [{ data: docData, backgroundColor: docColors.slice(0, docLabels.length), borderWidth: 0 }] },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#a1a1aa', font: { size: 11 }, padding: 8, boxWidth: 12 } },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                },
+                cutout: '55%'
+            }
+        });
+    }
+
+    // Line: Trend contributi 12 mesi
+    creaGraficoLine('chartContributiTrend',
+        [{% for m in contributi_mensili %}'{{ m.mese }}/{{ m.anno }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        [{% for m in contributi_mensili %}{{ m.totale }}{% if not forloop.last %},{% endif %}{% endfor %}],
+        '#10b981', 'rgba(16,185,129,0.1)', 'Contributi INPS');
 });
 
 // === MAPPA BENEFICIARI ===

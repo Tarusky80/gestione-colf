@@ -1,0 +1,41 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Dashboard — Gestione Colf{% endblock %}
+{% block m_topbar_title %}Dashboard{% endblock %}
+{% block m_content %}
+<div class="m-dash-grid">
+    <a href="/m/datori/" class="m-dash-card">
+        <div class="m-dash-num">{{ totale_datori }}</div>
+        <div class="m-dash-label">Datori</div>
+    </a>
+    <a href="/m/lavoratori/" class="m-dash-card">
+        <div class="m-dash-num">{{ totale_lavoratori }}</div>
+        <div class="m-dash-label">Lavoratori</div>
+    </a>
+    <a href="/m/contratti/" class="m-dash-card">
+        <div class="m-dash-num">{{ totale_contratti }}</div>
+        <div class="m-dash-label">Contratti</div>
+    </a>
+    <a href="/m/buste/" class="m-dash-card">
+        <div class="m-dash-num">{{ totale_buste }}</div>
+        <div class="m-dash-label">Buste</div>
+    </a>
+</div>
+<div class="m-dash-total">
+    <div class="m-dash-total-num">{{ totale_contratti|default:"0" }}</div>
+    <div class="m-dash-total-label">Contratti attivi</div>
+</div>
+{% if contrib_trend %}
+<div class="m-card" style="margin-top:10px;">
+    <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">Ultimi 3 mesi — contributi</div>
+    {% for m in contrib_trend %}
+    <div class="m-detail-row">
+        <span class="label">{{ m.mese }}</span>
+        <span class="value">&euro; {{ m.totale }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<div style="text-align:center;margin-top:20px;">
+    <a href="/" style="font-size:12px;color:#5C5F66;">Versione desktop</a>
+</div>
+{% endblock %}

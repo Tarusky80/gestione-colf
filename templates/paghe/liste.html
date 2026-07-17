@@ -164,7 +164,7 @@
     <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Liste Stampe</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
         <p>Genera elenchi PDF per datori, lavoratori, beneficiari, progetti, contratti attivi e dati PagoPA.</p>
@@ -314,7 +314,7 @@ function generaLista(tipo) {
             btn.innerHTML = '<i class="bi bi-filetype-pdf"></i> Genera PDF';
         })
         .catch(function(err) {
-            console.error(err);
+            mostraToast('Errore generazione PDF', false);
             btn.classList.remove('loading');
             btn.innerHTML = '<i class="bi bi-filetype-pdf"></i> Genera PDF';
         });

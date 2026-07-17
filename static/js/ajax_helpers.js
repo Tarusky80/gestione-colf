@@ -1,7 +1,6 @@
 let currentAjaxUrl = '';
 function loadAjaxForm(url, title) {
     currentAjaxUrl = url;
-    console.log('loadAjaxForm called with URL:', url, 'Title:', title);
     const offcanvasEl = document.getElementById('panelNuovo');
     const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl) || new bootstrap.Offcanvas(offcanvasEl);
     document.getElementById('offcanvas-title').innerText = title;
@@ -10,10 +9,8 @@ function loadAjaxForm(url, title) {
     bsOffcanvas.show();
     fetch(url)
         .then(res => {
-            console.log('Fetch response status:', res.status);
             if (!res.ok) throw new Error('Errore del server Django (Codice ' + res.status + ')');
             const ct = res.headers.get('content-type') || '';
-            console.log('Content-Type:', ct);
             if (ct.includes('application/json')) {
                 return res.json();
             }

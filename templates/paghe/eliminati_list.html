@@ -77,7 +77,7 @@
             {% for r in records %}
             <tr class="clickable-row" data-type="eliminato" data-pk="{{ r.pk }}" data-title="{{ r.descrizione }}" data-sub="{{ r.get_tipo_display }}">
                 <td>
-                    <span class="badge-tipo" data-tipo="{{ r.tipo }}">
+                    <span class="badge-entita" data-tipo="{{ r.tipo }}">
                         {% if r.tipo == 'datore' %}<i class="bi bi-person-vcard me-1"></i>
                         {% elif r.tipo == 'lavoratore' %}<i class="bi bi-people me-1"></i>
                         {% elif r.tipo == 'beneficiario' %}<i class="bi bi-person-heart me-1"></i>
@@ -132,7 +132,7 @@
             <h5 class="text-white fw-bold mb-0">Dettaglio record eliminato</h5>
             <div class="text-secondary" style="font-size: 11px; margin-top: 2px;" id="vediEliminatoSubtitle">Record eliminato</div>
         </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" style="opacity: 0.5;"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" style="opacity: 0.5;" aria-label="Chiudi"></button>
     </div>
     <div class="offcanvas-body" id="vediEliminatoBody" style="padding: 36px !important; overflow-y: auto;">
     </div>
@@ -141,11 +141,6 @@
 
 {% block extra_js %}
 <style>
-    .badge-tipo { background: rgba(94,106,210,0.15); color: #5E6AD2; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-    .badge-tipo[data-tipo="datore"] { background: rgba(52,211,153,0.15); color: #34d399; }
-    .badge-tipo[data-tipo="lavoratore"] { background: rgba(96,165,250,0.15); color: #60a5fa; }
-    .badge-tipo[data-tipo="beneficiario"] { background: rgba(251,191,36,0.15); color: #fbbf24; }
-    .badge-tipo[data-tipo="contratto"] { background: rgba(168,85,247,0.15); color: #a855f7; }
     #vediEliminatoBody { overflow-y: auto !important; display: block !important; height: auto !important; }
 </style>
 <script>
@@ -224,7 +219,7 @@ window.apriVediEliminato = function(pk) {
 
     function format(key, val) {
         if (val === null || val === '' || val === undefined) return null;
-        if (typeof val === 'boolean') return '<span class="badge rounded-pill px-2 py-1" style="font-size:11px;background:' + (val ? 'rgba(52,211,153,0.15)' : 'rgba(142,142,147,0.15)') + ';color:' + (val ? '#34d399' : '#8e8e93') + ';">' + (val ? '<i class="bi bi-check-circle me-1"></i>SI' : '<i class="bi bi-x-circle me-1"></i>NO') + '</span>';
+        if (typeof val === 'boolean') return '<span class="badge ' + (val ? 'badge-bool-yes' : 'badge-bool-no') + ' rounded-pill px-2 py-1">' + (val ? '<i class="bi bi-check-circle me-1"></i>SI' : '<i class="bi bi-x-circle me-1"></i>NO') + '</span>';
         var s = String(val);
         if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return '<span style="color:#60a5fa;"><i class="bi bi-calendar3 me-1"></i>' + s.split('-').reverse().join('/') + '</span>';
         if (/^\d{4}-\d{2}-\d{2}T/.test(s)) return '<span style="color:#60a5fa;"><i class="bi bi-calendar3 me-1"></i>' + s.split('T')[0].split('-').reverse().join('/') + '</span>';
@@ -347,7 +342,7 @@ document.addEventListener('DOMContentLoaded', filteraEliminati);
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
           <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Eliminati
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>

@@ -246,8 +246,217 @@ def download_busta_sostituto_pdf(request, pk):
         pdf = _concatena_lul_a_busta(pdf, contratto, mese, anno)
 
     response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="sostituto_{safe_name}_{mese:02d}_{anno}.pdf"'
+    response['Content-Disposition'] = f'inline; filename="{nome_file}"'
     return response
+
+
+# --- ajax_genera_riepilogo_pdf ---
+@login_required
+def ajax_genera_riepilogo_pdf(request):
+    import json
+    data = json.loads(request.body)
+    pk = data.get('pk')
+    if not pk:
+        return JsonResponse({'errore': 'ID contratto non specificato'}, status=400)
+
+    contratto = get_object_or_404(ContrattoAttivo, pk=pk)
+    mese = data.get('mese', date.today().month)
+    anno = data.get('anno', date.today().year)
+
+    # Costruisci convivenza_items
+    convivenza_items = None
+    if data.get('incl_pranzo') is not None or data.get('incl_cena') is not None or data.get('incl_alloggio') is not None or data.get('giorni_conv') is not None:
+        conv = {}
+        if data.get('incl_pranzo') is not None: conv['pranzo'] = data['incl_pranzo'] == '1'
+        if data.get('incl_cena') is not None: conv['cena'] = data['incl_cena'] == '1'
+        if data.get('incl_alloggio') is not None: conv['alloggio'] = data['incl_alloggio'] == '1'
+        if data.get('giorni_conv') is not None:
+            try: conv['giorni'] = int(data['giorni_conv'])
+            except: pass
+        convivenza_items = conv
+
+    # Costruisci toggles
+    toggles = {}
+    toggle_keys = ['ind_funzione', 'ind_bambini_6', 'ind_piu_assistiti', 'ind_cert_qualita',
+                   'scatti', 'rateo_tfr', 'rateo_tfr_separato', 'rateo_anticipo_70',
+                   'rateo_13ma', 'rateo_ferie', 'rateo_festivi']
+    for k in toggle_keys:
+        v = data.get(k)
+        if v is not None:
+            toggles[k] = v == '1'
+    toggles = toggles or None
+
+    ctx = _calcola_busta_data(contratto, mese, anno, convivenza_items=convivenza_items, toggles=toggles)
+    if 'errore' in ctx:
+        return JsonResponse({'errore': ctx['errore']}, status=400)
+
+    # Genera PDF riepilogo con ReportLab
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.lib.colors import HexColor
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+    import io
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4,
+        topMargin=20*mm, bottomMargin=15*mm,
+        leftMargin=15*mm, rightMargin=15*mm)
+    styles = getSampleStyleSheet()
+    style_title = ParagraphStyle('Titolo', parent=styles['Normal'], fontSize=16, leading=20, spaceAfter=6, alignment=TA_CENTER, textColor=HexColor('#2c5282'), fontName='Helvetica-Bold')
+    style_sub = ParagraphStyle('Sottotitolo', parent=styles['Normal'], fontSize=8, leading=10, spaceAfter=14, alignment=TA_CENTER, textColor=HexColor('#666666'))
+    style_h = ParagraphStyle('Header', parent=styles['Normal'], fontSize=9, leading=12, spaceAfter=4, textColor=HexColor('#333333'), fontName='Helvetica-Bold')
+    style_val = ParagraphStyle('Value', parent=styles['Normal'], fontSize=9, leading=12, textColor=HexColor('#111111'))
+    style_label = ParagraphStyle('Label', parent=styles['Normal'], fontSize=9, leading=12, textColor=HexColor('#666666'))
+    style_total = ParagraphStyle('Total', parent=styles['Normal'], fontSize=11, leading=14, textColor=HexColor('#2c5282'), fontName='Helvetica-Bold')
+    style_netto = ParagraphStyle('Netto', parent=styles['Normal'], fontSize=14, leading=18, textColor=HexColor('#2c5282'), fontName='Helvetica-Bold')
+    style_footer = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=7, leading=9, textColor=HexColor('#999999'), alignment=TA_CENTER)
+
+    elements = []
+    elements.append(Paragraph('RIEPILOGO BUSTA PAGA', style_title))
+    elements.append(Paragraph(f'{contratto.lavoratore.nome_cognome} — {contratto.datore.nome_cognome} — {mese:02d}/{anno}', style_sub))
+    elements.append(HRFlowable(width='100%', thickness=0.5, color=HexColor('#cccccc')))
+    elements.append(Spacer(1, 6*mm))
+
+    # Info contratto
+    info_data = [
+        ['Lavoratore:', contratto.lavoratore.nome_cognome, 'Datore:', contratto.datore.nome_cognome],
+    ]
+    if contratto.lavoratore.codice_fiscale:
+        info_data.append(['CF Lavoratore:', contratto.lavoratore.codice_fiscale, 'CF Datore:', contratto.datore.codice_fiscale])
+    if ctx.get('livello_codice'):
+        info_data.append(['Livello:', ctx['livello_codice'], 'Ore mensili:', f'{ctx.get("ore_mensili",0):.2f} h'])
+    info_data.append(['Tipo calcolo:', 'STANDARD', 'Periodo:', f'{mese:02d}/{anno}'])
+    info_table = Table(info_data, colWidths=[45*mm, 55*mm, 45*mm, 55*mm])
+    info_table.setStyle(TableStyle([
+        ('FONTSIZE', (0, 0), (-1, -1), 8),
+        ('TEXTCOLOR', (0, 0), (-1, -1), HexColor('#555555')),
+        ('TEXTCOLOR', (1, 0), (1, -1), HexColor('#111111')),
+        ('TEXTCOLOR', (3, 0), (3, -1), HexColor('#111111')),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+    ]))
+    elements.append(info_table)
+    elements.append(Spacer(1, 6*mm))
+    elements.append(HRFlowable(width='100%', thickness=0.5, color=HexColor('#cccccc')))
+    elements.append(Spacer(1, 4*mm))
+
+    # Funzione per creare sezioni
+    def section(title, rows):
+        els = []
+        els.append(Paragraph(title, style_h))
+        t = Table(rows, colWidths=[100*mm, 55*mm])
+        t.setStyle(TableStyle([
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('TEXTCOLOR', (0, 0), (0, -1), HexColor('#666666')),
+            ('TEXTCOLOR', (1, 0), (1, -1), HexColor('#111111')),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('TOPPADDING', (0, 0), (-1, -1), 2),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+            ('LINEBELOW', (0, 0), (-1, -2), 0.3, HexColor('#eeeeee')),
+        ]))
+        if len(rows) > 1:
+            t.setStyle(TableStyle([
+                ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
+                ('TEXTCOLOR', (0, -1), (-1, -1), HexColor('#2c5282')),
+                ('LINEABOVE', (0, -1), (-1, -1), 0.5, HexColor('#2c5282')),
+                ('TOPPADDING', (0, -1), (-1, -1), 4),
+            ]))
+        els.append(t)
+        els.append(Spacer(1, 4*mm))
+        return els
+
+    # Retribuzione Lorda
+    lordo_rows = [
+        [f'Paga base (\u20AC{ctx["paga_base"]["orario"]:.4f} x {ctx["ore_mensili"]}h)', f'\u20AC {ctx["paga_base"]["totale"]:.2f}'],
+    ]
+    for ind in ctx.get('indennita', []):
+        lordo_rows.append([f'{ind["label"]} (\u20AC{ind["orario"]:.4f} x {ctx["ore_mensili"]}h)', f'\u20AC {ind["totale"]:.2f}'])
+    lordo_rows.append([f'Scatti anzianit\u00e0 ({ctx["scatti_anzianita"]["dettaglio"]})', f'\u20AC {ctx["scatti_anzianita"]["valore"]:.2f}'])
+    for rp in ctx.get('ratei_pagati', []):
+        if rp.get('incluso'):
+            lordo_rows.append([f'{rp["label"]} (*)', f'\u20AC {rp["totale"]:.2f}'])
+    lordo_rows.append(['TOTALE LORDO', f'\u20AC {ctx["totale_lordo"]:.2f}'])
+    elements.extend(section('RETRIBUZIONE LORDA', lordo_rows))
+
+    # Contributi
+    contr_rows = [
+        [f'INPS ({ctx["contributi"]["inps"]["fascia"]})', f'\u20AC {ctx["contributi"]["inps"]["totale"]:.2f}'],
+        [f'{ctx["contributi"]["cassa"]["nome"] or "Cassa/Ente"}', f'\u20AC {ctx["contributi"]["cassa"]["totale"]:.2f}'],
+        ['TOTALE CONTRIBUTI', f'\u20AC {ctx["contributi"]["totale"]:.2f}'],
+    ]
+    elements.extend(section('CONTRIBUTI', contr_rows))
+
+    # Trattenute
+    trarr_rows = [
+        ['Convivenza', f'\u20AC {ctx["trattenute"]["convivenza"]["totale"]:.2f}'],
+        ['Ratei accantonati', f'\u20AC {ctx["trattenute"]["ratei_accantonati"]:.2f}'],
+    ]
+    if ctx['trattenute']['totale'] > 0:
+        trarr_rows.append(['TOTALE TRATTENUTE', f'\u20AC {ctx["trattenute"]["totale"]:.2f}'])
+    elements.extend(section('TRATTENUTE', trarr_rows))
+
+    # Riepilogo finale
+    budget = ctx.get('budget_mensile', 0)
+    usato = budget - ctx.get('verifica_copertura', 0)
+    perc = min(max((usato / budget) * 100, 0), 100) if budget else 0
+    riep_rows = [
+        ['Budget mensile', f'\u20AC {budget:.2f}'],
+        [f'Copertura budget', f'{perc:.0f}%'],
+    ]
+    if ctx.get('modalita_tfr') and ctx['modalita_tfr'] != 'INCLUSO':
+        riep_rows.append(['TFR accumulato', f'\u20AC {float(ctx.get("tfr_accantonato_cumulativo", 0)):.2f}'])
+    riep_rows.append(['NETTO IN BUSTA', f'\u20AC {ctx["netto"]:.2f}'])
+    elements.extend(section('RIEPILOGO', riep_rows))
+
+    # Dettaglio progetti
+    if ctx.get('progetti') and len(ctx['progetti']) > 0:
+        elements.append(Paragraph('PROGETTI COLLEGATI', style_h))
+        proj_rows = []
+        for pr in ctx['progetti']:
+            proj_rows.append([pr.get('nome', '—'), pr.get('budget_mensile', 0)])
+        if proj_rows:
+            pt = Table(proj_rows, colWidths=[130*mm, 40*mm])
+            pt.setStyle(TableStyle([
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('TEXTCOLOR', (0, 0), (0, -1), HexColor('#666666')),
+                ('TEXTCOLOR', (1, 0), (1, -1), HexColor('#333333')),
+                ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ]))
+            elements.append(pt)
+
+    elements.append(Spacer(1, 10*mm))
+    elements.append(HRFlowable(width='100%', thickness=0.3, color=HexColor('#cccccc')))
+    elements.append(Spacer(1, 3*mm))
+    elements.append(Paragraph(f'Documento generato il {timezone.now().strftime("%d/%m/%Y %H:%M")} — Gestione Colf', style_footer))
+
+    doc.build(elements)
+    pdf = buf.getvalue()
+
+    # Salva su disco e crea DocumentoArchiviato
+    nome_file = f"riepilogo_{contratto.lavoratore.nome_cognome.replace(' ','_')}_{mese:02d}_{anno}.pdf"
+    cartella = _get_cartella_documenti(contratto)
+    timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
+    safe_name = contratto.lavoratore.nome_cognome.replace(' ', '_').replace('/', '_')
+    nome_file_disk = f"riepilogo_{safe_name}_{mese:02d}_{anno}_{timestamp}.pdf"
+    full_path = os.path.join(cartella, nome_file_disk)
+    with open(full_path, 'wb') as f:
+        f.write(pdf)
+
+    d = DocumentoArchiviato.objects.create(
+        tipo='ALTRO',
+        titolo=f"Riepilogo Busta Paga {contratto.lavoratore.nome_cognome} {mese:02d}/{anno}",
+        file_path=full_path,
+        file_size=len(pdf),
+        file_name=nome_file_disk,
+        contratto=contratto,
+        datore=contratto.datore,
+        lavoratore=contratto.lavoratore,
+        creato_da=request.user if request.user.is_authenticated else None,
+    )
+    request.session['ultimo_doc_pk'] = d.pk
+
+    return JsonResponse({'success': True, 'url': f'/ajax/vedi-documento/{d.pk}/', 'pk': d.pk})
 
 
 # --- download_busta_notturna_pdf ---

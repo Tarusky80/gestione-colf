@@ -19,6 +19,7 @@ _modules = [
     '_permessi',
     '_lul',
     '_contributi_ccnl',
+    '_mobile',
 ]
 
 _cache = {}

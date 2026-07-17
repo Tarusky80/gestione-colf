@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+<script>if(screen.width<768&&!/^\/m\//.test(location.pathname)){location.href='/m/'+location.pathname.slice(1)}</script>
     <meta charset="UTF-8">
     <title>{{ opzioni.nome_programma|default:"CAF MCL ISILI" }}</title>
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
@@ -16,7 +17,9 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/utils.css' %}">
 {% block extra_css %}{% endblock %}
-    
+    <script src="{% static 'js/csrf-utils.js' %}"></script>
+    <script src="{% static 'js/toast.js' %}"></script>
+    <script src="{% static 'js/table-filters.js' %}"></script>
 </head>
 <body>
 
@@ -37,7 +40,7 @@
         </div>
 
         <nav class="flex-grow-1 overflow-auto">
-            <a id="nav_dashboard" href="/dashboard/" class="nav-group-label" style="text-decoration:none;"><span><i class="bi bi-grid-1x2-fill"></i> Dashboard</span>{% if shortcut_badges.nav_dashboard %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_dashboard }}</span>{% endif %}</a>
+            <a id="nav_dashboard" href="/dashboard/" class="nav-group-label" style="text-decoration:none;"><span><i class="bi bi-grid-1x2-fill"></i> Dashboard</span>{% if shortcut_badges.nav_dashboard %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_dashboard }}</span>{% endif %}</a>
 
             <div class="nav-group-divider"></div>
 
@@ -48,11 +51,11 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_nuovo_datore" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-datore/', 'Nuovo Datore')" class="nav-link-custom"><i class="bi bi-person-plus"></i> Nuovo Datore{% if shortcut_badges.nav_nuovo_datore %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_nuovo_datore }}</span>{% endif %}</a>
-                    <a id="nav_nuovo_lavoratore" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-lavoratore/', 'Nuovo Lavoratore')" class="nav-link-custom"><i class="bi bi-person-plus"></i> Nuovo Lavoratore{% if shortcut_badges.nav_nuovo_lavoratore %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_nuovo_lavoratore }}</span>{% endif %}</a>
-                    <a id="nav_nuovo_beneficiario" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-beneficiario/', 'Nuovo Beneficiario')" class="nav-link-custom"><i class="bi bi-person-plus"></i> Nuovo Beneficiario{% if shortcut_badges.nav_nuovo_beneficiario %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_nuovo_beneficiario }}</span>{% endif %}</a>
-                    <a id="nav_nuovo_contratto" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-contratto/', 'Nuovo Contratto')" class="nav-link-custom"><i class="bi bi-file-earmark-plus"></i> Nuovo Contratto{% if shortcut_badges.nav_nuovo_contratto %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_nuovo_contratto }}</span>{% endif %}</a>
-                    <a id="nav_nuovo_progetto" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-tabella/progetti-regionali/', 'Nuovo Progetto Regionale')" class="nav-link-custom"><i class="bi bi-diagram-3"></i> Nuovo Progetto Regionale{% if shortcut_badges.nav_nuovo_progetto %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_nuovo_progetto }}</span>{% endif %}</a>
+                    <a id="nav_nuovo_datore" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-datore/', 'Nuovo Datore')" class="nav-link-custom"><i class="bi bi-person-plus"></i> Nuovo Datore{% if shortcut_badges.nav_nuovo_datore %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_nuovo_datore }}</span>{% endif %}</a>
+                    <a id="nav_nuovo_lavoratore" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-lavoratore/', 'Nuovo Lavoratore')" class="nav-link-custom"><i class="bi bi-person-plus"></i> Nuovo Lavoratore{% if shortcut_badges.nav_nuovo_lavoratore %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_nuovo_lavoratore }}</span>{% endif %}</a>
+                    <a id="nav_nuovo_beneficiario" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-beneficiario/', 'Nuovo Beneficiario')" class="nav-link-custom"><i class="bi bi-person-plus"></i> Nuovo Beneficiario{% if shortcut_badges.nav_nuovo_beneficiario %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_nuovo_beneficiario }}</span>{% endif %}</a>
+                    <a id="nav_nuovo_contratto" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-contratto/', 'Nuovo Contratto')" class="nav-link-custom"><i class="bi bi-file-earmark-plus"></i> Nuovo Contratto{% if shortcut_badges.nav_nuovo_contratto %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_nuovo_contratto }}</span>{% endif %}</a>
+                    <a id="nav_nuovo_progetto" href="#" onclick="event.preventDefault(); loadAjaxForm('/ajax/nuovo-tabella/progetti-regionali/', 'Nuovo Progetto Regionale')" class="nav-link-custom"><i class="bi bi-diagram-3"></i> Nuovo Progetto Regionale{% if shortcut_badges.nav_nuovo_progetto %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_nuovo_progetto }}</span>{% endif %}</a>
                 </div>
             </div>
             {% endif %}
@@ -66,15 +69,15 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_datori" href="/datori/" class="nav-link-custom {% if request.path == '/datori/' %}active{% endif %}"><i class="bi bi-person-vcard"></i> Datori di Lavoro{% if shortcut_badges.nav_datori %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_datori }}</span>{% endif %}</a>
-                    <a id="nav_lavoratori" href="/lavoratori/" class="nav-link-custom {% if request.path == '/lavoratori/' %}active{% endif %}"><i class="bi bi-people"></i> Lavoratori{% if shortcut_badges.nav_lavoratori %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_lavoratori }}</span>{% endif %}</a>
-                    <a id="nav_beneficiari" href="/beneficiari/" class="nav-link-custom {% if request.path == '/beneficiari/' %}active{% endif %}"><i class="bi bi-person-heart"></i> Beneficiari{% if shortcut_badges.nav_beneficiari %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_beneficiari }}</span>{% endif %}</a>
-                    <a id="nav_mappa_beneficiari" href="/beneficiari/?view=mappa" class="nav-link-custom {% if request.path == '/beneficiari/' and view_mappa %}active{% endif %}" style="padding-left:44px;font-size:12px;"><i class="bi bi-geo-alt" style="opacity:0.7;"></i> Mappa{% if shortcut_badges.nav_mappa_beneficiari %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_mappa_beneficiari }}</span>{% endif %}</a>
-                    <a id="nav_contratti" href="/contratti/" class="nav-link-custom {% if request.path == '/contratti/' %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> Contratti Attivi{% if shortcut_badges.nav_contratti %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_contratti }}</span>{% endif %}</a>
-                    <a id="nav_contratti_cessati" href="/contratti-cessati/" class="nav-link-custom {% if request.path == '/contratti-cessati/' %}active{% endif %}"><i class="bi bi-archive"></i> Contratti Cessati{% if shortcut_badges.nav_contratti_cessati %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_contratti_cessati }}</span>{% endif %}</a>
-                    <a id="nav_rinnova_massivo" href="/contratti/rinnova-massivo/" class="nav-link-custom {% if '/contratti/rinnova-massivo/' in request.path %}active{% endif %}"><i class="bi bi-arrow-repeat"></i> Rinnova Contratti{% if shortcut_badges.nav_rinnova_massivo %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_rinnova_massivo }}</span>{% endif %}</a>
-                    <a id="nav_progetti_regionali" href="/tabella/progetti-regionali/" class="nav-link-custom {% if '/tabella/progetti-regionali/' in request.path %}active{% endif %}"><i class="bi bi-diagram-3"></i> Progetti Regionali{% if shortcut_badges.nav_progetti_regionali %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_progetti_regionali }}</span>{% endif %}</a>
-                    <a id="nav_eliminati" href="/eliminati/" class="nav-link-custom {% if request.path == '/eliminati/' %}active{% endif %}"><i class="bi bi-trash3"></i> Eliminati{% if shortcut_badges.nav_eliminati %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_eliminati }}</span>{% endif %}</a>
+                    <a id="nav_datori" href="/datori/" class="nav-link-custom {% if request.path == '/datori/' %}active{% endif %}"><i class="bi bi-person-vcard"></i> Datori di Lavoro{% if shortcut_badges.nav_datori %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_datori }}</span>{% endif %}</a>
+                    <a id="nav_lavoratori" href="/lavoratori/" class="nav-link-custom {% if request.path == '/lavoratori/' %}active{% endif %}"><i class="bi bi-people"></i> Lavoratori{% if shortcut_badges.nav_lavoratori %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_lavoratori }}</span>{% endif %}</a>
+                    <a id="nav_beneficiari" href="/beneficiari/" class="nav-link-custom {% if request.path == '/beneficiari/' %}active{% endif %}"><i class="bi bi-person-heart"></i> Beneficiari{% if shortcut_badges.nav_beneficiari %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_beneficiari }}</span>{% endif %}</a>
+                    <a id="nav_mappa_beneficiari" href="/beneficiari/?view=mappa" class="nav-link-custom {% if request.path == '/beneficiari/' and view_mappa %}active{% endif %}" style="padding-left:44px;font-size:12px;"><i class="bi bi-geo-alt" style="opacity:0.7;"></i> Mappa{% if shortcut_badges.nav_mappa_beneficiari %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_mappa_beneficiari }}</span>{% endif %}</a>
+                    <a id="nav_contratti" href="/contratti/" class="nav-link-custom {% if request.path == '/contratti/' %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> Contratti Attivi{% if shortcut_badges.nav_contratti %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_contratti }}</span>{% endif %}</a>
+                    <a id="nav_contratti_cessati" href="/contratti-cessati/" class="nav-link-custom {% if request.path == '/contratti-cessati/' %}active{% endif %}"><i class="bi bi-archive"></i> Contratti Cessati{% if shortcut_badges.nav_contratti_cessati %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_contratti_cessati }}</span>{% endif %}</a>
+                    <a id="nav_rinnova_massivo" href="/contratti/rinnova-massivo/" class="nav-link-custom {% if '/contratti/rinnova-massivo/' in request.path %}active{% endif %}"><i class="bi bi-arrow-repeat"></i> Rinnova Contratti{% if shortcut_badges.nav_rinnova_massivo %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_rinnova_massivo }}</span>{% endif %}</a>
+                    <a id="nav_progetti_regionali" href="/tabella/progetti-regionali/" class="nav-link-custom {% if '/tabella/progetti-regionali/' in request.path %}active{% endif %}"><i class="bi bi-diagram-3"></i> Progetti Regionali{% if shortcut_badges.nav_progetti_regionali %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_progetti_regionali }}</span>{% endif %}</a>
+                    <a id="nav_eliminati" href="/eliminati/" class="nav-link-custom {% if request.path == '/eliminati/' %}active{% endif %}"><i class="bi bi-trash3"></i> Eliminati{% if shortcut_badges.nav_eliminati %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_eliminati }}</span>{% endif %}</a>
                     <a id="nav_richieste_modifica" href="/richieste-modifica/" class="nav-link-custom {% if '/richieste-modifica/' in request.path %}active{% endif %}"><i class="bi bi-chat-dots"></i> Richieste Modifica{% if richieste_pendenti %}<span class="shortcut-badge" id="badgeRichiestePendenti" style="background:rgba(245,158,11,0.2);color:#f59e0b;border-color:rgba(245,158,11,0.3);">{{ richieste_pendenti }}</span>{% endif %}</a>
                 </div>
             </div>
@@ -89,21 +92,21 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_stampe_invii" href="/stampe-invii/" class="nav-link-custom {% if '/stampe-invii/' in request.path %}active{% endif %}"><i class="bi bi-send"></i> Stampe e Invii{% if shortcut_badges.nav_stampe_invii %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_stampe_invii }}</span>{% endif %}</a>
-                    <a id="nav_riepilogo_invii" href="/riepilogo-invio/" class="nav-link-custom {% if '/riepilogo-invio/' in request.path %}active{% endif %}"><i class="bi bi-clock-history"></i> Riepilogo Invii{% if shortcut_badges.nav_riepilogo_invii %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_riepilogo_invii }}</span>{% endif %}</a>
-                    <a id="nav_archivio_documenti" href="/documenti/" class="nav-link-custom {% if request.path == '/documenti/' %}active{% endif %}"><i class="bi bi-archive"></i> Archivio Documenti{% if shortcut_badges.nav_archivio_documenti %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_archivio_documenti }}</span>{% endif %}</a>
-                    <a id="nav_archivio_buste" href="/buste-archivio/" class="nav-link-custom {% if '/buste-archivio/' in request.path %}active{% endif %}"><i class="bi bi-journal-text"></i> Archivio Buste{% if shortcut_badges.nav_archivio_buste %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_archivio_buste }}</span>{% endif %}</a>
-                    <a id="nav_lul" href="{% url 'lul_list' %}" class="nav-link-custom {% if '/lul/' in request.path %}active{% endif %}"><i class="bi bi-book"></i> Libro Unico Lavoro{% if shortcut_badges.nav_lul %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_lul }}</span>{% endif %}</a>
-                    <a id="nav_certificazione_unica" href="{% url 'redigere_cu' %}" class="nav-link-custom {% if request.path == '/procedure/redigere-cu/' %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> Certificazione Unica{% if shortcut_badges.nav_certificazione_unica %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_certificazione_unica }}</span>{% endif %}</a>
-                    <a id="nav_liste_stampe" href="/liste/" class="nav-link-custom {% if request.path == '/liste/' %}active{% endif %}"><i class="bi bi-printer"></i> Liste Stampe{% if shortcut_badges.nav_liste_stampe %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_liste_stampe }}</span>{% endif %}</a>
-                    <a id="nav_export_uniemens" href="/export/uniemens-csv/?anno=2026&mese=6" class="nav-link-custom" onclick="event.preventDefault();window.open('/export/uniemens-csv/?anno='+new Date().getFullYear()+'&mese='+(new Date().getMonth()+1),'_blank')"><i class="bi bi-file-earmark-spreadsheet"></i> Export UNIEMENS{% if shortcut_badges.nav_export_uniemens %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_export_uniemens }}</span>{% endif %}</a>
-                    <a id="nav_ccnl" href="{% url 'ccnl_list' %}" class="nav-link-custom {% if request.path == '/ccnl/' %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> CCNL{% if shortcut_badges.nav_ccnl %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_ccnl }}</span>{% endif %}</a>
-                    <a id="nav_inquadramento" href="{% url 'inquadramento_list' %}" class="nav-link-custom {% if '/inquadramento/' in request.path %}active{% endif %}"><i class="bi bi-layers"></i> Inquadramento{% if shortcut_badges.nav_inquadramento %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_inquadramento }}</span>{% endif %}</a>
-                    <a id="nav_tabelle" href="{% url 'tabelle_retributive_list' %}" class="nav-link-custom {% if '/tabelle/' in request.path %}active{% endif %}"><i class="bi bi-table"></i> Tabelle Retributive{% if shortcut_badges.nav_tabelle %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tabelle }}</span>{% endif %}</a>
-                    <a id="nav_contributi_ccnl" href="{% url 'contributi_ccnl_list' %}" class="nav-link-custom {% if '/contributi-ccnl/' in request.path %}active{% endif %}"><i class="bi bi-percent"></i> Contributi INPS{% if shortcut_badges.nav_contributi_ccnl %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_contributi_ccnl }}</span>{% endif %}</a>
-                    <a id="nav_guida_assunzione" href="{% url 'guida_assunzione_list' %}" class="nav-link-custom {% if '/guide/assunzione/' in request.path %}active{% endif %}"><i class="bi bi-check2-square"></i> Guida Assunzione{% if shortcut_badges.nav_guida_assunzione %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_guida_assunzione }}</span>{% endif %}</a>
-                    <a id="nav_decalogo_colloquio" href="{% url 'decalogo_colloquio_list' %}" class="nav-link-custom {% if '/guide/decalogo-colloquio/' in request.path %}active{% endif %}"><i class="bi bi-chat-dots"></i> Decalogo Colloquio{% if shortcut_badges.nav_decalogo_colloquio %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_decalogo_colloquio }}</span>{% endif %}</a>
-                    <a id="nav_guida_cessazione" href="{% url 'guida_cessazione_list' %}" class="nav-link-custom {% if '/guide/cessazione/' in request.path %}active{% endif %}"><i class="bi bi-box-arrow-right"></i> Guida Cessazione{% if shortcut_badges.nav_guida_cessazione %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_guida_cessazione }}</span>{% endif %}</a>
+                    <a id="nav_stampe_invii" href="/stampe-invii/" class="nav-link-custom {% if '/stampe-invii/' in request.path %}active{% endif %}"><i class="bi bi-send"></i> Stampe e Invii{% if shortcut_badges.nav_stampe_invii %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_stampe_invii }}</span>{% endif %}</a>
+                    <a id="nav_riepilogo_invii" href="/riepilogo-invio/" class="nav-link-custom {% if '/riepilogo-invio/' in request.path %}active{% endif %}"><i class="bi bi-clock-history"></i> Riepilogo Invii{% if shortcut_badges.nav_riepilogo_invii %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_riepilogo_invii }}</span>{% endif %}</a>
+                    <a id="nav_archivio_documenti" href="/documenti/" class="nav-link-custom {% if request.path == '/documenti/' %}active{% endif %}"><i class="bi bi-archive"></i> Archivio Documenti{% if shortcut_badges.nav_archivio_documenti %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_archivio_documenti }}</span>{% endif %}</a>
+                    <a id="nav_archivio_buste" href="/buste-archivio/" class="nav-link-custom {% if '/buste-archivio/' in request.path %}active{% endif %}"><i class="bi bi-journal-text"></i> Archivio Buste{% if shortcut_badges.nav_archivio_buste %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_archivio_buste }}</span>{% endif %}</a>
+                    <a id="nav_lul" href="{% url 'lul_list' %}" class="nav-link-custom {% if '/lul/' in request.path %}active{% endif %}"><i class="bi bi-book"></i> Libro Unico Lavoro{% if shortcut_badges.nav_lul %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_lul }}</span>{% endif %}</a>
+                    <a id="nav_certificazione_unica" href="{% url 'redigere_cu' %}" class="nav-link-custom {% if request.path == '/procedure/redigere-cu/' %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> Certificazione Unica{% if shortcut_badges.nav_certificazione_unica %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_certificazione_unica }}</span>{% endif %}</a>
+                    <a id="nav_liste_stampe" href="/liste/" class="nav-link-custom {% if request.path == '/liste/' %}active{% endif %}"><i class="bi bi-printer"></i> Liste Stampe{% if shortcut_badges.nav_liste_stampe %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_liste_stampe }}</span>{% endif %}</a>
+                    <a id="nav_export_uniemens" href="/export/uniemens-csv/?anno=2026&mese=6" class="nav-link-custom" onclick="event.preventDefault();window.open('/export/uniemens-csv/?anno='+new Date().getFullYear()+'&mese='+(new Date().getMonth()+1),'_blank')"><i class="bi bi-file-earmark-spreadsheet"></i> Export UNIEMENS{% if shortcut_badges.nav_export_uniemens %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_export_uniemens }}</span>{% endif %}</a>
+                    <a id="nav_ccnl" href="{% url 'ccnl_list' %}" class="nav-link-custom {% if request.path == '/ccnl/' %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> CCNL{% if shortcut_badges.nav_ccnl %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_ccnl }}</span>{% endif %}</a>
+                    <a id="nav_inquadramento" href="{% url 'inquadramento_list' %}" class="nav-link-custom {% if '/inquadramento/' in request.path %}active{% endif %}"><i class="bi bi-layers"></i> Inquadramento{% if shortcut_badges.nav_inquadramento %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_inquadramento }}</span>{% endif %}</a>
+                    <a id="nav_tabelle" href="{% url 'tabelle_retributive_list' %}" class="nav-link-custom {% if '/tabelle/' in request.path %}active{% endif %}"><i class="bi bi-table"></i> Tabelle Retributive{% if shortcut_badges.nav_tabelle %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_tabelle }}</span>{% endif %}</a>
+                    <a id="nav_contributi_ccnl" href="{% url 'contributi_ccnl_list' %}" class="nav-link-custom {% if '/contributi-ccnl/' in request.path %}active{% endif %}"><i class="bi bi-percent"></i> Contributi INPS{% if shortcut_badges.nav_contributi_ccnl %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_contributi_ccnl }}</span>{% endif %}</a>
+                    <a id="nav_guida_assunzione" href="{% url 'guida_assunzione_list' %}" class="nav-link-custom {% if '/guide/assunzione/' in request.path %}active{% endif %}"><i class="bi bi-check2-square"></i> Guida Assunzione{% if shortcut_badges.nav_guida_assunzione %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_guida_assunzione }}</span>{% endif %}</a>
+                    <a id="nav_decalogo_colloquio" href="{% url 'decalogo_colloquio_list' %}" class="nav-link-custom {% if '/guide/decalogo-colloquio/' in request.path %}active{% endif %}"><i class="bi bi-chat-dots"></i> Decalogo Colloquio{% if shortcut_badges.nav_decalogo_colloquio %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_decalogo_colloquio }}</span>{% endif %}</a>
+                    <a id="nav_guida_cessazione" href="{% url 'guida_cessazione_list' %}" class="nav-link-custom {% if '/guide/cessazione/' in request.path %}active{% endif %}"><i class="bi bi-box-arrow-right"></i> Guida Cessazione{% if shortcut_badges.nav_guida_cessazione %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_guida_cessazione }}</span>{% endif %}</a>
                 </div>
             </div>
             {% endif %}
@@ -147,14 +150,14 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_parametri_ccnl" href="/tabella/parametri-ccnl/" class="nav-link-custom {% if '/tabella/parametri-ccnl/' in request.path %}active{% endif %}"><i class="bi bi-sliders"></i> Parametri CCNL{% if shortcut_badges.nav_parametri_ccnl %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_parametri_ccnl }}</span>{% endif %}</a>
-                    <a id="nav_tabelle_casse" href="/tabella/tabelle-casse/" class="nav-link-custom {% if '/tabella/tabelle-casse/' in request.path %}active{% endif %}"><i class="bi bi-cash-stack"></i> Tabella Casse{% if shortcut_badges.nav_tabelle_casse %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tabelle_casse }}</span>{% endif %}</a>
-                    <a id="nav_contributi_inps" href="/tabella/contributi-inps/" class="nav-link-custom {% if '/tabella/contributi-inps/' in request.path %}active{% endif %}"><i class="bi bi-percent"></i> Contributi INPS{% if shortcut_badges.nav_contributi_inps %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_contributi_inps }}</span>{% endif %}</a>
-                    <a id="nav_tabella_malattia" href="/tabella/malattia/" class="nav-link-custom {% if '/tabella/malattia/' in request.path %}active{% endif %}"><i class="bi bi-heart-pulse"></i> Tabella Malattia{% if shortcut_badges.nav_tabella_malattia %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tabella_malattia }}</span>{% endif %}</a>
-                    <a id="nav_scatti_anzianita" href="/tabella/scatti-anzianita/" class="nav-link-custom {% if '/tabella/scatti-anzianita/' in request.path %}active{% endif %}"><i class="bi bi-arrow-up-circle"></i> Scatti Anzianità{% if shortcut_badges.nav_scatti_anzianita %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_scatti_anzianita }}</span>{% endif %}</a>
-                    <a id="nav_tipo_progetto" href="/tabella/tipi-progetto/" class="nav-link-custom {% if '/tabella/tipi-progetto/' in request.path %}active{% endif %}"><i class="bi bi-tags"></i> Tipo Progetto{% if shortcut_badges.nav_tipo_progetto %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_tipo_progetto }}</span>{% endif %}</a>
-                    <a id="nav_livelli" href="/tabella/livelli/" class="nav-link-custom {% if '/tabella/livelli/' in request.path %}active{% endif %}"><i class="bi bi-layers"></i> Livelli{% if shortcut_badges.nav_livelli %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_livelli }}</span>{% endif %}</a>
-                    <a id="nav_modelli_lista" href="/tabella/modelli-lista/" class="nav-link-custom {% if '/tabella/modelli-lista/' in request.path %}active{% endif %}"><i class="bi bi-file-earmark-spreadsheet"></i> Modelli Lista{% if shortcut_badges.nav_modelli_lista %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_modelli_lista }}</span>{% endif %}</a>
+                    <a id="nav_parametri_ccnl" href="/tabella/parametri-ccnl/" class="nav-link-custom {% if '/tabella/parametri-ccnl/' in request.path %}active{% endif %}"><i class="bi bi-sliders"></i> Parametri CCNL{% if shortcut_badges.nav_parametri_ccnl %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_parametri_ccnl }}</span>{% endif %}</a>
+                    <a id="nav_tabelle_casse" href="/tabella/tabelle-casse/" class="nav-link-custom {% if '/tabella/tabelle-casse/' in request.path %}active{% endif %}"><i class="bi bi-cash-stack"></i> Tabella Casse{% if shortcut_badges.nav_tabelle_casse %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_tabelle_casse }}</span>{% endif %}</a>
+                    <a id="nav_contributi_inps" href="/tabella/contributi-inps/" class="nav-link-custom {% if '/tabella/contributi-inps/' in request.path %}active{% endif %}"><i class="bi bi-percent"></i> Contributi INPS{% if shortcut_badges.nav_contributi_inps %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_contributi_inps }}</span>{% endif %}</a>
+                    <a id="nav_tabella_malattia" href="/tabella/malattia/" class="nav-link-custom {% if '/tabella/malattia/' in request.path %}active{% endif %}"><i class="bi bi-heart-pulse"></i> Tabella Malattia{% if shortcut_badges.nav_tabella_malattia %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_tabella_malattia }}</span>{% endif %}</a>
+                    <a id="nav_scatti_anzianita" href="/tabella/scatti-anzianita/" class="nav-link-custom {% if '/tabella/scatti-anzianita/' in request.path %}active{% endif %}"><i class="bi bi-arrow-up-circle"></i> Scatti Anzianità{% if shortcut_badges.nav_scatti_anzianita %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_scatti_anzianita }}</span>{% endif %}</a>
+                    <a id="nav_tipo_progetto" href="/tabella/tipi-progetto/" class="nav-link-custom {% if '/tabella/tipi-progetto/' in request.path %}active{% endif %}"><i class="bi bi-tags"></i> Tipo Progetto{% if shortcut_badges.nav_tipo_progetto %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_tipo_progetto }}</span>{% endif %}</a>
+                    <a id="nav_livelli" href="/tabella/livelli/" class="nav-link-custom {% if '/tabella/livelli/' in request.path %}active{% endif %}"><i class="bi bi-layers"></i> Livelli{% if shortcut_badges.nav_livelli %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_livelli }}</span>{% endif %}</a>
+                    <a id="nav_modelli_lista" href="/tabella/modelli-lista/" class="nav-link-custom {% if '/tabella/modelli-lista/' in request.path %}active{% endif %}"><i class="bi bi-file-earmark-spreadsheet"></i> Modelli Lista{% if shortcut_badges.nav_modelli_lista %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_modelli_lista }}</span>{% endif %}</a>
                 </div>
             </div>
             {% endif %}
@@ -168,17 +171,17 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_busta_standard" href="/calcoli/" class="nav-link-custom {% if '/calcoli/' in request.path and '/non-convivente/' not in request.path and '/conviventi-ccnl/' not in request.path and '/inverso/' not in request.path %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> Busta Paga Standard{% if shortcut_badges.nav_busta_standard %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_busta_standard }}</span>{% endif %}</a>
-                    <a id="nav_busta_non_convivente" href="/calcoli/non-convivente/" class="nav-link-custom {% if '/calcoli/non-convivente/' in request.path %}active{% endif %}"><i class="bi bi-person"></i> Busta Non Convivente{% if shortcut_badges.nav_busta_non_convivente %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_busta_non_convivente }}</span>{% endif %}</a>
-                    <a id="nav_busta_conviventi" href="/calcoli/conviventi-ccnl/" class="nav-link-custom {% if '/calcoli/conviventi-ccnl/' in request.path %}active{% endif %}"><i class="bi bi-house-heart"></i> Busta Conviventi CCNL{% if shortcut_badges.nav_busta_conviventi %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_busta_conviventi }}</span>{% endif %}</a>
-                    <a id="nav_calcolo_inverso" href="/calcoli/inverso/" class="nav-link-custom {% if '/calcoli/inverso/' in request.path %}active{% endif %}"><i class="bi bi-arrow-left-right"></i> Calcolo Inverso{% if shortcut_badges.nav_calcolo_inverso %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_calcolo_inverso }}</span>{% endif %}</a>
-                    <a id="nav_busta_notturno" href="/calcoli/notturno/" class="nav-link-custom {% if '/calcoli/notturno/' in request.path %}active{% endif %}"><i class="bi bi-moon-stars"></i> Busta Notturno{% if shortcut_badges.nav_busta_notturno %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_busta_notturno }}</span>{% endif %}</a>
-                    <a id="nav_busta_malattia" href="/calcoli/malattia/" class="nav-link-custom {% if '/calcoli/malattia/' in request.path %}active{% endif %}"><i class="bi bi-heart-pulse"></i> Busta Malattia{% if shortcut_badges.nav_busta_malattia %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_busta_malattia }}</span>{% endif %}</a>
-                    <a id="nav_sostituzione_malattia" href="/calcoli/sostituzione/" class="nav-link-custom {% if '/calcoli/sostituzione/' in request.path %}active{% endif %}"><i class="bi bi-arrow-repeat"></i> Sostituzione Malattia{% if shortcut_badges.nav_sostituzione_malattia %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_sostituzione_malattia }}</span>{% endif %}</a>
-                    <a id="nav_busta_tfr" href="/calcoli/tfr/" class="nav-link-custom {% if '/calcoli/tfr/' in request.path %}active{% endif %}"><i class="bi bi-piggy-bank"></i> Busta TFR{% if shortcut_badges.nav_busta_tfr %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_busta_tfr }}</span>{% endif %}</a>
-                    <a id="nav_buste_massive" href="/buste-paga-massivo/" class="nav-link-custom {% if '/buste-paga-massivo/' in request.path %}active{% endif %}"><i class="bi bi-files"></i> Buste Paga Massive{% if shortcut_badges.nav_buste_massive %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_buste_massive }}</span>{% endif %}</a>
+                    <a id="nav_busta_standard" href="/calcoli/" class="nav-link-custom {% if '/calcoli/' in request.path and '/non-convivente/' not in request.path and '/conviventi-ccnl/' not in request.path and '/inverso/' not in request.path %}active{% endif %}"><i class="bi bi-file-earmark-text"></i> Busta Paga Standard{% if shortcut_badges.nav_busta_standard %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_busta_standard }}</span>{% endif %}</a>
+                    <a id="nav_busta_non_convivente" href="/calcoli/non-convivente/" class="nav-link-custom {% if '/calcoli/non-convivente/' in request.path %}active{% endif %}"><i class="bi bi-person"></i> Busta Non Convivente{% if shortcut_badges.nav_busta_non_convivente %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_busta_non_convivente }}</span>{% endif %}</a>
+                    <a id="nav_busta_conviventi" href="/calcoli/conviventi-ccnl/" class="nav-link-custom {% if '/calcoli/conviventi-ccnl/' in request.path %}active{% endif %}"><i class="bi bi-house-heart"></i> Busta Conviventi CCNL{% if shortcut_badges.nav_busta_conviventi %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_busta_conviventi }}</span>{% endif %}</a>
+                    <a id="nav_calcolo_inverso" href="/calcoli/inverso/" class="nav-link-custom {% if '/calcoli/inverso/' in request.path %}active{% endif %}"><i class="bi bi-arrow-left-right"></i> Calcolo Inverso{% if shortcut_badges.nav_calcolo_inverso %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_calcolo_inverso }}</span>{% endif %}</a>
+                    <a id="nav_busta_notturno" href="/calcoli/notturno/" class="nav-link-custom {% if '/calcoli/notturno/' in request.path %}active{% endif %}"><i class="bi bi-moon-stars"></i> Busta Notturno{% if shortcut_badges.nav_busta_notturno %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_busta_notturno }}</span>{% endif %}</a>
+                    <a id="nav_busta_malattia" href="/calcoli/malattia/" class="nav-link-custom {% if '/calcoli/malattia/' in request.path %}active{% endif %}"><i class="bi bi-heart-pulse"></i> Busta Malattia{% if shortcut_badges.nav_busta_malattia %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_busta_malattia }}</span>{% endif %}</a>
+                    <a id="nav_sostituzione_malattia" href="/calcoli/sostituzione/" class="nav-link-custom {% if '/calcoli/sostituzione/' in request.path %}active{% endif %}"><i class="bi bi-arrow-repeat"></i> Sostituzione Malattia{% if shortcut_badges.nav_sostituzione_malattia %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_sostituzione_malattia }}</span>{% endif %}</a>
+                    <a id="nav_busta_tfr" href="/calcoli/tfr/" class="nav-link-custom {% if '/calcoli/tfr/' in request.path %}active{% endif %}"><i class="bi bi-piggy-bank"></i> Busta TFR{% if shortcut_badges.nav_busta_tfr %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_busta_tfr }}</span>{% endif %}</a>
+                    <a id="nav_buste_massive" href="/buste-paga-massivo/" class="nav-link-custom {% if '/buste-paga-massivo/' in request.path %}active{% endif %}"><i class="bi bi-files"></i> Buste Paga Massive{% if shortcut_badges.nav_buste_massive %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_buste_massive }}</span>{% endif %}</a>
                     <div class="nav-group-divider" style="margin:4px 0px;"></div>
-                    <a id="nav_comparatore" href="/comparatore/" class="nav-link-custom {% if request.path == '/comparatore/' %}active{% endif %}"><i class="bi bi-arrow-left-right"></i> Comparatore Costo{% if shortcut_badges.nav_comparatore %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_comparatore }}</span>{% endif %}</a>
+                    <a id="nav_comparatore" href="/comparatore/" class="nav-link-custom {% if request.path == '/comparatore/' %}active{% endif %}"><i class="bi bi-arrow-left-right"></i> Comparatore Costo{% if shortcut_badges.nav_comparatore %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_comparatore }}</span>{% endif %}</a>
                 </div>
             </div>
             {% endif %}
@@ -192,12 +195,12 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_iscrizione_inps" href="{% url 'iscrizione_inps' %}" class="nav-link-custom {% if request.path == '/procedure/iscrizione-inps/' %}active{% endif %}"><i class="bi bi-person-plus"></i> Iscrizione INPS{% if shortcut_badges.nav_iscrizione_inps %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_iscrizione_inps }}</span>{% endif %}</a>
-                    <a id="nav_cessazione_inps" href="{% url 'cessazione_inps' %}" class="nav-link-custom {% if request.path == '/procedure/cessazione-inps/' %}active{% endif %}"><i class="bi bi-person-x"></i> Cessazione INPS{% if shortcut_badges.nav_cessazione_inps %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_cessazione_inps }}</span>{% endif %}</a>
-                    <a id="nav_crea_pagopa" href="{% url 'crea_pagopa' %}" class="nav-link-custom {% if request.path == '/procedure/crea-pagopa/' %}active{% endif %}"><i class="bi bi-credit-card-2-front"></i> Crea PAGOPA{% if shortcut_badges.nav_crea_pagopa %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_crea_pagopa }}</span>{% endif %}</a>
-                    <a id="nav_crea_pagopa_manuale" href="{% url 'crea_pagopa_manuale' %}" class="nav-link-custom {% if request.path == '/procedure/crea-pagopa-manuale/' %}active{% endif %}"><i class="bi bi-credit-card-2-front"></i> Crea PAGOPA Manuale{% if shortcut_badges.nav_crea_pagopa_manuale %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_crea_pagopa_manuale }}</span>{% endif %}</a>
+                    <a id="nav_iscrizione_inps" href="{% url 'iscrizione_inps' %}" class="nav-link-custom {% if request.path == '/procedure/iscrizione-inps/' %}active{% endif %}"><i class="bi bi-person-plus"></i> Iscrizione INPS{% if shortcut_badges.nav_iscrizione_inps %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_iscrizione_inps }}</span>{% endif %}</a>
+                    <a id="nav_cessazione_inps" href="{% url 'cessazione_inps' %}" class="nav-link-custom {% if request.path == '/procedure/cessazione-inps/' %}active{% endif %}"><i class="bi bi-person-x"></i> Cessazione INPS{% if shortcut_badges.nav_cessazione_inps %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_cessazione_inps }}</span>{% endif %}</a>
+                    <a id="nav_crea_pagopa" href="{% url 'crea_pagopa' %}" class="nav-link-custom {% if request.path == '/procedure/crea-pagopa/' %}active{% endif %}"><i class="bi bi-credit-card-2-front"></i> Crea PAGOPA{% if shortcut_badges.nav_crea_pagopa %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_crea_pagopa }}</span>{% endif %}</a>
+                    <a id="nav_crea_pagopa_manuale" href="{% url 'crea_pagopa_manuale' %}" class="nav-link-custom {% if request.path == '/procedure/crea-pagopa-manuale/' %}active{% endif %}"><i class="bi bi-credit-card-2-front"></i> Crea PAGOPA Manuale{% if shortcut_badges.nav_crea_pagopa_manuale %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_crea_pagopa_manuale }}</span>{% endif %}</a>
                     <hr style="border-color:#27282D;margin:6px 0;">
-                    <a id="nav_configurazioni_web" href="{% url 'configurazioni_servizi' %}" class="nav-link-custom {% if request.path == '/configurazioni-servizi/' %}active{% endif %}"><i class="bi bi-gear-wide-connected"></i> Configurazioni Servizi Web{% if shortcut_badges.nav_configurazioni_web %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_configurazioni_web }}</span>{% endif %}</a>
+                    <a id="nav_configurazioni_web" href="{% url 'configurazioni_servizi' %}" class="nav-link-custom {% if request.path == '/configurazioni-servizi/' %}active{% endif %}"><i class="bi bi-gear-wide-connected"></i> Configurazioni Servizi Web{% if shortcut_badges.nav_configurazioni_web %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_configurazioni_web }}</span>{% endif %}</a>
                 </div>
             </div>
             {% endif %}
@@ -211,7 +214,7 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_cronologia_inps" href="{% url 'log_inps' %}" class="nav-link-custom {% if request.path == '/procedure/log-inps/' %}active{% endif %}"><i class="bi bi-journal-text"></i> Cronologia INPS{% if shortcut_badges.nav_cronologia_inps %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_cronologia_inps }}</span>{% endif %}</a>
+                    <a id="nav_cronologia_inps" href="{% url 'log_inps' %}" class="nav-link-custom {% if request.path == '/procedure/log-inps/' %}active{% endif %}"><i class="bi bi-journal-text"></i> Cronologia INPS{% if shortcut_badges.nav_cronologia_inps %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_cronologia_inps }}</span>{% endif %}</a>
                 </div>
             </div>
             {% endif %}
@@ -225,8 +228,8 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_report_mensile" href="{% url 'report_mensile' %}" target="_blank" class="nav-link-custom {% if request.path == '/report/mensile/' %}active{% endif %}"><i class="bi bi-filetype-pdf"></i> Report Mensile{% if shortcut_badges.nav_report_mensile %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_report_mensile }}</span>{% endif %}</a>
-                    <a id="nav_report_annuale" href="{% url 'report_annuale' %}" target="_blank" class="nav-link-custom {% if request.path == '/report/annuale/' %}active{% endif %}"><i class="bi bi-file-earmark-pdf"></i> Report Annuale{% if shortcut_badges.nav_report_annuale %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_report_annuale }}</span>{% endif %}</a>
+                    <a id="nav_report_mensile" href="{% url 'report_mensile' %}" target="_blank" class="nav-link-custom {% if request.path == '/report/mensile/' %}active{% endif %}"><i class="bi bi-filetype-pdf"></i> Report Mensile{% if shortcut_badges.nav_report_mensile %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_report_mensile }}</span>{% endif %}</a>
+                    <a id="nav_report_annuale" href="{% url 'report_annuale' %}" target="_blank" class="nav-link-custom {% if request.path == '/report/annuale/' %}active{% endif %}"><i class="bi bi-file-earmark-pdf"></i> Report Annuale{% if shortcut_badges.nav_report_annuale %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_report_annuale }}</span>{% endif %}</a>
                 </div>
             </div>
             {% endif %}
@@ -239,16 +242,16 @@
                     <i class="bi bi-chevron-down nav-chevron"></i>
                 </div>
                 <div class="nav-collapse">
-                    <a id="nav_agenda" href="/agenda/" class="nav-link-custom {% if request.path == '/agenda/' %}active{% endif %}"><i class="bi bi-calendar-week"></i> Agenda{% if shortcut_badges.nav_agenda %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_agenda }}</span>{% endif %}</a>
-                    <a id="nav_checklist" href="/checklist-mensile/" class="nav-link-custom {% if request.path == '/checklist-mensile/' %}active{% endif %}"><i class="bi bi-check2-square"></i> Checklist Mensile{% if shortcut_badges.nav_checklist %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_checklist }}</span>{% endif %}</a>
-                    <a id="nav_scorciatoie" href="/scorciatoie/" class="nav-link-custom {% if request.path == '/scorciatoie/' %}active{% endif %}"><i class="bi bi-keyboard"></i> Scorciatoie Tastiera{% if shortcut_badges.nav_scorciatoie %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_scorciatoie }}</span>{% endif %}</a>
-                    {% if permessi_utente.permessi %}<a id="nav_permessi" href="/permessi/" class="nav-link-custom {% if request.path == '/permessi/' %}active{% endif %}"><i class="bi bi-shield-lock"></i> Ruoli e Permessi{% if shortcut_badges.nav_permessi %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_permessi }}</span>{% endif %}</a>{% endif %}
-                    {% if permessi_utente.backup %}<a id="nav_backup" href="/backup/" class="nav-link-custom {% if request.path == '/backup/' %}active{% endif %}"><i class="bi bi-database"></i> Backup{% if shortcut_badges.nav_backup %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_backup }}</span>{% endif %}</a>{% endif %}
-                    {% if permessi_utente.impostazioni %}<a id="nav_impostazioni" href="/impostazioni/" class="nav-link-custom {% if request.path == '/impostazioni/' %}active{% endif %}"><i class="bi bi-gear-wide-connected"></i> Impostazioni{% if shortcut_badges.nav_impostazioni %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_impostazioni }}</span>{% endif %}</a>{% endif %}
-                    {% if permessi_utente.impostazioni %}<a id="nav_admin_django" href="/admin/" class="nav-link-custom"><i class="bi bi-shield-lock"></i> Admin Django{% if shortcut_badges.nav_admin_django %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_admin_django }}</span>{% endif %}</a>{% endif %}
-                    {% if permessi_utente.audit_log %}<a id="nav_audit" href="/audit/" class="nav-link-custom {% if request.path == '/audit/' %}active{% endif %}"><i class="bi bi-journal-text"></i> Registro Audit{% if shortcut_badges.nav_audit %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_audit }}</span>{% endif %}</a>{% endif %}
-                    <a id="nav_about" href="/about/" class="nav-link-custom {% if request.path == '/about/' %}active{% endif %}"><i class="bi bi-info-circle"></i> About{% if shortcut_badges.nav_about %}<span class="shortcut-badge" style="margin-left:auto;">{{ shortcut_badges.nav_about }}</span>{% endif %}</a>
-                    {% if permessi_utente.backup %}<a id="nav_database" href="/gestione-db/" class="nav-link-custom {% if request.path == '/gestione-db/' %}active{% endif %}"><i class="bi bi-database"></i> Database{% if db_profile != 'default' %}<span class="shortcut-badge" style="margin-left:auto;">{{ db_profile }}</span>{% endif %}</a>{% endif %}
+                    <a id="nav_agenda" href="/agenda/" class="nav-link-custom {% if request.path == '/agenda/' %}active{% endif %}"><i class="bi bi-calendar-week"></i> Agenda{% if shortcut_badges.nav_agenda %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_agenda }}</span>{% endif %}</a>
+                    <a id="nav_checklist" href="/checklist-mensile/" class="nav-link-custom {% if request.path == '/checklist-mensile/' %}active{% endif %}"><i class="bi bi-check2-square"></i> Checklist Mensile{% if shortcut_badges.nav_checklist %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_checklist }}</span>{% endif %}</a>
+                    <a id="nav_scorciatoie" href="/scorciatoie/" class="nav-link-custom {% if request.path == '/scorciatoie/' %}active{% endif %}"><i class="bi bi-keyboard"></i> Scorciatoie Tastiera{% if shortcut_badges.nav_scorciatoie %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_scorciatoie }}</span>{% endif %}</a>
+                    {% if permessi_utente.permessi %}<a id="nav_permessi" href="/permessi/" class="nav-link-custom {% if request.path == '/permessi/' %}active{% endif %}"><i class="bi bi-shield-lock"></i> Ruoli e Permessi{% if shortcut_badges.nav_permessi %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_permessi }}</span>{% endif %}</a>{% endif %}
+                    {% if permessi_utente.backup %}<a id="nav_backup" href="/backup/" class="nav-link-custom {% if request.path == '/backup/' %}active{% endif %}"><i class="bi bi-database"></i> Backup{% if shortcut_badges.nav_backup %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_backup }}</span>{% endif %}</a>{% endif %}
+                    {% if permessi_utente.impostazioni %}<a id="nav_impostazioni" href="/impostazioni/" class="nav-link-custom {% if request.path == '/impostazioni/' %}active{% endif %}"><i class="bi bi-gear-wide-connected"></i> Impostazioni{% if shortcut_badges.nav_impostazioni %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_impostazioni }}</span>{% endif %}</a>{% endif %}
+                    {% if permessi_utente.impostazioni %}<a id="nav_admin_django" href="/admin/" class="nav-link-custom"><i class="bi bi-shield-lock"></i> Admin Django{% if shortcut_badges.nav_admin_django %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_admin_django }}</span>{% endif %}</a>{% endif %}
+                    {% if permessi_utente.audit_log %}<a id="nav_audit" href="/audit/" class="nav-link-custom {% if request.path == '/audit/' %}active{% endif %}"><i class="bi bi-journal-text"></i> Registro Audit{% if shortcut_badges.nav_audit %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_audit }}</span>{% endif %}</a>{% endif %}
+                    <a id="nav_about" href="/about/" class="nav-link-custom {% if request.path == '/about/' %}active{% endif %}"><i class="bi bi-info-circle"></i> About{% if shortcut_badges.nav_about %}<span class="shortcut-badge ml-auto">{{ shortcut_badges.nav_about }}</span>{% endif %}</a>
+                    {% if permessi_utente.backup %}<a id="nav_database" href="/gestione-db/" class="nav-link-custom {% if request.path == '/gestione-db/' %}active{% endif %}"><i class="bi bi-database"></i> Database{% if db_profile != 'default' %}<span class="shortcut-badge ml-auto">{{ db_profile }}</span>{% endif %}</a>{% endif %}
                 </div>
             </div>
         </nav>
@@ -256,11 +259,16 @@
     <div class="sidebar-footer">
         <div class="sidebar-footer-brand">{{ opzioni.nome_programma|default:"Gestionale COLF" }}</div>
         <div class="sidebar-footer-version"><i class="bi bi-info-circle"></i> <span>v{{ opzioni.versione_programma|default:"1.1" }}</span></div>
+        {% if ultimo_backup %}
+        <div class="sidebar-footer-user"><i class="bi bi-database-check"></i> Backup: <span style="color:{% if backup_fresco %}#34d399{% elif backup_recente %}#f59e0b{% else %}#f87171{% endif %};font-weight:600;">{{ ultimo_backup.data_creazione|date:"d/m/y H:i" }}</span></div>
+        {% endif %}
         {% if db_profile != 'default' %}
         <div class="sidebar-footer-user"><i class="bi bi-database"></i> {{ db_profile }}</div>
         {% else %}
         <div class="sidebar-footer-user"><i class="bi bi-person"></i> {{ user.get_full_name|default:user.username }}{% if ruolo_utente %} · <span style="color:#5E6AD2;font-weight:600;font-size:10px;">{{ ruolo_utente }}</span>{% endif %}</div>
         {% endif %}
+        <div class="sidebar-footer-user" style="cursor:pointer;" onclick="mostraToggleHistory()"><i class="bi bi-toggle-on"></i> Toggles <span id="toggleHistoryBadge" style="display:none;background:#5E6AD2;color:#fff;font-size:9px;border-radius:8px;padding:0 6px;font-weight:700;vertical-align:middle;"></span></div>
+        <div class="sidebar-footer-user"><a href="/m/" style="color:#5C5F66;text-decoration:none;"><i class="bi bi-phone"></i> Versione mobile</a></div>
     </div>
     </div>
 
@@ -313,7 +321,7 @@
                 <h5 class="text-white fw-bold mb-0" id="offcanvas-title" style="font-size: 15px; letter-spacing: -0.3px;">Caricamento...</h5>
                 <div class="text-secondary" style="font-size: 11px; margin-top: 2px;" id="offcanvas-subtitle">Inserisci i dati richiesti</div>
             </div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" style="opacity: 0.5; transition: opacity 0.2s;"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" style="opacity: 0.5; transition: opacity 0.2s;" aria-label="Chiudi"></button>
         </div>
         <div class="offcanvas-body" id="offcanvas-form-container" style="padding: 36px !important;">
         </div>
@@ -342,7 +350,7 @@
             <div class="modal-content card-dark">
                 <div class="modal-header" style="border-bottom:1px solid #27282D;padding:20px 28px;">
                     <h5 class="modal-title fw-bold text-white" id="progettoModalTitle" style="font-size:15px;">Modifica Progetto</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="opacity:0.5;transition:opacity 0.2s;"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="opacity:0.5;transition:opacity 0.2s;" aria-label="Chiudi"></button>
                 </div>
                 <div class="modal-body" id="progettoModalBody" style="padding:28px;"></div>
             </div>
@@ -353,7 +361,7 @@
     <div id="previewFloating" style="display:none; flex-direction:column; position:fixed; top:20px; left:20px; width:380px; height:calc(100vh - 200px); min-width:200px; min-height:120px; z-index:99999; background:#131316; border:1px solid #27282D; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.5); overflow:hidden; resize:both;">
         <div id="previewHeader" style="cursor:move; display:flex; justify-content:space-between; align-items:center; padding:6px 12px; background:rgba(255,255,255,0.04); border-bottom:1px solid #27282D; user-select:none; flex-shrink:0;">
             <span style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em; color:#10b981;"><i class="bi bi-eye me-1"></i>Anteprima</span>
-            <button type="button" onclick="togglePreview()" style="background:none; border:none; color:#5C5F66; font-size:16px; cursor:pointer; line-height:1; padding:0;">&times;</button>
+            <button type="button" onclick="togglePreview()" aria-label="Chiudi anteprima" style="background:none; border:none; color:#5C5F66; font-size:16px; cursor:pointer; line-height:1; padding:0;">&times;</button>
         </div>
         <div id="previewScroller" style="padding:8px 12px; overflow-y:auto; flex:1; min-height:0; font-size:12px; color:#cccccc; line-height:1.5; white-space:pre-wrap; word-wrap:break-word;">
             <div id="previewOggetto" style="font-weight:600; color:#ffffff; margin-bottom:4px; padding-bottom:4px; border-bottom:1px solid #27282D;"></div>
@@ -394,7 +402,7 @@
                         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:rgba(248,113,113,0.12);display:flex;align-items:center;justify-content:center;font-size:20px;color:#f87171;"><i class="bi bi-exclamation-triangle-fill"></i></div>
                         <div>
                             <div style="font-size:14px;font-weight:700;color:#EDEDED;margin-bottom:2px;">Conferma eliminazione</div>
-                            <div style="font-size:11px;color:#8A8F98;">L'operazione non può essere annullata.</div>
+                            <div class="c-11-m">L'operazione non può essere annullata.</div>
                         </div>
                     </div>
                     <div style="padding:10px 12px;background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:16px;">
@@ -416,7 +424,7 @@
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content card-alt">
           <div class="modal-body" id="modaleCcnlOcchioGlobaleBody" style="padding:0;">
-            <div class="text-center py-5" style="color:#8A8F98;font-size:13px;">
+            <div class="text-center py-5 c-muted fs-13">
               <i class="bi bi-eye" style="font-size:32px;color:#5E6AD2;display:block;margin-bottom:8px;"></i>
               Caricamento parametri CCNL...
             </div>
@@ -433,7 +441,7 @@
                 <div id="actionPanelTitle" style="font-size:13px;font-weight:700;color:#EDEDED;white-space:pre-wrap;overflow:hidden;text-overflow:ellipsis;"></div>
                 <div id="actionPanelSubtitle" style="font-size:10px;color:#8A8F98;margin-top:1px;"></div>
             </div>
-            <button type="button" onclick="closeActionPanel()" style="background:none;border:none;color:#8A8F98;font-size:20px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;">&times;</button>
+            <button type="button" onclick="closeActionPanel()" aria-label="Chiudi pannello" style="background:none;border:none;color:#8A8F98;font-size:20px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;">&times;</button>
         </div>
         <div id="actionPanelBody" style="padding:14px 18px;overflow-y:auto;max-height:55vh;"></div>
     </div>
@@ -450,8 +458,14 @@
     document.addEventListener('keydown', function(e) {
         var tag = e.target.tagName;
         var isInput = (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+        var ctrl = e.ctrlKey || e.metaKey;
+        if (ctrl && e.key === 's') { e.preventDefault(); var b = document.querySelector('.btn-salva, [onclick*="salva"], #btnSalva, .btn-primary[type="submit"]'); if (!b) b = document.querySelector('button:has(> .bi-check-circle)'); if (b) b.click(); return; }
+        if (ctrl && e.key === 'p') { e.preventDefault(); window.print(); return; }
+        if (ctrl && e.key === 'Enter') { e.preventDefault(); var f = document.querySelector('form:not([onsubmit*="return false"])'); if (f) f.dispatchEvent(new Event('submit')); return; }
+        if (e.key === 'F1') { e.preventDefault(); var h = document.querySelector('[data-bs-toggle="modal"][href*="help"], [onclick*="helpModal"], [id*="help"], .btn-help, a[href*="help"]'); if (h) h.click(); return; }
+        if (e.key === '?' && !isInput && !ctrl) { e.preventDefault(); mostraToast('Scorciatoie: Ctrl+S Salva, Ctrl+P Stampa, Ctrl+Enter Conferma, F1 Aiuto', true); return; }
         var key;
-        if (e.ctrlKey || e.metaKey) {
+        if (ctrl) {
             key = 'Ctrl+' + e.key.toUpperCase();
         } else {
             if (isInput) return;
@@ -608,10 +622,8 @@
         footer.style.display = 'block';
         fetch(url)
             .then(res => {
-                console.log('Fetch response status:', res.status);
                 if (!res.ok) throw new Error('Errore del server Django (Codice ' + res.status + ')');
                 const ct = res.headers.get('content-type') || '';
-                console.log('Content-Type:', ct);
                 if (ct.includes('application/json')) {
                     return res.json();
                 } else {
@@ -656,6 +668,29 @@
                                 if (window.initProgettiDragDrop) setTimeout(function() { window.initProgettiDragDrop(); }, 250);
                                 if (window.verificaDataFineContratto) setTimeout(function() { window.verificaDataFineContratto(); }, 100);
                                 if (window.verificaDataFineProgetto) setTimeout(function() { window.verificaDataFineProgetto(); }, 100);
+                                // Converti checkbox visibilità operatori in toggle switch
+                                setTimeout(function() {
+                                    document.querySelectorAll('#visibilitaOperatorSection input[type="checkbox"], #visibilitaOperatorSectionContratto input[type="checkbox"]').forEach(function(cb) {
+                                        if (cb.parentNode.classList.contains('toggle-switch')) return;
+                                        var row = cb.closest('.d-flex') || cb.parentNode;
+                                        var labelText = row.querySelector('span') ? row.querySelector('span').textContent : '';
+                                        var div = document.createElement('div');
+                                        div.className = 'd-flex align-items-center justify-content-between';
+                                        div.style.cssText = 'padding:3px 4px;font-size:12px;color:#8A8F98;border-radius:6px;';
+                                        div.addEventListener('mouseenter',function(){this.style.background='rgba(94,106,210,0.06)';});
+                                        div.addEventListener('mouseleave',function(){this.style.background='';});
+                                        var nameSpan = document.createElement('span');
+                                        nameSpan.textContent = labelText;
+                                        var toggleLabel = document.createElement('label');
+                                        toggleLabel.className = 'toggle-switch toggle-purple';
+                                        toggleLabel.style.margin = '0';
+                                        toggleLabel.appendChild(cb);
+                                        toggleLabel.appendChild(document.createElement('span')).className = 'toggle-slider';
+                                        div.appendChild(nameSpan);
+                                        div.appendChild(toggleLabel);
+                                        row.parentNode.replaceChild(div, row);
+                                    });
+                                }, 50);
                                 if (window._stepAfterNav && window._stepAfterNav > 1) {
                                     setTimeout(function() {
                                         if (window.vaiAStep) window.vaiAStep(window._stepAfterNav);
@@ -739,7 +774,7 @@
             panel.innerHTML =
                 '<div class="offcanvas-header" style="background:#17181C;border-bottom:1px solid #27282D;padding:20px 24px;">' +
                     '<h5 class="text-white fw-bold mb-0"><i class="bi bi-copy me-2" style="color:#34d399;"></i>Copia da contratto</h5>' +
-                    '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>' +
+                    '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Chiudi"></button>' +
                 '</div>' +
                 '<div class="offcanvas-body" style="padding:20px 24px;display:flex;flex-direction:column;height:100%;">' +
                     '<div style="position:relative;margin-bottom:16px;">' +
@@ -1078,7 +1113,6 @@
             };
             dbg('Invio a ' + currentAjaxUrl);
             // Sync TinyMCE content to textarea before form submission
-            console.log('[DEBUG] 1 - prima sync TinyMCE');
             if (window.tinymce) {
                 try {
                     var editors = ['id_corpo_testo', 'id_oggetto_titolo'];
@@ -1090,21 +1124,16 @@
                         }
                     });
                 } catch(e) {
-                    console.log('[DEBUG] ERRORE sync TinyMCE:', e.message);
                     dbg('ERRORE sync TinyMCE: ' + e.message);
                 }
             }
-            console.log('[DEBUG] 3 - dopo sync TinyMCE');
             const formData = new FormData(form);
-            console.log('[DEBUG] 4 - FormData creato, entries:', Array.from(formData.entries()).length);
             if (btn) btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvataggio...';
-            console.log('[DEBUG] 5 - prima fetch a', currentAjaxUrl);
             var controller = new AbortController();
-            var timeoutId = setTimeout(function() { controller.abort(); console.log('[DEBUG] FETCH TIMEOUT dopo 10s'); }, 10000);
+            var timeoutId = setTimeout(function() { controller.abort(); }, 10000);
             fetch(currentAjaxUrl, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: controller.signal })
-                .then(function(res) { clearTimeout(timeoutId); console.log('[DEBUG] 6 - risposta ricevuta, status:', res.status); if (!res.ok) throw new Error('Errore server ' + res.status); return res.json(); })
+                .then(function(res) { clearTimeout(timeoutId); if (!res.ok) throw new Error('Errore server ' + res.status); return res.json(); })
                 .then(function(data) {
-                    console.log('[DEBUG] 7 - JSON data.success:', data.success);
                     dbg('Risposta: success=' + data.success);
                     if (data.success) {
                         mostraToast('Dati salvati con successo!', true);
@@ -1131,6 +1160,28 @@
                             if (window.initTinyMCE) window.initTinyMCE();
                             if (window.initStepForm && currentAjaxUrl.indexOf('/nuovo-contratto/') !== -1) window.initStepForm(document.getElementById('offcanvas-form-container'));
                             if (window.initProgettiDragDrop) setTimeout(function() { window.initProgettiDragDrop(); }, 200);
+                            setTimeout(function() {
+                                document.querySelectorAll('#visibilitaOperatorSection input[type="checkbox"], #visibilitaOperatorSectionContratto input[type="checkbox"]').forEach(function(cb) {
+                                    if (cb.parentNode.classList.contains('toggle-switch')) return;
+                                    var row = cb.closest('.d-flex') || cb.parentNode;
+                                    var labelText = row.querySelector('span') ? row.querySelector('span').textContent : '';
+                                    var div = document.createElement('div');
+                                    div.className = 'd-flex align-items-center justify-content-between';
+                                    div.style.cssText = 'padding:3px 4px;font-size:12px;color:#8A8F98;border-radius:6px;';
+                                    div.addEventListener('mouseenter',function(){this.style.background='rgba(94,106,210,0.06)';});
+                                    div.addEventListener('mouseleave',function(){this.style.background='';});
+                                    var nameSpan = document.createElement('span');
+                                    nameSpan.textContent = labelText;
+                                    var toggleLabel = document.createElement('label');
+                                    toggleLabel.className = 'toggle-switch toggle-purple';
+                                    toggleLabel.style.margin = '0';
+                                    toggleLabel.appendChild(cb);
+                                    toggleLabel.appendChild(document.createElement('span')).className = 'toggle-slider';
+                                    div.appendChild(nameSpan);
+                                    div.appendChild(toggleLabel);
+                                    row.parentNode.replaceChild(div, row);
+                                });
+                            }, 50);
                             var scroller = document.querySelector('#dynamicForm > div[style*="overflow-y: auto"]');
                             if (scroller) scroller.scrollTop = 0;
                         }, 150);
@@ -1141,7 +1192,6 @@
                     if (btn) btn.innerHTML = btnOrig;
                     var msg = err.name === 'AbortError' ? 'TIMEOUT: nessuna risposta dal server dopo 10s' : err.message;
                     mostraToast(msg, false);
-                    console.log('[DEBUG] 8 - catch:', err.name, msg);
                     dbg('ERRORE: ' + msg);
                 });
         }
@@ -1227,14 +1277,12 @@
     window._progSelRender = null;
 
     window.initProgettiDragDrop = function() {
-        console.log('[progetti] initProgettiDragDrop called');
         var dd = document.getElementById('progettiDragDrop');
-        if (!dd) { console.log('[progetti] #progettiDragDrop NOT found'); return; }
-        if (dd.hasAttribute('data-dnd-init')) { console.log('[progetti] already init'); return; }
+        if (!dd) { return; }
+        if (dd.hasAttribute('data-dnd-init')) { return; }
         dd.setAttribute('data-dnd-init', '1');
 
         var cbs = document.querySelectorAll('#progettiCheckboxes .progetto-checkbox');
-        console.log('[progetti] found checkboxes:', cbs.length);
         window.PROG_DATA = {};
         window.PROG_CHECKED = {};
         cbs.forEach(function(cb) {
@@ -2168,51 +2216,7 @@
         }
     };
 
-    function filterTable(inputId, tableId) {
-        const input = document.getElementById(inputId);
-        const filter = input.value.toUpperCase();
-        const table = document.getElementById(tableId);
-        const rows = table.getElementsByTagName('tr');
-        const cols = Array.from(arguments).slice(2);
-        for (let i = 1; i < rows.length; i++) {
-            let show = false;
-            for (let ci of cols) {
-                const cell = rows[i].getElementsByTagName('td')[ci];
-                if (cell && cell.textContent.toUpperCase().indexOf(filter) > -1) { show = true; break; }
-            }
-            rows[i].style.display = show ? '' : 'none';
-        }
-    }
 
-    window.filtraPerComune = function(selectId, tableId) {
-        var valore = document.getElementById(selectId).value.toUpperCase();
-        var table = document.getElementById(tableId);
-        var rows = table.getElementsByTagName('tr');
-        for (var i = 1; i < rows.length; i++) {
-            var comune = (rows[i].getAttribute('data-comune') || '').toUpperCase();
-            var show = !valore || comune === valore;
-            rows[i].style.display = show ? '' : 'none';
-        }
-        var countId = tableId === 'datoriTable' ? 'fCount' :
-                      tableId === 'lavTable' ? 'fCount' : 'fCount';
-        window.aggiornaConteggio(tableId, countId);
-    };
-
-    window.aggiornaConteggio = function(tableId, countId) {
-        var tbl = document.getElementById(tableId);
-        var cnt = document.getElementById(countId);
-        if (!tbl || !cnt) return;
-        var rows = tbl.querySelectorAll('tbody tr');
-        var tot = 0, vis = 0;
-        rows.forEach(function(r) {
-            if (r.querySelector('td[colspan]')) return;
-            tot++;
-            if (r.style.display !== 'none') vis++;
-        });
-        var val = cnt.querySelector('#fCountVal');
-        if (val) { val.textContent = vis + ' di ' + tot; }
-        else { cnt.textContent = vis + ' di ' + tot; }
-    };
 
     /* --- Color Picker helper --- */
     window.aggiornaHexColore = function(el) {
@@ -2427,7 +2431,7 @@
                     'table, td, th { background: transparent !important; border-color: #444; }',
                 ].join('\n'),
             });
-        } catch(e) { console.error('TinyMCE init error:', e); }
+        } catch(e) { mostraToast('Errore inizializzazione editor', false); }
     };
 
     window.initTinyMCE = function(attempt) {
@@ -2772,24 +2776,34 @@
         var inp = document.getElementById('ricercaInput');
         inp.value = '';
         inp.focus();
+        var html = '<div style="padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5E6AD2;margin-top:0;">Azioni rapide</div>';
+        var azioni = [
+            { icona: 'bi-speedometer2', label: 'Dashboard', url: '/dashboard/' },
+            { icona: 'bi-person-plus', label: 'Nuovo Datore', url: '/datori/nuovo/' },
+            { icona: 'bi-people', label: 'Nuovo Lavoratore', url: '/lavoratori/nuovo/' },
+            { icona: 'bi-file-earmark-text', label: 'Nuovo Contratto', url: '/contratti/nuovo/' },
+            { icona: 'bi-calculator', label: 'Calcola Busta', url: '/calcoli/' }
+        ];
+        azioni.forEach(function(a, idx) {
+            html += '<div class="ricerca-item" data-indice="' + idx + '" onclick="window.location.href=\'' + a.url + '\';chiudiRicercaGlobale({target:document.getElementById(\'ricercaOverlay\'),currentTarget:document.getElementById(\'ricercaOverlay\')})" onmouseenter="selezionaRicercaItem(' + idx + ')" style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:background 0.1s;">' +
+                '<div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(94,106,210,0.1);border-radius:8px;"><i class="bi ' + a.icona + '" style="color:#5E6AD2;font-size:18px;"></i></div>' +
+                '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#EDEDED;">' + a.label + '</div></div></div>';
+            _ricerca_items.push({ url: a.url, label: a.label, sottotitolo: '' });
+        });
         // Mostra cronologia se disponibile
         var crono = caricaCronologia();
         if (crono.length > 0) {
-            var html = '<div style="padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#545;margin-top:0;">Recenti</div>';
+            html += '<div style="padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#545;margin-top:6px;">Recenti</div>';
             crono.forEach(function(c, idx) {
-                html += '<div class="ricerca-item" data-indice="' + idx + '" onclick="window.location.href=\'' + c.url + '\';chiudiRicercaGlobale({target:document.getElementById(\'ricercaOverlay\'),currentTarget:document.getElementById(\'ricercaOverlay\')})" onmouseenter="selezionaRicercaItem(' + idx + ')" style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:background 0.1s;">' +
+                var offset = azioni.length + idx;
+                html += '<div class="ricerca-item" data-indice="' + offset + '" onclick="window.location.href=\'' + c.url + '\';chiudiRicercaGlobale({target:document.getElementById(\'ricercaOverlay\'),currentTarget:document.getElementById(\'ricercaOverlay\')})" onmouseenter="selezionaRicercaItem(' + offset + ')" style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:background 0.1s;">' +
                     '<div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.03);border-radius:8px;"><i class="bi bi-clock-history" style="color:#8A8F98;font-size:18px;"></i></div>' +
                     '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#EDEDED;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + c.label + '</div>' +
                     '<div style="font-size:11px;color:#8A8F98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (c.query || '') + '</div></div></div>';
             });
-            document.getElementById('ricercaRisultati').innerHTML = html;
-            _ricerca_items = crono;
-        } else {
-            document.getElementById('ricercaRisultati').innerHTML =
-                '<div class="text-center py-5" style="color:#545;"><i class="bi bi-search" style="font-size:28px;display:block;margin-bottom:8px;"></i>' +
-                '<div style="font-size:13px;">Digita almeno 3 caratteri per cercare</div></div>';
-            _ricerca_items = [];
+            _ricerca_items = _ricerca_items.concat(crono);
         }
+        document.getElementById('ricercaRisultati').innerHTML = html;
         _ricerca_indice = -1;
     }
 
@@ -2971,140 +2985,12 @@
     });
     </script>
 
-    <script>
-    // Nav group collassabili
-    document.querySelectorAll('.nav-group .nav-group-label').forEach(function(label) {
-        label.addEventListener('click', function(e) {
-            var group = this.closest('.nav-group');
-            group.classList.toggle('collapsed');
-            if (group.id) {
-                localStorage.setItem('sidebar_' + group.id, group.classList.contains('collapsed') ? '1' : '0');
-            }
-        });
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.nav-group[id]').forEach(function(group) {
-            var saved = localStorage.getItem('sidebar_' + group.id);
-            if (saved === '0') {
-                group.classList.remove('collapsed');
-            } else {
-                group.classList.add('collapsed');
-            }
-        });
-    });
+    <script src="{% static 'js/nav-layout.js' %}"></script>
 
-    // Dashboard chiude tutti i nav-group aperti e salva stato
-    document.getElementById('nav_dashboard').addEventListener('click', function() {
-        document.querySelectorAll('.nav-group[id]').forEach(function(g) {
-            g.classList.add('collapsed');
-            localStorage.setItem('sidebar_' + g.id, '1');
-        });
-    });
-
-    // Sidebar â†” Topbar layout toggle
-    function toggleNavLayout() {
-        var b = document.body;
-        b.classList.toggle('topbar-mode');
-        var isTopbar = b.classList.contains('topbar-mode');
-        localStorage.setItem('nav_layout', isTopbar ? 'topbar' : 'sidebar');
-        var nav = document.querySelector('.sidebar nav');
-        if (nav) nav.classList.toggle('overflow-auto', !isTopbar);
-        var edge = document.querySelector('.sidebar-toggle-edge');
-        if (edge) edge.title = isTopbar ? 'Passa a sidebar' : 'Passa a topbar';
-        if (isTopbar) {
-            document.querySelectorAll('.nav-group').forEach(function(g) { g.classList.remove('collapsed'); });
-        } else {
-            // restore collapsed based on saved prefs
-            document.querySelectorAll('.nav-group[id]').forEach(function(g) {
-                var s = localStorage.getItem('sidebar_' + g.id);
-                g.classList.toggle('collapsed', s !== '0');
-            });
-        }
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        if (localStorage.getItem('nav_layout') === 'topbar') {
-            document.body.classList.add('topbar-mode');
-            document.querySelectorAll('.nav-group').forEach(function(g) { g.classList.remove('collapsed'); });
-            var nav = document.querySelector('.sidebar nav');
-            if (nav) nav.classList.remove('overflow-auto');
-        }
-    });
-
-
-    </script>
-
-    <script>
-    function sortTable(th, forceDirection) {
-        const table = th.closest('table');
-        const tbody = table.querySelector('tbody');
-        if (!tbody) return;
-        const idx = Array.from(th.parentNode.children).indexOf(th);
-        const isAsc = forceDirection ? forceDirection === 'asc'
-                     : th.classList.contains('sort-asc');
-        const dir = isAsc ? 'asc' : 'desc';
-        const rows = Array.from(tbody.querySelectorAll('tr:not(.no-sort)'));
-
-        table.querySelectorAll('th').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
-        th.classList.add(dir === 'asc' ? 'sort-asc' : 'sort-desc');
-
-        rows.sort(function(a, b) {
-            const ca = a.children[idx];
-            const cb = b.children[idx];
-            if (!ca || !cb) return 0;
-            let va = ca.getAttribute('data-sort') || ca.textContent.trim();
-            let vb = cb.getAttribute('data-sort') || cb.textContent.trim();
-            const na = parseFloat(va.replace(/[€\s]/g, '').replace(',', '.'));
-            const nb = parseFloat(vb.replace(/[€\s]/g, '').replace(',', '.'));
-            if (!isNaN(na) && !isNaN(nb)) { va = na; vb = nb; }
-            else {
-                const da = Date.parse(va);
-                const db = Date.parse(vb);
-                if (!isNaN(da) && !isNaN(db)) { va = da; vb = db; }
-            }
-            if (va < vb) return isAsc ? 1 : -1;
-            if (va > vb) return isAsc ? -1 : 1;
-            return 0;
-        });
-        rows.forEach(r => tbody.appendChild(r));
-
-        if (table.id) {
-            localStorage.setItem('sort_' + table.id + '_col', idx);
-            localStorage.setItem('sort_' + table.id + '_dir', dir);
-        }
-    }
-
-    document.addEventListener('click', function(e) {
-        const th = e.target.closest('.sortable th');
-        if (!th) return;
-        sortTable(th);
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.sortable').forEach(function(table) {
-            if (!table.id) return;
-            var col = localStorage.getItem('sort_' + table.id + '_col');
-            var dir = localStorage.getItem('sort_' + table.id + '_dir');
-            if (col !== null && dir !== null) {
-                var th = table.querySelectorAll('th')[parseInt(col)];
-                if (th) sortTable(th, dir);
-            }
-        });
-    });
-    </script>
+    <script src="{% static 'js/sort-table.js' %}"></script>
 
     <script>
     var deleteUrl = '';
-
-    /* --- Cookies helper (per CSRF) --- */
-    window.getCookie = function(name) {
-        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? decodeURIComponent(match[2]) : null;
-    };
-    window._csrfToken = function() {
-        var el = document.querySelector('[name=csrfmiddlewaretoken]');
-        if (el) return el.value;
-        return getCookie('csrftoken') || '';
-    };
 
     /* --- Floating PDF preview (shared) --- */
     window._ultimoPdfUrl = null;
@@ -3235,19 +3121,6 @@
             }
         })
         .catch(function(err){ _stampaToast('Errore: '+err, false); });
-    };
-
-    /* --- Stampa diretta --- */
-    window._stampaToast = function(msg, ok) {
-        var toast = document.getElementById('toastGlobale');
-        if (!toast) return;
-        var icon = toast.querySelector('i');
-        var text = toast.querySelector('.toast-text');
-        if (icon) icon.className = ok ? 'bi bi-check-circle' : 'bi bi-exclamation-triangle';
-        if (icon) icon.style.color = ok ? '#10b981' : '#ef4444';
-        if (text) text.textContent = msg;
-        toast.style.display = 'flex';
-        setTimeout(function() { toast.style.display = 'none'; }, 3500);
     };
 
     window.stampaDocumento = function(pk, btn) {
@@ -3449,7 +3322,7 @@
             .catch(function() {});
     };
 
-    function getCSRFToken() { var c=document.cookie.split(';'); for(var i=0;i<c.length;i++){var v=c[i].trim();if(v.indexOf('csrftoken=')===0)return v.substring(10)}return ''; }
+
 
     function toggleAnticipiTFR(el, pk) {
       var section = document.getElementById('anticipiTfrSection');
@@ -3481,7 +3354,7 @@
               html += '<span style="font-weight:600;color:#f59e0b;">\u20ac ' + a.importo + '</span>';
               html += '<span style="color:#8A8F98;">' + a.data + '</span>';
               if (a.note) html += '<span style="color:#666;font-size:10px;">(' + a.note + ')</span>';
-              html += '<span style="margin-left:auto;"><button type="button" onclick="eliminaAnticipoTFR(' + a.pk + ')" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:6px;color:#f87171;cursor:pointer;font-size:11px;font-weight:600;padding:4px 10px;"><i class="bi bi-x-circle me-1"></i>Elimina</button></span>';
+              html += '<span class="ml-auto"><button type="button" onclick="eliminaAnticipoTFR(' + a.pk + ')" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:6px;color:#f87171;cursor:pointer;font-size:11px;font-weight:600;padding:4px 10px;"><i class="bi bi-x-circle me-1"></i>Elimina</button></span>';
               html += '</div>';
             }
             html += '<div style="font-size:11px;font-weight:600;color:#EDEDED;padding:4px 6px;">Totale: \u20ac ' + d.totale + '</div>';
@@ -3623,17 +3496,54 @@
         .catch(function(err) { list.innerHTML = '<div style="color:#f87171;">Errore: ' + err.message + '</div>'; });
     }
 
-    function mostraToast(msg, ok) {
-      var t = document.getElementById('toastGlobale');
-      if (!t) return;
-      var m = t.querySelector('.toast-text');
-      var icon = t.querySelector('i');
-      if (icon) icon.className = 'bi ' + (ok ? 'bi-check-circle' : 'bi-x-circle');
-      if (icon) icon.style.color = ok ? '#10b981' : '#ef4444';
-      if (m) m.textContent = msg;
-      t.style.display = 'flex';
-      if (window._toastTimer) clearTimeout(window._toastTimer);
-      window._toastTimer = setTimeout(function() { t.style.display = 'none'; }, 5000);
+
+
+    /* --- Toggle History (sessione) --- */
+    document.addEventListener('change', function(e) {
+      var toggle = e.target.closest('.toggle-switch input[type="checkbox"]');
+      if (toggle) {
+        var id = toggle.id;
+        var label = '';
+        var parentLabel = toggle.closest('.toggle-switch');
+        if (parentLabel) {
+          var textEl = parentLabel.previousElementSibling || parentLabel.parentElement.querySelector('.toggle-label');
+          label = textEl ? (textEl.textContent || '').trim() : '';
+        }
+        if (!label) label = id || 'toggle';
+        window.toggleChange(id || label, label, toggle.checked);
+      }
+    });
+    window._toggleHistory = [];
+    window._toggleHistory = [];
+    window.toggleChange = function(id, label, valore) {
+      if (!id) return;
+      _toggleHistory = _toggleHistory.filter(function(t) { return t.id !== id; });
+      _toggleHistory.push({ id: id, label: label, valore: valore, ora: new Date().toLocaleTimeString() });
+      if (_toggleHistory.length > 50) _toggleHistory.shift();
+      aggiornaToggleHistoryBadge();
+    };
+    window.mostraToggleHistory = function() {
+      if (_toggleHistory.length === 0) { mostraToast('Nessuna modifica in questa sessione.', false); return; }
+      var h = '<div style="max-height:400px;overflow-y:auto;">';
+      _toggleHistory.slice().reverse().forEach(function(t) {
+        var icona = t.valore ? 'bi-toggle-on text-success' : 'bi-toggle-off text-muted';
+        h += '<div style="display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #27282D;font-size:12px;">';
+        h += '<i class="bi ' + icona + '" style="font-size:16px;"></i>';
+        h += '<span style="flex:1;color:#EDEDED;">' + (t.label || t.id) + '</span>';
+        h += '<span style="color:#8A8F98;font-size:10px;">' + t.ora + '</span></div>';
+      });
+      h += '</div>';
+      var m = document.createElement('div');
+      m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#17181C;border:1px solid #27282D;border-radius:14px;padding:20px;z-index:99999;min-width:320px;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
+      m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-weight:700;color:#EDEDED;font-size:14px;"><i class="bi bi-clock-history me-2"></i>Cronologia Toggles</span><button type="button" onclick="this.parentElement.parentElement.remove()" aria-label="Chiudi cronologia" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer;">&times;</button></div>' + h +
+        '<div style="margin-top:12px;text-align:center;"><button type="button" class="btn btn-sm btn-ghost-danger" onclick="window._toggleHistory=[];this.parentElement.parentElement.remove();mostraToast(\'Cronologia cancellata\',true);">Cancella cronologia</button></div>';
+      document.body.appendChild(m);
+    };
+    function aggiornaToggleHistoryBadge() {
+      var badge = document.getElementById('toggleHistoryBadge');
+      if (!badge) return;
+      badge.textContent = _toggleHistory.length || '';
+      badge.style.display = _toggleHistory.length > 0 ? 'inline' : 'none';
     }
     window.apriCcnlOcchio = function() {
         window.apriCcnlOcchioPopup();
@@ -3647,7 +3557,6 @@
     };
     window.rigeneraDocumentiCessazione = function(btn) {
       var pk = btn.dataset.pk;
-      console.log('[RigeneraCessazione] inizio, pk=' + pk);
       if (!pk) { mostraToast('Errore: pk mancante', false); return; }
       if (!confirm('Rigenerare i documenti di cessazione? Verranno create una nuova ultima busta paga e una nuova liquidazione TFR.')) return;
       btn.disabled = true;
@@ -3657,7 +3566,6 @@
         credentials: 'same-origin',
         headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCSRFToken() },
       }).then(function(r) { return r.json(); }).then(function(d) {
-        console.log('[RigeneraCessazione] risposta:', d);
         if (d.ok) {
           mostraToast('Documenti cessazione rigenerati!', true);
         } else {
@@ -3666,7 +3574,6 @@
         btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Rigenera documenti cessazione';
         btn.disabled = false;
       }).catch(function(e) {
-        console.error('[RigeneraCessazione] errore:', e);
         mostraToast('Errore di rete', false);
         btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Rigenera documenti cessazione';
         btn.disabled = false;
@@ -3912,10 +3819,6 @@
         window.anteprimaContrattoPk = null;
         window._modelloSelezionatoPk = null;
     };
-    window.getCookie = function(name) {
-        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
-    };
     window.$esc = function(s) {
         if (!s) return '';
         return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -3957,19 +3860,19 @@
         h += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
         h += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-1"></i>Busta Paga \u2014 ' + esc(d.mese_nome) + ' ' + d.anno + '</div>';
         h += '<div class="row g-2 mt-2">';
-        h += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.datore_indirizzo) + (d.datore_comune ? ' - ' + esc(d.datore_comune) : '') + '</span></div>';
-        h += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.lavoratore_indirizzo) + (d.lavoratore_comune ? ' - ' + esc(d.lavoratore_comune) : '') + '</span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Data inizio</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.data_assunzione) + '</span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo contratto</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.tipo_contratto) + '</span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Ore settimanali</span><span style="font-size:13px;font-weight:600;color:#10b981;">' + Math.ceil(d.ore_settimanali) + ' h</span> <span style="display:inline-block;margin-top:2px;padding:1px 8px;border-radius:4px;font-size:10px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Settimane mensili</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Ore mese</span><span style="font-size:13px;font-weight:600;color:#10b981;">' + d.ore_mensili + ' h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(INPS: ' + d.ore_inps + ' h)</span></span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Codice Rapporto</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">' + esc(d.codice_rapporto_inps) + '</span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
-        h += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga applicata</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_applicata_mensile.toFixed(2) + '/mese)</span></span></div>';
+        h += '<div class="col-md-6"><span class="label-info">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.datore_indirizzo) + (d.datore_comune ? ' - ' + esc(d.datore_comune) : '') + '</span></div>';
+        h += '<div class="col-md-6"><span class="label-info">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.lavoratore_indirizzo) + (d.lavoratore_comune ? ' - ' + esc(d.lavoratore_comune) : '') + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Data inizio</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.data_assunzione) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Tipo contratto</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.tipo_contratto) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Ore settimanali</span><span style="font-size:13px;font-weight:600;color:#10b981;">' + Math.ceil(d.ore_settimanali) + ' h</span> <span style="display:inline-block;margin-top:2px;padding:1px 8px;border-radius:4px;font-size:10px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Settimane mensili</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Ore mese</span><span style="font-size:13px;font-weight:600;color:#10b981;">' + d.ore_mensili + ' h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(INPS: ' + d.ore_inps + ' h)</span></span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Codice Rapporto</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">' + esc(d.codice_rapporto_inps) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Paga applicata</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_applicata_mensile.toFixed(2) + '/mese)</span></span></div>';
         if (d.progetti && d.progetti.length > 0) {
-            h += '<div class="col-12 mt-1"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:4px;">Progetti collegati</span>';
+            h += '<div class="col-12 mt-1"><span class="label-info" style="margin-bottom:4px;">Progetti collegati</span>';
             for (var pi = 0; pi < d.progetti.length; pi++) {
                 var pr = d.progetti[pi];
                 h += '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:600;margin-right:6px;margin-bottom:4px;border:1px solid ' + esc(pr.colore) + ';background:rgba(' + h2r(pr.colore) + ',0.1);color:' + esc(pr.colore) + ';">' + esc(pr.nome) + '</span>';
@@ -4027,10 +3930,18 @@
         }
         h += '<div style="margin-top:20px;padding:16px 0;">';
         h += '<div class="d-flex justify-content-between align-items-center py-1"><span style="font-size:13px;color:#EDEDED;">Budget mensile</span><span style="font-size:14px;font-weight:600;color:#EDEDED;">\u20AC ' + d.budget_mensile.toFixed(2) + '</span></div>';
-        var coperturaOk = Math.abs(d.verifica_copertura) < 0.01;
-        var coperturaColor = coperturaOk ? '#34d399' : (d.verifica_copertura > 0 ? '#f59e0b' : '#f87171');
-        var coperturaIcon = coperturaOk ? '\u2713' : (d.verifica_copertura > 0 ? '\u2191' : '\u2193');
-        h += '<div class="d-flex justify-content-between align-items-center py-1"><span style="font-size:11px;color:#8A8F98;font-style:italic;">Copertura budget</span><span style="font-size:13px;font-weight:700;color:' + coperturaColor + ';">' + coperturaIcon + ' \u20AC ' + Math.abs(d.verifica_copertura).toFixed(2) + '</span></div>';
+        var budget = d.budget_mensile || 1;
+        var usato = budget - d.verifica_copertura;
+        var perc = Math.min(Math.max((usato / budget) * 100, 0), 100);
+        var isOk = d.verifica_copertura >= 0;
+        var barColor = isOk ? '#34d399' : '#f87171';
+        var labelClass = Math.abs(d.verifica_copertura) < 0.01 ? 'zero' : (isOk ? 'positive' : 'negative');
+        var labelText = Math.abs(d.verifica_copertura) < 0.01 ? '\u2713 100%' : (perc.toFixed(0) + '%');
+        h += '<div class="budget-progress">';
+        h += '<span style="font-size:11px;color:#8A8F98;font-style:italic;min-width:70px;">Copertura</span>';
+        h += '<div class="budget-progress-bar-wrap"><div class="budget-progress-bar-fill" style="width:' + perc + '%;background:' + barColor + ';"></div></div>';
+        h += '<span class="budget-progress-label ' + labelClass + '">' + labelText + '</span>';
+        h += '</div>';
         h += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:1.5px solid #2c5282;margin-top:4px;padding-top:8px;"><span style="font-size:16px;font-weight:800;color:#2c5282;">NETTO IN BUSTA</span><span style="font-size:20px;font-weight:800;color:#2c5282;">\u20AC ' + d.netto.toFixed(2) + '</span></div>';
         h += '</div></div></div></div>';
         h += '<div style="padding:16px 24px;border-top:1px solid #27282D;">';
@@ -4133,7 +4044,17 @@
                         (function(){var y=(new Date).getFullYear(),s='';for(var i=y-2;i<=y+2;i++)s+='<option value="'+i+'">'+i+'</option>';return s;})() +
                     '</select>' +
                 '</div>' +
-                '<div id="bustaPreviewLoading" class="text-center py-5" style="display:none;background:#09090B;"><div class="spinner-border" style="color:#5E6AD2;" role="status"></div><div class="mt-2 small" style="color:#8A8F98;">Calcolo in corso...</div></div>' +
+                '<div id="bustaPreviewLoading" class="py-4" style="display:none;background:#09090B;">' +
+                    '<div class="skeleton-card" style="background:none;border:none;">' +
+                        '<div class="skeleton skeleton-text" style="width:40%"></div>' +
+                        '<div class="skeleton skeleton-text" style="width:85%"></div>' +
+                        '<div class="skeleton skeleton-text-sm" style="width:55%"></div>' +
+                        '<div class="mt-3" style="display:flex;gap:10px;">' +
+                            '<div class="skeleton skeleton-text" style="width:30%"></div>' +
+                            '<div class="skeleton skeleton-text" style="width:45%"></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
                 '<div id="bustaPreviewContent" style="padding:0;overflow-y:auto;max-height:520px;background:#09090B;border-radius:0 0 12px 12px;"></div>';
             frame.style.cssText = 'position:fixed;top:80px;right:24px;width:640px;background:#17181C;border:1px solid #27282D;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:10050;display:none;font-family:inherit;';
             document.body.appendChild(frame);
@@ -4565,7 +4486,7 @@
     <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invia Documento via Email</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" id="modaleInvioDocumentoBody">
       </div>
@@ -4573,12 +4494,15 @@
   </div>
 </div>
 
-<div id="toastGlobale" style="display:none;position:fixed;bottom:24px;right:24px;z-index:99999;align-items:center;gap:10px;background:#18181B;border:1px solid #27282D;border-radius:10px;padding:14px 22px;font-size:13px;font-weight:600;color:#EDEDED;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
-  <i class="bi bi-check-circle" style="font-size:16px;color:#10b981;"></i>
-  <span class="toast-text" style="font-size:13px;">OK</span>
-  <button type="button" class="toast-close" style="background:none;border:none;color:#888;font-size:18px;cursor:pointer;padding:0 0 0 8px;line-height:1;" onclick="document.getElementById('toastGlobale').style.display='none'">&times;</button>
-</div>
+<div id="toastContainer" class="toast-container"></div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('i.bi:not([aria-hidden])').forEach(function(el) {
+        el.setAttribute('aria-hidden', 'true');
+    });
+});
+</script>
 <script>
 (function(){var el=document.querySelector('.sidebar .nav-link-custom.active');if(!el)return;var label=el.textContent.replace(/\s*\d+$/,'').trim().substring(0,22);var iconEl=el.querySelector('i');if(!iconEl)return;var icona=Array.from(iconEl.classList).filter(function(c){return c.startsWith('bi-')}).join(' ');if(!icona)return;var nav_id=el.id||'';if(nav_id==='nav_dashboard')return;fetch('/ajax/registra-voce-recente/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')},body:JSON.stringify({nav_id:nav_id,url:window.location.pathname+window.location.search,label:label,icona:icona})});})();
 </script>

@@ -342,7 +342,7 @@
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Sostituzione Malattia</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
@@ -777,7 +777,6 @@ window.salvaBusta = function() {
             btn.disabled = false;
         }
     }).catch(function(e) {
-        console.error(e);
         mostraToast('Errore di rete', false);
         btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
         btn.disabled = false;

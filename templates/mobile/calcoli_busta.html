@@ -1,0 +1,88 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Calcola Busta — Gestione Colf{% endblock %}
+{% block m_topbar_title %}Calcola Busta{% endblock %}
+{% block m_content %}
+
+<form id="m-calcola-form" onsubmit="return calcolaBustaMobile(event)">
+    <label style="font-size:12px;color:#8A8F98;margin-bottom:4px;display:block;">Contratto</label>
+    <select id="m-contratto" class="m-select" required>
+        <option value="">Seleziona contratto...</option>
+        {% for c in contratti %}
+        <option value="{{ c.pk }}">{{ c.datore.nome_cognome }} — {{ c.lavoratore.nome_cognome }}</option>
+        {% endfor %}
+    </select>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+        <div style="flex:1;">
+            <label style="font-size:12px;color:#8A8F98;margin-bottom:4px;display:block;">Mese</label>
+            <select id="m-mese" class="m-select">
+                {% for m in mesi_range %}
+                <option value="{{ m }}" {% if m == mese_corrente %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="flex:1;">
+            <label style="font-size:12px;color:#8A8F98;margin-bottom:4px;display:block;">Anno</label>
+            <select id="m-anno" class="m-select">
+                {% for a in anni_range %}
+                <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="m-btn m-btn-primary" style="margin-top:12px;">CALCOLA BUSTA</button>
+</form>
+
+<div id="m-busta-skeleton" style="display:none;margin-top:16px;">
+    <div class="m-skeleton"></div>
+    <div class="m-skeleton"></div>
+    <div class="m-skeleton"></div>
+</div>
+
+<div id="m-busta-result" style="display:none;margin-top:16px;">
+    <div class="m-card">
+        <div class="m-detail-row"><span class="label">Datore</span><span class="value" id="m-r-datore">—</span></div>
+        <div class="m-detail-row"><span class="label">Lavoratore</span><span class="value" id="m-r-lavoratore">—</span></div>
+        <div class="m-detail-row"><span class="label">Periodo</span><span class="value" id="m-r-periodo">—</span></div>
+        <div class="m-detail-row"><span class="label">Lordo</span><span class="value" id="m-r-lordo">—</span></div>
+        <div class="m-detail-row"><span class="label">Contributi INPS</span><span class="value" id="m-r-contributi">—</span></div>
+        <div class="m-detail-row"><span class="label">Trattenute</span><span class="value" id="m-r-trattenute">—</span></div>
+        <div class="m-detail-row total"><span>NETTO IN BUSTA</span><span id="m-r-netto">—</span></div>
+    </div>
+    <a class="m-btn m-btn-outline" style="margin-bottom:8px;" href="/buste/archivio/">Archivio buste →</a>
+    <a class="m-btn m-btn-outline" href="/">Versione desktop (calcolo completo)</a>
+</div>
+
+<div id="m-busta-error" style="display:none;margin-top:16px;color:#f87171;text-align:center;padding:20px;"></div>
+
+<script>
+async function calcolaBustaMobile(e){
+    e.preventDefault();
+    const pk = document.getElementById('m-contratto').value;
+    if(!pk){ alert('Seleziona un contratto'); return; }
+    const mese = document.getElementById('m-mese').value;
+    const anno = document.getElementById('m-anno').value;
+    document.getElementById('m-busta-skeleton').style.display='block';
+    document.getElementById('m-busta-result').style.display='none';
+    document.getElementById('m-busta-error').style.display='none';
+    try{
+        const r = await fetch('/ajax/calcola-busta/'+pk+'/?mese='+mese+'&anno='+anno);
+        const d = await r.json();
+        document.getElementById('m-busta-skeleton').style.display='none';
+        if(d.errore){ throw new Error(d.errore); }
+        document.getElementById('m-r-datore').textContent = d.datore_nome || '—';
+        document.getElementById('m-r-lavoratore').textContent = d.lavoratore_nome || '—';
+        document.getElementById('m-r-periodo').textContent = (d.mese||mese)+'/'+(d.anno||anno);
+        document.getElementById('m-r-lordo').textContent = '€ ' + (d.totale_lordo||'0,00');
+        document.getElementById('m-r-contributi').textContent = '€ ' + (d.totale_contributi||'0,00');
+        const trattenute = parseFloat(d.convivenza_totale||0) + parseFloat(d.totale_accantonati||0);
+        document.getElementById('m-r-trattenute').textContent = '€ ' + trattenute.toFixed(2).replace('.',',');
+        document.getElementById('m-r-netto').textContent = '€ ' + (d.netto||'0,00');
+        document.getElementById('m-busta-result').style.display='block';
+    }catch(err){
+        document.getElementById('m-busta-skeleton').style.display='none';
+        document.getElementById('m-busta-error').textContent = 'Errore: '+err.message;
+        document.getElementById('m-busta-error').style.display='block';
+    }
+}
+</script>
+{% endblock %}

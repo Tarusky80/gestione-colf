@@ -124,9 +124,16 @@
         <i class="bi bi-exclamation-triangle-fill me-2"></i> Liquidazione TFR già salvata per questo periodo. Clicca <strong>LIQUIDA TFR</strong> per sovrascriverla.
       </div>
       <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 24px;margin-bottom:16px;">
-        <div id="resultLoading" style="display:none;text-align:center;padding:30px;">
-          <div class="spinner-border" style="color:#fbbf24;" role="status"></div>
-          <div style="margin-top:8px;font-size:13px;color:#8A8F98;">Calcolo in corso...</div>
+        <div id="resultLoading" style="display:none;padding:20px;">
+          <div class="skeleton-card" style="background:none;border:none;">
+            <div class="skeleton skeleton-text" style="width:45%"></div>
+            <div class="skeleton skeleton-text" style="width:80%"></div>
+            <div class="skeleton skeleton-text-sm" style="width:55%"></div>
+            <div class="mt-3" style="display:flex;gap:10px;">
+              <div class="skeleton skeleton-text" style="width:35%"></div>
+              <div class="skeleton skeleton-text" style="width:40%"></div>
+            </div>
+          </div>
         </div>
         <div id="resultContent"></div>
       </div>
@@ -142,7 +149,7 @@
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
           <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Busta TFR
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
@@ -406,7 +413,7 @@ function mostraToast(msg, ok) {
 }
 window.liquidaTfr = function() {
   var pk = document.getElementById('btnLiquidaTfr').dataset.pk;
-  console.log('liquidaTfr called, pk:', pk);
+
   if (!pk) { mostraToast('Nessun contratto selezionato', false); return; }
   var warn = document.getElementById('bustaEsistenteWarning');
   if (warn && warn.style.display !== 'none' && warn.style.display !== '') {
@@ -432,7 +439,7 @@ window.liquidaTfr = function() {
     credentials: 'same-origin',
     headers: { 'X-Requested-With': 'XMLHttpRequest' },
   }).then(function(r) { return r.json(); }).then(function(d) {
-    console.log('liquidaTfr response:', d);
+
     if (d.ok) {
       btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> LIQUIDATA';
       if (warn) warn.style.display = 'none';
@@ -447,7 +454,6 @@ window.liquidaTfr = function() {
       btn.disabled = false;
     }
   }).catch(function(e) {
-    console.error('liquidaTfr error:', e);
     mostraToast('Errore di rete', false);
     btn.innerHTML = '<i class="bi bi-cash-stack me-1"></i> LIQUIDA TFR';
     btn.disabled = false;

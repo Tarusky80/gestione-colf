@@ -700,7 +700,7 @@ function ricaricaElencoComposizioni(selezionaPk, selezionaNome) {
             }
         })
         .catch(function(e) {
-            console.warn('Errore ricarica composizioni:', e);
+            mostraToast('Errore ricarica composizioni', false);
         });
 }
 

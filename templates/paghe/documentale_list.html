@@ -208,7 +208,19 @@ function duplicaModello(pk) {
 }
 
 function anteprimaModello(pk) {
-  window.open('/documentale/' + '{{ tipo_corrente }}/' + pk + '/', '_blank');
+  var modal = document.getElementById('modaleAnteprimaModello');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modaleAnteprimaModello';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);z-index:99998;display:flex;align-items:center;justify-content:center;';
+    modal.innerHTML = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;width:90%;max-width:960px;height:90%;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.5);">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #27282D;">' +
+      '<span style="font-weight:700;color:#EDEDED;font-size:14px;"><i class="bi bi-eye me-2"></i>Anteprima Modello</span>' +
+      '<button type="button" onclick="document.getElementById(\'modaleAnteprimaModello\').remove()" style="background:none;border:none;color:#888;font-size:22px;cursor:pointer;">&times;</button></div>' +
+      '<iframe id="frameAnteprimaModello" style="flex:1;border:none;border-radius:0 0 14px 14px;width:100%;"></iframe></div>';
+    document.body.appendChild(modal);
+  }
+  document.getElementById('frameAnteprimaModello').src = '/documentale/' + '{{ tipo_corrente }}/' + pk + '/';
 }
 </script>
 
@@ -219,7 +231,7 @@ function anteprimaModello(pk) {
         <h5 class="modal-title c-text fs-15 fw-7">
           <i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Modelli Documentali
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body c-muted fs-13" style="line-height:1.6;padding:18px;">
         <p class="mb-14"><b class="c-text fs-14">Cos'è</b><br>

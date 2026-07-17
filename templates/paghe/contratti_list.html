@@ -151,6 +151,26 @@
 </div>
 
 <div class="custom-table-container card-simple" style="padding: 20px;">
+    <div id="contrSkeleton">
+        {% for i in '12345'|make_list %}
+        <div class="skeleton-card mb-2" style="display:flex;gap:8px;padding:10px 14px;align-items:center;">
+            <div class="skeleton skeleton-text" style="width:12%"></div>
+            <div class="skeleton skeleton-text" style="width:11%"></div>
+            <div class="skeleton skeleton-text" style="width:10%"></div>
+            <div class="skeleton skeleton-text" style="width:11%"></div>
+            <div class="skeleton skeleton-text" style="width:6%"></div>
+            <div class="skeleton skeleton-text" style="width:4%"></div>
+            <div class="skeleton skeleton-text" style="width:7%"></div>
+            <div class="skeleton skeleton-text" style="width:7%"></div>
+            <div class="skeleton skeleton-text" style="width:7%"></div>
+            <div class="skeleton skeleton-text" style="width:7%"></div>
+            <div class="skeleton skeleton-text" style="width:7%"></div>
+            <div class="skeleton skeleton-text" style="width:4%"></div>
+            <div class="skeleton" style="width:40px;height:22px;border-radius:10px;flex-shrink:0;"></div>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="contrContent" style="display:none;">
     <table class="table custom-table sortable" id="contrTable" data-mp="{{ mese_prec|stringformat:'02d' }}" data-mc="{{ mese_corr|stringformat:'02d' }}" data-ms="{{ mese_succ|stringformat:'02d' }}" data-ap="{{ anno_prec }}" data-ac="{{ anno_corr }}" data-as="{{ anno_succ }}">
         <thead>
             <tr>
@@ -202,7 +222,18 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var sk = document.getElementById('contrSkeleton');
+        var ct = document.getElementById('contrContent');
+        if (sk) sk.style.display = 'none';
+        if (ct) ct.style.display = 'block';
+    }, 400);
+});
+</script>
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
@@ -210,7 +241,7 @@
         <h5 class="modal-title c-15-b">
           <i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Contratti Attivi
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body card-body">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
@@ -503,7 +534,7 @@ function creaModaleDocumenti() {
     div.className = 'modal fade';
     div.id = 'modaleDocumentiContratto';
     div.tabIndex = -1;
-    div.innerHTML = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="background:#17181C;border:1px solid #27282D;"><div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" style="color:#EDEDED;">Documenti Contratto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body" style="color:#EDEDED;"></div></div></div>';
+    div.innerHTML = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="background:#17181C;border:1px solid #27282D;"><div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" style="color:#EDEDED;">Documenti Contratto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button></div><div class="modal-body" style="color:#EDEDED;"></div></div></div>';
     document.body.appendChild(div);
     return div;
 }

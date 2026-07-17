@@ -48,6 +48,19 @@
 </div>
 
 <div class="custom-table-container">
+    <div id="benSkeleton">
+        {% for i in '12345'|make_list %}
+        <div class="skeleton-card mb-2" style="display:flex;gap:10px;padding:12px 16px;align-items:center;">
+            <div class="skeleton skeleton-text" style="width:18%"></div>
+            <div class="skeleton skeleton-text" style="width:16%"></div>
+            <div class="skeleton skeleton-text" style="width:22%"></div>
+            <div class="skeleton skeleton-text" style="width:14%"></div>
+            <div class="skeleton skeleton-text" style="width:18%"></div>
+            <div class="skeleton skeleton-text" style="width:12%"></div>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="benContent" style="display:none;">
     <table class="table custom-table sortable" id="benTable">
         <thead>
             <tr>
@@ -79,7 +92,18 @@
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var sk = document.getElementById('benSkeleton');
+        var ct = document.getElementById('benContent');
+        if (sk) sk.style.display = 'none';
+        if (ct) ct.style.display = 'block';
+    }, 400);
+});
+</script>
 </div>
 
 <div id="mappaView" style="display:none;">
@@ -110,7 +134,7 @@
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
           <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Beneficiari
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>

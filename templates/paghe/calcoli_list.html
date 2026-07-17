@@ -51,6 +51,9 @@
         <button type="button" class="btn btn-sm btn-ghost-warning" onclick="stampaBustaCalcolo(this)" id="btnStampa" disabled>
             <i class="bi bi-printer me-1"></i> STAMPA
         </button>
+        <button type="button" class="btn btn-sm btn-ghost-info" onclick="toggleRiepilogo()" id="btnRiepilogo">
+            <i class="bi bi-layout-text-window-reverse me-1"></i> <span id="btnRiepilogoTesto">RIEPILOGO</span>
+        </button>
     </div>
 </div>
 
@@ -174,7 +177,7 @@
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Paga Standard</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body card-body">
         <p class="mb-14"><b class="c-text fs-14">Cos'è questa pagina</b><br>
@@ -517,10 +520,18 @@ function renderBusta(d) {
     html += '<span style="font-size:13px;color:#EDEDED;">Budget mensile</span>';
     html += '<span style="font-size:14px;font-weight:600;color:#EDEDED;">\u20AC ' + d.budget_mensile.toFixed(2) + '</span></div>';
 
-    var coperturaOk = Math.abs(d.verifica_copertura) < 0.01;
-    var coperturaColor = coperturaOk ? '#34d399' : (d.verifica_copertura > 0 ? '#f59e0b' : '#f87171');
-    var coperturaIcon = coperturaOk ? '\u2713' : (d.verifica_copertura > 0 ? '\u2191' : '\u2193');
-    html += '<div class="d-flex justify-content-between align-items-center py-1"><span style="font-size:11px;color:#8A8F98;font-style:italic;">Copertura budget</span><span style="font-size:13px;font-weight:700;color:' + coperturaColor + ';">' + coperturaIcon + ' \u20AC ' + Math.abs(d.verifica_copertura).toFixed(2) + '</span></div>';
+    var budget = d.budget_mensile || 1;
+    var usato = budget - d.verifica_copertura;
+    var perc = Math.min(Math.max((usato / budget) * 100, 0), 100);
+    var isOk = d.verifica_copertura >= 0;
+    var barColor = isOk ? '#34d399' : '#f87171';
+    var labelClass = Math.abs(d.verifica_copertura) < 0.01 ? 'zero' : (isOk ? 'positive' : 'negative');
+    var labelText = Math.abs(d.verifica_copertura) < 0.01 ? '\u2713 100%' : (perc.toFixed(0) + '%');
+    html += '<div class="budget-progress">';
+    html += '<span style="font-size:11px;color:#8A8F98;font-style:italic;min-width:70px;">Copertura</span>';
+    html += '<div class="budget-progress-bar-wrap"><div class="budget-progress-bar-fill" style="width:' + perc + '%;background:' + barColor + ';"></div></div>';
+    html += '<span class="budget-progress-label ' + labelClass + '">' + labelText + '</span>';
+    html += '</div>';
 
     if (d.modalita_tfr && d.modalita_tfr !== 'INCLUSO') {
         html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-top:1px solid rgba(245,158,11,0.3);margin-top:2px;">';
@@ -731,8 +742,8 @@ window.salvaBustaTemplate = function() {
         credentials: 'same-origin',
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
     }).then(function(r) { return r.json(); }).then(function(d) {
-        if (d.errore) console.error(d.errore);
-    }).catch(function(e) { console.error(e); });
+        if (d.errore) { mostraToast(d.errore, false); return; }
+    }).catch(function(e) { mostraToast('Errore di rete', false); });
 };
 
 window.salvaBusta = function() {
@@ -769,7 +780,6 @@ window.salvaBusta = function() {
             btn.disabled = false;
         }
     }).catch(function(e) {
-        console.error(e);
         mostraToast('Errore di rete', false);
         btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
         btn.disabled = false;
@@ -779,6 +789,57 @@ window.salvaBusta = function() {
 /* ---- CCNL Colpo d'Occhio ---- */
 window.apriCcnlOcchio = function() {
     window.apriCcnlOcchioPopup();
+};
+
+/* ---- Vista Riepilogo (PDF) ---- */
+window.toggleRiepilogo = function() {
+    var btn = document.getElementById('btnRiepilogo');
+    var btnTesto = document.getElementById('btnRiepilogoTesto');
+    var pk = document.getElementById('btnSalvaBusta').dataset.pk;
+    if (!pk) { mostraToast('Seleziona un contratto prima', false); return; }
+
+    if (btnTesto.textContent === 'GENERAZIONE...') return;
+    btnTesto.textContent = 'GENERAZIONE...';
+
+    var mese = document.getElementById('fMese').value;
+    var anno = document.getElementById('fAnno').value;
+    var body = {
+        pk: parseInt(pk), mese: parseInt(mese), anno: parseInt(anno),
+        incl_pranzo: document.getElementById('inclPranzo').checked ? '1' : '0',
+        incl_cena: document.getElementById('inclCena').checked ? '1' : '0',
+        incl_alloggio: document.getElementById('inclAlloggio').checked ? '1' : '0',
+        giorni_conv: document.getElementById('giorniConv').value,
+        ind_funzione: document.getElementById('indFunzione').checked ? '1' : '0',
+        ind_bambini_6: document.getElementById('indBambini6').checked ? '1' : '0',
+        ind_piu_assistiti: document.getElementById('indPiuAssistiti').checked ? '1' : '0',
+        ind_cert_qualita: document.getElementById('indCertQualita').checked ? '1' : '0',
+        scatti: document.getElementById('toggleScatti').checked ? '1' : '0',
+        rateo_13ma: document.getElementById('rateo13ma').checked ? '1' : '0',
+        rateo_ferie: document.getElementById('rateoFerie').checked ? '1' : '0',
+        rateo_festivi: document.getElementById('rateoFestivi').checked ? '1' : '0',
+        rateo_tfr: document.getElementById('rateoTfrSeparato').checked ? '0' : '1',
+        tfr_separato: document.getElementById('rateoTfrSeparato').checked ? '1' : '0',
+        anticipo_70: document.getElementById('rateoAnticipo70').checked ? '1' : '0',
+    };
+
+    fetch('/ajax/genera-riepilogo-pdf/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken()},
+        body: JSON.stringify(body),
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+        btnTesto.textContent = 'RIEPILOGO';
+        if (d.success && d.url) {
+            apriNelPannello(d.url, d.pk);
+        } else {
+            mostraToast(d.errore || 'Errore generazione riepilogo', false);
+        }
+    })
+    .catch(function(e) {
+        btnTesto.textContent = 'RIEPILOGO';
+        mostraToast('Errore di rete', false);
+    });
 };
 </script>
 {% endblock %}

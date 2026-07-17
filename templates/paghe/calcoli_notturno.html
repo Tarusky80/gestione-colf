@@ -184,9 +184,23 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
-  <div id="resultLoading" class="text-center py-5" style="display:none;">
-    <div class="spinner-border" style="color:#5E6AD2;" role="status"></div>
-    <div class="mt-2 text-secondary small">Calcolo in corso...</div>
+  <div id="resultLoading" class="py-4" style="display:none;">
+    <div class="skeleton-card">
+      <div class="skeleton-row mb-3">
+        <div class="skeleton-avatar skeleton"></div>
+        <div style="flex:1;padding-top:4px;">
+          <div class="skeleton skeleton-text" style="width:40%"></div>
+          <div class="skeleton skeleton-text-sm" style="width:25%"></div>
+        </div>
+      </div>
+      <div class="skeleton skeleton-text"></div>
+      <div class="skeleton skeleton-text" style="width:85%"></div>
+      <div class="skeleton skeleton-text-sm" style="width:50%"></div>
+      <div class="mt-3" style="display:flex;gap:10px;">
+        <div class="skeleton skeleton-text" style="width:30%"></div>
+        <div class="skeleton skeleton-text" style="width:45%"></div>
+      </div>
+    </div>
   </div>
   <div id="resultContent"></div>
 </div>
@@ -201,7 +215,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Notturno</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
@@ -526,7 +540,6 @@ window.salvaBusta = function() {
             btn.disabled = false;
         }
     }).catch(function(e) {
-        console.error(e);
         mostraToast('Errore di rete', false);
         btn.innerHTML = '<i class="bi bi-save me-1"></i> SALVA BUSTA';
     btn.disabled = false;

@@ -5,7 +5,7 @@
         <h5 class="modal-title" style="color:#EDEDED; font-weight:600;">
           <i class="bi bi-envelope" style="color:#10b981; margin-right:8px;"></i> Invia Contributi INPS
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <form id="formInvioContributi" onsubmit="return inviaContributiEmail(event)">
         {% csrf_token %}

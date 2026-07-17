@@ -51,7 +51,7 @@
         <h5 class="modal-title perm-modal-title">
           <i class="bi bi-person-gear me-2"></i>Modifica Permessi
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body perm-modal-body">
         <!-- Scheda utente -->
@@ -91,15 +91,20 @@
           <div id="grigliaPermessi" class="perm-griglia">
             {% for gruppo, chiavi in permessi_gruppi %}
             <div class="perm-gruppo">
-              <div class="perm-gruppo-header">
+              <div class="perm-gruppo-header" onclick="toggleGruppo(this)">
                 <i class="bi {{ gruppo.icona }}"></i>{{ gruppo.label }}
+                <span class="perm-gruppo-count badge"></span>
+                <i class="bi bi-chevron-down perm-gruppo-arrow"></i>
               </div>
               <div class="perm-gruppo-body">
                 {% for p in chiavi %}
-                <label class="perm-check-label" data-perm="{{ p }}">
-                  <input type="checkbox" class="perm-check" value="{{ p }}">
+                <div class="perm-check-label" data-perm="{{ p }}">
                   <span class="perm-label-text">{{ etichette|get_item:p }}</span>
-                </label>
+                  <label class="toggle-switch toggle-purple">
+                    <input type="checkbox" class="perm-check" value="{{ p }}">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
                 {% endfor %}
               </div>
             </div>
@@ -182,17 +187,20 @@
 /* === GRIGLIA PERMESSI === */
 .perm-griglia { display: flex; flex-direction: column; gap: 10px; }
 .perm-gruppo { background: rgba(255,255,255,0.02); border: 1px solid #27282D; border-radius: 10px; overflow: hidden; }
-.perm-gruppo-header { padding: 8px 14px; background: rgba(255,255,255,0.03); border-bottom: 1px solid #27282D; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #5E6AD2; }
-.perm-gruppo-header i { margin-right: 6px; }
-.perm-gruppo-body { padding: 6px 14px 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px; }
+.perm-gruppo-header { padding: 8px 14px; background: rgba(255,255,255,0.03); border-bottom: 1px solid #27282D; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #5E6AD2; cursor: pointer; display: flex; align-items: center; gap: 8px; user-select: none; }
+.perm-gruppo-header i.bi:first-child { margin-right: 2px; }
+.perm-gruppo-arrow { margin-left: auto; transition: transform 0.25s; font-size: 12px; }
+.perm-gruppo-header.collapsed .perm-gruppo-arrow { transform: rotate(-90deg); }
+.perm-gruppo-body { padding: 6px 14px 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px; transition: max-height 0.25s ease, opacity 0.2s; max-height: 999px; opacity: 1; overflow: hidden; }
+.perm-gruppo-body.collapsed { max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; }
+.perm-gruppo-count { font-size: 10px; font-weight: 600; background: rgba(94,106,210,0.15); color: #5E6AD2; border-radius: 4px; padding: 1px 6px; }
 
-/* === CHECKBOX === */
-.perm-check-label { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 12px; color: #8A8F98; transition: background 0.1s; }
+/* === TOGGLE RIGA === */
+.perm-check-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px; border-radius: 6px; font-size: 12px; color: #8A8F98; transition: background 0.1s; }
 .perm-check-label:hover { background: rgba(94,106,210,0.06) !important; }
-.perm-check-label input:checked ~ .perm-label-text { color: #EDEDED; font-weight: 500; }
+.perm-check-label .toggle-switch { margin: 0; }
 .perm-check-label.overridden { background: rgba(245,158,11,0.06) !important; }
 .perm-check-label.overridden .perm-label-text::after { content: ' (sovrascritto)'; font-size: 10px; color: #f59e0b; font-weight: 400; }
-.perm-check { accent-color: #5E6AD2; }
 
 /* === PULSANTI FOOTER === */
 .perm-btn-group { display: flex; gap: 8px; }
@@ -225,6 +233,8 @@ var RUOLO_DESCRIZIONI = {
 
 function apriModalePermessi(userId) {
     _userIdEditing = userId;
+    // Collassa tutti i gruppi all'apertura
+    document.querySelectorAll('.perm-gruppo-header:not(.collapsed)').forEach(function(h) { toggleGruppo(h); });
     fetch('/ajax/permessi/utenti/')
         .then(function(r) { return r.json(); })
         .then(function(data) {
@@ -252,6 +262,7 @@ function apriModalePermessi(userId) {
             });
 
             aggiornaRiepilogo(utente.ruolo);
+            aggiornaConteggiGruppo();
             var modal = new bootstrap.Modal(document.getElementById('modalePermessi'));
             modal.show();
         });
@@ -314,9 +325,43 @@ function salvaPermessi() {
     .then(function(resp) { if (resp.ok) location.reload(); });
 }
 
+function toggleGruppo(header) {
+    header.classList.toggle('collapsed');
+    var body = header.nextElementSibling;
+    if (body) body.classList.toggle('collapsed');
+}
+
+function aggiornaConteggiGruppo() {
+    document.querySelectorAll('.perm-gruppo').forEach(function(gruppo) {
+        var checks = gruppo.querySelectorAll('.perm-check');
+        var tot = checks.length;
+        var attivi = 0;
+        checks.forEach(function(cb) { if (cb.checked) attivi++; });
+        var badge = gruppo.querySelector('.perm-gruppo-count');
+        if (badge) badge.textContent = attivi + '/' + tot;
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     var sel = document.getElementById('selectRuolo');
     if (!sel) return;
+
+    // Collassa tutti i gruppi di default
+    document.querySelectorAll('.perm-gruppo').forEach(function(g) {
+        var h = g.querySelector('.perm-gruppo-header');
+        if (h) toggleGruppo(h);
+    });
+
+    // Change listener on all toggles
+    document.getElementById('grigliaPermessi').addEventListener('change', function(e) {
+        if (e.target.classList.contains('perm-check')) {
+            var ruolo = document.getElementById('selectRuolo').value;
+            aggiornaStatoLabel(e.target, ruolo);
+            aggiornaRiepilogo(ruolo);
+            aggiornaConteggiGruppo();
+        }
+    });
+
     sel.addEventListener('change', function() {
         var ruolo = this.value;
         aggiornaDescrizioneRuolo(ruolo);
@@ -327,6 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
             aggiornaStatoLabel(cb, ruolo);
         });
         aggiornaRiepilogo(ruolo);
+        aggiornaConteggiGruppo();
     });
 });
 </script>

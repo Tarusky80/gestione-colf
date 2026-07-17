@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>{% block m_title %}Gestione Colf{% endblock %}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/static/css/mobile.css">
+{% block m_extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="m-topbar">
+    {% block m_topbar_left %}
+    <div style="width:32px;"></div>
+    {% endblock %}
+    <div class="m-topbar-title">{% block m_topbar_title %}Gestione Colf{% endblock %}</div>
+    <div style="width:32px;"></div>
+</div>
+
+<!-- Content -->
+<div class="m-content">
+    {% block m_content %}{% endblock %}
+</div>
+
+<!-- Bottom nav -->
+<nav class="m-bottom-nav">
+    <a href="/m/" class="m-nav-item {% if m_nav == 'dash' %}active{% endif %}">
+        <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+    </a>
+    <a href="/m/datori/" class="m-nav-item {% if m_nav == 'datori' %}active{% endif %}">
+        <i class="bi bi-building"></i><span>Datori</span>
+    </a>
+    <a href="/m/lavoratori/" class="m-nav-item {% if m_nav == 'lav' %}active{% endif %}">
+        <i class="bi bi-people"></i><span>Lavor.</span>
+    </a>
+    <a href="/m/buste/" class="m-nav-item {% if m_nav == 'buste' %}active{% endif %}">
+        <i class="bi bi-calculator"></i><span>Buste</span>
+    </a>
+    <a href="/m/documenti/" class="m-nav-item {% if m_nav == 'docs' %}active{% endif %}">
+        <i class="bi bi-folder"></i><span>Doc.</span>
+    </a>
+</nav>
+
+{% block m_extra_js %}{% endblock %}
+</body>
+</html>

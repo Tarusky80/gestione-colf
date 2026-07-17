@@ -246,7 +246,7 @@
 
         {# --- VISIBILITÀ OPERATORI (solo datore/lavoratore) --- #}
         {% if mn != 'beneficiario' %}
-        <div class="row g-3 mb-3">
+        <div class="row g-3 mb-3" id="visibilitaOperatorSection">
             {% for field in form %}
                 {% if field.name == 'visibile_a' %}
                 <div class="col-12">

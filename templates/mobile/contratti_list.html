@@ -1,0 +1,33 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Contratti — Gestione Colf{% endblock %}
+{% block m_topbar_title %}Contratti{% endblock %}
+{% block m_content %}
+<div class="m-search-wrap">
+    <i class="bi bi-search"></i>
+    <input class="m-search" type="search" placeholder="Cerca contratto..." oninput="filterMobileList(this.value)">
+</div>
+<div id="mobile-list">
+{% for c in contratti %}
+    <a class="m-card" href="#" style="display:block;">
+        <div class="m-list-item" style="border:none;padding:0;">
+            <div><i class="bi bi-file-earmark-text" style="font-size:20px;color:#5E6AD2;"></i></div>
+            <div style="flex:1;">
+                <div class="m-list-title">{{ c.lavoratore.nome_cognome|default:"?" }}</div>
+                <div class="m-list-sub">{{ c.datore.nome_cognome|default:"?" }} — {{ c.ccnl|default:"" }}</div>
+            </div>
+            <span class="m-badge m-badge-green">Attivo</span>
+        </div>
+    </a>
+{% empty %}
+    <div class="m-empty"><i class="bi bi-file-earmark-text"></i>Nessun contratto trovato</div>
+{% endfor %}
+</div>
+<a class="m-fab" href="#" title="Nuovo contratto"><i class="bi bi-plus"></i></a>
+<script>
+function filterMobileList(q){
+    document.querySelectorAll('#mobile-list .m-card').forEach(c=>{
+        c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'block':'none';
+    });
+}
+</script>
+{% endblock %}

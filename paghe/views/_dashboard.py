@@ -343,8 +343,26 @@ def dashboard(request):
     context['comuni_beneficiari'] = Beneficiario.objects.exclude(comune='').values_list(
         'comune', flat=True).distinct().order_by('comune')
     context['voci_recenti'] = request.session.get('voci_recenti', [])
+    context['documenti_per_tipo'] = list(DocumentoArchiviato.objects.values('tipo').annotate(count=__import__('django').db.models.Count('pk')).order_by('-count')[:8])
+    context['contributi_mensili'] = _contributi_mensili_trend()
     return render(request, 'paghe/dashboard.html', context)
 
+
+def _contributi_mensili_trend():
+    from datetime import date, timedelta
+    from django.db.models import Sum
+    from paghe.models import BustaPaga
+    oggi = date.today()
+    mesi = []
+    for i in range(11, -1, -1):
+        m = oggi.month - i
+        a = oggi.year
+        while m < 1: m += 12; a -= 1
+        while m > 12: m -= 12; a += 1
+        qs = BustaPaga.objects.filter(mese=m, anno=a)
+        totale = qs.aggregate(tot=Sum('contributi_inps_totale'))['tot'] or 0
+        mesi.append({'mese': m, 'anno': a, 'totale': float(totale)})
+    return mesi
 
 # --- global_search_view ---
 

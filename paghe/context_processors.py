@@ -1,7 +1,7 @@
 # file: paghe/context_processors.py
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import ContrattoAttivo, DatoreLavoro, Lavoratore, Beneficiario, ScorciatoiaTastiera, RichiestaModificaDatore, ProfiloUtente
+from .models import ContrattoAttivo, DatoreLavoro, Lavoratore, Beneficiario, ScorciatoiaTastiera, RichiestaModificaDatore, ProfiloUtente, GestoreBackup
 from paghe.views._common_imports import get_opzioni
 from paghe.permessi import permessi_effettivi
 import logging
@@ -25,6 +25,10 @@ def global_opzioni(request):
     ctx['db_profile'] = getattr(request, 'db_profile', 'default')
     ctx['ruolo_utente'] = None
     ctx['permessi_utente'] = {}
+    ub = GestoreBackup.objects.order_by('-data_creazione').first()
+    ctx['ultimo_backup'] = ub
+    ctx['backup_fresco'] = ub and (ub.data_creazione.date() - __import__('datetime').date.today()).days < 1
+    ctx['backup_recente'] = ub and (ub.data_creazione.date() - __import__('datetime').date.today()).days < 7
     profilo = None
     if request.user.is_authenticated:
         try:

@@ -50,6 +50,18 @@
 .pagination-links .page-link { padding:6px 12px; border-radius:6px; font-size:13px; font-weight:600; color:#e2e8f0; background:#09090B; border:1px solid #27282D; text-decoration:none; transition:all 0.15s; }
 .pagination-links .page-link:hover { background:#5E6AD2; border-color:#5E6AD2; }
 .pagination-links .page-link.active { background:#5E6AD2; border-color:#5E6AD2; color:#fff; }
+/* Vista Albero */
+.albero-view .albero-gruppo { margin-bottom:8px; }
+.albero-view .albero-header { display:flex; align-items:center; gap:10px; padding:10px 14px; background:#16171B; border:1px solid #27282D; border-radius:10px; margin-bottom:4px; cursor:pointer; transition:background 0.15s; }
+.albero-view .albero-header:hover { background:#1C1D22; }
+.albero-view .albero-header .albero-icon { transition:transform 0.2s; font-size:12px; color:#8A8F98; }
+.albero-view .albero-header.expanded .albero-icon { transform:rotate(90deg); }
+.albero-view .albero-header .albero-count { background:rgba(94,106,210,0.15); color:#5E6AD2; font-size:11px; font-weight:700; border-radius:8px; padding:1px 8px; }
+.albero-view .albero-body { display:none; }
+.albero-view .albero-body.open { display:block; }
+.albero-view .albero-body table { margin:0; }
+.albero-view .albero-body tr:first-child td { border-top: none; }
+.albero-view .albero-riga { padding-left:24px; font-size:12px; color:#8A8F98; }
 </style>
 {% endblock %}
 
@@ -109,6 +121,7 @@
     {% if filtro_tipo or filtro_datore or filtro_da or filtro_a or filtro_inviato or filtro_contratto_pk or filtro_datore_pk or filtro_lavoratore_pk or filtro_beneficiario_pk %}
     <a href="{% url 'documenti_list' %}" style="padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #27282D;color:#8A8F98;font-size:13px;text-decoration:none;">Cancella filtri</a>
     {% endif %}
+    <button type="button" onclick="toggleAlbero()" id="btnAlbero" style="padding:7px 12px;border-radius:6px;background:transparent;border:1px solid #27282D;color:#8A8F98;font-size:13px;text-decoration:none;cursor:pointer;"><i class="bi bi-diagram-2 me-1"></i> <span id="btnAlberoTesto">ALBERO</span></button>
   </form>
 
   {% if filtro_contratto_pk or filtro_datore_pk or filtro_lavoratore_pk or filtro_beneficiario_pk %}
@@ -225,7 +238,7 @@
     <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Nuovo Documento</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" id="modaleNuovoDocumentoBody">
         <div class="text-center py-5"><div class="spinner-border text-light"></div></div>
@@ -240,7 +253,7 @@
     <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invia Documento via Email</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" id="modaleInvioEmailBody">
       </div>
@@ -254,7 +267,7 @@
     <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invio Massivo Email</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" id="modaleInvioMassivoBody">
       </div>
@@ -268,7 +281,7 @@
     <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Allega in una mail</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" id="modaleInvioRaggruppatoBody">
       </div>
@@ -282,7 +295,7 @@
     <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Collega Documento a Contratto</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" id="modaleCollegaContrattoBody">
         <div class="mb-3">
@@ -765,6 +778,55 @@ function toggleVisibileDatore(el, documentoPk) {
         mostraToast('Errore di rete.', false);
     });
 }
+
+/* --- Vista Albero --- */
+window._alberoAttivo = false;
+window.toggleAlbero = function() {
+    _alberoAttivo = !_alberoAttivo;
+    var table = document.getElementById('documentiTable');
+    var wrapper = table && table.closest('.table-responsive');
+    if (!table) return;
+    document.getElementById('btnAlberoTesto').textContent = _alberoAttivo ? 'TABELLA' : 'ALBERO';
+    document.getElementById('btnAlbero').style.borderColor = _alberoAttivo ? '#5E6AD2' : '#27282D';
+    document.getElementById('btnAlbero').style.color = _alberoAttivo ? '#5E6AD2' : '#8A8F98';
+    if (_alberoAttivo) {
+        // Costruisci albero per datore
+        var headers = {};
+        var rows = table.querySelectorAll('tbody tr');
+        rows.forEach(function(tr) {
+            var tdDatore = tr.querySelector('td:nth-child(4)');
+            var nomeDatore = tdDatore ? tdDatore.textContent.trim().split('→')[0].trim() : 'Altri';
+            if (!headers[nomeDatore]) headers[nomeDatore] = [];
+            headers[nomeDatore].push(tr);
+        });
+        var html = '<div class="albero-view">';
+        var keys = Object.keys(headers).sort();
+        keys.forEach(function(d) {
+            html += '<div class="albero-gruppo">';
+            html += '<div class="albero-header expanded" onclick="this.classList.toggle(\'expanded\');var b=this.nextElementSibling;b.classList.toggle(\'open\');">';
+            html += '<i class="bi bi-chevron-right albero-icon"></i>';
+            html += '<i class="bi bi-person-circle" style="color:#5E6AD2;font-size:16px;"></i>';
+            html += '<span style="flex:1;font-weight:600;font-size:13px;color:#EDEDED;">' + d + '</span>';
+            html += '<span class="albero-count">' + headers[d].length + '</span></div>';
+            html += '<div class="albero-body open"><table style="margin:0;"><tbody>';
+            headers[d].forEach(function(tr) {
+                html += '<tr>' + tr.innerHTML + '</tr>';
+            });
+            html += '</tbody></table></div></div>';
+        });
+        html += '</div>';
+        table.style.display = 'none';
+        if (wrapper) {
+            var existing = wrapper.querySelector('.albero-view');
+            if (existing) existing.remove();
+            wrapper.insertAdjacentHTML('beforeend', html);
+        }
+    } else {
+        table.style.display = '';
+        var existing = document.querySelector('.albero-view');
+        if (existing) existing.remove();
+    }
+};
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
@@ -774,7 +836,7 @@ function toggleVisibileDatore(el, documentoPk) {
         <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
           <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Documenti
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
         <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
