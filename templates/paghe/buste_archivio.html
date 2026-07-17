@@ -320,25 +320,44 @@ function apriCcnlOcchioBusta(pk, anno) {
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Buste Paga</h5>
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Archivio Buste Paga</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        L'Archivio Buste Paga contiene tutte le buste paga salvate dal pulsante <b>SALVA BUSTA</b> presente nelle pagine di calcolo. Ogni busta è associata a un contratto, un periodo, un tipo di calcolo e un documento PDF.</p>
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Filtri</b><br>
-        Puoi filtrare per tipo di calcolo (Standard, Non Convivente, Conviventi CCNL, ecc.), stato (Bozza/Approvata/Archiviata), datore, lavoratore, mese e anno.</p>
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Azioni</b><br>
-        <b>VEDI</b> (<i class="bi bi-eye" style="color:#5bc0de;"></i>) — apre la pagina di calcolo corrispondente ricaricando i dati.<br>
-        <b>APPROVA</b> (<i class="bi bi-check-lg" style="color:#10b981;"></i>) — cambia lo stato in "Approvata".<br>
-        <b>ARCHIVIA</b> (<i class="bi bi-archive" style="color:#5E6AD2;"></i>) — cambia lo stato in "Archiviata".<br>
-        <b>BOZZA</b> (<i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i>) — riporta la busta a stato "Bozza".<br>
-        <b>ELIMINA</b> (<i class="bi bi-trash" style="color:#ef4444;"></i>) — elimina definitivamente la busta.<br>
-        <b>VISIBILE DATORE</b> (<span class="toggle-switch" style="display:inline-block;width:28px;height:14px;position:relative;vertical-align:middle;border:none;background:none;padding:0;"><span style="position:absolute;inset:0;background:#5E6AD2;border-radius:7px;"></span></span>) — attiva/disattiva la visibilit&agrave; della busta paga nell'area riservata del datore di lavoro (<b>/datore/</b>).</p>
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">PDF</b><br>
-        Se è presente un documento PDF associato, puoi aprirlo cliccando sull'icona <i class="bi bi-file-pdf" style="color:#ef4444;"></i>.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>L'<b>Archivio Buste Paga</b> contiene tutte le buste paga salvate tramite il pulsante <b>SALVA BUSTA</b> presente nelle pagine di calcolo. Ogni busta è associata a un contratto, un periodo (mese/anno), un tipo di calcolo e opzionalmente un documento PDF. Da qui puoi gestire lo stato di ogni busta, approvare, archiviare e generare i PDF.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-funnel c-accent me-2"></i>Filtri</div>
+          <p>Utilizza i filtri in alto per restringere la ricerca: <b>Tipo</b> (Standard, Convivente, Non Convivente, Conviventi CCNL, Notturno, Malattia, Calcolo Inverso, TFR, Sostituzione), <b>Stato</b> (Bozza, Approvata, Archiviata), <b>Datore</b> e <b>Lavoratore</b> (ricerca testuale), <b>Mese</b> e <b>Anno</b>. Clicca <b>"Cancella filtri"</b> per tornare alla vista completa.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-list-check c-accent me-2"></i>Azioni per riga</div>
+          <p><b>VEDI</b> <i class="bi bi-eye c-accent"></i> — apre la pagina di calcolo corrispondente ricaricando i dati del contratto e del periodo.</p>
+          <p><b>APPROVA</b> <i class="bi bi-check-lg" style="color:#10b981;"></i> — cambia lo stato in "Approvata".</p>
+          <p><b>ARCHIVIA</b> <i class="bi bi-archive c-accent"></i> — imposta lo stato "Archiviata".</p>
+          <p><b>BOZZA</b> <i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i> — riporta la busta a stato "Bozza".</p>
+          <p><b>ELIMINA</b> <i class="bi bi-trash" style="color:#ef4444;"></i> — elimina definitivamente la busta paga.</p>
+          <p><b>CCNL</b> — apre il dettaglio dei parametri CCNL del contratto (paga oraria, livello, scatti).</p>
+          <p><b>RICEVUTA</b> — genera e apre la ricevuta di pagamento in PDF.</p>
+          <p><b>STAMPA BUSTA</b> — invia la busta paga alla stampante di sistema.</p>
+          <p><b>GENERA PDF</b> — crea il PDF della busta paga se non ancora presente.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-eye-slash c-accent me-2"></i>Visibile al datore</div>
+          <p>La colonna <b>Visibile</b> attiva/disattiva la visibilità della busta paga nell'area riservata del datore di lavoro (<code>/datore/</code>). Quando il toggle è verde, il datore può visualizzare e scaricare il PDF della busta. Usa questa funzione per controllare quali documenti condividere con i tuoi clienti.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-printer c-accent me-2"></i>Colonna Stampa</div>
+          <p>L'icona <i class="bi bi-printer-fill" style="color:#f59e0b;"></i> indica che la busta è già stata stampata. L'icona <i class="bi bi-printer text-muted"></i> indica che non è ancora stata stampata. Clicca <b>STAMPA BUSTA</b> nella colonna azioni per stampare e aggiornare automaticamente lo stato.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-download c-accent me-2"></i>Scarica Excel</div>
+          <p>Il pulsante <b>"Scarica Excel"</b> esporta l'elenco delle buste attualmente visualizzate (con i filtri applicati) in un file XLSX, utile per reportistiche esterne o per il controllo contabile.</p>
+        </div>
       </div>
     </div>
   </div>

@@ -50,22 +50,35 @@
 
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" style="max-width:500px;">
-    <div class="modal-content" style="background:#1C1C1F; border:1px solid #27282D; border-radius:16px;">
-      <div class="modal-header" style="border-bottom:1px solid #27282D; padding:20px 24px;">
-        <h5 class="modal-title" style="color:#EDEDED; font-weight:600;"><i class="bi bi-question-circle" style="color:#5E6AD2; margin-right:8px;"></i> Contributi INPS</h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Contributi CCNL</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:24px; color:#C0C4CC; font-size:14px; line-height:1.6;">
-        <p><strong style="color:#EDEDED;">Come si calcola la paga effettiva INPS?</strong></p>
-        <p><code style="background:#0E0F11; padding:2px 8px; border-radius:4px; color:#EDEDED;">paga_base_oraria + tredicesima_oraria</code></p>
-        <p><strong style="color:#EDEDED;">Fasce orarie:</strong></p>
-        <ul>
-          <li><strong style="color:#EDEDED;">≤ 24,9 h/sett</strong> — 3 fasce in base alla paga effettiva</li>
-          <li><strong style="color:#EDEDED;">&gt; 24,9 h/sett</strong> — fascia unica indipendentemente dalla paga</li>
-        </ul>
-        <p><strong style="color:#EDEDED;">Configurazione:</strong> Le soglie sono modificabili in <em>Opzioni Software</em> → <em>Parametri di Calcolo</em>.</p>
-        <p class="mb-0" style="color:#8A8F98;">Riferimento: CCNL Lavoro Domestico — Circolare INPS annuale.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina di riepilogo dei <b>contributi INPS</b> per il CCNL Lavoro Domestico. Mostra le fasce contributive, le percentuali e gli importi per ogni contratto, suddivisi per datore e lavoratore.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Calcolo paga effettiva INPS</div>
+          <p>La paga oraria effettiva INPS si calcola come:<br>
+          <code>paga_base_oraria + tredicesima_oraria</code></p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Fasce orarie</div>
+          <p><b>≤ 24,9 h/settimana</b> — 3 fasce in base alla paga effettiva:<br>
+          Fascia 1: fino a €8,50/h — 22,80%<br>
+          Fascia 2: da €8,51 a €12,99/h — 21,40%<br>
+          Fascia 3: da €13,00/h in su — 20,50%<br><br>
+          <b>&gt; 24,9 h/settimana</b> — fascia unica indipendentemente dalla paga (aliquota ridotta)</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Le soglie e le aliquote sono modificabili in <b>Opzioni Software → Parametri di Calcolo</b>.<br>
+          Riferimento: CCNL Lavoro Domestico — Circolare INPS annuale.</p>
+        </div>
       </div>
     </div>
   </div>

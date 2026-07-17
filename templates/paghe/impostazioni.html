@@ -588,30 +588,39 @@ function sfogliaExeLettore() {
 }
 </script>
 
-<!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Impostazioni
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Impostazioni</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Qui puoi configurare tutte le <b>opzioni generali</b> del gestionale. Le impostazioni sono raggruppate in sezioni tematiche.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sezioni</b><br>
-        <b>Generali</b> — nome programma, versione, logo, colore e opzioni di visualizzazione.<br>
-        <b>Percorsi</b> — cartella documenti, percorso dell'exe del client di posta (es. Thunderbird) e del lettore PDF.<br>
-        <b>Email</b> — configurazione SMTP per l'invio email direttamente dal gestionale. Usa il pulsante <b>Invia email di prova</b> per testare la configurazione.<br>
-        <b>Collegamenti</b> — imposta l'indirizzo dello studio e il link esterno INPS per le procedure.<br>
-        <b>Calcolo</b> — parametri di calcolo buste paga e soglie.<br>
-        <b>Studio</b> — nome studio, indirizzo studio, recapiti (telefono, email, IBAN) e testi preimpostati.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salvataggio</b><br>
-        Le modifiche vengono salvate singolarmente per ogni sezione. Clicca <b>Salva</b> in fondo a ogni blocco per applicare le modifiche.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina raggruppa tutte le <b>opzioni generali</b> del gestionale in sezioni tematiche. Le modifiche vengono salvate tutte insieme cliccando il pulsante <b>Salva Impostazioni</b> in fondo alla pagina.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Sezioni</div>
+          <p><b>Informazioni Generali</b> — nome e versione del programma, logo principale e logo per le buste paga.</p>
+          <p><b>Percorsi e File</b> — cartella documenti, cartella backup, giorni di ritenzione backup, percorso dell'exe del client di posta e del lettore PDF.</p>
+          <p><b>Configurazione Email</b> — server SMTP, porta, username, password, mittente, opzioni TLS e programma di posta locale. Usa <b>Invia email di prova</b> per verificare la configurazione.</p>
+          <p><b>Collegamenti Esterni</b> — link INPS MAV, link INPS iscrizione, e due campi personalizzabili per altri collegamenti.</p>
+          <p><b>Parametri di Calcolo</b> — soglia ore contributi, soglie paga, rateo ferie mensile, mesi/giorni/settimane standard, anno di gestione.</p>
+          <p><b>Dati Studio</b> — nome studio, denominazione lunga, indirizzo, comune, CAP, telefono, email, IBAN, intestatario, banca, testi preimpostati (footer mail, firma, alert contributi, note avvertenze) e API key TinyMCE.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-image c-accent me-2"></i>Loghi</div>
+          <p>Puoi caricare due loghi: uno per il programma (visualizzato nell'intestazione) e uno specifico per le buste paga (stampato sui PDF). I loghi vengono ridimensionati automaticamente. Se non caricati, viene mostrata un'icona placeholder.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-envelope c-accent me-2"></i>Configurazione email</div>
+          <p>Le sezioni Email e Collegamenti sono comprimibili: clicca sul titolo per espanderle/chiuderle. Prima di salvare, usa <b>Invia email di prova</b> per verificare che la configurazione SMTP sia corretta.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-save c-accent me-2"></i>Note</div>
+          <p>I campi con testo preimpostato (footer mail, firma, alert, note) mostrano un'anteprima dal vivo. La <b>Tiny API Key</b> è necessaria solo se vuoi usare l'editor avanzato TinyMCE per modificare i testi preimpostati.</p>
+        </div>
       </div>
     </div>
   </div>

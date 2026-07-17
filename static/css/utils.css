@@ -391,3 +391,16 @@
 .skeleton-inline { display: inline-block; vertical-align: middle; }
 [data-skeleton] { position: relative; overflow: hidden; }
 [data-skeleton]::after { content: attr(data-skeleton); display: block; }
+
+/* --- Help modals --- */
+.help-section { margin-bottom: 18px; }
+.help-section:last-child { margin-bottom: 0; }
+.help-section-title { font-size: 13px; font-weight: 700; color: #EDEDED; margin-bottom: 8px; display: flex; align-items: center; }
+.help-section-title i { font-size: 15px; margin-right: 8px; }
+.help-section p { margin: 0 0 6px; color: #8A8F98; line-height: 1.6; }
+.help-section p:last-child { margin-bottom: 0; }
+.help-section ul { margin: 4px 0 0; padding: 0 0 0 18px; color: #8A8F98; line-height: 1.7; }
+.help-section li { margin-bottom: 4px; }
+.help-section code { background: rgba(94,106,210,0.12); color: #a5b4fc; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+.help-section .badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; }
+.help-divider { height: 1px; background: #27282D; margin: 16px 0; }

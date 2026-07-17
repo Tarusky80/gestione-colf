@@ -205,30 +205,36 @@ function ripristinaRichiesta(pk) {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Richieste Modifica Datori
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Richieste Modifica Datori</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
-        I datori di lavoro possono richiedere modifiche ai propri dati anagrafici o contrattuali tramite l'area riservata. Questa pagina permette di gestire tutte le richieste in arrivo.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Stati delle richieste</b><br>
-        <b>Inviata</b> — appena ricevuta, in attesa di visione.<br>
-        <b>Vista</b> — l'amministratore l'ha aperta e letta.<br>
-        <b>Accettata</b> — modifica approvata e applicata.<br>
-        <b>Rifiutata</b> — modifica respinta con eventuale nota.<br>
-        <b>Eliminata</b> — richiesta rimossa (visibile solo spuntando "Eliminate").</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Filtra le richieste per stato usando i pulsanti in alto.<br>
-        <b>2.</b> Clicca su una riga per vedere i dettagli: valore attuale, valore richiesto e note.<br>
-        <b>3.</b> Usa i pulsanti azione per <b>Accettare</b> (la modifica viene applicata automaticamente) o <b>Rifiutare</b> con una nota.<br>
-        <b>4.</b> Le richieste eliminate possono essere ripristinate cliccando l'apposito pulsante.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>I datori di lavoro possono richiedere modifiche ai propri dati anagrafici o contrattuali tramite l'area riservata. Questa pagina permette di gestire tutte le richieste in arrivo, visionarle e approvarle o rifiutarle con nota.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-list-check c-accent me-2"></i>Stati delle richieste</div>
+          <p><b>Inviata</b> — appena ricevuta, in attesa di presa in carico.<br>
+          <b>Vista</b> — l'amministratore ha aperto e letto la richiesta.<br>
+          <b>Accettata</b> — modifica approvata e applicata automaticamente.<br>
+          <b>Rifiutata</b> — modifica respinta con eventuale nota di spiegazione.<br>
+          <b>Eliminata</b> — richiesta rimossa (visibile solo filtrando per "Eliminate").</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Filtra le richieste per stato usando i pulsanti in alto.<br>
+          <b>2.</b> Clicca su una riga per aprire il dettaglio: confronta valore attuale e valore richiesto, leggi la nota del datore.<br>
+          <b>3.</b> Scrivi una risposta (opzionale) e clicca <b>Accetta</b> o <b>Rifiuta</b>.<br>
+          <b>4.</b> Le richieste eliminate possono essere ripristinate cliccando l'icona <i class="bi bi-arrow-counterclockwise"></i>.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-pencil c-accent me-2"></i>Modifica applicata</div>
+          <p>Quando <b>Accetti</b> una richiesta, il nuovo valore viene automaticamente applicato al datore/contratto. Non è necessario modificare manualmente i dati.</p>
+        </div>
       </div>
     </div>
   </div>

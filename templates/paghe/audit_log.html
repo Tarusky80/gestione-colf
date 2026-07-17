@@ -144,26 +144,32 @@ function apriDettaglioAudit(pk) {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Registro Audit
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Registro Audit</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
-        Il Registro Audit tiene traccia di tutte le <b>modifiche, creazioni ed eliminazioni</b> effettuate sul gestionale. Ogni evento è registrato con utente, data, IP e dettagli delle modifiche.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Usa i filtri in alto per cercare per <b>modello</b>, <b>azione</b>, <b>utente</b>, intervallo di date o testo libero.<br>
-        <b>2.</b> Clicca su una riga per aprire il <b>dettaglio</b> con i valori precedenti e successivi della modifica.<br>
-        <b>3.</b> Le azioni sono colorate: <span style="color:#10b981;">creazione</span>, <span style="color:#5E6AD2;">modifica</span>, <span style="color:#f87171;">eliminazione</span>.<br>
-        <b>4.</b> Usa "Resetta" per rimuovere tutti i filtri e tornare alla vista completa.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Accesso Admin</b><br>
-        Puoi filtrare per "Accesso Admin" per vedere solo gli accessi al pannello di amministrazione di Django. I dati sensibili (password, token) non vengono mai registrati.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Il Registro Audit tiene traccia di tutte le <b>modifiche, creazioni ed eliminazioni</b> effettuate sul gestionale. Ogni evento &egrave; registrato con utente, data, IP e dettaglio delle modifiche.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Usa i filtri in alto per cercare per <b>modello</b>, <b>azione</b>, <b>utente</b>, intervallo di date o testo libero.<br>
+          <b>2.</b> Clicca su una riga per aprire il <b>dettaglio</b> con i valori precedenti e successivi della modifica.<br>
+          <b>3.</b> Le azioni sono colorate: <span class="c-success">creazione</span>, <span class="c-accent">modifica</span>, <span class="c-danger">eliminazione</span>.<br>
+          <b>4.</b> Usa <b>Resetta</b> per rimuovere tutti i filtri e tornare alla vista completa.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-shield-check c-accent me-2"></i>Accesso Admin</div>
+          <p>Puoi filtrare per <b>Accesso Admin</b> per vedere solo gli accessi al pannello di amministrazione Django. I dati sensibili (password, token) non vengono mai registrati nel log.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-clock-history c-accent me-2"></i>Note</div>
+          <p>Il registro viene mantenuto per un periodo configurabile. Le voci pi&ugrave; vecchie vengono automaticamente eliminate per ottimizzare le performance del database.</p>
+        </div>
       </div>
     </div>
   </div>

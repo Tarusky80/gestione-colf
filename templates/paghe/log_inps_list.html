@@ -131,16 +131,32 @@
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Cronologia INPS</h5>
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Cronologia INPS</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Qui trovi il registro cronologico di tutte le operazioni effettuate sulle procedure INPS (Iscrizione, Cessazione, PagoPA manuale e automatica). Ogni volta che viene aperta o completata una procedura, viene registrato un log con data, operazione e utente.</p>
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Filtri</b><br>
-        Puoi filtrare per contratto, tipo di operazione e intervallo di date per trovare rapidamente le operazioni di tuo interesse.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina mostra il registro cronologico di tutte le operazioni effettuate sulle procedure INPS: Iscrizione, Cessazione, PagoPA manuale e automatica. Ogni operazione viene registrata con data, tipo, dettaglio e utente che l'ha eseguita.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-funnel c-accent me-2"></i>Filtri</div>
+          <p>Puoi filtrare i log per <b>contratto</b>, <b>tipo operazione</b> e <b>intervallo di date</b> per trovare rapidamente le operazioni di interesse. Usa il pulsante <code>Filtra</code> per applicare e la <b>X</b> per resettare.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-eye c-accent me-2"></i>Operazioni</div>
+          <p><b>Apertura Assunzione</b> — avvio pratica iscrizione INPS.<br>
+          <b>Salvataggio Codice</b> — codice contratto INPS salvato.<br>
+          <b>Apertura Cessazione</b> — avvio pratica cessazione.<br>
+          <b>PagoPA Manuale/Auto</b> — generazione e completamento bollettini.<br>
+          Clicca sull'icona <i class="bi bi-eye"></i> per vedere il dettaglio completo dell'operazione. Il pulsante <i class="bi bi-trash"></i> elimina il log.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>I log eliminati non possono essere recuperati. Il dettaglio operazione può contenere link diretti ai PDF generati (es. PagoPA).</p>
+        </div>
       </div>
     </div>
   </div>

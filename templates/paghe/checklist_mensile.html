@@ -178,26 +178,28 @@ function resettaMese(anno, mese) {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Checklist Mensile
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Checklist Mensile</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
-        La Checklist Mensile ti aiuta a monitorare le attività periodiche da svolgere ogni mese per ogni contratto. Ogni attività completata viene tracciata con data e ora.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Clicca sul <b>cerchio</b> accanto a ogni attività per segnarla come completata (si riempie di verde).<br>
-        <b>2.</b> Usa le frecce <b>&lt; &gt;</b> per navigare tra i mesi oppure clicca "Mese corrente" per tornare a oggi.<br>
-        <b>3.</b> La barra di progresso mostra il completamento complessivo del mese.<br>
-        <b>4.</b> Clicca <b>"Resetta"</b> per azzerare tutte le attività del mese selezionato.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Attività obbligatorie</b><br>
-        Le attività con bordo giallo sono <b>obbligatorie</b> e vanno completate prima della chiusura del mese. Le altre sono facoltative ma consigliate per una gestione ordinata.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>La <b>Checklist Mensile</b> ti aiuta a monitorare le attività periodiche da svolgere ogni mese per ogni contratto. Ogni attività completata viene tracciata con data e ora, così da tenere uno storico preciso delle operazioni svolte.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Clicca sul <b>cerchio</b> accanto a ogni attività per segnarla come completata (si riempie di verde).<br>
+          <b>2.</b> Usa le frecce <b>&lt; &gt;</b> per navigare tra i mesi oppure clicca <b>"Mese corrente"</b> per tornare a oggi.<br>
+          <b>3.</b> La barra di progresso mostra il completamento complessivo del mese.<br>
+          <b>4.</b> Clicca <b>"Resetta"</b> per azzerare tutte le attività del mese selezionato.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Attività obbligatorie</div>
+          <p>Le attività con bordo giallo sono <b>obbligatorie</b> e vanno completate prima della chiusura del mese. Le altre sono facoltative ma consigliate per una gestione ordinata. La barra di progresso tiene conto sia delle attività obbligatorie che di quelle facoltative.</p>
+        </div>
       </div>
     </div>
   </div>

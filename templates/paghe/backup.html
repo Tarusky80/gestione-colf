@@ -282,30 +282,38 @@ function pulisciBackupVecchi() {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Gestione Backup
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Gestione Backup</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Qui puoi creare, scaricare e ripristinare i <b>backup</b> del database in formato JSON + ZIP del database SQLite. I backup sono essenziali per la sicurezza dei dati e vengono automaticamente programmati ogni notte alle 03:00.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Scegli il <b>tipo di backup</b>: Completo (tutti i dati), o parziale (solo selezioni specifiche).<br>
-        <b>2.</b> Clicca <b>Crea Backup</b> per generare il salvataggio. Verranno creati sia il file JSON (dati strutturati) sia lo ZIP del database (copia fisica).<br>
-        <b>3.</b> Nella tabella puoi <b>Scaricare</b> il JSON, lo ZIP del DB, o <b>Ripristinare</b> direttamente il DB cliccando "Ripristina DB".<br>
-        <b>4.</b> Usa <b>Pulisci backup vecchi</b> per rimuovere automaticamente quelli più vecchi di 6 mesi.<br>
-        <b>5.</b> <b>Upload e ripristino</b> — carica un file JSON dal tuo computer per ripristinare dati da un backup esterno.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Backup del database (ZIP)</b><br>
-        Ogni backup crea automaticamente una copia del file <code>db.sqlite3</code> tramite l'API <code>sqlite3.backup()</code>, che garantisce una copia consistente anche durante le scritture. Lo ZIP contiene un unico file <code>db.sqlite3</code> pronto per il ripristino. Dopo un ripristino del DB, <b>riavviare il server</b> per sicurezza.</p>
-
-        <p style="margin-bottom:0;margin-top:14px;"><b style="color:#EDEDED;font-size:14px;">Avvertenze</b><br>
-        Il ripristino <b>sovrascrive</b> i dati esistenti nel database. Si consiglia di fare un backup completo prima di qualsiasi ripristino. I backup automatici notturni sono attivati di default e gestiti dallo scheduler integrato (APScheduler).</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>La pagina <b>Backup</b> permette di creare, scaricare e ripristinare salvataggi del database in formato JSON e ZIP. I backup sono essenziali per la sicurezza dei dati: proteggono da perdite accidentali, guasti hardware o errori umani. Il sistema esegue automaticamente un backup programmato ogni notte alle 03:00 tramite APScheduler.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare — Backup</div>
+          <p><b>1.</b> Scegli il <b>tipo di backup</b> dal menu a opzioni: <b>Completo</b> (esporta tutti i dati del database in formato JSON), <b>Database ZIP</b> (copia fisica del file <code>db.sqlite3</code>), o altre opzioni parziali.</p>
+          <p><b>2.</b> Inserisci eventuali <b>note opzionali</b> (es. "Prima del rinnovo annuale") per identificare facilmente il backup nella tabella.</p>
+          <p><b>3.</b> Clicca <b>"Esegui Backup"</b> per avviare la creazione. La pagina si ricarica automaticamente al termine.</p>
+          <p><b>4.</b> Nella tabella puoi <b>scaricare il JSON</b> (dati strutturati), <b>scaricare il DB</b> (file ZIP), o <b>ripristinare direttamente il DB</b> cliccando "Ripristina DB".</p>
+          <p><b>5.</b> Usa <b>"Pulisci backup vecchi"</b> per rimuovere automaticamente tutti i backup più vecchi di 6 mesi.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-upload c-accent me-2"></i>Importa Excel e ripristino da JSON</div>
+          <p><b>Importa da Excel</b> — carica un file <code>.xlsx</code> o <code>.xls</code> per importare dati nel database. Utile per migrazioni o integrazioni da altri sistemi.</p>
+          <p><b>Ripristina da file JSON</b> — carica un file <code>.json</code> proveniente da un backup precedente per ripristinare i dati. ATTENZIONE: questa operazione <b>sovrascrive</b> tutti i dati correnti nel database. Si consiglia di eseguire un backup completo prima di procedere.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-database c-accent me-2"></i>Backup del database (ZIP)</div>
+          <p>Ogni backup di tipo "Completo" crea automaticamente una copia del file <code>db.sqlite3</code> tramite l'API <code>sqlite3.backup()</code>, che garantisce una copia consistente anche durante le operazioni di scrittura concorrenti. Lo ZIP contiene un unico file <code>db.sqlite3</code> pronto per il ripristino.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-exclamation-triangle c-accent me-2"></i>Avvertenze</div>
+          <p>Il ripristino del database <b>sovrascrive completamente</b> i dati esistenti. Dopo un ripristino del DB, <b>riavviare il server Django</b> per garantire la corretta reimpostazione delle connessioni. I backup automatici notturni (03:00) sono attivati di default e gestiti dallo scheduler APScheduler integrato.</p>
+        </div>
       </div>
     </div>
   </div>

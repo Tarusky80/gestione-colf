@@ -1,30 +1,32 @@
 ﻿<!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Riepilogo Ufficio
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Riepilogo Ufficio</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        La <b>Dashboard</b> è la pagina principale che riepiloga tutte le informazioni importanti: contratti in scadenza, alert, scadenze imminenti e statistiche rapide. Ãˆ il punto di partenza per navigare nel gestionale.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sezioni principali</b><br>
-        <b>Alert e scadenze</b> (<i class="bi bi-bell-fill" style="color:#ff6b6b;"></i>) — clicca la campanella per vedere il riepilogo rapido di contratti scaduti, prossime scadenze e attività in sospeso. Il numero rosso indica il totale degli alert.<br>
-        <b>Prossime scadenze</b> — lista degli appuntamenti imminenti con urgenza: rossa (&le;7 giorni), arancione (&le;30 giorni), gialla (&gt;30 giorni).<br>
-        <b>Checklist annuale</b> — mostra lo stato delle attività obbligatorie dell'anno: buste paga, certificazione unica, versamento contributi trimestre.<br>
-        <b>Scostamento budget</b> — se il costo reale supera il budget del 10%, appare un alert rosso con il dettaglio del superamento.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Altri strumenti</b><br>
-        <b>Orologio</b> — mostra l'ora corrente in alto a destra.<br>
-        <b>Barra di ricerca globale (Ctrl+K / Ctrl+L)</b> — premi <kbd>Ctrl+K</kbd> o <kbd>Ctrl+L</kbd> per aprire la ricerca rapida. Digita 3+ caratteri per cercare tra tutte le anagrafiche. Naviga con <kbd>↑</kbd> <kbd>↓</kbd>, seleziona con <kbd>Invio</kbd>, chiudi con <kbd>Esc</kbd>.<br>
-        <b>Comandi rapidi</b> — nella ricerca, digita <kbd>:comando</kbd> per azioni veloci: <code>:busta Rossi</code>, <code>:rinnova</code>, <code>:contratto Verdi</code>, <code>:scadenza</code>, <code>:documento 123</code>, <code>:apri dashboard</code>, <code>:lul</code>.<br>
-        <b>Ctrl+1â€¦9</b> — con la ricerca aperta, premi <kbd>Ctrl+1</kbd>â€¦<kbd>Ctrl+9</kbd> per selezionare direttamente uno dei primi 9 risultati.<br>
-        <b>Cronologia</b> — i risultati visitati vengono salvati automaticamente. Alla prossima apertura di <kbd>Ctrl+K</kbd>, i più recenti appaiono sotto "Recenti".<br>
-        <b>Menu laterale</b> — naviga verso le altre sezioni del gestionale.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>La <b>Dashboard</b> è la pagina principale del gestionale che riepiloga in tempo reale tutte le informazioni chiave: numero di contratti attivi, ore lavorate, budget utilizzato, prossime scadenze e alert critici. Da qui puoi navigare verso tutte le sezioni dell'applicativo tramite il menu laterale o la barra di ricerca globale.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Sezioni della pagina</div>
+          <p><b>KPI superiori</b> — quattro indicatori numerici mostrano a colpo d'occhio: contratti attivi, ore/mese totali, prossima scadenza imminente e percentuale di buste archiviate. Il colore dello sfondo indica la categoria (viola contratti, verde ore, ambra scadenze).</p>
+          <p><b>Tabella ultimi contratti</b> — elenca i contratti più recenti con dettagli su datore, lavoratore, livello, budget e stato. Clicca su una riga per modificare il contratto nel pannello laterale.</p>
+          <p><b>Alert e scadenze</b> — clicca la campanella <i class="bi bi-bell-fill c-accent"></i> per aprire il pannello laterale con: contratti scaduti, progetti in scadenza, nuovi assunti, contratti senza progetto/budget, scadenze trimestrali e checklist mensile/annuale.</p>
+          <p><b>Grafici e report</b> — nella sezione espandibile trovi: distribuzione per comune, composizione per livello e tipologia, budget per progetto, confronto assunzioni/cessazioni, ore lavorate per mese, distribuzione geografica, stato buste paga e trend contributi 12 mesi.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-keyboard c-accent me-2"></i>Scorciatoie</div>
+          <p><kbd>Ctrl+K</kbd> / <kbd>Ctrl+L</kbd> — apre la ricerca globale. Digita 3+ caratteri per cercare in tutte le anagrafiche. Usa <kbd>↑</kbd> <kbd>↓</kbd> per navigare, <kbd>Invio</kbd> per selezionare, <kbd>Esc</kbd> per chiudere. I comandi rapidi iniziano con <code>:</code> (es. <code>:busta Rossi</code>, <code>:rinnova</code>).</p>
+          <p><kbd>Ctrl+1</kbd>…<kbd>Ctrl+9</kbd> — con la ricerca aperta, seleziona direttamente uno dei primi 9 risultati.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>I dati dei grafici vengono aggiornati automaticamente a ogni caricamento della pagina. La sezione "Grafici e Report" può essere espansa o collassata e la preferenza viene salvata localmente. Il badge ultimo backup nel menu laterale indica lo stato del salvataggio automatico dei dati (verde = recente, giallo = da qualche giorno, rosso = mai effettuato o vecchio).</p>
+        </div>
       </div>
     </div>
   </div>

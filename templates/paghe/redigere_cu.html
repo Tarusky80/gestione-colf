@@ -316,33 +316,44 @@
     </div>
   </div>
 
-  {# Help Modal #}
-  <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Certificazione Unica
-        </h5>
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Certificazione Unica</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        La <b>Certificazione Unica (CU)</b> è il documento fiscale che riepiloga tutti i redditi da lavoro dipendente e assimilati corrisposti al lavoratore nell'anno precedente. Deve essere consegnata al lavoratore entro il 31 marzo e trasmessa all'Agenzia delle Entrate entro il 31 ottobre.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Modalità di compilazione</b><br>
-        <b>Automatica</b> — la CU viene generata a partire dalle buste paga già salvate nell'archivio. I mesi senza busta vengono mostrati con importi a zero. Ideale se hai salvato tutte le buste dell'anno.<br>
-        <b>Semi-Automatica</b> — griglia interattiva che ti permette di modificare i dati di ogni mese + 13ª mensilità. Puoi correggere singoli importi prima di generare il PDF.<br>
-        <b>Manuale</b> — inserisci liberamente tutti gli importi annuali. Utile se non hai le buste salvate nell'archivio.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Azioni disponibili</b><br>
-        <b>Genera PDF</b> — crea il documento PDF definitivo e lo salva nella cartella documenti del contratto.<br>
-        <b>Genera PDF selezionati (N)</b> — seleziona più contratti con le checkbox per generare più CU in un colpo solo.<br>
-        <b>Invia massivo</b> — seleziona più contratti e invia le CU via email in blocco.<br>
-        <b>Storico invii</b> — consulta la cronologia degli invii email per ogni contratto e anno.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Nomenclatura PDF</b><br>
-        Il file viene salvato automaticamente come <code>CU_NomeLavoratore_NomeDatore_Anno.pdf</code> nella cartella documenti del contratto.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>La <b>Certificazione Unica (CU)</b> è il documento fiscale che riepiloga i redditi da lavoro domestico corrisposti al lavoratore nell'anno precedente. Deve essere consegnata al lavoratore entro il 31 marzo e trasmessa all'Agenzia delle Entrate entro il 31 ottobre.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-magic c-accent me-2"></i>Modalità di compilazione</div>
+          <p><b>Automatica</b> — genera la CU a partire dalle buste paga salvate in archivio. I mesi senza busta mostrano importi a zero. Ideale se tutte le buste dell'anno sono state salvate.</p>
+          <p><b>Semi-Automatica</b> — griglia interattiva per modificare i dati di ogni mese e della 13ª mensilità prima di generare il PDF.</p>
+          <p><b>Manuale</b> — inserimento libero di tutti gli importi annuali. Utile se le buste paga non sono presenti in archivio.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Seleziona il contratto e l'anno di riferimento.</p>
+          <p><b>2.</b> Scegli la modalità di compilazione (Automatica / Semi-Automatica / Manuale).</p>
+          <p><b>3.</b> Segui lo stepper: seleziona contratto, dati annuali, verifica, genera/invia.</p>
+          <p><b>4.</b> Usa le checkbox nella toolbar batch per operazioni su più contratti contemporaneamente.</p>
+          <p><b>5.</b> Clicca <b>Anteprima PDF</b> per visualizzare o <b>Salva PDF</b> per archiviare.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-envelope c-accent me-2"></i>Invio email</div>
+          <p>Dopo aver generato la CU, puoi inviarla via email cliccando <b>Invia Email</b>. È possibile selezionare un modello email personalizzato dal menu a tendina. Lo storico degli invii è consultabile cliccando <b>Storico invii</b>.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-files c-accent me-2"></i>Operazioni batch</div>
+          <p>La toolbar batch nella parte superiore permette di selezionare più contratti e generare PDF o inviare email in massa. Usa il checkbox nell'intestazione della tabella per selezionare/deselezionare tutti i contratti visibili.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-file-earmark-text c-accent me-2"></i>Note</div>
+          <p>Il file PDF viene salvato automaticamente come <code>CU_NomeLavoratore_NomeDatore_Anno.pdf</code> nella cartella documenti del contratto. Prima di trasmettere all'Agenzia delle Entrate, utilizza <b>Verifica quadratura</b> per controllare la corrispondenza dei dati.</p>
+        </div>
       </div>
     </div>
   </div>

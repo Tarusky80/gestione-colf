@@ -144,26 +144,33 @@
 </div>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Rinnova Contratti
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Rinnovo Contratti</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Permette il <b>rinnovo massivo</b> di più contratti contemporaneamente. I nuovi contratti ereditano tutti i parametri (progetti, retribuzione, ecc.) da quelli originali, aggiornando automaticamente i <b>parametri CCNL all'ultimo anno disponibile</b> per lo stesso livello.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Spunta i contratti da rinnovare (o usa <i class="bi bi-check2-square"></i> per selezionare tutti quelli visibili).<br>
-        <b>2.</b> Imposta la <b>Data Rinnovo</b> (nuova data assunzione).<br>
-        <b>3.</b> Inserisci la <b>Data Fine</b> se il nuovo contratto è a termine; se lasciata vuota sarà <b>Indeterminato</b>.<br>
-        <b>4.</b> Clicca <b>Rinnova Selezionati</b> e conferma.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;">Cosa viene copiato</b><br>
-        Tutti i parametri del contratto originale (retribuzione, ore, indennità, note), i <b>progetti collegati</b>, e il <b>CCNL più recente</b> disponibile per lo stesso livello. Il campo <i>contratto_rinnovato_da</i> memorizza il riferimento al contratto originale.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina permette il <b>rinnovo massivo</b> di più contratti contemporaneamente. I nuovi contratti ereditano tutti i parametri (progetti, retribuzione, indennità, note) da quelli originali, aggiornando automaticamente i parametri CCNL all'ultimo anno disponibile per lo stesso livello.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-list-check c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Usa i filtri (ricerca, livello, comune, progetto) per restringere la lista dei contratti.</p>
+          <p><b>2.</b> Spunta i contratti da rinnovare con le checkbox o usa il pulsante <i class="bi bi-check2-square"></i> per selezionare/deselezionare tutti quelli visibili.</p>
+          <p><b>3.</b> Imposta la <b>Data Rinnovo</b> (nuova data di assunzione del contratto rinnovato).</p>
+          <p><b>4.</b> Inserisci la <b>Data Fine</b> se il nuovo contratto è a termine; se lasciata vuota sarà a tempo indeterminato.</p>
+          <p><b>5.</b> Clicca <b>Rinnova Selezionati</b> e conferma l'operazione.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-arrow-repeat c-accent me-2"></i>Cosa viene copiato</div>
+          <p>Tutti i parametri del contratto originale: retribuzione, ore settimanali, indennità, note, progetti collegati. Il CCNL viene aggiornato all'ultimo anno disponibile per lo stesso livello. Il campo <code>contratto_rinnovato_da</code> memorizza il riferimento al contratto originale.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-exclamation-triangle c-accent me-2"></i>Note</div>
+          <p>Il rinnovo crea un nuovo contratto distinto; quello originale resta invariato. I contratti vengono ereditati con lo stesso datore, lavoratore e beneficiario. Verifica sempre i dati prima di confermare.</p>
+        </div>
       </div>
     </div>
   </div>

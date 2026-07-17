@@ -830,31 +830,28 @@ window.toggleAlbero = function() {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Archivio Documenti
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Archivio Documenti</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Archivio centrale di tutti i <b>documenti PDF</b> generati dal gestionale: buste paga, certificazioni uniche, ricevute, lettere, PagoPA, ecc. Ogni documento è associato a un contratto e ha un tipo specifico.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Usa i <b>filtri</b> in alto per cercare per tipo documento, contratto, datore, lavoratore, periodo (da/a) o stato invio.<br>
-        <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi, Scarica, Stampa, Apri cartella, Collega contratto, Invia Email, Elimina.<br>
-        <b>3.</b> Seleziona più documenti con le <b>checkbox</b> per azioni massive: Invio email massivo, Download ZIP.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Stati del documento</b><br>
-        Ogni documento può avere uno stato: <b>Inviato</b> (spedito via email), <b>Stampato</b>, <b>Non inviato</b> (solo generato). I badge colore aiutano a identificare rapidamente lo stato.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Visibile al datore</b><br>
-        La colonna <b>VISIBILE</b> con il toggle verde permette di rendere il documento accessibile al datore di lavoro nella sua area riservata (<b>/datore/</b>). Attiva il toggle per i documenti che il datore deve poter scaricare autonomamente.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Collega Contratto</b><br>
-        Se un documento non è ancora associato a un contratto (es. caricato manualmente), puoi collegarlo usando l'apposita funzione dal pannello azioni.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Archivio centrale di tutti i <b>documenti PDF</b> generati dal gestionale: buste paga, certificazioni uniche, ricevute, lettere, PagoPA e altri. Ogni documento è associato a un contratto e ha un tipo specifico che ne determina la categoria.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Usa i <b>filtri</b> in alto per cercare per tipo documento, contratto, datore, lavoratore, periodo (da/a) o stato invio.<br>
+          <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi, Scarica, Stampa, Apri cartella, Collega contratto, Invia Email, Elimina.<br>
+          <b>3.</b> Seleziona più documenti con le <b>checkbox</b> per azioni massive: Invio email massivo, Download ZIP.<br>
+          <b>4.</b> Usa il toggle <b>VISIBILE</b> per rendere il documento accessibile al datore nella sua area riservata.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Stati del documento</div>
+          <p>Ogni documento può avere uno stato: <b>Inviato</b> (spedito via email), <b>Stampato</b>, <b>Non inviato</b> (solo generato). I badge colore aiutano a identificare rapidamente lo stato. Se un documento non è ancora associato a un contratto, puoi collegarlo usando l'apposita funzione dal pannello azioni.</p>
+        </div>
       </div>
     </div>
   </div>

@@ -143,34 +143,40 @@
 </div>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Busta TFR
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta TFR</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        La <b>Busta TFR</b> genera il documento di liquidazione del Trattamento di Fine Rapporto per il collaboratore domestico. Il TFR è l'accantonamento mensile che viene corrisposto al lavoratore al termine del rapporto di lavoro.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Modalità TFR</b><br>
-        <b>Incluso nel lordo</b> — l'importo TFR è già compreso nella paga base mensile, non viene accantonato separatamente.<br>
-        <b>Separato 100%</b> — l'intero importo del TFR viene accantonato mese per mese e liquidato alla fine del rapporto.<br>
-        <b>Separato 70%</b> — il 70% del TFR viene pagato in busta ogni mese, il restante 30% viene accantonato per la liquidazione finale.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Pulsanti rapidi</b><br>
-        Per il periodo di liquidazione puoi usare i pulsanti rapidi: <b>Inizio anno</b>, <b>Inizio rapporto</b>, <b>Fine mese</b>, <b>Fine anno</b>, <b>Data...</b> per impostare date personalizzate. Il sistema calcola automaticamente il totale maturato nel periodo.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
-        La modalità TFR si configura nel contratto (paga_tfr). Per i contratti con TFR 70%, una parte viene pagata in busta e una parte accantonata. Il TFR accantonato è soggetto a rivalutazione ISTAT.</p>
-        <p class="mb-0"><b>PDF:</b> genera il documento di liquidazione con timbro e firma, salvato nell'archivio documenti.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Liquidazione TFR e Archivio</b><br>
-        <b>LIQUIDA TFR</b> — crea un record di liquidazione TFR nell'archivio buste paga con i dati del periodo selezionato. Il PDF viene generato automaticamente e associato alla busta.<br>
-        <b>Archivio Buste</b> — consulta tutte le liquidazioni TFR salvate (badge rosa), filtrale per tipo=TFR. Da lì puoi cambiare lo stato, vedere il PDF ed eliminare record.<br>
-        <b>Cessazione contratto:</b> quando imposti un contratto a stato <b>CESSATO</b>, l'ultima busta paga e la liquidazione TFR vengono generate automaticamente.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina dedicata al calcolo e alla liquidazione del <b>Trattamento di Fine Rapporto (TFR)</b> per il collaboratore domestico. Il TFR &egrave; l'accantonamento mensile corrisposto al termine del rapporto di lavoro, con rivalutazione ISTAT.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Scegli un contratto. Il sistema carica la modalit&agrave; TFR configurata (Incluso, Separato 100% o Separato 70%).<br>
+          <b>2.</b> Seleziona il <b>periodo di liquidazione</b>: imposta data inizio e data fine, oppure usa i pulsanti rapidi (Inizio anno, Inizio rapporto, Fine mese, Fine anno).<br>
+          <b>3.</b> Regola il mese e l'anno di competenza.<br>
+          <b>4.</b> Clicca <b>LIQUIDA TFR</b> per creare il record e generare il PDF.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Parametri</div>
+          <p><b>Modalit&agrave; TFR (configurate nel contratto):</b><br>
+          <b>Incluso nel lordo</b> &mdash; il TFR &egrave; compreso nella paga base mensile.<br>
+          <b>Separato 100%</b> &mdash; accantonato interamente mese per mese, liquidato a fine rapporto.<br>
+          <b>Separato 70%</b> &mdash; 70% pagato in busta ogni mese, 30% accantonato per la liquidazione finale.<br>
+          Il TFR accantonato &egrave; soggetto a rivalutazione ISTAT.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Scorciatoie</div>
+          <p><code>Ctrl+S</code> &mdash; liquida il TFR &middot; <code>Ctrl+P</code> &mdash; stampa il PDF &middot; <code>F1</code> &mdash; apre questo aiuto &middot; <code>Ctrl+Enter</code> &mdash; invia il form</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Il PDF di liquidazione viene generato automaticamente con timbro e firma, salvato nell'archivio documenti. Alla <b>cessazione del contratto</b>, l'ultima busta paga e la liquidazione TFR vengono generate automaticamente. Consulta l'<b>Archivio Buste</b> (filtro tipo=TFR) per vedere le liquidazioni salvate.</p>
+        </div>
       </div>
     </div>
   </div>

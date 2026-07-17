@@ -103,18 +103,27 @@ function eliminaTuttiInvio() {
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Riepilogo Invii</h5>
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Riepilogo Invii</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Qui trovi lo storico di tutte le generazioni massive di buste paga effettuate dalla pagina "Stampe e Invii". Per ogni invio puoi vedere la data, il periodo di riferimento, il modello email usato, il totale dei contratti processati e quanti sono andati a buon fine.</p>
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Azioni</b><br>
-        <b>Dettaglio</b> — apre la pagina con l'elenco completo dei contratti inclusi nell'invio.<br>
-        <b>ZIP</b> — scarica l'archivio ZIP contenente tutti i PDF generati.<br>
-        <b>Elimina</b> — rimuove il riepilogo (i PDF rimangono nella cartella documenti).</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina mostra lo storico di tutte le generazioni massive di buste paga effettuate dalla sezione <b>Stampe e Invii</b>. Per ogni invio trovi data, periodo di riferimento, modello email utilizzato, totale contratti processati e conteggio di successi/errori.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Azioni</div>
+          <p><b>Dettaglio</b> — apre la pagina con l'elenco completo dei contratti inclusi nell'invio, con stato di spedizione per ciascuno.<br>
+          <b>ZIP</b> — scarica l'archivio ZIP contenente tutti i PDF generati.<br>
+          <b>Elimina</b> — rimuove il riepilogo dalla lista. I PDF rimangono nella cartella documenti dei contratti.<br>
+          <b>Elimina Tutti</b> — cancella l'intero storico. Operazione irreversibile.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-envelope c-accent me-2"></i>Modello email</div>
+          <p>La colonna <b>Modello Email</b> indica quale modello di posta è stato usato per l'invio dei documenti. Se vuoto, i PDF sono stati solo generati senza invio.</p>
+        </div>
       </div>
     </div>
   </div>

@@ -150,7 +150,7 @@ body { background: var(--bg-base); }
         </ol>
       </nav>
     </div>
-    <button type="button" class="btn-help" onclick="apriHelp()" title="Guida"><i class="bi bi-question-lg"></i></button>
+    <button type="button" class="btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
   </div>
 
   <div class="db-grid">
@@ -230,126 +230,54 @@ body { background: var(--bg-base); }
   </div>
 </div>
 
-<!-- Help Modal -->
-<div id="helpModal" class="hm-overlay" onclick="if(event.target===this)chiudiHelp()">
-  <div class="hm-box">
-    <div class="hm-header">
-      <span><i class="bi bi-question-circle" style="color:var(--accent-color);"></i> Guida &mdash; Gestione Database</span>
-      <button type="button" class="hm-close" onclick="chiudiHelp()"><i class="bi bi-x-lg"></i></button>
-    </div>
-    <div class="hm-body">
-      <div class="hm-section">
-        <div class="hm-title"><i class="bi bi-database"></i> Cosa sono i profili database</div>
-        <p>Ogni profilo &egrave; un file SQLite indipendente. Il profilo <strong>Principale</strong> contiene i tuoi dati reali. I profili di prova (Prova Casistiche, Prova Varie, Prova Molti, Prova Singolo Contratto) sono database separati popolati con dati fittizi per testare l'applicazione senza toccare i dati di produzione.</p>
+<div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Gestione Database</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-
-      <div class="hm-section">
-        <div class="hm-title"><i class="bi bi-plus-circle"></i> Come creare un database di prova</div>
-        <ol>
-          <li>Nella lista <strong>Profili Disponibili</strong>, individua il profilo con scritto <span class="badge-db-missing" style="font-size:9px;padding:1px 6px;">Non creato</span>.</li>
-          <li>Clicca <strong>Crea Database</strong>: apparir&agrave; un overlay con spinner.</li>
-          <li>Attendi il completamento (da pochi secondi a ~30 secondi per profili grandi).</li>
-          <li>La pagina si ricaricher&agrave; automaticamente. Ora il profilo mostra i pulsanti <strong>Attiva</strong> ed <strong>Elimina</strong>.</li>
-        </ol>
-      </div>
-
-      <div class="hm-section">
-        <div class="hm-title"><i class="bi bi-toggle-on"></i> Come attivare un database (cambiare DB attivo)</div>
-        <ol>
-          <li>Clicca <strong>Attiva</strong> sul profilo desiderato.</li>
-          <li>Verrai reindirizzato al login del database scelto.</li>
-          <li>Accedi con le credenziali di quel database <em>(per i DB di prova: <code>admin</code> / <code>admin</code>)</em>.</li>
-        </ol>
-        <div class="hm-warning">
-          <i class="bi bi-exclamation-triangle"></i>
-          <span><strong>Attenzione:</strong> Dopo il cambio, la sessione precedente non &egrave; pi&ugrave; valida. Devi sempre rifare il login. I dati dell'altro database restano intatti.</span>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-database c-accent me-2"></i>Cosa sono i profili database</div>
+          <p>Ogni profilo è un file SQLite indipendente. Il profilo <b>Principale</b> contiene i tuoi dati reali. I profili di prova (Prova Casistiche, Prova Varie, Prova Molti, Prova Singolo Contratto) sono database separati popolati con dati fittizi per testare l'applicazione senza toccare i dati di produzione.</p>
         </div>
-      </div>
-
-      <div class="hm-section">
-        <div class="hm-title"><i class="bi bi-arrow-return-left"></i> Come tornare al database principale</div>
-        <p>Nella lista <strong>Profili Disponibili</strong>, clicca <strong>Attiva</strong> sul profilo <strong>Principale</strong>. Verrai reindirizzato al login del database principale. Inserisci le tue credenziali normali.</p>
-      </div>
-
-      <div class="hm-section">
-        <div class="hm-title"><i class="bi bi-trash"></i> Come eliminare un database di prova</div>
-        <ol>
-          <li>Assicurati che il database da eliminare <strong>non sia quello attivo</strong> (cambia prima sul principale).</li>
-          <li>Clicca <strong>Elimina</strong>: apparir&agrave; un messaggio di conferma.</li>
-          <li>Conferma l'eliminazione. Il file <code>.sqlite3</code> verr&agrave; cancellato definitivamente.</li>
-        </ol>
-        <div class="hm-warning">
-          <i class="bi bi-exclamation-triangle"></i>
-          <span><strong>Nota:</strong> L'eliminazione &egrave; irreversibile. I dati cancellati non possono essere recuperati in alcun modo.</span>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-plus-circle c-accent me-2"></i>Come creare un database di prova</div>
+          <p><b>1.</b> Nella lista <b>Profili Disponibili</b>, individua il profilo con il badge <span class="badge-db-missing" style="font-size:9px;padding:1px 6px;">Non creato</span>.</p>
+          <p><b>2.</b> Clicca <b>Crea Database</b>: apparirà un overlay con spinner di attesa.</p>
+          <p><b>3.</b> Attendi il completamento (da pochi secondi a circa 30 secondi per profili grandi).</p>
+          <p><b>4.</b> La pagina si ricaricherà automaticamente. Ora il profilo mostra i pulsanti <b>Attiva</b> ed <b>Elimina</b>.</p>
         </div>
-      </div>
-
-      <div class="hm-section">
-        <div class="hm-title"><i class="bi bi-info-circle"></i> Note importanti</div>
-        <ul style="padding-left:18px;margin:0;">
-          <li>Dopo ogni cambio di database devi sempre effettuare nuovamente il login &mdash; la sessione &egrave; legata al database attivo.</li>
-          <li>Credenziali dei database di prova: <code>admin</code> / <code>admin</code> (utente superadmin con tutti i permessi).</li>
-          <li>Ogni database &egrave; completamente isolato: i dati di un profilo non sono visibili dagli altri.</li>
-          <li>Il database <strong>Principale</strong> non pu&ograve; essere eliminato.</li>
-        </ul>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-toggle-on c-accent me-2"></i>Come attivare un database</div>
+          <p><b>1.</b> Clicca <b>Attiva</b> sul profilo desiderato nella lista Profili Disponibili.</p>
+          <p><b>2.</b> Verrai reindirizzato alla pagina di login del database scelto.</p>
+          <p><b>3.</b> Accedi con le credenziali di quel database (per i DB di prova: <code>admin</code> / <code>admin</code>).</p>
+          <p><b>Attenzione:</b> Dopo il cambio, la sessione precedente non è più valida. Devi sempre rifare il login. I dati dell'altro database restano intatti.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-arrow-return-left c-accent me-2"></i>Come tornare al database principale</div>
+          <p>Nella lista <b>Profili Disponibili</b>, clicca <b>Attiva</b> sul profilo <b>Principale</b>. Verrai reindirizzato al login del database principale. Inserisci le tue credenziali normali per riprendere a lavorare con i dati reali.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-trash c-accent me-2"></i>Come eliminare un database di prova</div>
+          <p><b>1.</b> Assicurati che il database da eliminare <b>non sia quello attivo</b> (cambia prima sul principale).</p>
+          <p><b>2.</b> Clicca <b>Elimina</b>: apparirà un messaggio di conferma.</p>
+          <p><b>3.</b> Conferma l'eliminazione. Il file <code>.sqlite3</code> verrà cancellato definitivamente dal disco.</p>
+          <p><b>Nota:</b> L'eliminazione è irreversibile. I dati cancellati non possono essere recuperati in alcun modo.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note importanti</div>
+          <p>Dopo ogni cambio di database devi sempre effettuare nuovamente il login: la sessione è legata al database attivo.</p>
+          <p>Credenziali dei database di prova: <code>admin</code> / <code>admin</code> (utente superadmin con tutti i permessi).</p>
+          <p>Ogni database è completamente isolato: i dati di un profilo non sono visibili dagli altri.</p>
+          <p>Il database <b>Principale</b> non può essere eliminato.</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-<style>
-.hm-overlay {
-  position: fixed; inset: 0; z-index: 99999;
-  background: rgba(0,0,0,0.7);
-  display: none; align-items: center; justify-content: center;
-}
-.hm-overlay.active { display: flex; }
-.hm-box {
-  background: var(--bg-surface); border: 1px solid var(--border-subtle);
-  border-radius: 14px; width: 95%; max-width: 680px;
-  max-height: 85vh; display: flex; flex-direction: column;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
-}
-.hm-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 22px; border-bottom: 1px solid var(--border-subtle);
-  color: var(--text-primary); font-size: 14px; font-weight: 700;
-}
-.hm-header i:first-child { margin-right: 8px; }
-.hm-close {
-  background: transparent; border: none; color: var(--text-secondary);
-  font-size: 14px; cursor: pointer; padding: 4px 8px; border-radius: 6px;
-  transition: all 0.15s;
-}
-.hm-close:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
-.hm-body {
-  padding: 18px 22px 22px; overflow-y: auto; color: var(--text-secondary);
-  font-size: 12px; line-height: 1.7;
-}
-.hm-section { margin-bottom: 18px; }
-.hm-section:last-child { margin-bottom: 0; }
-.hm-title {
-  color: var(--text-primary); font-weight: 600; font-size: 12px;
-  margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
-}
-.hm-title i { color: var(--accent-color); }
-.hm-section p { margin: 0 0 4px; }
-.hm-section ol { padding-left: 18px; margin: 0 0 4px; }
-.hm-section ol li { margin-bottom: 2px; }
-.hm-section ul { padding-left: 18px; margin: 0; }
-.hm-section ul li { margin-bottom: 2px; }
-.hm-warning {
-  background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.15);
-  border-radius: 8px; padding: 10px 12px; margin-top: 8px;
-  display: flex; align-items: flex-start; gap: 8px;
-}
-.hm-warning i { color: #f59e0b; flex-shrink: 0; margin-top: 1px; }
-.hm-warning strong { color: var(--text-primary); }
-.hm-body code {
-  background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px;
-  font-size: 11px; color: var(--text-primary);
-}
-</style>
 
 <!-- Loading overlay (rimane sopra tutto, non usa Bootstrap) -->
 <div id="loadingOverlay" class="db-loading-overlay">
@@ -414,14 +342,7 @@ function eliminaDatabase(profile){
   },200);
 }
 
-function apriHelp(){
-  var el=document.getElementById('helpModal');
-  if(el){el.classList.add('active');document.body.style.overflow='hidden';}
-}
-function chiudiHelp(){
-  var el=document.getElementById('helpModal');
-  if(el){el.classList.remove('active');document.body.style.overflow='';}
-}
+
 /* Delegated click handler per pulsanti "Crea Database" */
 document.addEventListener('click', function(e){
   var btn=e.target.closest('.btn-crea-db');

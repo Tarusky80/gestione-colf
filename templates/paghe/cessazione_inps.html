@@ -229,22 +229,33 @@
 </div>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Cessazione INPS</h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Cessazione INPS</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
-        <p>Seleziona un contratto attivo, imposta la <strong>data di cessazione</strong> e la <strong>causale</strong>, poi salva.</p>
-        <p>Il preavviso viene calcolato automaticamente in base al CCNL Colf/Badanti:</p>
-        <ul>
-          <li><strong>&gt; 24 ore/sett</strong> — 15gg (&lt;5 anni) / 30gg (≥5 anni)</li>
-          <li><strong>≤ 24 ore/sett</strong> — 8gg (≤2 anni) / 15gg (&gt;2 anni)</li>
-          <li><strong>Conviventi</strong> — 30gg (≤1 anno) / 60gg (&gt;1 anno)</li>
-          <li><strong>Dimissioni</strong> — 50% del licenziamento</li>
-        </ul>
-        <p class="mb-0">Usa <strong style="color:#10b981;">APRI POPUP DATI</strong> per copiare i dati e <strong style="color:#5E6AD2;">APRI SITO INPS</strong> per procedere con la pratica.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Gestisci la <b>cessazione</b> di un rapporto di lavoro presso l'INPS. Seleziona un contratto attivo, imposta la data di cessazione e la causale, poi salva. Il preavviso viene calcolato automaticamente in base al CCNL Colf/Badanti.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Seleziona un <b>contratto attivo</b> dal menu a tendina.<br>
+          <b>2.</b> Imposta la <b>data di cessazione</b> e seleziona la <b>causale</b> dal menu a tendina.<br>
+          <b>3.</b> Il <b>preavviso</b> viene calcolato automaticamente in base all'anzianità, alle ore settimanali e alla causale.<br>
+          <b>4.</b> Usa <b>APRI POPUP DATI</b> per copiare i dati e <b>APRI SITO INPS</b> per procedere con la pratica sul portale INPS.<br>
+          <b>5.</b> Clicca <b>SALVA</b> per registrare la cessazione.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Calcolo preavviso</div>
+          <p>Il preavviso segue le regole CCNL Colf/Badanti:<br>
+          <b>&gt; 24 ore/settimana</b> — 15 giorni (&lt;5 anni) / 30 giorni (≥5 anni)<br>
+          <b>≤ 24 ore/settimana</b> — 8 giorni (≤2 anni) / 15 giorni (&gt;2 anni)<br>
+          <b>Conviventi</b> — 30 giorni (≤1 anno) / 60 giorni (&gt;1 anno)<br>
+          <b>Dimissioni</b> — 50% del periodo di licenziamento</p>
+        </div>
       </div>
     </div>
   </div>

@@ -217,52 +217,33 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Notturno</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Qui puoi calcolare la <b>retribuzione per lavoro notturno</b> dei collaboratori domestici. Il CCNL prevede che il lavoro svolto nella fascia notturna (22:00â€“06:00, o 20:00â€“08:00 per la presenza) venga pagato con modalità speciali.<br><br>
-Ci sono <b>3 modalità</b> di calcolo, ognuna pensata per una situazione diversa. Scegli quella che corrisponde al tipo di assistenza notturna che il lavoratore effettua.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Le 3 Modalità — Come scegliere quella giusta</b><br><br>
-<b style="color:#818cf8;">1. Presenza Notturna (Art. 11 CCNL)</b><br>
-— <b>Cos'è:</b> una retribuzione mensile <b>fissa</b> di €811,09 (importo CCNL 2024).<br>
-— <b>Onnicomprensivo:</b> significa che l'importo include già TUTTO: paga base, ratei (TFR, 13ª, Ferie, Festivi), indennità notturne. Non si aggiungono maggiorazioni orarie.<br>
-— <b>Quando si usa:</b> per assistenza notturna <b>continuativa</b> nella fascia 20:00â€“08:00 (12 ore). Tipico del badante convivente che sta sveglio tutta la notte per assistere un anziano non autosufficiente.<br>
-— <b>Slider ore:</b> non serve, l'importo è fisso.<br><br>
-<b style="color:#818cf8;">2. Assistenza Notturna (Art. 10 CCNL)</b><br>
-— <b>Cos'è:</b> un importo mensile <b>variabile per livello</b> contrattuale (dipende dal livello A, B, C, D, etc.).<br>
-— <b>Onnicomprensivo:</b> anche questo include tutto (paga base, ratei, indennità).<br>
-— <b>Quando si usa:</b> per assistenza a persone <b>non autosufficienti</b> durante la notte, con o senza convivenza.<br>
-— <b>Slider ore:</b> non serve, l'importo è mensile fisso per livello.<br><br>
-<b style="color:#818cf8;">3. A Ore con Maggiorazione 20%</b><br>
-— <b>Cos'è:</b> si prende la <b>paga base oraria</b> del contratto e si moltiplica per <b>1,20</b> (maggiorazione del 20%) e per le <b>ore effettive</b> di lavoro notturno.<br>
-— <b>Non è onnicomprensivo:</b> i ratei (TFR, 13ª, Ferie, Festivi) si calcolano separatamente con i toggle appositi.<br>
-— <b>Quando si usa:</b> per lavoro notturno <b>saltuario</b> o <b>a ore</b>, quando il lavoratore non fa tutte le notti ma solo alcune ore in fascia notturna.<br>
-— <b>Slider ore:</b> USA lo slider (0â€“200 ore, step 0,5) o digita il numero per impostare le ore notturne del mese.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Opzioni aggiuntive (solo per "A Ore")</b><br>
-Quando scegli la modalità "A Ore", si attivano due opzioni extra:<br><br>
-<b>Straordinario notturno (+50%):</b> se il lavoratore fa ore straordinarie in fascia notturna, si applica una maggiorazione del 50% sulla paga base. Attiva il toggle e usa lo slider per le ore di straordinario notturno.<br><br>
-<b>Festivo/Domenicale (+60%):</b> se il lavoro notturno cade in un giorno festivo o domenicale, si applica una maggiorazione del 60%. Attiva il toggle e imposta le ore festive notturne.<br><br>
-<b>Nota importante:</b> le maggiorazioni si <b>cumulano</b>. Se un'ora è sia notturna (20%) che straordinaria (50%), la maggiorazione totale è 20% + 50% = 70% sulla paga base.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei Notturni</b><br>
-Per ogni rateo (TFR, 13ª, Ferie, Festivi) puoi scegliere se:<br>
-<span style="color:#34d399;">✓ Incluso</span> — pagato in busta ogni mese.<br>
-<span style="color:#f59e0b;">âŸ³ Accantonato</span> — trattenuto per liquidazione futura.<br><br>
-<b>Nota per le modalità onnicomprensive (Presenza e Assistenza):</b> l'importo fisso include già i ratei, ma puoi comunque regolare i toggle per gestire accantonamenti separati.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Toggle Convivente</b><br>
-Se il lavoratore notturno è <b>convivente</b>, attiva il toggle "Convivente" per includere le indennità di vitto e alloggio nel calcolo. L'indennità viene detratta dal netto.</p>
-
-<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Fasce Orarie del Lavoro Notturno</b><br>
-Secondo il CCNL, il lavoro notturno è quello svolto nella fascia:<br>
-— <b>22:00 â€“ 06:00</b> (per la generalità dei casi).<br>
-— <b>20:00 â€“ 08:00</b> (per la modalità Presenza Notturna Art. 11).<br><br>
-Le ore al di fuori di queste fasce vengono retribuite con la paga base normale.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina per il calcolo della <b>retribuzione per lavoro notturno</b> dei collaboratori domestici. Il CCNL prevede 3 modalit&agrave; di calcolo a seconda del tipo di assistenza notturna: Presenza Notturna (Art. 11), Assistenza Notturna (Art. 10) e A Ore con maggiorazione del 20%.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Scegli un contratto.<br>
+          <b>2.</b> Seleziona una delle 3 modalit&agrave; cliccando sulla scheda corrispondente.<br>
+          <b>3.</b> Per la modalit&agrave; "A Ore", usa lo slider (0&ndash;200 ore, step 0,5) per impostare le ore notturne; attiva eventualmente straordinario (+50%) e/o festivo/domenicale (+60%).<br>
+          <b>4.</b> Regola i toggle ratei e convivenza, poi leggi la busta paga.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Parametri</div>
+          <p><b>Presenza Notturna (Art. 11):</b> retribuzione mensile fissa &euro;811,09 onnicomprensiva per assistenza continuativa 20:00&ndash;08:00.<br>
+          <b>Assistenza Notturna (Art. 10):</b> importo mensile variabile per livello contrattuale, onnicomprensivo, per assistenza a non autosufficienti.<br>
+          <b>A Ore (+20%):</b> paga base &times; 1,20 &times; ore notturne. Ratei calcolati separatamente. Maggiorazioni cumulabili: notturno 20% + straordinario 50% + festivo 60%.<br>
+          <b>Fasce orarie:</b> 22:00&ndash;06:00 (generale), 20:00&ndash;08:00 (Presenza Art. 11).</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Scorciatoie</div>
+          <p><code>Ctrl+S</code> &mdash; salva la busta paga &middot; <code>Ctrl+P</code> &mdash; stampa il PDF &middot; <code>F1</code> &mdash; apre questo aiuto &middot; <code>Ctrl+Enter</code> &mdash; invia il form</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Le modalit&agrave; onnicomprensive (Presenza e Assistenza) includono gi&agrave; i ratei nella cifra fissa. Il toggle "Convivente" aggiunge le indennit&agrave; di vitto e alloggio. Il pulsante <b>SALVA BUSTA</b> archivia il calcolo come record permanente nell'archivio buste paga.</p>
+        </div>
       </div>
     </div>
   </div>

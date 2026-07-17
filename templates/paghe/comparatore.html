@@ -166,22 +166,32 @@
 </form>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Comparatore Costo
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Comparatore Costo</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è</b><br>
-        Confronta il costo totale di un lavoratore modificando budget, ore e indennità per vedere l'impatto su lordo, contributi e netto.</p>
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Seleziona un contratto attivo.<br>
-        <b>2.</b> A sinistra vedi lo scenario corrente.<br>
-        <b>3.</b> A destra modifica budget, ore e toggle indennità.<br>
-        <b>4.</b> Clicca <b>Confronta</b> per vedere le differenze evidenziate.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Confronta il costo totale di un lavoratore modificando budget, ore e indennit&agrave; per vedere l'impatto su lordo, contributi e netto. Utile per simulare scenari "what-if" prima di modificare un contratto.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Seleziona un <b>contratto attivo</b> dal menu a tendina.<br>
+          <b>2.</b> A sinistra vedi lo <b>scenario corrente</b> con i valori reali del contratto.<br>
+          <b>3.</b> A destra modifica <b>budget</b>, <b>ore</b> e attiva/disattiva le <b>indennit&agrave;</b> (ferie, malattia, notturno, etc.).<br>
+          <b>4.</b> Clicca <b>Confronta</b> per calcolare e visualizzare le differenze evidenziate tra scenario attuale e simulato.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-bar-chart c-accent me-2"></i>Risultati</div>
+          <p>Il confronto mostra: <b>Lordo</b> (imponibile contributivo), <b>Contributi INPS</b> (carico datore), <b>Netto</b> (lordo - contributi), <b>Costo Totale</b> (lordo + contributi + TFR + indennit&agrave;). Le variazioni sono evidenziate in verde (aumento) o rosso (diminuzione).</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-lightbulb c-accent me-2"></i>Scorciatoie</div>
+          <p>Usa <kbd>Ctrl+Invio</kbd> per avviare il confronto rapidamente.</p>
+        </div>
       </div>
     </div>
   </div>

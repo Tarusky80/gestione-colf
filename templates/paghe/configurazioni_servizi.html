@@ -295,28 +295,34 @@
 
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Configurazioni Servizi Web
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Configurazioni Servizi Web</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Configurazioni per i <b>servizi web</b> utilizzati dalle procedure automatizzate: Chromedriver (Selenium), Playwright, login INPS e opzioni di automazione.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sezioni</b><br>
-        <b>Chromedriver</b> — percorso dell'eseguibile chromedriver.exe per l'automazione Selenium.<br>
-        <b>Playwright</b> — percorso del browser Chromium installato da Playwright.<br>
-        <b>Login INPS</b> — username, password, PIN e codice fiscale per l'accesso automatizzato al sito INPS.<br>
-        <b>Automazione</b> — scegli il motore (Playwright o Selenium), imposta i delay tra le operazioni e la risoluzione dello schermo.<br>
-        <b>Link INPS</b> — URL di riferimento per le procedure di iscrizione/cessazione e PagoPA.<br>
-        <b>Cartelle</b> — percorsi delle cartella PDF e screenshot generati dalle automationi.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Dove si modificano</b><br>
-        Alcune impostazioni sensibili (login, PIN) sono modificabili solo dall'<b>admin Django</b> cliccando il link in fondo alla pagina.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Configurazioni per i <b>servizi web</b> utilizzati dalle procedure automatizzate: Chromedriver (Selenium), Playwright, login INPS e opzioni di automazione.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-puzzle c-accent me-2"></i>Sezioni</div>
+          <p><b>Chromedriver</b> &mdash; percorso dell'eseguibile chromedriver.exe per Selenium.<br>
+          <b>Playwright</b> &mdash; percorso del browser Chromium installato da Playwright.<br>
+          <b>Login INPS</b> &mdash; username, password, PIN e codice fiscale per accesso automatizzato al sito INPS.<br>
+          <b>Automazione</b> &mdash; motore (Playwright o Selenium), delay tra operazioni e risoluzione schermo.<br>
+          <b>Link INPS</b> &mdash; URL di riferimento per iscrizione/cessazione e PagoPA.<br>
+          <b>Cartelle</b> &mdash; percorsi per salvare PDF e screenshot generati.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-shield-lock c-accent me-2"></i>Accesso Admin</div>
+          <p>Alcune impostazioni sensibili (login INPS, PIN) sono modificabili solo dall'<b>admin Django</b>. Clicca il link "Vai all'admin Django" in fondo alla pagina per accedere.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Assicurati che i percorsi di Chromedriver e Playwright siano corretti prima di avviare le procedure automatiche. I delay servono a evitare blocchi da parte dei siti web target.</p>
+        </div>
       </div>
     </div>
   </div>

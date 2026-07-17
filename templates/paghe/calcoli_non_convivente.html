@@ -177,57 +177,31 @@
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Non Convivente</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Qui puoi calcolare la busta paga mensile di un collaboratore domestico <b>non convivente</b>, cioè che NON vive nella stessa casa del datore di lavoro. Questo è il caso più comune: la colf o il badante viene a ore e torna a casa sua.<br><br>
-Il calcolo parte dalla <b>paga oraria</b> moltiplicata per le <b>ore mensili</b> previste dal contratto. A differenza della pagina "Busta Standard" (che usa il budget dei progetti regionali e applica il prorating), qui non c'è un budget limite da rispettare: il lavoratore prende esattamente paga_oraria × ore.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa — 3 passi</b><br>
-<b>1.</b> Scegli un contratto dal menu a tendina.<br>
-<b>2.</b> Regola le opzioni: toggle Sostituzione (Art. 14), ratei, indennità, scatti, convivenza (vitto/alloggio forfettario).<br>
-<b>3.</b> Leggi la busta paga: Lordo, Contributi INPS, Trattenute (vitto/alloggio, ratei accantonati), Netto.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Sostituzione (Art. 14 comma 9 del CCNL)</b><br>
-Se attivi il toggle "Sostituzione", il sistema usa la <b>retribuzione oraria di sostituzione</b> (Tabella G del CCNL) invece della normale paga base. Questa è più alta della paga base normale.<br><br>
-Cosa cambia:<br>
-— La paga base viene sostituita dalla <b>retribuzione di sostituzione</b> (es. invece di €6,00/h si usa €7,50/h).<br>
-— Non si applica il prorating (il prorata è sempre 1,0 — non c'è limite di budget).<br>
-— Il calcolo diventa: retribuzione_sostituzione × ore_mensili.<br><br>
-<b>Attenzione:</b> la sostituzione è un istituto diverso dalla "Sostituzione Malattia" che trovi nell'apposita pagina. Qui si tratta di un lavoratore che sostituisce temporaneamente un altro con una paga maggiorata.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei — TFR, 13ª, Ferie, Festivi</b><br>
-Per ogni rateo hai 3 scelte:<br>
-<span style="color:#34d399;">✓ Incluso nel lordo</span> — Pagato in busta ogni mese.<br>
-<span style="color:#f59e0b;">âŸ³ Accantonato</span> — Calcolato ma trattenuto per liquidazione futura (TFR a fine rapporto, 13ª a dicembre, ferie non godute).<br>
-<span style="color:#5C5F66;">✕ Disabilitato</span> — Non viene calcolato.<br><br>
-<b>TFR:</b> la liquidazione. Si accumua mese per mese e viene pagata quando il rapporto finisce.<br>
-<b>13ª:</b> la tredicesima, pagata a dicembre.<br>
-<b>Ferie:</b> giorni di ferie maturati e non goduti.<br>
-<b>Festivi:</b> festività non godute (Pasqua, 1° Maggio, etc.).</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Indennità e Scatti di Anzianità</b><br>
-Le <b>indennità</b> sono importi mensili aggiuntivi previsti dal CCNL:<br>
-— Indennità di funzione (per ruoli con responsabilità).<br>
-— Indennità bambini sotto i 6 anni (se assiste minori).<br>
-— Indennità più assistiti (se assiste più persone).<br>
-— Indennità certificazione qualità.<br><br>
-Gli <b>scatti di anzianità</b> sono aumenti ogni 2 anni di servizio presso lo stesso datore.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Convivenza — Vitto e Alloggio Forfettario</b><br>
-Anche per i non conviventi puoi attivare vitto e alloggio (es. se il lavoratore mangia a casa del datore).<br>
-— Pranzo: €2,33/gg — Cena: €2,33/gg — Alloggio: €2,00/gg.<br>
-I giorni sono di default 26 (dal lunedì al sabato). L'importo viene detratto dal netto.</p>
-
-<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Contributi INPS</b><br>
-I contributi INPS si calcolano sulle <b>ore INPS</b>, che sono le ore mensili arrotondate per eccesso all'intero superiore. Per esempio, se il contratto prevede 108,33 ore al mese, le ore INPS sono 109.<br><br>
-L'aliquota contributiva dipende dalla <b>fascia oraria settimanale</b>:<br>
-— <b>SOPRA la soglia</b> (24 ore settimanali o più): aliquota piena.<br>
-— <b>SOTTO la soglia</b> (meno di 24 ore settimanali): aliquota ridotta.<br><br>
-A questi si aggiunge la <b>quota cassa/ente bilaterale</b> (es. EBINCOLF, CAD, etc.), un piccolo contributo aggiuntivo calcolato sulle stesse ore INPS.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina dedicata al calcolo della busta paga per collaboratori domestici <b>non conviventi</b> (colf o badanti che tornano a casa propria). Il calcolo parte dalla <b>paga oraria</b> moltiplicata per le <b>ore mensili</b> del contratto, senza limiti di budget: il lavoratore prende esattamente paga_oraria × ore. Non si applica il prorating.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Scegli un contratto dal menu a tendina.<br>
+          <b>2.</b> Regola le opzioni: toggle <b>Sostituzione (Art. 14)</b> per usare la retribuzione maggiorata di sostituzione (Tabella G), ratei, indennità, scatti di anzianità e vitto/alloggio forfettario.<br>
+          <b>3.</b> Leggi la busta paga con Lordo, Contributi INPS, Trattenute e Netto.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Parametri</div>
+          <p><b>Sostituzione (Art. 14 c.9):</b> attiva la retribuzione oraria di sostituzione (Tabella G), più alta della paga base. Il prorata è sempre 1,0. Non va confusa con la pagina "Sostituzione Malattia".<br>
+          <b>Ratei:</b> TFR, 13ª, Ferie, Festivi configurabili come <span class="badge-bool-si">Inclusi</span>, <span class="badge-bool-no">Accantonati</span> o <span class="badge-bool-no">Disabilitati</span>.<br>
+          <b>Ore INPS:</b> ore mensili arrotondate per eccesso all'intero. Aliquota contributiva piena sopra le 24h settimanali, ridotta sotto.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Scorciatoie</div>
+          <p><code>Ctrl+S</code> — salva la busta paga &middot; <code>Ctrl+P</code> — stampa il PDF &middot; <code>F1</code> — apre questo aiuto &middot; <code>Ctrl+Enter</code> — invia il form</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Il pulsante <b>SALVA BUSTA</b> archivia il calcolo come record permanente. Puoi sovrascrivere una busta già salvata per lo stesso periodo. Dall'<b>Archivio Buste</b> puoi consultare, filtrare e cambiare lo stato (bozza/approvata/archiviata) dei record salvati.</p>
+        </div>
       </div>
     </div>
   </div>

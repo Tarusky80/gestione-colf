@@ -235,34 +235,38 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
       <div class="modal-header b-card">
-        <h5 class="modal-title c-15-b">
-          <i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Contratti Attivi
-        </h5>
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Contratti Attivi</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body card-body">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Elenco di tutti i <b>contratti attivi</b> tra datori e lavoratori. Ogni contratto è il cuore del gestionale: da qui passano i calcoli delle buste paga, le procedure INPS, i documenti e la certificazione unica.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> <b>Clicca su una riga</b> per aprire il pannello delle azioni: Modifica, Duplica, Elimina, Vai a Busta Paga, Genera documento, Documenti archivio.<br>
-        <b>2.</b> Usa i <b>Filtri avanzati</b> in alto per cercare per livello CCNL, progetto regionale, stato, data assunzione/cessazione, budget minimo/massimo e ore.<br>
-        <b>3.</b> Clicca sulle intestazioni delle colonne per <b>ordinare</b> la tabella (es. per budget, ore, data).</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Colonne principali</b><br>
-        <b>Datore → Lavoratore → Beneficiario</b> — le tre parti del contratto.<br>
-        <b>Tipo</b> — Determinato / Indeterminato.<br>
-        <b>Budget / Ore</b> — budget mensile e ore calcolate dal sistema.<br>
-        <b>TFR</b> — <i class="bi bi-file-text" style="color:#10b981;"></i> indica presenza di documenti allegati.<br>
-        <b>Prog.</b> — numero di progetti regionali collegati.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Azioni rapide dal pannello</b><br>
-        <b>Busta mese precedente/corrente/successivo</b> — link diretto al calcolo busta paga per quel periodo.<br>
-        <b>Genera documento</b> — apre la scelta del tipo di documento da generare (lettera assunzione, licenziamento, ecc.).<br>
-        <b>Documenti archivio</b> — tutti i documenti PDF generati per quel contratto.</p>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Elenco di tutti i <b>contratti attivi</b> tra datori e lavoratori. Ogni contratto &egrave; il cuore del gestionale: da qui passano i calcoli delle buste paga, le procedure INPS, i documenti e la Certificazione Unica.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina, Vai a Busta Paga, Genera documento, Documenti archivio.<br>
+          <b>2.</b> Usa i <b>Filtri avanzati</b> in alto per cercare per CCNL, progetto regionale, stato, date, budget e ore.<br>
+          <b>3.</b> Clicca sulle intestazioni delle colonne per <b>ordinare</b> la tabella.<br>
+          <b>4.</b> <b>Export XLSX</b> per scaricare l'elenco in formato Excel.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-layout-text-window c-accent me-2"></i>Colonne principali</div>
+          <p><b>Datore &rarr; Lavoratore &rarr; Beneficiario</b> — le tre parti del contratto.<br>
+          <b>Tipo</b> — Determinato / Indeterminato.<br>
+          <b>Budget / Ore</b> — budget mensile e ore calcolate dal sistema.<br>
+          <b>TFR</b> — <i class="bi bi-file-text c-success"></i> indica presenza di documenti allegati.<br>
+          <b>Prog.</b> — numero di progetti regionali collegati.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-lightning c-accent me-2"></i>Azioni rapide</div>
+          <p><b>Busta mese prec./corr./succ.</b> — link diretto al calcolo busta paga per quel periodo.<br>
+          <b>Genera documento</b> — lettera assunzione, licenziamento, variazioni, ecc.<br>
+          <b>Documenti archivio</b> — tutti i PDF generati per quel contratto.</p>
+        </div>
       </div>
     </div>
   </div>

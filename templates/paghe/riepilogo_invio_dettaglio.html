@@ -142,18 +142,32 @@ function eliminaInvio(pk) {
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Dettaglio Invio</h5>
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Dettaglio Invio</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Dettaglio Invio</b><br>
-        Questa pagina mostra l'elenco completo dei contratti inclusi in una specifica generazione massiva di buste paga. Per ogni contratto puoi vedere il datore, il lavoratore, l'email a cui è stato inviato e lo stato della spedizione.</p>
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Stati</b><br>
-        <span style="color:#10b981;"><i class="bi bi-check-circle"></i> Inviato</span> — la busta è stata generata e inviata con successo.<br>
-        <span style="color:#dc2626;"><i class="bi bi-x-circle"></i> Errore</span> — si è verificato un problema durante l'invio.<br>
-        <span class="text-secondary"><i class="bi bi-file-pdf"></i> Solo PDF</span> — la busta è stata generata in PDF ma non inviata via email.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina mostra l'elenco completo dei contratti inclusi in una specifica generazione massiva di buste paga. Per ogni contratto puoi vedere datore, lavoratore, email di destinazione e stato della spedizione.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Stati</div>
+          <p><b class="text-success">Inviato</b> — la busta è stata generata e inviata con successo via email.<br>
+          <b class="text-danger">Errore</b> — si è verificato un problema durante la generazione o l'invio (dettaglio visibile nella riga).<br>
+          <b class="text-secondary">Solo PDF</b> — la busta è stata generata in PDF ma non inviata via email.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Azioni</div>
+          <p><b>Scarica ZIP</b> — scarica l'archivio ZIP con tutti i PDF dell'invio.<br>
+          <b>Elimina</b> — rimuove il riepilogo (i PDF rimangono nella cartella documenti).<br>
+          <b>Stampa</b> — invia il singolo documento alla stampante predefinita.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-printer c-accent me-2"></i>Stato stampa</div>
+          <p>L'icona stampante indica se il documento è già stato stampato (<i class="bi bi-printer-fill text-warning"></i>) o meno (<i class="bi bi-printer text-muted"></i>).</p>
+        </div>
       </div>
     </div>
   </div>

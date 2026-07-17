@@ -160,16 +160,34 @@
 
 </div>
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Liste Stampe</h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Liste Stampe</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
-        <p>Genera elenchi PDF per datori, lavoratori, beneficiari, progetti, contratti attivi e dati PagoPA.</p>
-        <p>Alcune liste permettono di selezionare filtri (es. tipo progetto, datore, livello) prima della generazione.</p>
-        <p class="mb-0">I PDF vengono aperti in una nuova scheda del browser.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina permette di generare elenchi PDF in formato orizzontale per tutte le entità gestite: datori di lavoro, lavoratori, beneficiari, progetti regionali, contratti attivi e dati PagoPA INPS.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Scegli la lista desiderata tra le card disponibili.<br>
+          <b>2.</b> Se presenti, utilizza i filtri (es. tipo progetto, datore, livello) per restringere i dati.<br>
+          <b>3.</b> Clicca <b>Genera PDF</b> per avviare la creazione del documento.<br>
+          <b>4.</b> Il PDF viene visualizzato nel pannello laterale.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-palette c-accent me-2"></i>Liste disponibili</div>
+          <p><b>Datori di Lavoro</b> — anagrafica completa con CF, indirizzo, telefono, email e note.<br>
+          <b>Lavoratori</b> — anagrafica con CF, sesso, data nascita, indirizzo e contatti.<br>
+          <b>Beneficiari</b> — anagrafica con CF, data nascita, indirizzo e telefono.<br>
+          <b>Progetti Regionali</b> — elenco con beneficiario, tipo, date e budget.<br>
+          <b>Contratti Attivi</b> — contratti con filtri per datore e livello.<br>
+          <b>PagoPA INPS</b> — dati contributivi ore, paga oraria, importo e cassa.<br>
+          <b>Liste Personalizzate</b> — crea modelli con colonne a tua scelta.</p>
+        </div>
       </div>
     </div>
   </div>

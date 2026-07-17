@@ -334,28 +334,35 @@ function eliminaTutti() {
 document.addEventListener('DOMContentLoaded', filteraEliminati);
 </script>
 
-<!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Eliminati
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Eliminati</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Contiene tutti i <b>record eliminati</b> dalle anagrafiche (datori, lavoratori, beneficiari, contratti). I record non vengono cancellati subito dal database, ma spostati qui in modo da poterli eventualmente ripristinare.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per nome, tipo o codice fiscale.<br>
-        <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Vedi (dettaglio del record originale), Ripristina, Elimina definitivamente.<br>
-        <b>3.</b> <b>RIPRISTINA TUTTI</b> — riporta tutti i record eliminati nelle rispettive pagine.<br>
-        <b>4.</b> <b>ELIMINA TUTTI</b> — cancella definitivamente tutti i record (operazione irreversibile).</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
-        L'eliminazione definitiva non può essere annullata. Il ripristino ricrea il record esattamente com'era prima dell'eliminazione.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina contiene tutti i <b>record eliminati</b> dalle anagrafiche (datori, lavoratori, beneficiari, contratti e tabelle). I record non vengono cancellati immediatamente dal database, ma spostati in questa sezione per consentirne l'eventuale ripristino.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-list-check c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per tipo o descrizione.</p>
+          <p><b>2.</b> Usa il filtro a tendina <b>Tipo</b> per mostrare solo una categoria (datori, lavoratori, contratti, ecc.).</p>
+          <p><b>3.</b> <b>Clicca su una riga</b> per aprire il pannello laterale con il dettaglio completo del record originale, i pulsanti Ripristina ed Elimina definitivamente.</p>
+          <p><b>4.</b> <b>RIPRISTINA TUTTI</b> — riporta tutti i record eliminati nelle rispettive pagine di origine.</p>
+          <p><b>5.</b> <b>ELIMINA TUTTI</b> — cancella definitivamente tutti i record dal database.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-arrow-repeat c-accent me-2"></i>Ripristino</div>
+          <p>Il ripristino ricrea il record esattamente com'era prima dell'eliminazione, con tutti i dati originali (codice fiscale, indirizzo, parametri contrattuali, ecc.). Dopo il ripristino, il record torna visibile nella rispettiva pagina di gestione.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-exclamation-triangle c-accent me-2"></i>Note importanti</div>
+          <p><b>Eliminazione definitiva:</b> una volta confermata, non può essere annullata. I dati vengono rimossi permanentemente dal database senza possibilità di recupero.</p>
+          <p>Il ripristino non è possibile se il record originale è già stato eliminato definitivamente. I contratti eliminati possono essere ripristinati solo se il datore e il lavoratore associati esistono ancora.</p>
+        </div>
       </div>
     </div>
   </div>

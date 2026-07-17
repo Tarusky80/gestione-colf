@@ -331,25 +331,33 @@
 
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — About
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Informazioni sul software</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Pagina informativa con i dettagli del software: versione installata, tecnologia utilizzata, librerie e framework. Utile per verificare la versione corrente e le dipendenze del sistema.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Informazioni visualizzate</b><br>
-        <b>Nome e versione</b> — nome del programma e versione corrente configurata nelle Impostazioni.<br>
-        <b>Tecnologie</b> — stack tecnologico: Django 6.0, ReportLab, SQLite, Playwright, Selenium, ecc.<br>
-        <b>Dipendenze Python</b> — elenco completo dei pacchetti Python utilizzati dal gestionale.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
-        La versione del programma può essere modificata dalla pagina <b>Impostazioni</b>. Le dipendenze elencate sono quelle installate nell'ambiente Python corrente.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>La pagina <b>About</b> fornisce informazioni dettagliate sul software: versione installata, stack tecnologico, librerie e framework utilizzati. È il punto di riferimento per verificare la configurazione dell'ambiente e controllare la disponibilità di aggiornamenti dei pacchetti Python.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Informazioni visualizzate</div>
+          <p><b>Nome e versione</b> — nome del programma e versione corrente configurata nella pagina <b>Impostazioni</b>. Vengono letti dalle opzioni globali del gestionale.</p>
+          <p><b>Tecnologie</b> — elenco dello stack tecnologico con icone: Python 3.13, Django, SQLite, ReportLab, xhtml2pdf, Chart.js, Bootstrap 5, TinyMCE 7, Playwright, Selenium, OpenPyXL, APScheduler, Pillow, requests, pypdf, cryptography, bleach, django-import-export, chromedriver-autoinstaller.</p>
+          <p><b>Crediti</b> — sviluppatore e admin del sistema.</p>
+          <p><b>Dipendenze Python</b> — elenco completo dei pacchetti installati nell'ambiente virtuale con relative versioni.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-cloud-arrow-up c-accent me-2"></i>Verifica aggiornamenti</div>
+          <p>Il pannello <b>Verifica aggiornamenti</b> controlla su PyPI se sono disponibili versioni più recenti dei pacchetti Python installati. I risultati mostrano: pacchetto, versione installata, versione disponibile su PyPI e stato (✅ aggiornato, 🔄 aggiornabile, ❌ errore).</p>
+          <p>Clicca <b>"Aggiorna requirements.txt"</b> per aggiornare il file con le ultime versioni disponibili. Dopo l'aggiornamento, riavvia il gestionale tramite <code>GESTIONE.bat</code> per installare gli aggiornamenti.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>La versione del programma visualizzata può essere modificata dalla pagina <b>Impostazioni</b> del gestionale. Le versioni delle dipendenze elencate corrispondono ai pacchetti effettivamente installati nell'ambiente Python corrente. La verifica aggiornamenti richiede una connessione internet attiva per interrogare PyPI.</p>
+        </div>
       </div>
     </div>
   </div>

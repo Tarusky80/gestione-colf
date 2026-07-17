@@ -258,16 +258,33 @@ function svuotaFiltri() {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — {{ titolo|default:"Progetti Regionali" }}</h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — {{ titolo|default:"Progetti Regionali" }}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="color:#8A8F98;font-size:13px;line-height:1.6;">
-        <p>Gestione dei progetti regionali associati ai contratti.</p>
-        <p>Clicca su una riga per modificare il progetto. Usa i filtri avanzati per cercare per tipo, date e budget.</p>
-        <p class="mb-0">Il pulsante <strong>"Nuovo"</strong> permette di creare un nuovo progetto regionale.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina gestisce i progetti regionali associati ai contratti di lavoro. Ogni progetto definisce beneficiario, tipo, date di validità, budget annuale e mensile, e viene agganciato a uno o più contratti.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Clicca su una riga per modificare il progetto regionale.<br>
+          <b>2.</b> Usa il pulsante <b>Nuovo</b> per creare un nuovo progetto.<br>
+          <b>3.</b> La barra di ricerca filtra per beneficiario o tipo progetto.<br>
+          <b>4.</b> Clicca <b>Filtri avanzati</b> per filtrare per tipo, date e budget mensile con slider a doppia manopola.<br>
+          <b>5.</b> Usa <b>Export XLSX</b> per scaricare i dati in formato Excel.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-upload c-accent me-2"></i>Importazione</div>
+          <p>Il pulsante <b>Importa</b> permette di caricare progetti regionali da file XLSX. I dati vengono validati automaticamente prima dell'inserimento.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-calculator c-accent me-2"></i>Budget</div>
+          <p>Ogni progetto ha un <b>budget annuale</b> e un <b>budget mensile</b>. Questi valori determinano il massimale di spesa per i contratti collegati. La colonna budget mostra questi importi in euro.</p>
+        </div>
       </div>
     </div>
   </div>

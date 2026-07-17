@@ -228,40 +228,32 @@
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Conviventi CCNL</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Qui si calcola la busta paga per collaboratori domestici <b>conviventi</b> (che vivono con il datore) usando i <b>minimi tabellari mensili del CCNL</b>, non il budget dei progetti regionali.<br><br>
-<b>Differenza rispetto alla Busta Standard:</b> la pagina "Busta Paga Standard" usa il budget dei progetti regionali (quanto la Regione paga per quel lavoratore). Qui invece si usano i <b>minimi previsti dal CCNL</b> per ogni livello (A, AS, B, BS, C, CS, D, DS). Questa pagina è utile quando il lavoratore convivente viene pagato secondo il minimo del contratto collettivo, indipendentemente dal budget dei progetti.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-<b>1.</b> Scegli un contratto dal menu.<br>
-<b>2.</b> Seleziona il <b>tipo orario</b>: FT (full-time, 54 ore/settimana) o PT (part-time, 30 ore/settimana). Il sistema carica automaticamente il minimo tabellare corrispondente al livello del contratto.<br>
-<b>3.</b> Regola le opzioni: ratei, indennità, scatti, vitto/alloggio.<br>
-<b>4.</b> Leggi la busta paga.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Minimi Tabellari CCNL — Livelli e Orari</b><br>
-Il CCNL Lavoro Domestico prevede <b>8 livelli</b> (A, AS, B, BS, C, CS, D, DS). Ogni livello ha due minimi mensili:<br>
-— <b>Full-time (FT):</b> 54 ore settimanali (circa 234 ore/mese).<br>
-— <b>Part-time (PT):</b> 30 ore settimanali (circa 130 ore/mese).<br><br>
-Il calcolo parte dal <b>minimo tabellare</b> del livello + <b>indennità di funzione</b> (se spetta) + <b>vitto e alloggio forfettario</b>.<br><br>
-Il sistema calcola poi la <b>paga oraria</b> dividendo il minimo mensile per le ore del contratto, e su questa base applica ratei e contributi.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Vitto e Alloggio — Indennità Sostitutiva</b><br>
-Per il lavoratore convivente, il datore deve fornire vitto e alloggio. Se invece dà un'indennità in denaro, i valori giornalieri sono:<br>
-— <b>Pranzo:</b> €2,33 al giorno.<br>
-— <b>Cena:</b> €2,33 al giorno.<br>
-— <b>Alloggio:</b> €2,00 al giorno.<br><br>
-I giorni di convivenza sono di default 26 (lun-sab). Se il datore fornisce vitto/alloggio direttamente (in natura), disabilita i toggle perché l'indennità non va pagata.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ratei, Indennità e Scatti</b><br>
-Vedi la spiegazione nella modale "Busta Paga Standard" per i dettagli su TFR, 13ª, Ferie, Festivi, indennità e scatti di anzianità — le regole sono le stesse.</p>
-
-<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Contributi INPS</b><br>
-Come per le altre pagine, i contributi si calcolano sulle ore INPS (ore mensili arrotondate per eccesso). L'aliquota dipende dalla fascia oraria settimanale (sopra/sotto 24h). Si aggiunge la quota cassa/ente bilaterale.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina per il calcolo della busta paga di collaboratori domestici <b>conviventi</b> basata sui <b>minimi tabellari mensili del CCNL</b> (livelli A, AS, B, BS, C, CS, D, DS). A differenza della "Busta Paga Standard" che usa il budget dei progetti regionali, qui si parte dal minimo contrattuale indipendentemente dal budget dei progetti.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Scegli un contratto dal menu.<br>
+          <b>2.</b> Seleziona il <b>tipo orario</b>: <b>FT</b> (full-time, 54 h/sett) o <b>PT</b> (part-time, 30 h/sett). Il sistema carica il minimo tabellare del livello.<br>
+          <b>3.</b> Regola le opzioni: ratei, indennità, scatti di anzianità, vitto/alloggio.<br>
+          <b>4.</b> Leggi la busta paga completa.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Parametri</div>
+          <p><b>Minimi tabellari:</b> 8 livelli contrattuali con due valori: FT (54 h/sett, ~234 h/mese) e PT (30 h/sett, ~130 h/mese). La paga oraria si ottiene dividendo il minimo mensile per le ore del contratto.<br>
+          <b>Vitto e alloggio:</b> pranzo €2,33/gg, cena €2,33/gg, alloggio €2,00/gg. Default 26 giorni (lun-sab). Disabilita i toggle se il datore fornisce vitto/alloggio in natura.<br>
+          <b>Ratei:</b> TFR, 13ª, Ferie, Festivi configurabili come <span class="badge-bool-si">Inclusi</span>, <span class="badge-bool-no">Accantonati</span> o <span class="badge-bool-no">Disabilitati</span>.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Scorciatoie</div>
+          <p><code>Ctrl+S</code> — salva la busta paga &middot; <code>Ctrl+P</code> — stampa il PDF &middot; <code>F1</code> — apre questo aiuto &middot; <code>Ctrl+Enter</code> — invia il form</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Il pulsante <b>SALVA BUSTA</b> archivia il calcolo come record permanente. Puoi sovrascrivere una busta già salvata per lo stesso periodo. Dall'<b>Archivio Buste</b> puoi consultare, filtrare e cambiare lo stato (bozza/approvata/archiviata) dei record salvati.</p>
+        </div>
       </div>
     </div>
   </div>

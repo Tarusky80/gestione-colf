@@ -399,17 +399,39 @@ function salvaBusteSelezionate() {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
-      <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title c-text fs-15 fw-7"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Buste Paga Massive</h5>
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Buste Paga Massive</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body c-muted fs-13" style="line-height:1.6;">
-        <p>Genera e invia buste paga per pi&ugrave; contratti contemporaneamente.</p>
-        <p>Seleziona mese e anno, scegli i contratti spuntandoli e clicca su <strong>"Genera selezionati"</strong>.</p>
-        <p>Puoi anche allegare un modello email prima dell'invio.</p>
-        <p class="mb-0">Lo <strong>Storico invii</strong> tiene traccia di tutte le email inviate.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina permette di generare, salvare e inviare buste paga per più contratti contemporaneamente. È particolarmente utile a fine mese quando devi elaborare un grande volume di buste paga in un'unica sessione di lavoro.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Seleziona il <b>mese</b> e l'<b>anno</b> di riferimento per le buste paga da generare.</p>
+          <p><b>2.</b> Scegli il <b>tipo di calcolo</b> (STANDARD, CONVIVENTE, NON_CONVIVENTE, CONVIVENTI_CCNL, INVERSO, NOTTURNO, MALATTIA, SOSTITUZIONE, TFR).</p>
+          <p><b>3.</b> Spunta i contratti desiderati nella tabella, oppure usa <b>"Seleziona tutti"</b> per selezionarli in blocco.</p>
+          <p><b>4.</b> Scegli una delle azioni disponibili descritte qui sotto.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-file-pdf c-accent me-2"></i>Azioni disponibili</div>
+          <p><b>Solo PDF</b> — genera i PDF delle buste paga per i contratti selezionati senza inviarli via email.</p>
+          <p><b>Genera ZIP</b> — crea un archivio ZIP contenente tutti i PDF generati, scaricabile in un unico click.</p>
+          <p><b>Genera e invia</b> — genera i PDF e li invia via email utilizzando il modello selezionato. Se <b>Thunderbird (con allegato)</b> è attivo, apre il client Thunderbird con il PDF già allegato.</p>
+          <p><b>SALVA BUSTE SELEZIONATE</b> — salva le buste nell'archivio buste paga, rendendole visibili nella pagina Archivio Buste. Non genera PDF né invia email.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-envelope c-accent me-2"></i>Modello Email</div>
+          <p>Seleziona un <b>modello email</b> dal menu a tendina per personalizzare il testo delle comunicazioni. I modelli vengono configurati nella sezione apposita del gestionale. L'opzione <b>Thunderbird</b> apre il client di posta desktop con il PDF allegato; in alternativa viene generato un link <b>mailto</b>.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-clock-history c-accent me-2"></i>Storico invii</div>
+          <p>Il pulsante <b>"Storico invii"</b> in alto a destra apre la cronologia di tutte le spedizioni massive effettuate, con dettaglio di contratti elaborati, errori e PDF generati.</p>
+        </div>
       </div>
     </div>
   </div>

@@ -155,54 +155,33 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Busta Malattia</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Qui puoi calcolare la <b>retribuzione per malattia</b> del collaboratore domestico secondo il CCNL. Quando il lavoratore si ammala, il datore di lavoro deve continuare a pagargli la retribuzione per un certo numero di giorni.<br><br>
-<b>Importante:</b> a differenza di altri settori, per il lavoro domestico la malattia è <b>interamente a carico del datore di lavoro</b> — non c'è rimborso INPS. Il datore paga direttamente il lavoratore.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-<b>1.</b> Scegli un contratto. Il sistema mostra subito l'anzianità del lavoratore e il suo plafond malattia (quanti giorni massimi può prendere in un anno).<br>
-<b>2.</b> Usa lo <b>slider Giorni di Malattia</b> (0â€“180) o digita il numero nel campo accanto.<br>
-<b>3.</b> Eventualmente attiva i toggle:<br>
-&nbsp;&nbsp;— <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
-&nbsp;&nbsp;— <b>Ricaduta:</b> se è la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
-&nbsp;&nbsp;— <b>Ricoverato:</b> se il lavoratore è ricoverato, spetta l'indennità sostitutiva vitto/alloggio.<br>
-<b>4.</b> Leggi il risultato: vedrai l'importo per i primi 3 giorni (50%) e dal 4° giorno (100%), più eventuale indennità vitto/alloggio.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si calcola la retribuzione giornaliera</b><br>
-La <b>retribuzione giornaliera</b> si calcola così:<br>
-<code>paga_oraria × ore_mensili ÷ 26</code><br>
-Si divide per 26 (i giorni lavorativi convenzionali del mese, dal lunedì al sabato).<br><br>
-<b>Esempio:</b> paga €6,00/h × 120 h/mese ÷ 26 = €27,69 al giorno.<br><br>
-Se il toggle Sostituzione è attivo, al posto della paga base si usa la <b>retribuzione oraria di sostituzione</b> (Tabella G), che è più alta.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Carenza — 50% e 100%</b><br>
-Il CCNL prevede che i primi 3 giorni di malattia consecutivi vengano pagati al <b>50%</b> della retribuzione globale di fatto. Dal 4° giorno in poi si passa al <b>100%</b>.<br><br>
-<b>Come funziona nella pratica:</b><br>
-— Giorni 1, 2, 3: 50% della retribuzione giornaliera.<br>
-— Giorni 4, 5, ... fino al massimo: 100%.<br>
-— Il calcolo include tutti i giorni del certificato medico, comprese domeniche e festivi.<br>
-— Ogni nuovo certificato medico ricomincia con i primi 3 giorni al 50%.<br><br>
-<b>Ricaduta:</b> se il lavoratore si riammala della <b>stessa malattia</b> entro poco tempo, si considera "ricaduta" e la carenza al 50% NON si applica — il pagamento è al 100% fin dal primo giorno. Attiva il toggle "Ricaduta" in questo caso.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Plafond Massimo — Quanti giorni si possono prendere</b><br>
-Il numero massimo di giorni di malattia retribuiti in un anno dipende dall'<b>anzianità di servizio</b> del lavoratore:<br><br>
-— Fino a <b>6 mesi</b> di anzianità: massimo <b>8 giorni</b> retribuiti (conservazione del posto: 10 giorni).<br>
-— Da <b>6 a 24 mesi</b> di anzianità: massimo <b>12 giorni</b> (conservazione: 45 giorni).<br>
-— <b>Oltre 24 mesi</b> di anzianità: massimo <b>15 giorni</b> (conservazione: 180 giorni).<br><br>
-Il sistema mostra il <b>plafond residuo</b> (giorni già usati nell'anno, giorni ancora disponibili). Se il plafond è esaurito, il datore non deve più pagare la malattia (ma il posto è conservato per i giorni di conservazione).</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Ricoverato — Indennità Vitto e Alloggio</b><br>
-Se il lavoratore è <b>convivente</b> e viene <b>ricoverato</b> in ospedale, il datore non deve più fornire vitto e alloggio (perché il lavoratore non è in casa). Tuttavia, spetta al lavoratore un'indennità sostitutiva per i giorni di ricovero: pranzo (€2,33) + cena (€2,33) + alloggio (€2,00) = €6,66 al giorno.<br><br>
-Attiva il toggle "Ricoverato" per includere questa indennità nel calcolo.</p>
-
-<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Contributi INPS sulla Malattia</b><br>
-I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo di malattia. Il sistema calcola le ore retribuite come: giorni_pagati × ore_giornaliere. Su queste ore applica l'aliquota contributiva totale.<br><br>
-<b>Nota Art. 26 CCNL:</b> In caso di malattia il lavoratore deve avvertire tempestivamente il datore, farsi rilasciare il certificato medico entro il giorno successivo, e consegnarlo (a mezzo raccomandata se non convivente) entro 2 giorni. La conservazione del posto è garantita per i periodi sopra indicati. Durante il periodo di prova o il preavviso, la malattia sospende la decorrenza degli stessi.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina per il calcolo della <b>retribuzione per malattia</b> del collaboratore domestico secondo il CCNL. La malattia nel lavoro domestico &egrave; <b>interamente a carico del datore di lavoro</b> (nessun rimborso INPS). Il calcolo si basa sulla retribuzione giornaliera, con i primi 3 giorni al 50% e dal 4&deg; giorno al 100%.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Scegli un contratto. Il sistema mostra l'anzianit&agrave; e il plafond malattia residuo.<br>
+          <b>2.</b> Usa lo slider <b>Giorni di Malattia</b> (0&ndash;180) o digita il numero.<br>
+          <b>3.</b> Attiva eventuali toggle: <b>Sostituzione</b> (paga maggiorata Tabella G), <b>Ricaduta</b> (nessuna carenza al 50%), <b>Ricoverato</b> (indennit&agrave; vitto/alloggio).<br>
+          <b>4.</b> Leggi il risultato: importo primi 3 giorni (50%) e dal 4&deg; giorno (100%).</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Parametri</div>
+          <p><b>Retribuzione giornaliera:</b> <code>paga_oraria &times; ore_mensili &divide; 26</code> (giorni lavorativi convenzionali).<br>
+          <b>Carenza:</b> giorni 1&ndash;3 al 50%, dal 4&deg; giorno al 100%. La ricaduta (stessa malattia) elimina la carenza.<br>
+          <b>Plafond:</b> fino a 6 mesi = max 8 giorni; 6&ndash;24 mesi = max 12 giorni; oltre 24 mesi = max 15 giorni.<br>
+          <b>Ricoverato:</b> indennit&agrave; sostitutiva vitto/alloggio &euro;6,66/gg (pranzo &euro;2,33 + cena &euro;2,33 + alloggio &euro;2,00).</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Scorciatoie</div>
+          <p><code>Ctrl+S</code> &mdash; salva la busta paga &middot; <code>Ctrl+P</code> &mdash; stampa il PDF &middot; <code>F1</code> &mdash; apre questo aiuto &middot; <code>Ctrl+Enter</code> &mdash; invia il form</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo di malattia. Il pulsante <b>SALVA BUSTA</b> archivia il calcolo come record permanente nell'archivio buste paga.</p>
+        </div>
       </div>
     </div>
   </div>

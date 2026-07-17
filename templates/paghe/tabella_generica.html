@@ -183,30 +183,35 @@ document.addEventListener('DOMContentLoaded', filteraTabella);
 </script>
 {% include 'paghe/_import_xlsx_modal.html' with tipo='progetti-regionali' modal_suffix='progetti' %}
 
-<!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — {{ titolo|default:"Tabella" }}
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — {{ titolo|default:"Tabella" }}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Pagina di gestione della tabella <b>{{ titolo|default:"generica" }}</b>. Da qui puoi visualizzare, cercare, aggiungere, modificare e duplicare gli elementi.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare l'elenco in tempo reale.<br>
-        <b>2.</b> Se presente, usa il menu a tendina <b>Anno</b> per filtrare per anno.<br>
-        <b>3.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina.<br>
-        <b>4.</b> <b>Nuovo</b> — aggiunge un nuovo elemento tramite pannello laterale.<br>
-        <b>5.</b> <b>Export XLSX</b> (se disponibile) — scarica l'elenco in Excel.<br>
-        <b>6.</b> <b>Importa</b> (se disponibile) — carica dati da file XLSX.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Ordinamento</b><br>
-        Clicca sulle intestazioni delle colonne per ordinare la tabella in ordine crescente o decrescente.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina di gestione della tabella <b>{{ titolo|default:"generica" }}</b>. Da qui puoi visualizzare, cercare, aggiungere, modificare e duplicare gli elementi dell'archivio.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-list-check c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Usa il <b>campo di ricerca</b> per filtrare l'elenco in tempo reale su tutte le colonne.</p>
+          <p><b>2.</b> Se presente, usa il filtro <b>Anno</b> per restringere per anno di riferimento.</p>
+          <p><b>3.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina.</p>
+          <p><b>4.</b> Clicca <b>Nuovo</b> per aggiungere un nuovo elemento tramite pannello laterale.</p>
+          <p><b>5.</b> <b>Export XLSX</b> (se disponibile) scarica l'elenco in formato Excel.</p>
+          <p><b>6.</b> <b>Importa</b> (se disponibile) carica dati da file XLSX.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-sort-up c-accent me-2"></i>Ordinamento</div>
+          <p>Clicca sulle intestazioni delle colonne per ordinare la tabella in ordine crescente o decrescente. L'icona a fianco del nome della colonna indica la direzione di ordinamento attiva.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Campi</div>
+          <p>I dati sono visualizzati in base al tipo: importi in euro con formato <code>€ 1.234,56</code>, date in formato <code>GG/MM/AAAA</code>, valori booleani con icone <i class="bi bi-check-circle-fill text-success"></i> / <i class="bi bi-x-circle-fill text-secondary"></i>. I livelli e i tipi progetto sono evidenziati con badge colorati.</p>
+        </div>
       </div>
     </div>
   </div>

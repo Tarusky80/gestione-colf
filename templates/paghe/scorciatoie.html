@@ -116,30 +116,35 @@
 })();
 </script>
 
-<!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Scorciatoie Tastiera
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Scorciatoie Tastiera</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Qui puoi assegnare un <b>tasto rapido</b> a ogni voce del menu laterale. Premendo quel tasto da qualsiasi pagina, la voce di menu viene attivata automaticamente.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Clicca nel campo <b>Tasto</b> corrispondente alla voce che vuoi configurare.<br>
-        <b>2.</b> Premi un tasto sulla tastiera (lettera o numero). Il valore viene automaticamente convertito in maiuscolo.<br>
-        <b>3.</b> Clicca <b>Salva</b> per memorizzare le associazioni.<br>
-        <b>4.</b> Da qualsiasi pagina, premi il tasto configurato per attivare la voce di menu corrispondente.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Note</b><br>
-        Le scorciatoie funzionano solo quando non sei concentrato su un campo input (textarea, select, input). I tasti già assegnati vengono mostrati nella colonna Tasto. Puoi cambiare o eliminare l'assegnazione in qualsiasi momento.</p>
-        <p style="margin-top:14px;margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Nuovo: combinazioni Ctrl+</b><br>
-        Ora puoi usare combinazioni <b>Ctrl+[tasto]</b>. Tieni premuto Ctrl e premi un tasto: il campo mostrerà automaticamente "Ctrl+X". Le combinazioni Ctrl+ funzionano anche quando sei concentrato su un input.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina ti permette di assegnare un <b>tasto rapido</b> a ogni voce del menu laterale. Premendo quel tasto da qualsiasi pagina, la voce di menu corrispondente viene attivata automaticamente, permettendoti di navigare più velocemente.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-keyboard c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Clicca nel campo <b>Tasto</b> corrispondente alla voce che vuoi configurare.</p>
+          <p><b>2.</b> Premi un tasto sulla tastiera (lettera, numero o combinazione <code>Ctrl+Lettera</code>). Il valore viene convertito automaticamente in maiuscolo.</p>
+          <p><b>3.</b> Spunta la colonna <b>Attiva</b> per abilitare la scorciatoia.</p>
+          <p><b>4.</b> Clicca <b>Salva tutte le modifiche</b> per memorizzare le associazioni.</p>
+          <p><b>5.</b> Da qualsiasi pagina, premi il tasto configurato per attivare la voce di menu.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-lightning c-accent me-2"></i>Scorciatoie globali</div>
+          <p>Sono disponibili anche scorciatoie globali predefinite, sempre attive:</p>
+          <p><code>Ctrl+S</code> — Salva il modulo corrente<br><code>Ctrl+P</code> — Stampa la pagina<br><code>Ctrl+Invio</code> — Invia il modulo<br><code>F1</code> — Apri la guida contestuale<br><code>/</code> — Attiva la ricerca globale<br><code>?</code> — Mostra l'elenco delle scorciatoie</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-exclamation-triangle c-accent me-2"></i>Note</div>
+          <p>Le scorciatoie personalizzate funzionano solo quando il focus <b>non</b> è su un campo input, textarea o select. Le combinazioni <code>Ctrl+</code> funzionano invece anche quando sei concentrato su un input. I tasti duplicati vengono evidenziati in rosso. Puoi modificare o cancellare l'assegnazione in qualsiasi momento.</p>
+        </div>
       </div>
     </div>
   </div>

@@ -58,31 +58,37 @@
     </div>
 </div>
 
-<!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Stampe e Invii
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Stampe e Invii</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Da qui puoi generare, stampare e inviare documenti in blocco per uno o più contratti. Seleziona i contratti, scegli il tipo di documento, imposta il periodo e clicca su una delle azioni disponibili.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Azioni disponibili</b><br>
-        <b>Genera PDF</b> — genera i PDF e li salva nella cartella documenti di ogni contratto.<br>
-        <b>Genera ZIP</b> — genera e impacchetta tutti i PDF in un unico archivio ZIP da scaricare.<br>
-        <b>Genera e Stampa</b> — genera un PDF unico e lo apre direttamente nella finestra di stampa del browser.<br>
-        <b>Genera e Invia</b> — genera i PDF e prepara l'invio via email (tramite Thunderbird o link mailto).</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Tipi di documento</b><br>
-        Il tipo di documento determina il contenuto del PDF. Puoi scegliere tra vari formati preconfigurati (buste paga, riepiloghi, ecc.). Per alcuni tipi puoi selezionare un <b>template personalizzato</b> dal menu a tendina.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Periodo e compositore</b><br>
-        Per i documenti che richiedono un periodo, imposta mese e anno di riferimento. Il <b>compositore</b> ti permette di organizzare l'ordine dei documenti nel PDF finale tramite drag & drop.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Da qui puoi generare, stampare e inviare documenti in blocco per uno o più contratti. Seleziona i contratti, scegli il tipo di documento, imposta il periodo e clicca su una delle azioni disponibili.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-list-check c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Seleziona i contratti tramite le checkbox nella tabella (usa <b>Seleziona tutti</b> per l'intera pagina).<br>
+          <b>2.</b> Scegli il <b>Tipo documento</b> dalle categorie disponibili.<br>
+          <b>3.</b> Se richiesto, imposta il <b>Periodo</b> di riferimento (mese singolo, range, trimestre).<br>
+          <b>4.</b> Clicca su una delle azioni: <b>Genera PDF</b>, <b>Genera ZIP</b>, <b>Genera e Stampa</b> o <b>Genera e Invia</b>.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-layers c-accent me-2"></i>Composizione multipla</div>
+          <p>La sezione <b>Documento Personalizzato</b> permette di creare un PDF unico composto da più tipi documento. Usa il compositore per aggiungere elementi, riordinarli con drag & drop e salvare il modello per usi futuri. Ogni elemento può avere il proprio periodo e template.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-envelope c-accent me-2"></i>Invio email</div>
+          <p>Se selezioni un <b>Modello Email</b>, il sistema prepara l'invio dei PDF tramite il client email predefinito. Puoi visualizzare l'anteprima del modello prima di procedere.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-funnel c-accent me-2"></i>Filtri</div>
+          <p>Usa la barra di ricerca e i <b>Filtri avanzati</b> per restringere i contratti per livello, comune, progetto regionale, stato, date e fasce di budget/ore.</p>
+        </div>
       </div>
     </div>
   </div>

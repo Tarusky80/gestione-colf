@@ -225,26 +225,28 @@ function anteprimaModello(pk) {
 </script>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content modal-linear">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title c-text fs-15 fw-7">
-          <i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Modelli Documentali
-        </h5>
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Modelli Documentali</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body c-muted fs-13" style="line-height:1.6;padding:18px;">
-        <p class="mb-14"><b class="c-text fs-14">Cos'è</b><br>
-        I Modelli Documentali sono template riutilizzabili per generare contratti, buste paga, CU e altri documenti. Ogni modello può contenere <b>variabili dinamiche</b> che vengono sostituite con i dati reali al momento dell'uso.</p>
-
-        <p class="mb-14"><b class="c-text fs-14">Come si usa</b><br>
-        <b>1.</b> Nella pagina principale seleziona un <b>tipo di documento</b> (contratto, busta paga, CU…) per vedere i modelli disponibili.<br>
-        <b>2.</b> Ogni card mostra il modello con codice, titolo, anteprima e data modifica.<br>
-        <b>3.</b> Usa i pulsanti su ogni card per <b>modificare</b>, <b>duplicare</b> o <b>eliminare</b> un modello.<br>
-        <b>4.</b> Clicca <b>"Nuovo"</b> in alto a destra per creare un nuovo modello per il tipo corrente.</p>
-
-        <p class="mb-0"><b class="c-text fs-14">Buste paga personalizzate</b><br>
-        Per usare un modello come template busta paga, crea un modello di tipo <strong>BUSTA_PAGA</strong>, poi in un contratto seleziona <em>Busta template</em> → il modello creato. Genera la busta da <em>Calcoli</em> per vedere il layout personalizzato.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>I <b>Modelli Documentali</b> sono template riutilizzabili per generare contratti, buste paga, CU e altri documenti. Ogni modello può contenere <b>variabili dinamiche</b> (es. <code>{{datore.nome}}</code>) che vengono sostituite con i dati reali al momento dell'uso.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Seleziona un <b>tipo di documento</b> (contratto, busta paga, CU…) per vedere i modelli disponibili.<br>
+          <b>2.</b> Ogni card mostra il modello con codice, titolo, anteprima e data modifica.<br>
+          <b>3.</b> Usa i pulsanti su ogni card per <b>modificare</b>, <b>duplicare</b> o <b>eliminare</b> un modello.<br>
+          <b>4.</b> Clicca <b>"Nuovo"</b> in alto a destra per creare un nuovo modello per il tipo corrente.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Buste paga personalizzate</div>
+          <p>Per usare un modello come template busta paga, crea un modello di tipo <strong>BUSTA_PAGA</strong>, poi in un contratto seleziona <em>Busta template</em> → il modello creato. Genera la busta da <em>Calcoli</em> per vedere il layout personalizzato.</p>
+        </div>
       </div>
     </div>
   </div>

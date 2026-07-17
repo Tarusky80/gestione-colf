@@ -354,44 +354,34 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body card-body">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Il <b>Calcolo Inverso</b> funziona al contrario delle altre pagine: invece di inserire le ore e vedere quanto viene in busta, tu inserisci <b>UN SOLO valore</b> (ore, lordo, netto o budget) e il sistema calcola automaticamente <b>TUTTI</b> gli altri parametri della busta paga.<br><br>
-<b>Esempi pratici:</b><br>
-— "Quante ore servono per avere un netto di €800?" → inserisci 800 nel campo Netto.<br>
-— "Con un budget di €600, quanto prende il lavoratore?" → inserisci 600 nel campo Budget.<br>
-— "Se lavoro 150 ore al mese, quanto è il netto?" → inserisci 150 nel campo Ore.<br>
-— "Voglio un lordo di €900, quante ore servono?" → inserisci 900 in Lordo.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa — passo passo</b><br>
-<b>1.</b> Scegli un contratto dal menu a tendina. Il sistema carica i dati base (paga oraria, livello, eventuali progetti).<br>
-<b>2.</b> Clicca su <b>UNO</b> dei campi editabili per attivarlo (il campo si illumina):<br>
-&nbsp;&nbsp;— <b>Ore mensili:</b> inserisci le ore che vuoi calcolare.<br>
-&nbsp;&nbsp;— <b>Ore settimanali:</b> alternativa, inserisci le ore a settimana (il sistema calcola le ore mensili).<br>
-&nbsp;&nbsp;— <b>Lordo obiettivo:</b> quanto vuoi che sia il lordo totale.<br>
-&nbsp;&nbsp;— <b>Netto obiettivo:</b> quanto vuoi che il lavoratore riceva in tasca.<br>
-&nbsp;&nbsp;— <b>Budget:</b> quanto budget vuoi usare (se il contratto ha progetti).<br><br>
-<b>3.</b> Inserisci il valore. Gli altri campi si aggiornano automaticamente.<br>
-<b>4.</b> Regola i toggle (ratei, indennità, scatti, vitto/alloggio) per vedere come cambia il risultato.<br>
-<b>5.</b> Leggi il risultato: vedrai la busta paga completa con tutti i parametri calcolati.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Quale campo scegliere?</b><br>
-— <b>Ore mensili / Ore settimanali:</b> se sai quante ore farà lavorare il collaboratore e vuoi sapere quanto costerà (lordo, netto, contributi).<br>
-— <b>Lordo obiettivo:</b> se hai un importo lordo massimo da non superare (es. "non voglio superare €800 di lordo").<br>
-— <b>Netto obiettivo:</b> se il lavoratore chiede un netto specifico (es. "voglio €600 netti"). Il sistema calcola quante ore servono e quanto sarà il costo totale.<br>
-— <b>Budget:</b> se hai un budget fisso da un progetto e vuoi sapere quante ore puoi pagare.<br><br>
-<b>Importante:</b> puoi attivare solo UN campo alla volta. Se cambi campo, il precedente viene disattivato.</p>
-
-<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Regole e Vincoli</b><br>
-Il calcolo inverso rispetta tutte le regole del CCNL:<br>
-— Contributi INPS calcolati sulle ore INPS arrotondate.<br>
-— Prorating sul budget (se attivo) — se il budget non basta, il sistema scala proporzionalmente.<br>
-— Aliquote contributive corrette per fascia oraria (sopra/sotto 24h).<br>
-— Ratei, indennità e scatti applicati secondo le regole contrattuali.<br><br>
-Il risultato include anche l'<b>offset visivo</b> che nasconde i dati sensibili se attivi l'apposito toggle.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Il <b>Calcolo Inverso</b> funziona al contrario delle altre pagine: inserisci un solo valore (ore, lordo, netto o budget) e il sistema calcola automaticamente tutti gli altri parametri della busta paga. Esempio: "Quante ore servono per un netto di €800?" → inserisci 800 nel campo Netto.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Scegli un contratto. Il sistema carica i dati base (paga oraria, livello, progetti).<br>
+          <b>2.</b> Clicca su <b>UNO</b> dei campi editabili per attivarlo (si illumina): Ore mensili, Ore settimanali, Lordo obiettivo, Netto obiettivo o Budget.<br>
+          <b>3.</b> Inserisci il valore. Gli altri campi si aggiornano automaticamente.<br>
+          <b>4.</b> Regola i toggle (ratei, indennità, scatti, vitto/alloggio) per vedere come cambia il risultato.<br>
+          <b>5.</b> Leggi la busta paga completa.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Parametri</div>
+          <p><b>Ore mensili / settimanali:</b> se sai le ore e vuoi sapere il costo.<br>
+          <b>Lordo obiettivo:</b> importo lordo massimo da non superare.<br>
+          <b>Netto obiettivo:</b> importo netto desiderato dal lavoratore.<br>
+          <b>Budget:</b> budget fisso da progetto per calcolare le ore possibili.<br>
+          <b>Importante:</b> puoi attivare solo un campo alla volta. Il calcolo rispetta tutte le regole CCNL: contributi INPS su ore arrotondate, prorating sul budget, aliquote per fascia oraria.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Scorciatoie</div>
+          <p><code>Ctrl+S</code> — salva la busta paga &middot; <code>Ctrl+P</code> — stampa il PDF &middot; <code>F1</code> — apre questo aiuto &middot; <code>Ctrl+Enter</code> — invia il form</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Il risultato include l'<b>offset visivo</b> che nasconde i dati sensibili se attivi l'apposito toggle. Il pulsante <b>SALVA BUSTA</b> archivia il calcolo come record permanente. Dall'<b>Archivio Buste</b> puoi consultare, filtrare e cambiare lo stato dei record salvati.</p>
+        </div>
       </div>
     </div>
   </div>

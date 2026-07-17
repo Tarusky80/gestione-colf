@@ -128,33 +128,34 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Beneficiari
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Beneficiari</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Qui trovi l'elenco completo di tutti i <b>beneficiari</b> registrati nel gestionale. I beneficiari sono le persone assistite dal lavoratore, tipicamente anziani o persone non autosufficienti. Ogni riga mostra nome e cognome, codice fiscale, indirizzo, comune, email e telefono.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Vista Lista</b><br>
-        <b>1.</b> <b>Clicca su una riga</b> per aprire il pannello delle azioni rapide: Modifica, Duplica, Elimina, Documenti.<br>
-        <b>2.</b> Usa il <b>campo di ricerca</b> per filtrare in tempo reale per nome o codice fiscale.<br>
-        <b>3.</b> Usa il menu a tendina <b>Comune</b> per filtrare per comune di residenza.<br>
-        <b>4.</b> <b>Export XLSX</b> — scarica l'intero elenco in formato Excel.<br>
-        <b>5.</b> <b>Importa</b> — carica un file XLSX per importare più beneficiari in una volta.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Vista Mappa</b><br>
-        <b>1.</b> Clicca su <b>"Mappa"</b> nella barra in alto per passare alla vista geografica.<br>
-        <b>2.</b> Seleziona un <b>comune</b> dal filtro e clicca <b>"Carica mappa"</b> per visualizzare i beneficiari.<br>
-        <b>3.</b> I marker sono raggruppati: clicca su un gruppo per zoomare, clicca su un marker singolo per vedere nome, indirizzo e un link per aprire la scheda.<br>
-        <b>4.</b> Usa <b>"Chiudi mappa"</b> per tornare alla vista Lista.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Modifica e Duplica</b><br>
-        La modifica apre un pannello laterale (offcanvas) con tutti i campi dell'anagrafica. La duplica crea una copia esatta da modificare. L'eliminazione sposta il record nella pagina "Eliminati" da cui può essere ripristinato.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>I <b>beneficiari</b> sono le persone assistite dal lavoratore domestico — tipicamente anziani, persone non autosufficienti o minori. Ogni beneficiario è collegato a uno o più progetti regionali e contratti. La pagina permette di gestire le anagrafiche, visualizzare la posizione geografica su mappa e importare/esportare dati.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-list-ul c-accent me-2"></i>Vista Lista</div>
+          <p><b>Clicca su una riga</b> per aprire il pannello delle azioni rapide: <b>Modifica</b> (apre l'offcanvas con tutti i campi), <b>Duplica</b> (crea una copia esatta), <b>Elimina</b> (sposta tra gli eliminati, ripristinabile), <b>Documenti</b> (mostra i documenti associati).</p>
+          <p>Usa il <b>campo di ricerca</b> per filtrare in tempo reale per nome o codice fiscale. Usa il menu <b>Comune</b> per filtrare per comune di residenza. Il conteggio in alto si aggiorna automaticamente.</p>
+          <p><b>Export XLSX</b> — scarica l'intero elenco in formato Excel. <b>Importa</b> — carica un file XLSX per importare più beneficiari in una volta.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-geo-alt c-accent me-2"></i>Vista Mappa</div>
+          <p><b>1.</b> Clicca su <b>"Mappa"</b> nella barra in alto per passare alla vista geografica.</p>
+          <p><b>2.</b> Seleziona eventualmente un <b>comune</b> dal filtro e clicca <b>"Carica mappa"</b> per visualizzare i beneficiari su OpenStreetMap.</p>
+          <p><b>3.</b> I marker sono raggruppati con <b>MarkerCluster</b>: clicca su un gruppo per zoomare e vedere i singoli marker. Clicca su un marker per vedere nome, indirizzo e un link per aprire la scheda completa.</p>
+          <p><b>4.</b> Usa <b>"Chiudi mappa"</b> per tornare alla vista Lista.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>L'eliminazione di un beneficiario <b>non</b> lo cancella definitivamente: viene spostato nella pagina "Eliminati" da dove può essere ripristinato. I beneficiari importati via XLSX vengono validati automaticamente; eventuali errori vengono mostrati a schermo.</p>
+        </div>
       </div>
     </div>
   </div>

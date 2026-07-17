@@ -159,26 +159,32 @@ document.addEventListener('DOMContentLoaded', function() { aggiornaConteggio('ce
 
 <!-- Help Modal -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Contratti Cessati
-        </h5>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Contratti Cessati</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-        Elenco dei <b>contratti cessati</b> (non più attivi). I contratti finiscono qui quando vengono chiusi, risolti o terminati. Da questa pagina puoi riattivarli o eliminarli definitivamente.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-        <b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per nome del datore o del lavoratore.<br>
-        <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina, Documenti, Riattiva.<br>
-        <b>3.</b> <b>ELIMINA TUTTI</b> — sposta tutti i contratti nella pagina Eliminati.<br>
-        <b>4.</b> <b>ELIMINA TUTTI DEFINITIVAMENTE</b> — cancella in modo irreversibile.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Riattivazione</b><br>
-        Cliccando <b>Riattiva</b> dal pannello azioni, il contratto torna nello stato ATTIVO e riappare nella pagina Contratti Attivi. Puoi anche modificare la data di cessazione prima di riattivarlo.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Elenco dei <b>contratti cessati</b> (non pi&ugrave; attivi). I contratti finiscono qui quando vengono chiusi, risolti o terminati. Da questa pagina puoi riattivarli o eliminarli definitivamente.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-gear c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Usa il <b>campo di ricerca</b> per filtrare per nome del datore o del lavoratore.<br>
+          <b>2.</b> <b>Clicca su una riga</b> per aprire il pannello azioni: Modifica, Duplica, Elimina, Documenti, Riattiva.<br>
+          <b>3.</b> <b>ELIMINA TUTTI</b> — sposta i contratti nella pagina Eliminati.<br>
+          <b>4.</b> <b>ELIMINA TUTTI DEFINITIVAMENTE</b> — cancella in modo irreversibile.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-arrow-counterclockwise c-accent me-2"></i>Riattivazione</div>
+          <p>Cliccando <b>Riattiva</b> dal pannello azioni, il contratto torna nello stato ATTIVO e riappare nella pagina Contratti Attivi. Puoi anche modificare la data di cessazione prima di riattivarlo.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-exclamation-triangle c-accent me-2"></i>Note</div>
+          <p>L'eliminazione definitiva non pu&ograve; essere annullata. I contratti eliminati temporaneamente sono visibili nella pagina "Eliminati" e possono essere ripristinati.</p>
+        </div>
       </div>
     </div>
   </div>

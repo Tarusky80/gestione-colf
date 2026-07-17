@@ -21510,3 +21510,15 @@ INFO 2026-07-17 12:57:16,158 paghe.apps [Playwright] Controllo pacchetto Python.
 INFO 2026-07-17 12:57:16,159 paghe.apps [Playwright] OK (1.61.0)
 INFO 2026-07-17 12:57:16,159 paghe.apps [Playwright] Controllo browser Chromium...
 INFO 2026-07-17 12:57:16,547 paghe.apps [Scheduler] Fermato con successo.
+INFO 2026-07-17 13:14:21,526 paghe.apps ============================================================
+INFO 2026-07-17 13:14:21,526 paghe.apps   VERIFICA DIPENDENZE E SETUP
+INFO 2026-07-17 13:14:21,527 paghe.apps ============================================================
+INFO 2026-07-17 13:14:21,528 paghe.apps [Setup] Verifica pacchetti Python...
+INFO 2026-07-17 13:14:21,544 paghe.apps [Setup] 0 pacchetti verificati (0 installati)
+INFO 2026-07-17 13:14:21,616 paghe.apps [Scheduler] Backup automatico attivato (ogni giorno alle 03:00)
+INFO 2026-07-17 13:14:21,616 paghe.apps [Scheduler] Notifica scadenze attivata (ogni lunedì alle 08:00)
+INFO 2026-07-17 13:14:21,701 paghe.apps [Setup] Migrazioni OK (nessuna in sospeso)
+INFO 2026-07-17 13:14:21,701 paghe.apps [Playwright] Controllo pacchetto Python...
+INFO 2026-07-17 13:14:21,703 paghe.apps [Playwright] OK (1.61.0)
+INFO 2026-07-17 13:14:21,704 paghe.apps [Playwright] Controllo browser Chromium...
+INFO 2026-07-17 13:14:22,072 paghe.apps [Scheduler] Fermato con successo.

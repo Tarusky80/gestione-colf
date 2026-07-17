@@ -1,42 +1,37 @@
 ﻿<!-- HELP MODAL -->
 <div class="modal fade" id="helpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content card-alt">
-      <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-question-circle me-2" style="color:#5E6AD2;"></i>Aiuto — Crea PAGOPA</h5>
+    <div class="modal-content modal-linear">
+      <div class="modal-header b-card">
+        <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Crea PAGOPA</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Qui puoi creare un <b>Avviso di Pagamento PagoPA</b> (ex MAV) per versare i contributi INPS del trimestre selezionato. Puoi anche avviare l'automazione che compila il bollettino direttamente sul sito INPS.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Come si usa</b><br>
-<b>1.</b> Seleziona un <b>contratto</b> dal menu a tendina. I dati vengono caricati automaticamente.<br>
-<b>2.</b> Scegli il <b>trimestre</b> (TRIMESTRE 1=Gen-Mar, 2=Apr-Giu, 3=Lug-Set, 4=Ott-Dic) e l'<b>anno</b>.<br>
-<b>3.</b> Leggi il <b>riepilogo contributivo</b> che mostra ore, quote associative e contributi INPS calcolati.<br>
-<b>4.</b> Clicca <b>Scarica Riepilogo PDF</b> per salvare il prospetto.<br>
-<b>5.</b> Clicca <b>Avvia INPS</b> per aprire l'automazione nel browser — segui le istruzioni, risolvi il CAPTCHA e premi Ctrl+Invio per proseguire.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">MODIFICA ORE PAGOPA</b><br>
-Questa sezione ti permette di <b>personalizzare le ore trimestrali</b> per il calcolo dei contributi.<br><br>
-— Il campo mostra il valore salvato nel DB (dal modulo contratto).<br>
-— <b>Auto ON:</b> il sistema usa automaticamente le ore modificate nei calcoli.<br>
-— <b>Auto OFF:</b> il sistema usa le ore standard del contratto.<br>
-— <b>CARICA ORE MODIFICATE:</b> forza l'utilizzo del valore scritto nel campo, indipendentemente dal toggle Auto.<br>
-— <b>Ripristina originali:</b> torna al comportamento normale (toggle Auto).<br><br>
-Il valore salvato nel DB si modifica dal <b>modulo contratto</b> in /contratti/, non da questa pagina.</p>
-
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Automazione INPS</b><br>
-L'automazione apre il sito INPS nel browser e compila automaticamente i campi del bollettino PagoPA.<br><br>
-<b>Flusso:</b><br>
-— <b>Avvia INPS:</b> apre Chrome e fa il login sul sito INPS.<br>
-— Risolvi il <b>CAPTCHA</b> manualmente (è richiesto da INPS).<br>
-— Premi <b>Ctrl+Invio</b> nella finestra Chrome per far proseguire l'automazione.<br>
-— L'automazione seleziona il trimestre, compila il bollettino, conferma e salva il PDF.<br><br>
-Il motore di automazione (<b>Playwright</b> o <b>Selenium</b>) si configura in <b>Configurazioni Servizi</b>.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Scarica Riepilogo PDF</b><br>
-Il PDF generato contiene tutti i dati del riepilogo contributivo (ore, contributi, quote). Se hai attivo MODIFICA ORE PAGOPA, nel PDF comparirà una riga arancione <b>âš  Ore modificate</b> con l'indicazione del valore personalizzato.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Questa pagina permette di creare un <b>Avviso di Pagamento PagoPA</b> (ex MAV) per versare i contributi INPS del trimestre selezionato. Integra un motore di automazione (Playwright/Selenium) che compila e invia il bollettino direttamente sul sito INPS, con risoluzione manuale del CAPTCHA.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>1.</b> Seleziona un <b>contratto</b> dal menu a tendina. I dati (datore, lavoratore, parametri retributivi) vengono caricati automaticamente.</p>
+          <p><b>2.</b> Scegli il <b>trimestre</b> (1 = Gen-Mar, 2 = Apr-Giu, 3 = Lug-Set, 4 = Ott-Dic) e l'<b>anno</b>. Il trimestre corrente è preselezionato automaticamente.</p>
+          <p><b>3.</b> Leggi il <b>riepilogo contributivo</b> che mostra: ore trimestrali, paga oraria INPS, quota associativa, aliquota INPS, stima contributi e contributi totali. Clicca <b>"COPIA"</b> sui singoli valori per copiarli negli appunti.</p>
+          <p><b>4.</b> Clicca <b>"Scarica riepilogo PDF"</b> per salvare il prospetto contributivo in formato PDF. Il PDF può essere visualizzato nel pannello laterale.</p>
+          <p><b>5.</b> Clicca <b>"Avvia INPS"</b> per aprire l'automazione: Chrome si avvia, naviga sul sito INPS, inserisce i dati del contratto e si ferma al CAPTCHA. Risolvi il CAPTGRAPH e il sistema prosegue autonomamente fino al salvataggio del bollettino.</p>
+          <p><b>6.</b> Usa <b>"Invia Email"</b> per spedire il riepilogo PagoPA tramite un modello email preconfigurato.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-pencil c-accent me-2"></i>Modifica ore PagoPA</div>
+          <p>Questa sezione permette di personalizzare le ore trimestrali per il calcolo dei contributi. Il campo mostra il valore salvato nel contratto. Con <b>Auto ON</b> il sistema usa automaticamente le ore modificate; con <b>Auto OFF</b> usa le ore standard. <b>"Carica ore modificate"</b> forza l'uso del valore nel campo. <b>"Ripristina originali"</b> torna al calcolo standard.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Automazione INPS</div>
+          <p>Il flusso di automazione apre Chromium (Playwright o Selenium) e segue questi passi: login sul sito INPS, inserimento dati datore e lavoratore, risoluzione CAPTGRAPH (manuale o tramite input inline), compilazione del bollettino trimestrale, conferma e download del PDF PagoPA. La console in pagina mostra in tempo reale ogni operazione eseguita.</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Il motore di automazione si configura in <b>Configurazioni Servizi</b>. Puoi scegliere tra Playwright (consigliato) e Selenium. Le opzioni <b>SFONDO</b> e <b>RIDUCI CHROMIUM</b> modificano la visibilità del browser durante l'automazione. I PDF generati vengono salvati nello storico del contratto e possono essere riaperti in qualsiasi momento.</p>
+        </div>
       </div>
     </div>
   </div>

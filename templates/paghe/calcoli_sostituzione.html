@@ -344,57 +344,31 @@
         <h5 class="modal-title c-15-b"><i class="bi bi-question-circle me-2 c-accent"></i>Aiuto — Sostituzione Malattia</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;line-height:1.6;">
-        <p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Cos'è questa pagina</b><br>
-Qui puoi gestire la <b>Sostituzione per Malattia</b> di un collaboratore domestico. Quando un lavoratore si ammala, puoi:<br>
-<b>1.</b> Calcolare quanto costa la sua malattia.<br>
-<b>2.</b> Trovare o creare un <b>lavoratore sostituto</b> che lo copra.<br>
-<b>3.</b> Calcolare la busta paga del sostituto usando il <b>budget residuo</b> (cioè i soldi che avanzano dal budget dell'assente dopo aver pagato la malattia).<br><br>
-Ãˆ un flusso in <b>3 step</b> guidati — segui le istruzioni in pagina.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 1 — Seleziona il lavoratore assente</b><br>
-Scegli dal menu a tendina il contratto del lavoratore che si ammala. Il sistema carica i dati del contratto (datore, budget mensile, etc.).<br><br>
-Puoi anche selezionare il <b>mese e l'anno</b> di riferimento (di default è il mese corrente). Usa le frecce < e > per navigare tra i mesi.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 2 — Calcola il costo della malattia</b><br>
-Imposta i <b>giorni di malattia</b> con lo slider (0â€“180) o digitando il numero. Poi scegli le opzioni:<br>
-— <b>Sostituzione (Art. 14 c.9):</b> usa la paga oraria maggiorata per sostituzione.<br>
-— <b>Ricaduta:</b> se è la stessa malattia del periodo precedente, la carenza al 50% non si applica.<br>
-— <b>Ricoverato:</b> se il lavoratore è ricoverato, si aggiunge l'indennità vitto/alloggio.<br><br>
-Clicca <b>"Calcola Costo Malattia"</b>. Il sistema mostra:<br>
-— <b>Costo malattia:</b> quanto costa al datore la malattia del lavoratore.<br>
-— <b>Budget assente:</b> il budget mensile del lavoratore malato.<br>
-— <b>Budget residuo:</b> la differenza = budget_assente âˆ’ costo_malattia. Sono i soldi disponibili per pagare il sostituto.<br><br>
-<b>Attenzione:</b> se il costo malattia è uguale o superiore al budget, non ci sono soldi per il sostituto.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Step 3 — Scegli il sostituto e calcola la busta</b><br>
-Hai <b>due modi</b> per trovare un sostituto:<br><br>
-<b>A) Cerca un sostituto esistente:</b><br>
-Clicca "Cerca esistente". Si apre una modale con un campo di ricerca: digita almeno 2 caratteri per cercare tra i contratti attivi (escluso l'assente). Quando trovi il lavoratore giusto, clicca su di esso per selezionarlo.<br><br>
-<b>B) Crea un nuovo sostituto:</b><br>
-Clicca "Nuovo sostituto". Si apre una modale per creare un nuovo lavoratore e un contratto a <b>termine (determinato)</b> apposta per la sostituzione. Compila i campi obbligatori:<br>
-&nbsp;&nbsp;— Nome, Cognome, Codice Fiscale.<br>
-&nbsp;&nbsp;— Livello contrattuale.<br>
-&nbsp;&nbsp;— Ore mensili previste.<br>
-&nbsp;&nbsp;— Data inizio e data fine della sostituzione.<br>
-&nbsp;&nbsp;— Se convivente o meno.<br>
-Clicca "Crea e seleziona". Il sistema crea il lavoratore e il contratto, e lo seleziona automaticamente.<br><br>
-Dopo aver selezionato il sostituto, clicca <b>"Calcola Busta Sostituto"</b>. Il sistema calcola la sua busta paga usando il <b>budget residuo</b> dallo Step 2 (invece del budget originale del contratto).</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">Budget residuo — Come funziona</b><br>
-Il concetto è semplice: se il lavoratore assente aveva un budget mensile di €500 e la sua malattia costa €150, restano €350 per pagare il sostituto.<br><br>
-Il sistema usa questi €350 come <b>budget_override</b> per calcolare la busta del sostituto. Tutto il calcolo (paga base, ratei, contributi, prorating) viene fatto su questo budget residuo.<br><br>
-Se il budget residuo è €0 o negativo, il sistema mostra un errore e non è possibile calcolare la busta del sostituto.</p>
-
-<p style="margin-bottom:14px;"><b style="color:#EDEDED;font-size:14px;">PDF della Busta Sostituto</b><br>
-Dopo aver calcolato la busta del sostituto, puoi scaricare il <b>PDF</b> cliccando il pulsante apposito. Il PDF include tutti i dettagli della busta paga e la nota "calcolata sul budget residuo".</p>
-
-<p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Navigazione e Reset</b><br>
-Puoi tornare alla pagina Malattia cliccando il pulsante "Malattia" (in alto). Usa il pulsante "Reset" per ricominciare da capo. Lo step indicator in alto mostra sempre a che punto sei del flusso.</p>
-
-        <p style="margin-bottom:0;"><b style="color:#EDEDED;font-size:14px;">Salva Busta e Archivio</b><br>
-        <b>SALVA BUSTA</b> — salva il calcolo corrente come record permanente nell'archivio buste paga. Puoi sovrascrivere una busta già salvata per lo stesso periodo cliccando di nuovo.<br>
-        <b>Archivio Buste</b> — consulta tutte le buste paga salvate, filtrale per tipo, datore, lavoratore, mese e anno. Da lì puoi cambiare lo stato (bozza/approvata/archiviata) ed eliminare record.</p>
+      <div class="modal-body card-body">
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Descrizione</div>
+          <p>Pagina per la gestione della <b>Sostituzione per Malattia</b> di un collaboratore domestico. Un flusso in 3 step guidati: calcola il costo della malattia del lavoratore assente, trova o crea un sostituto, e calcola la busta paga del sostituto usando il <b>budget residuo</b> (budget dell'assente meno costo malattia).</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Come usare</div>
+          <p><b>Step 1:</b> Seleziona il contratto del lavoratore assente e il mese/anno di riferimento.<br>
+          <b>Step 2:</b> Imposta i giorni di malattia (0&ndash;180), scegli le opzioni (Sostituzione Art. 14, Ricaduta, Ricoverato) e clicca "Calcola Costo Malattia". Il sistema mostra costo malattia, budget assente e budget residuo.<br>
+          <b>Step 3:</b> Cerca un sostituto esistente (digita 2+ caratteri) o creane uno nuovo (contratto a termine determinato), poi clicca "Calcola Busta Sostituto".</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Parametri</div>
+          <p><b>Budget residuo:</b> budget_assente &minus; costo_malattia. Se &euro;0 o negativo, non &egrave; possibile calcolare la busta del sostituto.<br>
+          <b>Nuovo sostituto:</b> crea un lavoratore con contratto a termine (determinato). Campi obbligatori: nome, cognome, CF, livello, ore mensili, date sostituzione, tipo convivenza.<br>
+          Il PDF della busta sostituto include la nota "calcolata sul budget residuo".</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Scorciatoie</div>
+          <p><code>Ctrl+S</code> &mdash; salva la busta paga &middot; <code>Ctrl+P</code> &mdash; stampa il PDF &middot; <code>F1</code> &mdash; apre questo aiuto &middot; <code>Ctrl+Enter</code> &mdash; invia il form</p>
+        </div>
+        <div class="help-section">
+          <div class="help-section-title"><i class="bi bi-info-circle c-accent me-2"></i>Note</div>
+          <p>Lo <b>step indicator</b> in alto mostra sempre a che punto sei del flusso. Usa "Reset" per ricominciare da capo. Il pulsante <b>SALVA BUSTA</b> archivia il calcolo come record permanente nell'archivio buste paga.</p>
+        </div>
       </div>
     </div>
   </div>
