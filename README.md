@@ -17,7 +17,8 @@ Genera buste paga, CU, TFR, contratti, e automatizza le operazioni INPS e PagoPA
 - **Backup automatico** — schedulato con APScheduler
 - **Mappa beneficiari** — geolocalizzazione su mappa (Leaflet.js + MarkerCluster)
 - **Multi-ruolo** — admin, consulente, operatore, datore di lavoro
-- **Interfaccia** — Bootstrap 5, dark mode, responsive
+- **Interfaccia** — Bootstrap 5, dark mode, responsive + versione mobile nativa (`/m/`)
+- **Versione Mobile** — touch-first, bottom nav animata, pull-to-refresh, swipe-to-action
 
 ## Requisiti
 
@@ -49,16 +50,27 @@ Oppure esegui `GESTIONE.bat` che automatizza tutto (venv, dipendenze, migrate, a
 ## Struttura
 
 ```
-core/              configurazione Django (settings, urls, middleware)
-paghe/             app principale (modelli, viste, test, utility)
-templates/         template HTML (Bootstrap 5)
-static/            file statici (CSS, JS, immagini, font)
-frontend/          risorse frontend (build, assets)
-data/              dati geo (mappa beneficiari)
-logs/              log applicativi
-media/             upload e documenti generati
-drivers/           chromedriver
+core/                configurazione Django (settings, urls, middleware)
+paghe/               app principale (modelli, viste, test, utility)
+templates/           template HTML (Bootstrap 5) + mobile/
+static/              file statici (CSS, JS, immagini, font)
+frontend/            risorse frontend (build, assets)
+data/                dati geo (mappa beneficiari)
+logs/                log applicativi
+media/               upload e documenti generati
+drivers/             chromedriver
 ```
+
+## Versione Mobile
+
+Accessibile automaticamente su schermi <768px o manualmente a `/m/`.
+
+- Dashboard con riepilogo card
+- Datori / Lavoratori / Contratti con ricerca e dettaglio
+- Calcolo busta paga rapido (contratto + mese/anno → Lordo/Contributi/Netto)
+- Archivio buste e documenti con filtri a chips
+- Navigazione bottom nav con pill animata
+- Pull-to-refresh e swipe-to-action
 
 ## Comandi principali
 
