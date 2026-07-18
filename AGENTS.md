@@ -147,10 +147,10 @@
 ## Comandi utili
 ```powershell
 # Avviare il server
-& ".venv\Scripts\python.exe" manage.py runserver
+& "..\.venv_gestione_colf\Scripts\python.exe" manage.py runserver
 
 # Verificare errori Django
-& ".venv\Scripts\python.exe" manage.py check
+& "..\.venv_gestione_colf\Scripts\python.exe" manage.py check
 
 # Backup file prima di modificare
 Copy-Item "file" "file.bak"

@@ -32,9 +32,9 @@ Genera buste paga, CU, TFR, contratti, e automatizza le operazioni INPS e PagoPA
 git clone https://github.com/Tarusky80/gestione-colf.git
 cd gestione-colf
 python -m venv .venv
-.venv\Scripts\pip install -r requirements.txt
-.venv\Scripts\python manage.py migrate
-.venv\Scripts\python manage.py runserver
+..\.venv_gestione_colf\Scripts\pip install -r requirements.txt
+..\.venv_gestione_colf\Scripts\python manage.py migrate
+..\.venv_gestione_colf\Scripts\python manage.py runserver
 ```
 
 Oppure esegui `GESTIONE.bat` che automatizza tutto (venv, dipendenze, migrate, avvio).
@@ -107,7 +107,7 @@ GitHub Actions (`.github/workflows/ci.yml`):
 ```bash
 # ambiente virtuale
 python -m venv .venv
-.venv\Scripts\activate
+..\.venv_gestione_colf\Scripts\activate
 
 # dipendenze
 pip install -r requirements.txt
