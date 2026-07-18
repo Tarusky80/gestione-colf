@@ -1,6 +1,9 @@
 ﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}Dashboard — Gestione Colf{% endblock %}
 {% block m_topbar_title %}Dashboard{% endblock %}
+{% block m_extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+{% endblock %}
 {% block m_content %}
 {% now "d/m/Y" as oggi %}
 {% now "H:i" as ora %}
@@ -42,14 +45,46 @@
 
 {% if contrib_trend %}
 <div class="m-card" style="margin-top:10px;">
-    <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">Ultimi 3 mesi — contributi</div>
-    {% for m in contrib_trend %}
-    <div class="m-detail-row">
-        <span class="label">{{ m.nome }} {{ m.anno }}</span>
-        <span class="value">&euro; {{ m.totale|floatformat:2 }}</span>
+    <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">Trend contributi (12 mesi)</div>
+    <div style="position:relative;width:100%;height:150px;overflow:hidden;">
+        <canvas id="m-trend-chart" width="400" height="150"></canvas>
     </div>
-    {% endfor %}
 </div>
+<script>
+(function(){
+    var canvas = document.getElementById('m-trend-chart');
+    if(!canvas) return;
+    var container = canvas.parentElement;
+    canvas.width = container.clientWidth || 400;
+    new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: [{% for m in contrib_trend %}'{{ m.nome }}{% if m.anno %}{{ m.anno|slice:"2:" }}{% endif %}',{% endfor %}],
+            datasets: [{
+                label: 'Contributi',
+                data: [{% for m in contrib_trend %}{{ m.totale|default:"0" }},{% endfor %}],
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99,102,241,0.1)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 2,
+                pointBackgroundColor: '#6366f1',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            animation: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#71717a', font: { size: 10 } }, grid: { display: false } },
+                y: { ticks: { color: '#71717a', font: { size: 10 }, callback: function(v){ return '€'+v.toFixed(0); } }, grid: { color: '#27272a' } }
+            }
+        }
+    });
+})();
+</script>
 {% endif %}
 
 <div style="text-align:center;margin:16px 0;">

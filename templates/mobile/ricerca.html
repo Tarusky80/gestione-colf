@@ -1,0 +1,136 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Ricerca — Gestione Colf{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon" style="background:var(--accent);"><i class="bi bi-search"></i></span> Ricerca{% endblock %}
+{% block m_content %}
+
+<div class="m-search-wrap">
+    <i class="bi bi-search"></i>
+    <input class="m-search" type="search" placeholder="Cerca datori, lavoratori, contratti..." id="m-ricerca-input" value="{{ q }}" autofocus>
+</div>
+
+<div id="m-ricerca-risultati">
+{% if q %}
+    {% if datori or lavoratori or contratti or beneficiari or progetti %}
+    <div style="margin-bottom:10px;font-size:12px;color:var(--text-muted);">Risultati per "{{ q }}"</div>
+
+    {% if datori %}
+    <div style="font-size:13px;color:var(--text-muted);margin:10px 0 6px;font-weight:600;">Datori</div>
+    {% for d in datori %}
+    <a href="/m/datori/{{ d.pk }}/" class="m-card m-card-top-datore" style="display:block;">
+        <div class="m-list-item">
+            <div><i class="bi bi-building" style="font-size:18px;color:var(--blue);"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title">{{ d.nome_cognome }}</div>
+                <div class="m-list-sub">{{ d.comune|default:"" }}{% if d.codice_fiscale %} · {{ d.codice_fiscale }}{% endif %}</div>
+            </div>
+            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if lavoratori %}
+    <div style="font-size:13px;color:var(--text-muted);margin:10px 0 6px;font-weight:600;">Lavoratori</div>
+    {% for l in lavoratori %}
+    <a href="/m/lavoratori/{{ l.pk }}/" class="m-card m-card-top-lav" style="display:block;">
+        <div class="m-list-item">
+            <div><i class="bi bi-people" style="font-size:18px;color:var(--green);"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title">{{ l.nome_cognome }}</div>
+                <div class="m-list-sub">{{ l.comune|default:"" }}{% if l.codice_fiscale %} · {{ l.codice_fiscale }}{% endif %}</div>
+            </div>
+            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if contratti %}
+    <div style="font-size:13px;color:var(--text-muted);margin:10px 0 6px;font-weight:600;">Contratti</div>
+    {% for c in contratti %}
+    <a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-top-contr" style="display:block;">
+        <div class="m-list-item">
+            <div><i class="bi bi-file-earmark-text" style="font-size:18px;color:var(--pink);"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title">{{ c.lavoratore.nome_cognome }} — {{ c.datore.nome_cognome }}</div>
+                <div class="m-list-sub">{{ c.parametri_minimi.descrizione_corta|default:"" }}</div>
+            </div>
+            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if beneficiari %}
+    <div style="font-size:13px;color:var(--text-muted);margin:10px 0 6px;font-weight:600;">Beneficiari</div>
+    {% for b in beneficiari %}
+    <a href="/m/beneficiari/{{ b.pk }}/" class="m-card m-card-top-benef" style="display:block;">
+        <div class="m-list-item">
+            <div><i class="bi bi-people" style="font-size:18px;color:var(--accent);"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title">{{ b.nome_cognome }}</div>
+                <div class="m-list-sub">{{ b.comune|default:"" }}{% if b.codice_fiscale %} · {{ b.codice_fiscale }}{% endif %}</div>
+            </div>
+            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if progetti %}
+    <div style="font-size:13px;color:var(--text-muted);margin:10px 0 6px;font-weight:600;">Progetti</div>
+    {% for p in progetti %}
+    <a href="/m/progetti/{{ p.pk }}/" class="m-card m-card-top-prog" style="display:block;">
+        <div class="m-list-item">
+            <div><i class="bi bi-diagram-3" style="font-size:18px;color:#14b8a6;"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title">{{ p.beneficiario.nome_cognome }} — {{ p.tipo.nome|default:"?" }}</div>
+                <div class="m-list-sub">{{ p.data_inizio|date:"d/m/Y"|default:"" }}{% if p.data_fine %} → {{ p.data_fine|date:"d/m/Y" }}{% endif %}</div>
+            </div>
+            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+        </div>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% else %}
+    <div class="m-empty">
+        <i class="bi bi-search"></i>
+        <div class="m-empty-title">Nessun risultato</div>
+        <div class="m-empty-sub">Prova con termini diversi</div>
+    </div>
+    {% endif %}
+{% else %}
+<div class="m-empty">
+    <i class="bi bi-search"></i>
+    <div class="m-empty-title">Cerca nel database</div>
+    <div class="m-empty-sub">Trova datori, lavoratori, contratti, beneficiari e progetti</div>
+</div>
+{% endif %}
+</div>
+
+<div class="m-scroll-sentinel" id="scroll-sentinel"></div>
+
+<script>
+/* ── Ricerca live con debounce ── */
+var debounceTimer;
+document.getElementById('m-ricerca-input').addEventListener('input', function(){
+    clearTimeout(debounceTimer);
+    var q = this.value.trim();
+    debounceTimer = setTimeout(function(){
+        if(q.length > 0){
+            location.href = '/m/ricerca/?q=' + encodeURIComponent(q);
+        } else {
+            location.href = '/m/ricerca/';
+        }
+    }, 400);
+});
+/* Triggera subito se c'è già un parametro q */
+var params = new URLSearchParams(location.search);
+if(params.get('q')){
+    document.getElementById('m-ricerca-input').focus();
+    var inp = document.getElementById('m-ricerca-input');
+    inp.setSelectionRange(inp.value.length, inp.value.length);
+}
+</script>
+{% endblock %}

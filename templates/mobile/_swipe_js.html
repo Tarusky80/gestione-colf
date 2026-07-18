@@ -1,4 +1,33 @@
-﻿/* ── Filtro liste mobile ── */
+﻿/* ── Infinite scroll (load more) ── */
+function avviaInfiniteScroll(url, container, offset, step){
+    var loading = false;
+    var sentinel = document.getElementById('scroll-sentinel');
+    if(!sentinel) return;
+    var obs = new IntersectionObserver(function(entries){
+        if(loading) return;
+        if(entries[0].isIntersecting){
+            loading = true;
+            var sep = url.indexOf('?') > -1 ? '&' : '?';
+            fetch(url + sep + 'offset=' + offset + '&limit=' + step)
+                .then(function(r){ return r.json(); })
+                .then(function(d){
+                    if(!d.items || d.items.length === 0){ obs.disconnect(); return; }
+                    d.items.forEach(function(item){
+                        var el = document.createElement('div');
+                        el.innerHTML = item.html;
+                        container.appendChild(el.firstElementChild);
+                    });
+                    offset += d.items.length;
+                    loading = false;
+                    if(!d.has_more) obs.disconnect();
+                })
+                .catch(function(){ loading = false; });
+        }
+    }, { rootMargin: '200px' });
+    if(sentinel) obs.observe(sentinel);
+}
+
+/* ── Filtro liste mobile ── */
 function filterMobileList(q){
     document.querySelectorAll('#mobile-list .m-swipe-wrap').forEach(function(w){
         w.style.display=w.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';

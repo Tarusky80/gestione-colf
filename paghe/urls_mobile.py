@@ -3,6 +3,15 @@ from paghe import views
 
 urlpatterns = [
     path('', views.mobile_dashboard, name='mobile_dashboard'),
+    # Create (must be before detail routes)
+    path('nuovo/', views.mobile_entity_create, name='mobile_entity_create'),
+    # Modify
+    path('datori/<str:pk>/modifica/', views.mobile_entity_edit, {'tipo': 'datore'}, name='mobile_datore_edit'),
+    path('lavoratori/<str:pk>/modifica/', views.mobile_entity_edit, {'tipo': 'lav'}, name='mobile_lav_edit'),
+    path('beneficiari/<str:pk>/modifica/', views.mobile_entity_edit, {'tipo': 'benef'}, name='mobile_benef_edit'),
+    path('progetti/<int:pk>/modifica/', views.mobile_entity_edit, {'tipo': 'progetto'}, name='mobile_progetto_edit'),
+    path('contratti/<int:pk>/modifica/', views.mobile_entity_edit, {'tipo': 'contratto'}, name='mobile_contratto_edit'),
+    # Lists & detail
     path('datori/', views.mobile_datori_list, name='mobile_datori_list'),
     path('datori/<str:identifier>/', views.mobile_datore_detail, name='mobile_datore_detail'),
     path('lavoratori/', views.mobile_lavoratori_list, name='mobile_lavoratori_list'),
@@ -16,5 +25,7 @@ urlpatterns = [
     path('beneficiari/<str:pk>/', views.mobile_beneficiario_detail, name='mobile_beneficiario_detail'),
     path('progetti/', views.mobile_progetti_list, name='mobile_progetti_list'),
     path('progetti/<int:pk>/', views.mobile_progetto_detail, name='mobile_progetto_detail'),
+    path('ricerca/', views.mobile_ricerca, name='mobile_ricerca'),
+    path('altri-calcoli/', views.mobile_altri_calcoli, name='mobile_altri_calcoli'),
     path('about/', views.mobile_about, name='mobile_about'),
 ]
