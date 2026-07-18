@@ -45,32 +45,33 @@ echo  ^|  %PY_VER%
 echo.
 
 color 09
-:: --- Ambiente virtuale ---
+:: --- Ambiente virtuale (NAS-safe) ---
 :venv
-if not exist ".venv\Scripts\python.exe" goto venv_recreate
-echo [..] Verifica ambiente virtuale...
-.venv\Scripts\python.exe --version >nul 2>&1
-if not errorlevel 1 (
-    echo  ^|  Ambiente virtuale pronto
-    goto venv_done
+set VENV_DIR=..\.venv_gestione_colf
+if not exist "%VENV_DIR%\Scripts\python.exe" (
+    echo [..] Ambiente virtuale non trovato.
+    echo [..] Esecuzione setup_venv.bat...
+    call setup_venv.bat
+    if errorlevel 1 (
+        echo [ERR] Setup ambiente virtuale fallito.
+        pause
+        exit /b
+    )
 )
-:venv_recreate
-echo [..] Ricreazione ambiente virtuale (obsoleto o danneggiato)...
-rd /s /q ".venv" 2>nul
-py -3.14 -m venv .venv
+echo [..] Verifica ambiente virtuale...
+"%VENV_DIR%\Scripts\python.exe" --version >nul 2>&1
 if errorlevel 1 (
-    echo [ERR] Creazione ambiente virtuale fallita.
+    echo [ERR] Ambiente virtuale danneggiato. Esegui setup_venv.bat manualmente.
     pause
     exit /b
 )
-echo  ^|  Ambiente virtuale ricreato
-:venv_done
+echo  ^|  Ambiente virtuale pronto
 echo.
 
 :: --- Pip ---
 :pip
 echo [..] Aggiornamento pip...
-.venv\Scripts\python.exe -m pip install --upgrade pip --quiet
+"%VENV_DIR%\Scripts\python.exe" -m pip install --upgrade pip --quiet
 if errorlevel 1 (
     echo [WARN] Aggiornamento pip fallito, continuo...
 )
@@ -81,10 +82,10 @@ color 0A
 :: --- Dipendenze ---
 :deps
 echo [..] Installazione dipendenze...
-.venv\Scripts\python.exe -m pip install -r requirements.txt --upgrade --quiet
+"%VENV_DIR%\Scripts\python.exe" -m pip install -r requirements.txt --upgrade --quiet
 if errorlevel 1 (
     echo [..] Riprovo installazione dipendenze...
-    .venv\Scripts\python.exe -m pip install -r requirements.txt --upgrade
+    "%VENV_DIR%\Scripts\python.exe" -m pip install -r requirements.txt --upgrade
     if errorlevel 1 (
         echo [ERR] Installazione dipendenze fallita.
         pause
@@ -99,10 +100,10 @@ color 0B
 :migrate
 echo [DATABASE]
 echo [..] Migrazioni database...
-.venv\Scripts\python.exe manage.py migrate --noinput
+"%VENV_DIR%\Scripts\python.exe" manage.py migrate --noinput
 if errorlevel 1 (
     echo [WARN] Migrazioni fallite, riprovo...
-    .venv\Scripts\python.exe manage.py migrate --noinput
+    "%VENV_DIR%\Scripts\python.exe" manage.py migrate --noinput
     if errorlevel 1 (
         echo [ERR] Migrazioni database fallite.
         pause
@@ -117,16 +118,16 @@ color 0C
 :playwright
 echo [PLAYWRIGHT]
 echo [..] Verifica browser Playwright...
-.venv\Scripts\python.exe -c "import playwright; print('OK')" >nul 2>&1
+"%VENV_DIR%\Scripts\python.exe" -c "import playwright; print('OK')" >nul 2>&1
 if not errorlevel 1 (
     echo  ^|  Browser Playwright gia' installato
     goto playwright_done
 )
 echo [..] Installazione browser Playwright...
-.venv\Scripts\python.exe -m playwright install chromium
+"%VENV_DIR%\Scripts\python.exe" -m playwright install chromium
 if errorlevel 1 (
     echo [WARN] Installazione Playwright fallita (riprova manualmente)
-    echo        .venv\Scripts\python.exe -m playwright install chromium
+    echo        "%VENV_DIR%\Scripts\python.exe" -m playwright install chromium
 ) else (
     echo  ^|  Browser Playwright installato
 )
@@ -160,7 +161,7 @@ if not errorlevel 1 (
 )
 color 0A
 echo [..] Avvio server in corso...
-start /min "GESTIONE COLF" .venv\Scripts\python.exe manage.py runserver
+start /min "GESTIONE COLF" "%VENV_DIR%\Scripts\python.exe" manage.py runserver
 timeout /t 3 /nobreak >nul
 echo  ^|  Server avviato su http://127.0.0.1:8000/
 start http://127.0.0.1:8000/dashboard/
