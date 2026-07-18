@@ -349,7 +349,7 @@ def dashboard(request):
 
 
 def _contributi_mensili_trend():
-    from datetime import date, timedelta
+    from datetime import date
     from django.db.models import Sum
     from paghe.models import BustaPaga
     oggi = date.today()

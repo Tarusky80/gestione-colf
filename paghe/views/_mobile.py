@@ -1,5 +1,4 @@
 from paghe.views._common_imports import *
-from django.views.decorators.http import require_GET
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +109,6 @@ def mobile_documenti(request):
     tipo = request.GET.get('tipo')
     if tipo:
         docs = docs.filter(tipo=tipo)
-    oggi = date.today()
     return render(request, 'mobile/documenti_list.html', {
         'm_nav': 'docs',
         'documenti': docs.order_by('-creato_il')[:50],

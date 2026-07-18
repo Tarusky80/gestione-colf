@@ -271,8 +271,7 @@ def ajax_genera_riepilogo_pdf(request):
         if data.get('incl_cena') is not None: conv['cena'] = data['incl_cena'] == '1'
         if data.get('incl_alloggio') is not None: conv['alloggio'] = data['incl_alloggio'] == '1'
         if data.get('giorni_conv') is not None:
-            try: conv['giorni'] = int(data['giorni_conv'])
-            except: pass
+            with contextlib.suppress(ValueError): conv['giorni'] = int(data['giorni_conv'])
         convivenza_items = conv
 
     # Costruisci toggles
@@ -295,7 +294,7 @@ def ajax_genera_riepilogo_pdf(request):
     from reportlab.lib.units import mm
     from reportlab.lib.colors import HexColor
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+    from reportlab.lib.enums import TA_CENTER
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
     import io
 
@@ -307,10 +306,6 @@ def ajax_genera_riepilogo_pdf(request):
     style_title = ParagraphStyle('Titolo', parent=styles['Normal'], fontSize=16, leading=20, spaceAfter=6, alignment=TA_CENTER, textColor=HexColor('#2c5282'), fontName='Helvetica-Bold')
     style_sub = ParagraphStyle('Sottotitolo', parent=styles['Normal'], fontSize=8, leading=10, spaceAfter=14, alignment=TA_CENTER, textColor=HexColor('#666666'))
     style_h = ParagraphStyle('Header', parent=styles['Normal'], fontSize=9, leading=12, spaceAfter=4, textColor=HexColor('#333333'), fontName='Helvetica-Bold')
-    style_val = ParagraphStyle('Value', parent=styles['Normal'], fontSize=9, leading=12, textColor=HexColor('#111111'))
-    style_label = ParagraphStyle('Label', parent=styles['Normal'], fontSize=9, leading=12, textColor=HexColor('#666666'))
-    style_total = ParagraphStyle('Total', parent=styles['Normal'], fontSize=11, leading=14, textColor=HexColor('#2c5282'), fontName='Helvetica-Bold')
-    style_netto = ParagraphStyle('Netto', parent=styles['Normal'], fontSize=14, leading=18, textColor=HexColor('#2c5282'), fontName='Helvetica-Bold')
     style_footer = ParagraphStyle('Footer', parent=styles['Normal'], fontSize=7, leading=9, textColor=HexColor('#999999'), alignment=TA_CENTER)
 
     elements = []
@@ -434,7 +429,6 @@ def ajax_genera_riepilogo_pdf(request):
     pdf = buf.getvalue()
 
     # Salva su disco e crea DocumentoArchiviato
-    nome_file = f"riepilogo_{contratto.lavoratore.nome_cognome.replace(' ','_')}_{mese:02d}_{anno}.pdf"
     cartella = _get_cartella_documenti(contratto)
     timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
     safe_name = contratto.lavoratore.nome_cognome.replace(' ', '_').replace('/', '_')
