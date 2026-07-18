@@ -14,7 +14,7 @@
 
 <h3 style="font-size:14px;margin:14px 0 8px;color:#8A8F98;">Progetti</h3>
 {% for prog in progetti %}
-<div class="m-card m-card-top-prog">
+<a href="/m/progetti/{{ prog.pk }}/" class="m-card m-card-top-prog">
     <div class="m-list-item">
         <div><i class="bi bi-diagram-3" style="font-size:20px;color:#10b981;"></i></div>
         <div style="flex:1;min-width:0;">
@@ -25,9 +25,9 @@
                 {% if prog.budget_mensile %} &middot; € {{ prog.budget_mensile|floatformat:2 }}/mese{% endif %}
             </div>
         </div>
-        <a href="/m/progetti/{{ prog.pk }}/" style="padding:6px 10px;color:var(--text-dim);"><i class="bi bi-chevron-right"></i></a>
+        <span style="padding:6px 10px;color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
     </div>
-</div>
+</a>
 {% empty %}
 <div class="m-empty"><i class="bi bi-diagram-3"></i>Nessun progetto</div>
 {% endfor %}
