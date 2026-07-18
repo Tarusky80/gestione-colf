@@ -41,11 +41,6 @@
 <div class="m-scroll-sentinel" id="scroll-sentinel"></div>
 <a class="m-fab" href="/tabelle/progetti-regionali/?new=1" title="Nuovo progetto"><i class="bi bi-plus"></i></a>
 <script>
-function filterMobileList(q){
-    document.querySelectorAll('#mobile-list .m-swipe-wrap').forEach(function(w){
-        w.style.display=w.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
-    });
-}
 {% include "mobile/_swipe_js.html" %}
 </script>
 {% endblock %}

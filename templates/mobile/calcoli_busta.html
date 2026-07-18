@@ -16,14 +16,14 @@
     <label style="font-size:12px;color:#8A8F98;margin:10px 0 4px;display:block;">Mese</label>
     <div class="m-chips" id="m-chips-mese">
         {% for m in mesi_range %}
-        <span class="m-chip {% if m == mese_corrente %}active{% endif %}" data-val="{{ m }}">{{ m }}</span>
+        <span class="m-chip {% if m == mese %}active{% endif %}" data-val="{{ m }}">{{ m }}</span>
         {% endfor %}
     </div>
 
     <label style="font-size:12px;color:#8A8F98;margin:4px 0 4px;display:block;">Anno</label>
     <div class="m-chips" id="m-chips-anno">
         {% for a in anni_range %}
-        <span class="m-chip {% if a == anno_corrente %}active{% endif %}" data-val="{{ a }}">{{ a }}</span>
+        <span class="m-chip {% if a == anno %}active{% endif %}" data-val="{{ a }}">{{ a }}</span>
         {% endfor %}
     </div>
 
@@ -112,8 +112,8 @@ async function calcolaBustaMobile(e){
         document.getElementById('m-busta-skeleton').style.display='none';
         if(d.errore){ throw new Error(d.errore); }
         var fmt = function(v) { var n = parseFloat(v) || 0; return '&euro; ' + n.toFixed(2).replace('.',','); };
-        document.getElementById('m-r-datore').textContent = d.datore || (d.contratto ? d.contratto.datore : '') || '&mdash;';
-        document.getElementById('m-r-lavoratore').textContent = d.lavoratore || (d.contratto ? d.contratto.lavoratore : '') || '&mdash;';
+        document.getElementById('m-r-datore').innerHTML = d.datore || (d.contratto ? d.contratto.datore : '') || '&mdash;';
+        document.getElementById('m-r-lavoratore').innerHTML = d.lavoratore || (d.contratto ? d.contratto.lavoratore : '') || '&mdash;';
         document.getElementById('m-r-lordo').innerHTML = fmt(d.totale_lordo);
         document.getElementById('m-r-contributi').innerHTML = fmt(d.contributi && d.contributi.totale ? d.contributi.totale : 0);
         var conv = (d.trattenute && d.trattenute.convivenza && parseFloat(d.trattenute.convivenza.totale)) || 0;

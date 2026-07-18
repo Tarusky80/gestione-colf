@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#141416">
 <title>{% block m_title %}Gestione Colf{% endblock %}</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="/static/css/mobile.css">
@@ -61,6 +62,18 @@
 </nav>
 
 <script>
+/* ── Toast mobile ── */
+function mostraToastMobile(msg, tipo){
+    tipo = tipo || 'info';
+    var t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:72px;left:50%;transform:translateX(-50%);z-index:999;background:#1a1a1e;color:#fafafa;padding:8px 16px;border-radius:8px;font-size:13px;border:1px solid #27272a;box-shadow:0 4px 12px rgba(0,0,0,0.4);max-width:80%;text-align:center;transition:opacity 0.3s;';
+    if(tipo === 'error'){ t.style.borderColor = '#ef4444'; t.style.color = '#f87171'; }
+    if(tipo === 'success'){ t.style.borderColor = '#22c55e'; t.style.color = '#4ade80'; }
+    document.body.appendChild(t);
+    setTimeout(function(){ t.style.opacity = '0'; setTimeout(function(){ t.remove(); }, 300); }, 2000);
+}
+
 /* ── Pill animata ── */
 (function(){
     var pill = document.getElementById('m-nav-pill');

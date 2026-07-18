@@ -1,4 +1,12 @@
-﻿(function(){
+﻿/* ── Filtro liste mobile ── */
+function filterMobileList(q){
+    document.querySelectorAll('#mobile-list .m-swipe-wrap').forEach(function(w){
+        w.style.display=w.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+    });
+}
+
+/* ── Swipe-to-action ── */
+(function(){
     var startX = 0, currentX = 0, swiping = null;
     document.addEventListener('touchstart', function(e){
         var wrap = e.target.closest('.m-swipe-wrap');

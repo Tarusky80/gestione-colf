@@ -105,35 +105,21 @@ function condividiPDF(pk, nome){
     }
 }
 
-/* ── Dettaglio busta (sheet modale) ── */
+/* ── Dettaglio busta (sheet modale) — estrae dati dalla card ── */
 function apriDettaglioBusta(el, pk){
     var card = el.closest('.m-swipe-card') || el;
-    var rows = card.querySelectorAll('.m-detail-row');
-    if(rows.length > 0){
-        // Dati giÃ  nella card
-        var body = document.getElementById('busta-detail-body');
-        body.innerHTML = '<div class="m-detail-row"><span class="label">Datore</span><span class="value">'+es(card.querySelectorAll('[style*="flex"]')[0]?.textContent||'')+'</span></div>'+
-            '<div class="m-detail-row"><span class="label">Lavoratore</span><span class="value">'+es(card.querySelector('.m-list-title')?.textContent||'')+'</span></div>'+
-            '<div class="m-detail-row"><span class="label">Mese/Anno</span><span class="value">'+es(card.querySelector('[style*="font-size:12px;color"]')?.textContent||'')+'</span></div>'+
-            '<div class="m-detail-row"><span class="label">Lordo</span><span class="value">'+es(card.querySelector('strong:first-child')?.textContent||'')+'</span></div>'+
-            '<div class="m-detail-row total"><span>Netto</span><span>'+es(card.querySelector('strong:last-child')?.textContent||'')+'</span></div>';
-        document.getElementById('busta-modal').classList.add('show');
-    } else {
-        // Carica via API
-        fetch('/ajax/calcola-busta/'+pk+'/')
-            .then(function(r){ return r.json(); })
-            .then(function(d){
-                var h = '';
-                if(d.datore_nome) h += '<div class="m-detail-row"><span class="label">Datore</span><span class="value">'+es(d.datore_nome)+'</span></div>';
-                if(d.lavoratore_nome) h += '<div class="m-detail-row"><span class="label">Lavoratore</span><span class="value">'+es(d.lavoratore_nome)+'</span></div>';
-                h += '<div class="m-detail-row"><span class="label">Lordo</span><span class="value">&euro; '+es(d.totale_lordo)+'</span></div>';
-                h += '<div class="m-detail-row"><span class="label">Contributi INPS</span><span class="value">&euro; '+es(d.totale_contributi)+'</span></div>';
-                h += '<div class="m-detail-row"><span class="label">Trattenute</span><span class="value">&euro; '+(parseFloat(d.convivenza_totale||0)+parseFloat(d.totale_accantonati||0)).toFixed(2)+'</span></div>';
-                h += '<div class="m-detail-row total"><span>Netto</span><span>&euro; '+es(d.netto)+'</span></div>';
-                document.getElementById('busta-detail-body').innerHTML = h;
-                document.getElementById('busta-modal').classList.add('show');
-            });
-    }
+    var cells = card.querySelectorAll('div[style*="font-size:12px;color"]');
+    var body = document.getElementById('busta-detail-body');
+    var h = '';
+    if(cells.length > 0) h += '<div class="m-detail-row"><span class="label">Datore</span><span class="value">'+es(cells[0].textContent)+'</span></div>';
+    var titolo = card.querySelector('.m-list-title');
+    if(titolo) h += '<div class="m-detail-row"><span class="label">Lavoratore</span><span class="value">'+es(titolo.textContent)+'</span></div>';
+    if(cells.length > 1) h += '<div class="m-detail-row"><span class="label">Periodo</span><span class="value">'+es(cells[1].textContent)+'</span></div>';
+    var forti = card.querySelectorAll('strong');
+    if(forti.length > 0) h += '<div class="m-detail-row"><span class="label">Lordo</span><span class="value">'+es(forti[0].textContent)+'</span></div>';
+    if(forti.length > 1) h += '<div class="m-detail-row total"><span>Netto</span><span>'+es(forti[1].textContent)+'</span></div>';
+    body.innerHTML = h;
+    document.getElementById('busta-modal').classList.add('show');
 }
 function chiudiDettaglioBusta(){
     document.getElementById('busta-modal').classList.remove('show');
