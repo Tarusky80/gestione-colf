@@ -1,7 +1,12 @@
-{% extends 'mobile/base_mobile.html' %}{% load static %}
+﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}Archivio Buste — Gestione Colf{% endblock %}
-{% block m_topbar_title %}Archivio Buste{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-busta"><i class="bi bi-calculator"></i></span> Archivio Buste{% endblock %}
 {% block m_content %}
+
+<div class="m-search-wrap">
+    <i class="bi bi-search"></i>
+    <input class="m-search" type="search" placeholder="Cerca per nominativo..." oninput="filterBuste(this.value)" id="m-search-input">
+</div>
 
 <div class="m-chips" id="m-chips-mese">
     <span class="m-chip {% if not request.GET.mese %}active{% endif %}" data-val="">Tutti</span>
@@ -21,33 +26,48 @@
     <div class="m-swipe-actions">
         {% if b.documento %}
         <button class="m-swipe-btn m-swipe-btn-success" onclick="apriPDF({{ b.documento.pk }})"><i class="bi bi-file-pdf" style="font-size:18px;"></i></button>
+        <button class="m-swipe-btn m-swipe-btn-warning" onclick="condividiPDF({{ b.documento.pk }}, '{{ b.contratto.lavoratore.nome_cognome|escapejs }}')"><i class="bi bi-share" style="font-size:18px;"></i></button>
         {% endif %}
     </div>
-    <div class="m-swipe-card m-card m-card-busta" href="#">
+    <div class="m-swipe-card m-card m-card-top-busta" href="#" onclick="apriDettaglioBusta(this, {{ b.pk }})">
         <div style="display:flex;justify-content:space-between;align-items:start;">
             <div style="flex:1;min-width:0;">
                 <div style="font-size:12px;color:#8A8F98;">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
                 <div class="m-list-title" style="margin:2px 0;">{{ b.contratto.lavoratore.nome_cognome|default:"?" }}</div>
-                <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }} · {{ b.tipo_calcolo }}</div>
+                <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }} &middot; {{ b.tipo_calcolo|default:"Standard" }}</div>
             </div>
-            <span class="m-badge {% if b.stato == 'APPROVATA' %}m-badge-green{% elif b.stato == 'ARCHIVIATA' %}m-badge-gray{% else %}m-badge-gray{% endif %}">{{ b.stato }}</span>
+            <span class="m-badge {% if b.stato == 'APPROVATA' %}m-badge-green{% else %}m-badge-gray{% endif %}">{{ b.stato }}</span>
         </div>
         <div style="display:flex;gap:12px;margin-top:8px;font-size:13px;">
-            <span>Lordo: <strong>€ {{ b.totale_lordo }}</strong></span>
-            <span>Netto: <strong>€ {{ b.netto }}</strong></span>
+            <span>Lordo: <strong>&euro; {{ b.totale_lordo }}</strong></span>
+            <span>Netto: <strong>&euro; {{ b.netto }}</strong></span>
         </div>
     </div>
 </div>
 {% empty %}
-<div class="m-empty"><i class="bi bi-calculator"></i>Nessuna busta trovata</div>
+<div class="m-empty">
+    <i class="bi bi-calculator"></i>
+    <div class="m-empty-title">Nessuna busta trovata</div>
+    <div class="m-empty-sub">Prova a cambiare i filtri o calcola una nuova busta</div>
+</div>
 {% endfor %}
 </div>
+<div class="m-scroll-sentinel" id="scroll-sentinel"></div>
 
-<a class="m-btn m-btn-outline" href="/m/buste/" style="margin-top:10px;">← Nuovo calcolo</a>
-<a class="m-btn m-btn-outline" href="/buste/archivio/">Versione desktop →</a>
+<a class="m-btn m-btn-outline" href="/m/buste/" style="margin-top:10px;">&larr; Nuovo calcolo</a>
+<a class="m-btn m-btn-outline" href="/buste/archivio/">Versione desktop &rarr;</a>
+
+<!-- Dettaglio busta modal -->
+<div class="m-modal-overlay" id="busta-modal" onclick="if(event.target===this)chiudiDettaglioBusta()">
+    <div class="m-modal-sheet">
+        <div class="m-modal-handle"></div>
+        <div class="m-modal-title">Dettaglio busta paga</div>
+        <div id="busta-detail-body"></div>
+    </div>
+</div>
 
 <script>
-/* ── Chips filter ── */
+/* ── Filtri chips ── */
 document.querySelectorAll('.m-chips').forEach(function(chips){
     chips.addEventListener('click', function(e){
         var chip = e.target.closest('.m-chip');
@@ -65,40 +85,61 @@ function filtraBuste(){
     if(a) params.set('anno', a);
     location.href = '/m/buste/archivio/?' + params.toString();
 }
+
+/* ── Filtro testo ── */
+function filterBuste(q){
+    document.querySelectorAll('#mobile-list .m-swipe-wrap').forEach(function(w){
+        w.style.display=w.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+    });
+}
+
+/* ── PDF / Share ── */
 function apriPDF(pk){
     window.open('/documenti/?focus='+pk, '_blank');
 }
+function condividiPDF(pk, nome){
+    if(navigator.share){
+        navigator.share({ title: 'Busta paga '+nome, url: '/documenti/?focus='+pk });
+    } else {
+        apriPDF(pk);
+    }
+}
 
-/* ── Swipe-to-action ── */
-(function(){
-    var startX = 0, currentX = 0, swiping = null;
-    document.addEventListener('touchstart', function(e){
-        var wrap = e.target.closest('.m-swipe-wrap');
-        if(!wrap) return;
-        var card = wrap.querySelector('.m-swipe-card');
-        if(!card) return;
-        startX = e.touches[0].clientX;
-        swiping = { wrap: wrap, card: card, dx: 0 };
-    }, {passive:true});
-    document.addEventListener('touchmove', function(e){
-        if(!swiping) return;
-        currentX = e.touches[0].clientX;
-        swiping.dx = currentX - startX;
-        if(swiping.dx < -20){
-            swiping.card.style.transform = 'translateX('+Math.max(swiping.dx, -120)+'px)';
-        } else if(swiping.dx > 20){
-            swiping.card.style.transform = 'translateX(0px)';
-        }
-    }, {passive:true});
-    document.addEventListener('touchend', function(){
-        if(!swiping) return;
-        if(swiping.dx < -60){
-            swiping.card.style.transform = 'translateX(-120px)';
-        } else {
-            swiping.card.style.transform = 'translateX(0)';
-        }
-        swiping = null;
-    }, {passive:true});
-})();
+/* ── Dettaglio busta (sheet modale) ── */
+function apriDettaglioBusta(el, pk){
+    var card = el.closest('.m-swipe-card') || el;
+    var rows = card.querySelectorAll('.m-detail-row');
+    if(rows.length > 0){
+        // Dati giÃ  nella card
+        var body = document.getElementById('busta-detail-body');
+        body.innerHTML = '<div class="m-detail-row"><span class="label">Datore</span><span class="value">'+es(card.querySelectorAll('[style*="flex"]')[0]?.textContent||'')+'</span></div>'+
+            '<div class="m-detail-row"><span class="label">Lavoratore</span><span class="value">'+es(card.querySelector('.m-list-title')?.textContent||'')+'</span></div>'+
+            '<div class="m-detail-row"><span class="label">Mese/Anno</span><span class="value">'+es(card.querySelector('[style*="font-size:12px;color"]')?.textContent||'')+'</span></div>'+
+            '<div class="m-detail-row"><span class="label">Lordo</span><span class="value">'+es(card.querySelector('strong:first-child')?.textContent||'')+'</span></div>'+
+            '<div class="m-detail-row total"><span>Netto</span><span>'+es(card.querySelector('strong:last-child')?.textContent||'')+'</span></div>';
+        document.getElementById('busta-modal').classList.add('show');
+    } else {
+        // Carica via API
+        fetch('/ajax/calcola-busta/'+pk+'/')
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+                var h = '';
+                if(d.datore_nome) h += '<div class="m-detail-row"><span class="label">Datore</span><span class="value">'+es(d.datore_nome)+'</span></div>';
+                if(d.lavoratore_nome) h += '<div class="m-detail-row"><span class="label">Lavoratore</span><span class="value">'+es(d.lavoratore_nome)+'</span></div>';
+                h += '<div class="m-detail-row"><span class="label">Lordo</span><span class="value">&euro; '+es(d.totale_lordo)+'</span></div>';
+                h += '<div class="m-detail-row"><span class="label">Contributi INPS</span><span class="value">&euro; '+es(d.totale_contributi)+'</span></div>';
+                h += '<div class="m-detail-row"><span class="label">Trattenute</span><span class="value">&euro; '+(parseFloat(d.convivenza_totale||0)+parseFloat(d.totale_accantonati||0)).toFixed(2)+'</span></div>';
+                h += '<div class="m-detail-row total"><span>Netto</span><span>&euro; '+es(d.netto)+'</span></div>';
+                document.getElementById('busta-detail-body').innerHTML = h;
+                document.getElementById('busta-modal').classList.add('show');
+            });
+    }
+}
+function chiudiDettaglioBusta(){
+    document.getElementById('busta-modal').classList.remove('show');
+}
+function es(s){ return (s||'—').trim(); }
+
+{% include "mobile/_swipe_js.html" %}
 </script>
 {% endblock %}

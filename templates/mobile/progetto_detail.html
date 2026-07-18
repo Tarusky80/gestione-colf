@@ -1,0 +1,33 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}{{ p.beneficiario.nome_cognome }} — Gestione Colf{% endblock %}
+{% block m_topbar_left %}<a href="/m/progetti/" class="m-topbar-back"><i class="bi bi-chevron-left"></i></a>{% endblock %}
+{% block m_topbar_title %}Progetto{% endblock %}
+{% block m_content %}
+<div class="m-card m-card-top-prog">
+    <div class="m-detail-row"><span class="label">Beneficiario</span><span class="value">{{ p.beneficiario.nome_cognome|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Tipo</span><span class="value">{{ p.tipo.nome|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Data inizio</span><span class="value">{{ p.data_inizio|date:"d/m/Y"|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Data fine</span><span class="value">{{ p.data_fine|date:"d/m/Y"|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Budget annuale</span><span class="value">€ {{ p.budget_annuale|floatformat:2|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Budget mensile</span><span class="value">€ {{ p.budget_mensile|floatformat:2|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Mesi</span><span class="value">{{ p.mesi|default:"—" }}</span></div>
+</div>
+
+{% if contratti %}
+<h3 style="font-size:14px;margin:14px 0 8px;color:#8A8F98;">Contratti collegati</h3>
+{% for c in contratti %}
+<a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-top-contr">
+    <div class="m-list-item">
+        <div><i class="bi bi-file-earmark-text" style="font-size:20px;color:#ec4899;"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">{{ c.lavoratore.nome_cognome|default:"?" }}</div>
+            <div class="m-list-sub">{{ c.datore.nome_cognome|default:"?" }} — {{ c.parametri_minimi.descrizione_corta|default:"" }}</div>
+        </div>
+    </div>
+</a>
+{% endfor %}
+{% endif %}
+
+<a class="m-btn m-btn-outline" href="/m/progetti/" style="margin-top:10px;">← Elenco progetti</a>
+<a class="m-btn m-btn-outline" href="/">Versione desktop →</a>
+{% endblock %}

@@ -1,24 +1,22 @@
-{% extends 'mobile/base_mobile.html' %}{% load static %}
+﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}{{ d.nome_cognome }} — Gestione Colf{% endblock %}
 {% block m_topbar_left %}<a href="/m/datori/" class="m-topbar-back"><i class="bi bi-chevron-left"></i></a>{% endblock %}
 {% block m_topbar_title %}{{ d.nome_cognome }}{% endblock %}
 {% block m_content %}
-<div class="m-card m-card-datore">
+<div class="m-card m-card-top-datore">
     <div class="m-detail-row"><span class="label">Codice Fiscale</span><span class="value">{{ d.codice_fiscale|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">Residenza</span><span class="value">{{ d.comune_residenza|default:"—" }}{% if d.prov_residenza %} ({{ d.prov_residenza }}){% endif %}</span></div>
-    <div class="m-detail-row"><span class="label">Indirizzo</span><span class="value">{{ d.indirizzo_residenza|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">CAP</span><span class="value">{{ d.cap_residenza|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Residenza</span><span class="value">{{ d.comune|default:"—" }}{% if d.provincia %} ({{ d.provincia }}){% endif %}</span></div>
+    <div class="m-detail-row"><span class="label">Indirizzo</span><span class="value">{{ d.indirizzo|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">CAP</span><span class="value">{{ d.cap|default:"—" }}</span></div>
     <div class="m-detail-row"><span class="label">Telefono</span><span class="value">{{ d.telefono|default:"—" }}</span></div>
     <div class="m-detail-row"><span class="label">Email</span><span class="value">{{ d.email|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">Cellulare</span><span class="value">{{ d.cellulare|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">PEC</span><span class="value">{{ d.pec|default:"—" }}</span></div>
 </div>
 
 <h3 style="font-size:14px;margin:14px 0 8px;color:#8A8F98;">Contratti</h3>
 {% for c in contratti %}
-<a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-contr">
+<a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-top-contr">
     <div class="m-list-title">{{ c.lavoratore.nome_cognome|default:"?" }}</div>
-    <div class="m-list-sub">{{ c.ccnl|default:"" }} — {{ c.mansione|default:"" }}</div>
+    <div class="m-list-sub">{{ c.parametri_minimi.descrizione_corta|default:"" }}{% if c.parametri_minimi.livello %} (liv. {{ c.parametri_minimi.livello }}){% endif %}</div>
 </a>
 {% empty %}
 <div class="m-empty"><i class="bi bi-file-earmark-text"></i>Nessun contratto</div>

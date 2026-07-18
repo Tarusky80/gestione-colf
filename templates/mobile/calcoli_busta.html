@@ -1,6 +1,6 @@
-{% extends 'mobile/base_mobile.html' %}{% load static %}
+﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}Calcola Busta — Gestione Colf{% endblock %}
-{% block m_topbar_title %}Calcola Busta{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-busta"><i class="bi bi-calculator"></i></span> Calcola Busta{% endblock %}
 {% block m_content %}
 
 <form id="m-calcola-form" onsubmit="return calcolaBustaMobile(event)">
@@ -8,9 +8,10 @@
     <select id="m-contratto" class="m-select" required>
         <option value="">Seleziona contratto...</option>
         {% for c in contratti %}
-        <option value="{{ c.pk }}" {% if request.GET.contratto == c.pk|stringformat:'i' %}selected{% endif %}>{{ c.datore.nome_cognome }} — {{ c.lavoratore.nome_cognome }}</option>
+        <option value="{{ c.pk }}" {% if request.GET.contratto == c.pk|stringformat:'i' %}selected{% endif %}>{{ c.datore.nome_cognome }} &mdash; {{ c.lavoratore.nome_cognome }}</option>
         {% endfor %}
     </select>
+    <div class="m-field-error" id="err-contratto">Seleziona un contratto</div>
 
     <label style="font-size:12px;color:#8A8F98;margin:10px 0 4px;display:block;">Mese</label>
     <div class="m-chips" id="m-chips-mese">
@@ -36,16 +37,30 @@
 </div>
 
 <div id="m-busta-result" style="display:none;margin-top:16px;">
-    <div class="m-card m-card-busta">
-        <div class="m-detail-row"><span class="label">Datore</span><span class="value" id="m-r-datore">—</span></div>
-        <div class="m-detail-row"><span class="label">Lavoratore</span><span class="value" id="m-r-lavoratore">—</span></div>
-        <div class="m-detail-row"><span class="label">Lordo</span><span class="value" id="m-r-lordo">—</span></div>
-        <div class="m-detail-row"><span class="label">Contributi INPS</span><span class="value" id="m-r-contributi">—</span></div>
-        <div class="m-detail-row"><span class="label">Trattenute</span><span class="value" id="m-r-trattenute">—</span></div>
-        <div class="m-detail-row total"><span>NETTO IN BUSTA</span><span id="m-r-netto">—</span></div>
+    <div class="m-card m-card-top-busta">
+        <div class="m-detail-row"><span class="label">Datore</span><span class="value" id="m-r-datore">&mdash;</span></div>
+        <div class="m-detail-row"><span class="label">Lavoratore</span><span class="value" id="m-r-lavoratore">&mdash;</span></div>
+        <div class="m-detail-row"><span class="label">Lordo</span><span class="value" id="m-r-lordo">&mdash;</span></div>
+        <div class="m-detail-row"><span class="label">Contributi INPS</span><span class="value" id="m-r-contributi">&mdash;</span></div>
+        <div class="m-detail-row"><span class="label">Trattenute</span><span class="value" id="m-r-trattenute">&mdash;</span></div>
+        <div class="m-detail-row total"><span>NETTO IN BUSTA</span><span id="m-r-netto">&mdash;</span></div>
     </div>
-    <a class="m-btn m-btn-outline" style="margin-bottom:8px;" href="/m/buste/archivio/">Archivio buste →</a>
-    <a class="m-btn m-btn-outline" href="/">Versione desktop (calcolo completo)</a>
+
+    <div style="display:flex;gap:8px;margin-top:8px;">
+        <a class="m-btn m-btn-outline" style="flex:1;font-size:12px;padding:10px;" href="/m/buste/archivio/">Archivio buste &rarr;</a>
+    </div>
+    <div style="margin-top:14px;">
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">Altri tipi di calcolo</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            <a class="m-chip" href="/calcoli/non-convivente/" style="text-decoration:none;">Non convivente</a>
+            <a class="m-chip" href="/calcoli/conviventi-ccnl/" style="text-decoration:none;">Conviventi CCNL</a>
+            <a class="m-chip" href="/calcoli/inverso/" style="text-decoration:none;">Calcolo inverso</a>
+            <a class="m-chip" href="/calcoli/notturno/" style="text-decoration:none;">Notturno</a>
+            <a class="m-chip" href="/calcoli/malattia/" style="text-decoration:none;">Malattia</a>
+            <a class="m-chip" href="/calcoli/sostituzione/" style="text-decoration:none;">Sostituzione</a>
+            <a class="m-chip" href="/calcoli/tfr/" style="text-decoration:none;">TFR</a>
+        </div>
+    </div>
 </div>
 
 <div id="m-busta-error" style="display:none;margin-top:16px;color:#f87171;text-align:center;padding:20px;"></div>
@@ -61,10 +76,31 @@ document.querySelectorAll('#m-calcola-form .m-chips').forEach(function(chips){
     });
 });
 
+/* ── Form validation ── */
+function validaForm(){
+    var ok = true;
+    var sel = document.getElementById('m-contratto');
+    var err = document.getElementById('err-contratto');
+    if(!sel.value){
+        sel.classList.add('error');
+        err.classList.add('show');
+        ok = false;
+    } else {
+        sel.classList.remove('error');
+        err.classList.remove('show');
+    }
+    return ok;
+}
+document.getElementById('m-contratto').addEventListener('change', function(){
+    document.getElementById('err-contratto').classList.remove('show');
+    this.classList.remove('error');
+});
+
+/* ── Calcolo busta ── */
 async function calcolaBustaMobile(e){
     e.preventDefault();
+    if(!validaForm()) return;
     var pk = document.getElementById('m-contratto').value;
-    if(!pk){ alert('Seleziona un contratto'); return; }
     var mese = document.querySelector('#m-chips-mese .m-chip.active').dataset.val;
     var anno = document.querySelector('#m-chips-anno .m-chip.active').dataset.val;
     document.getElementById('m-busta-skeleton').style.display='block';
@@ -75,13 +111,15 @@ async function calcolaBustaMobile(e){
         var d = await r.json();
         document.getElementById('m-busta-skeleton').style.display='none';
         if(d.errore){ throw new Error(d.errore); }
-        document.getElementById('m-r-datore').textContent = d.datore_nome || '—';
-        document.getElementById('m-r-lavoratore').textContent = d.lavoratore_nome || '—';
-        document.getElementById('m-r-lordo').textContent = '€ ' + (d.totale_lordo||'0,00');
-        document.getElementById('m-r-contributi').textContent = '€ ' + (d.totale_contributi||'0,00');
-        var trattenute = parseFloat(d.convivenza_totale||0) + parseFloat(d.totale_accantonati||0);
-        document.getElementById('m-r-trattenute').textContent = '€ ' + trattenute.toFixed(2).replace('.',',');
-        document.getElementById('m-r-netto').textContent = '€ ' + (d.netto||'0,00');
+        var fmt = function(v) { var n = parseFloat(v) || 0; return '&euro; ' + n.toFixed(2).replace('.',','); };
+        document.getElementById('m-r-datore').textContent = d.datore || (d.contratto ? d.contratto.datore : '') || '&mdash;';
+        document.getElementById('m-r-lavoratore').textContent = d.lavoratore || (d.contratto ? d.contratto.lavoratore : '') || '&mdash;';
+        document.getElementById('m-r-lordo').innerHTML = fmt(d.totale_lordo);
+        document.getElementById('m-r-contributi').innerHTML = fmt(d.contributi && d.contributi.totale ? d.contributi.totale : 0);
+        var conv = (d.trattenute && d.trattenute.convivenza && parseFloat(d.trattenute.convivenza.totale)) || 0;
+        var acc = parseFloat(d.totale_accantonati) || 0;
+        document.getElementById('m-r-trattenute').innerHTML = '&euro; ' + (conv + acc).toFixed(2).replace('.',',');
+        document.getElementById('m-r-netto').innerHTML = fmt(d.netto);
         document.getElementById('m-busta-result').style.display='block';
     }catch(err){
         document.getElementById('m-busta-skeleton').style.display='none';

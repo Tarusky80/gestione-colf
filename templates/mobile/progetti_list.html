@@ -1,0 +1,51 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Progetti — Gestione Colf{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-prog"><i class="bi bi-diagram-3"></i></span> Progetti{% endblock %}
+{% block m_content %}
+<div class="m-search-wrap">
+    <i class="bi bi-search"></i>
+    <input class="m-search" type="search" placeholder="Cerca progetto..." oninput="filterMobileList(this.value)" id="m-search-input">
+</div>
+<div id="mobile-list">
+{% for p in progetti %}
+<div class="m-swipe-wrap" data-pk="{{ p.pk }}">
+    <div class="m-swipe-actions">
+        <button class="m-swipe-btn m-swipe-btn-warning" onclick="location.href='/m/progetti/{{ p.pk }}/'"><i class="bi bi-eye" style="font-size:18px;"></i></button>
+    </div>
+    <div class="m-swipe-card m-card m-card-top-prog" onclick="location.href='/m/progetti/{{ p.pk }}/'">
+        <div class="m-list-item">
+            <div><i class="bi bi-diagram-3" style="font-size:20px;color:#10b981;"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title">{{ p.beneficiario.nome_cognome|default:"?" }}</div>
+                <div class="m-list-sub">
+                    {{ p.tipo.nome|default:"" }}
+                    {% if p.data_inizio %} &middot; {{ p.data_inizio|date:"d/m/Y" }}{% endif %}
+                    {% if p.data_fine %} — {{ p.data_fine|date:"d/m/Y" }}{% endif %}
+                </div>
+                {% if p.budget_mensile %}
+                <div style="font-size:11px;color:#8A8F98;margin-top:1px;">Budget: € {{ p.budget_mensile|floatformat:2 }}/mese</div>
+                {% endif %}
+            </div>
+            <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="m-empty">
+    <i class="bi bi-diagram-3"></i>
+    <div class="m-empty-title">Nessun progetto</div>
+    <div class="m-empty-sub">Aggiungi il primo progetto dalla versione desktop</div>
+</div>
+{% endfor %}
+</div>
+<div class="m-scroll-sentinel" id="scroll-sentinel"></div>
+<a class="m-fab" href="/tabelle/progetti-regionali/?new=1" title="Nuovo progetto"><i class="bi bi-plus"></i></a>
+<script>
+function filterMobileList(q){
+    document.querySelectorAll('#mobile-list .m-swipe-wrap').forEach(function(w){
+        w.style.display=w.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+    });
+}
+{% include "mobile/_swipe_js.html" %}
+</script>
+{% endblock %}

@@ -1,7 +1,12 @@
-{% extends 'mobile/base_mobile.html' %}{% load static %}
+﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}Documenti — Gestione Colf{% endblock %}
-{% block m_topbar_title %}Documenti{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-doc"><i class="bi bi-folder"></i></span> Documenti{% endblock %}
 {% block m_content %}
+
+<div class="m-search-wrap">
+    <i class="bi bi-search"></i>
+    <input class="m-search" type="search" placeholder="Cerca documento..." oninput="filterDocList(this.value)" id="m-search-input">
+</div>
 
 <div class="m-chips" id="m-chips-tipo">
     <span class="m-chip {% if not tipo_filtro %}active{% endif %}" data-val="">Tutti</span>
@@ -12,32 +17,46 @@
 
 <div id="mobile-list">
 {% for d in documenti %}
-<a class="m-card m-card-doc" href="#">
-    <div style="display:flex;align-items:center;gap:10px;">
-        <div><i class="bi bi-file-earmark" style="font-size:22px;color:#f59e0b;"></i></div>
-        <div style="flex:1;min-width:0;">
-            <div class="m-list-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ d.titolo|default:"Senza titolo" }}</div>
-            <div class="m-list-sub">
-                {% if d.contratto %}
-                {{ d.contratto.datore.nome_cognome|default:"" }} — {{ d.contratto.lavoratore.nome_cognome|default:"" }}
-                {% endif %}
-            </div>
-            <div style="display:flex;gap:4px;margin-top:4px;">
-                <span class="m-badge m-badge-gray">{{ d.tipo }}</span>
-                <span class="m-badge m-badge-gray">{{ d.creato_il|date:"d/m/Y" }}</span>
-            </div>
-        </div>
-        <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
+<div class="m-swipe-wrap" data-pk="{{ d.pk }}">
+    <div class="m-swipe-actions">
+        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriDoc({{ d.pk }})"><i class="bi bi-eye" style="font-size:18px;"></i></button>
     </div>
-</a>
+    <div class="m-swipe-card m-card m-card-top-doc" href="#" onclick="apriDoc({{ d.pk }})">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div><i class="bi bi-file-earmark" style="font-size:22px;color:#f59e0b;"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ d.titolo|default:"Senza titolo" }}</div>
+                <div class="m-list-sub">
+                    {% if d.contratto %}
+                    {{ d.contratto.datore.nome_cognome|default:"" }} &mdash; {{ d.contratto.lavoratore.nome_cognome|default:"" }}
+                    {% endif %}
+                </div>
+                <div style="display:flex;gap:4px;margin-top:4px;">
+                    <span class="m-badge m-badge-gray">{{ d.tipo }}</span>
+                    <span class="m-badge m-badge-gray">{{ d.creato_il|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+            <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
+        </div>
+    </div>
+</div>
 {% empty %}
-<div class="m-empty"><i class="bi bi-folder"></i>Nessun documento trovato</div>
+<div class="m-empty">
+    <i class="bi bi-folder"></i>
+    <div class="m-empty-title">Nessun documento trovato</div>
+    <div class="m-empty-sub">I documenti archiviati appariranno qui</div>
+</div>
 {% endfor %}
 </div>
+<div class="m-scroll-sentinel" id="scroll-sentinel"></div>
 
-<a class="m-btn m-btn-outline" href="/documenti/">Versione desktop →</a>
+<a class="m-btn m-btn-outline" href="/documenti/">Versione desktop &rarr;</a>
 
 <script>
+function apriDoc(pk){
+    window.open('/documenti/?focus='+pk, '_blank');
+}
+
 document.querySelectorAll('.m-chips').forEach(function(chips){
     chips.addEventListener('click', function(e){
         var chip = e.target.closest('.m-chip');
@@ -53,5 +72,11 @@ function filtraDoc(){
     if(t) params.set('tipo', t);
     location.href = '/m/documenti/?' + params.toString();
 }
+function filterDocList(q){
+    document.querySelectorAll('#mobile-list .m-swipe-wrap').forEach(function(w){
+        w.style.display=w.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+    });
+}
+{% include "mobile/_swipe_js.html" %}
 </script>
 {% endblock %}

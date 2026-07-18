@@ -1,0 +1,30 @@
+﻿(function(){
+    var startX = 0, currentX = 0, swiping = null;
+    document.addEventListener('touchstart', function(e){
+        var wrap = e.target.closest('.m-swipe-wrap');
+        if(!wrap) return;
+        var card = wrap.querySelector('.m-swipe-card');
+        if(!card) return;
+        startX = e.touches[0].clientX;
+        swiping = { wrap: wrap, card: card, dx: 0 };
+    }, {passive:true});
+    document.addEventListener('touchmove', function(e){
+        if(!swiping) return;
+        currentX = e.touches[0].clientX;
+        swiping.dx = currentX - startX;
+        if(swiping.dx < -20){
+            swiping.card.style.transform = 'translateX('+Math.max(swiping.dx, -120)+'px)';
+        } else if(swiping.dx > 20){
+            swiping.card.style.transform = 'translateX(0px)';
+        }
+    }, {passive:true});
+    document.addEventListener('touchend', function(){
+        if(!swiping) return;
+        if(swiping.dx < -60){
+            swiping.card.style.transform = 'translateX(-120px)';
+        } else {
+            swiping.card.style.transform = 'translateX(0)';
+        }
+        swiping = null;
+    }, {passive:true});
+})();

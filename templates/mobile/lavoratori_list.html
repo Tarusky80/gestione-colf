@@ -1,6 +1,6 @@
-{% extends 'mobile/base_mobile.html' %}{% load static %}
+﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}Lavoratori — Gestione Colf{% endblock %}
-{% block m_topbar_title %}Lavoratori{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-lav"><i class="bi bi-people"></i></span> Lavoratori{% endblock %}
 {% block m_content %}
 <div class="m-search-wrap">
     <i class="bi bi-search"></i>
@@ -8,26 +8,37 @@
 </div>
 <div id="mobile-list">
 {% for l in lavoratori %}
-    <a class="m-card m-card-lav" href="/m/lavoratori/{{ l.pk }}/">
+<div class="m-swipe-wrap" data-pk="{{ l.pk }}">
+    <div class="m-swipe-actions">
+        <button class="m-swipe-btn m-swipe-btn-warning" onclick="location.href='/m/lavoratori/{{ l.pk }}/'"><i class="bi bi-eye" style="font-size:18px;"></i></button>
+    </div>
+    <div class="m-swipe-card m-card m-card-top-lav" onclick="location.href='/m/lavoratori/{{ l.pk }}/'">
         <div class="m-list-item">
             <div><i class="bi bi-person" style="font-size:20px;color:#10b981;"></i></div>
             <div style="flex:1;min-width:0;">
                 <div class="m-list-title">{{ l.nome_cognome }}</div>
-                <div class="m-list-sub">{{ l.comune_domicilio_fiscale|default:"" }}{% if l.codice_fiscale %} · {{ l.codice_fiscale }}{% endif %}</div>
+                <div class="m-list-sub">{{ l.comune|default:"" }}{% if l.codice_fiscale %} &middot; {{ l.codice_fiscale }}{% endif %}</div>
             </div>
             <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
         </div>
-    </a>
+    </div>
+</div>
 {% empty %}
-    <div class="m-empty"><i class="bi bi-people"></i>Nessun lavoratore trovato</div>
+<div class="m-empty">
+    <i class="bi bi-people"></i>
+    <div class="m-empty-title">Nessun lavoratore</div>
+    <div class="m-empty-sub">Aggiungi il primo lavoratore con il pulsante +</div>
+</div>
 {% endfor %}
 </div>
-<a class="m-fab" href="#" title="Nuovo lavoratore"><i class="bi bi-plus"></i></a>
+<div class="m-scroll-sentinel" id="scroll-sentinel"></div>
+<a class="m-fab" href="/lavoratori/?new=1" title="Nuovo lavoratore"><i class="bi bi-plus"></i></a>
 <script>
 function filterMobileList(q){
-    document.querySelectorAll('#mobile-list .m-card').forEach(function(c){
-        c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'block':'none';
+    document.querySelectorAll('#mobile-list .m-swipe-wrap').forEach(function(w){
+        w.style.display=w.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
     });
 }
+{% include "mobile/_swipe_js.html" %}
 </script>
 {% endblock %}

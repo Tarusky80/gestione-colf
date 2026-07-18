@@ -7,15 +7,22 @@ logger = logging.getLogger(__name__)
 @login_required
 def mobile_dashboard(request):
     from paghe.views._dashboard import _contributi_mensili_trend
+    import calendar
+    buste = BustaPaga.objects.all()
+    buste = filtro_visibilita(buste, request.user)
     ctx = {
         'm_nav': 'dash',
         'totale_datori': DatoreLavoro.objects.filter(visibile_a=request.user).count() if not request.user.is_superuser else DatoreLavoro.objects.count(),
         'totale_lavoratori': Lavoratore.objects.filter(visibile_a=request.user).count() if not request.user.is_superuser else Lavoratore.objects.count(),
         'totale_contratti': ContrattoAttivo.objects.filter(visibile_a=request.user).count() if not request.user.is_superuser else ContrattoAttivo.objects.count(),
-        'totale_buste': BustaPaga.objects.count(),
+        'totale_buste': buste.count(),
+        'totale_beneficiari': Beneficiario.objects.count(),
+        'totale_progetti': ProgettoRegionale.objects.count(),
     }
     try:
         trend = _contributi_mensili_trend()
+        for m in trend:
+            m['nome'] = calendar.month_abbr[m['mese']]
         ctx['contrib_trend'] = trend[:3]
     except Exception:
         ctx['contrib_trend'] = []
@@ -142,4 +149,51 @@ def mobile_contratto_detail(request, pk):
         'm_nav': 'contr',
         'c': c,
         'buste': buste,
+    })
+
+
+@login_required
+def mobile_about(request):
+    return render(request, 'mobile/about.html', {
+        'm_nav': None,
+    })
+
+
+@login_required
+def mobile_beneficiari_list(request):
+    beneficiari = Beneficiario.objects.all().order_by('nome_cognome')
+    return render(request, 'mobile/beneficiari_list.html', {
+        'm_nav': 'benef',
+        'beneficiari': beneficiari,
+    })
+
+
+@login_required
+def mobile_progetti_list(request):
+    progetti = ProgettoRegionale.objects.select_related('beneficiario', 'tipo').all().order_by('beneficiario__nome_cognome')
+    return render(request, 'mobile/progetti_list.html', {
+        'm_nav': 'prog',
+        'progetti': progetti,
+    })
+
+
+@login_required
+def mobile_beneficiario_detail(request, pk):
+    b = get_object_or_404(Beneficiario, pk=pk)
+    progetti = ProgettoRegionale.objects.filter(beneficiario=b).select_related('tipo').all()
+    return render(request, 'mobile/beneficiario_detail.html', {
+        'm_nav': 'benef',
+        'b': b,
+        'progetti': progetti,
+    })
+
+
+@login_required
+def mobile_progetto_detail(request, pk):
+    p = get_object_or_404(ProgettoRegionale.objects.select_related('beneficiario', 'tipo'), pk=pk)
+    contratti = ContrattoAttivo.objects.filter(progetto=p).select_related('datore', 'lavoratore')[:10]
+    return render(request, 'mobile/progetto_detail.html', {
+        'm_nav': 'prog',
+        'p': p,
+        'contratti': contratti,
     })
