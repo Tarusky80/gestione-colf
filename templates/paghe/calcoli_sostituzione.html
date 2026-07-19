@@ -99,9 +99,9 @@
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
-            <button type="button" id="btnPrev" class="btn btn-sm btn-ghost" onclick="naviga(-1)" title="Mese precedente" style="padding:4px 10px;"><i class="bi bi-chevron-left"></i></button>
-            <button type="button" id="btnNext" class="btn btn-sm btn-ghost" onclick="naviga(1)" title="Mese successivo" style="padding:4px 10px;"><i class="bi bi-chevron-right"></i></button>
-            <button type="button" class="btn btn-sm btn-ghost" onclick="resetTutto()" title="Reset" style="padding:4px 10px;"><i class="bi bi-arrow-counterclockwise"></i></button>
+            <button type="button" id="btnPrev" class="btn btn-sm btn-ghost" onclick="naviga(-1)" title="Mese precedente" class="px-10"><i class="bi bi-chevron-left"></i></button>
+            <button type="button" id="btnNext" class="btn btn-sm btn-ghost" onclick="naviga(1)" title="Mese successivo" class="px-10"><i class="bi bi-chevron-right"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost" onclick="resetTutto()" title="Reset" class="px-10"><i class="bi bi-arrow-counterclockwise"></i></button>
             <a href="{% url 'calcoli_malattia' %}?contratto={{ contratto_pk|default:'' }}&mese={{ mese_corrente }}&anno={{ anno_corrente }}" class="btn btn-sm btn-ghost-danger" style="padding:6px 14px;font-size:12px;"><i class="bi bi-heart-pulse me-1"></i> Malattia</a>
             <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
             <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
@@ -268,7 +268,7 @@
                 <div class="modal-body">
                     <input type="text" id="cercaSostitutoInput" class="form-control-custom mb-3" placeholder="Cerca per nome lavoratore, datore o codice INPS..." oninput="cercaSostituti(this.value)">
                     <div id="cercaSostitutoResults" style="max-height:300px;overflow-y:auto;">
-                        <div style="text-align:center;padding:30px;color:#555;font-size:13px;">Inizia a digitare per cercare...</div>
+                        <div class="empty-state-sm">Inizia a digitare per cercare...</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -289,19 +289,19 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Nome *</label>
+                            <label class="label-uppercase-wide">Nome *</label>
                             <input type="text" id="nsNome" class="form-control-custom" placeholder="Nome">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Cognome *</label>
+                            <label class="label-uppercase-wide">Cognome *</label>
                             <input type="text" id="nsCognome" class="form-control-custom" placeholder="Cognome">
                         </div>
                         <div class="col-12">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Codice Fiscale *</label>
+                            <label class="label-uppercase-wide">Codice Fiscale *</label>
                             <input type="text" id="nsCF" class="form-control-custom" placeholder="Codice Fiscale" style="text-transform:uppercase;">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Livello *</label>
+                            <label class="label-uppercase-wide">Livello *</label>
                             <select id="nsLivello" class="form-control-custom">
                                 {% for l in livelli %}
                                 <option value="{{ l.pk }}">{{ l.codice }}</option>
@@ -309,15 +309,15 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Ore mensili *</label>
+                            <label class="label-uppercase-wide">Ore mensili *</label>
                             <input type="number" id="nsOre" class="form-control-custom" placeholder="es. 120" step="0.5" min="1" value="120">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Data inizio *</label>
+                            <label class="label-uppercase-wide">Data inizio *</label>
                             <input type="date" id="nsDataInizio" class="form-control-custom">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Data fine</label>
+                            <label class="label-uppercase-wide">Data fine</label>
                             <input type="date" id="nsDataFine" class="form-control-custom">
                         </div>
                         <div class="col-12">
@@ -533,7 +533,7 @@ function selezionaSostituto(pk, nome) {
 
 function cercaSostituti(q) {
     if (q.length < 2) {
-        document.getElementById('cercaSostitutoResults').innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Digita almeno 2 caratteri...</div>';
+        document.getElementById('cercaSostitutoResults').innerHTML = '<div class="empty-state-sm">Digita almeno 2 caratteri...</div>';
         return;
     }
     fetch('/ajax/cerca-contratti-copia/?q=' + encodeURIComponent(q))
@@ -541,7 +541,7 @@ function cercaSostituti(q) {
     .then(function(d) {
         var html = '';
         if (d.results.length === 0) {
-            html = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Nessun risultato</div>';
+            html = '<div class="empty-state-sm">Nessun risultato</div>';
         } else {
             for (var i = 0; i < d.results.length; i++) {
                 var r = d.results[i];
@@ -560,7 +560,7 @@ function cercaSostituti(q) {
 function apriModalCercaSostituto() {
     var modal = new bootstrap.Modal(document.getElementById('modalCercaSostituto'));
     document.getElementById('cercaSostitutoInput').value = '';
-    document.getElementById('cercaSostitutoResults').innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Inizia a digitare per cercare...</div>';
+    document.getElementById('cercaSostitutoResults').innerHTML = '<div class="empty-state-sm">Inizia a digitare per cercare...</div>';
     modal.show();
 }
 
@@ -670,22 +670,22 @@ function renderBustaSostituto(d) {
     h += '<tr><th style="text-align:left;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Voce</th><th style="text-align:right;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
     // Paga base
     var pb = d.paga_base || {};
-    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Paga base (' + (pb.orario || 0).toFixed(4) + '€/h &times; ' + (d.ore_mensili || 0) + ' h)</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (pb.totale || 0).toFixed(2) + '</td></tr>';
+    h += '<tr><td class="cell-padded">Paga base (' + (pb.orario || 0).toFixed(4) + '€/h &times; ' + (d.ore_mensili || 0) + ' h)</td><td class="cell-padded-right">€ ' + (pb.totale || 0).toFixed(2) + '</td></tr>';
     // Indennità
     var inds = d.indennita || [];
     for (var i = 0; i < inds.length; i++) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + (inds[i].label || '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (inds[i].totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">' + (inds[i].label || '') + '</td><td class="cell-padded-right">€ ' + (inds[i].totale || 0).toFixed(2) + '</td></tr>';
     }
     // Scatti
     var sc = d.scatti_anzianita || {};
     if (sc.valore > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Scatti anzianità (' + (sc.dettaglio || '') + ')</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (sc.orario || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">Scatti anzianità (' + (sc.dettaglio || '') + ')</td><td class="cell-padded-right">€ ' + (sc.orario || 0).toFixed(2) + '</td></tr>';
     }
     // Ratei
     var ratei = d.ratei_pagati || [];
     for (var j = 0; j < ratei.length; j++) {
         var r = ratei[j];
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + r.label + (r.incluso ? ' (incluso)' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (r.totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">' + r.label + (r.incluso ? ' (incluso)' : '') + '</td><td class="cell-padded-right">€ ' + (r.totale || 0).toFixed(2) + '</td></tr>';
     }
     // Lordo
     h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">TOTALE LORDO</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">€ ' + (d.totale_lordo || 0).toFixed(2) + '</td></tr>';
@@ -693,14 +693,14 @@ function renderBustaSostituto(d) {
     h += '<tr><td colspan="2" style="padding:2px;"></td></tr>';
     // Contributi
     var contr = d.contributi || {};
-    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Contributi INPS' + (contr.inps && contr.inps.fascia ? ' (' + contr.inps.fascia + ')' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (contr.totale || 0).toFixed(2) + '</td></tr>';
+    h += '<tr><td class="cell-padded">Contributi INPS' + (contr.inps && contr.inps.fascia ? ' (' + contr.inps.fascia + ')' : '') + '</td><td class="cell-padded-right">€ ' + (contr.totale || 0).toFixed(2) + '</td></tr>';
     // Trattenute
     var trat = d.trattenute || {};
     if (trat.convivenza && trat.convivenza.totale > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Vitto e alloggio</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.convivenza.totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">Vitto e alloggio</td><td class="cell-padded-right">€ ' + (trat.convivenza.totale || 0).toFixed(2) + '</td></tr>';
     }
     if (trat.ratei_accantonati > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Ratei accantonati</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.ratei_accantonati || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">Ratei accantonati</td><td class="cell-padded-right">€ ' + (trat.ratei_accantonati || 0).toFixed(2) + '</td></tr>';
     }
     // Netto
     h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">NETTO A PAGARE</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">€ ' + (d.netto || 0).toFixed(2) + '</td></tr>';
@@ -710,7 +710,7 @@ function renderBustaSostituto(d) {
         var vc = d.verifica_copertura;
         var vcColor = vc >= 0 ? '#10b981' : '#f87171';
         h += '<div style="margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;text-align:center;">';
-        h += '<span style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Verifica copertura budget</span>';
+        h += '<span class="label-uppercase-wide">Verifica copertura budget</span>';
         h += '<div style="font-size:15px;font-weight:700;color:' + vcColor + ';">€ ' + vc.toFixed(2) + '</div></div>';
     }
     h += '</div>';

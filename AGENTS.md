@@ -160,6 +160,17 @@
 - ✅ **PDF mobile**: `apriPDF()`/`apriDoc()` ora puntano a `/ajax/vedi-documento/<pk>/` invece di `/documenti/?focus=<pk>` (desktop ignorava focus).
 - **Commit**: `7cfa970` — Mobile: 6 nuove feature + fix form contratto
 
+## Session Log — 2026-07-19
+- **Refactoring style=inline → classi CSS** su 28 file, ~973 style rimossi (~32%):
+  - Session 1: dashboard (165→60), ajax_form_contratto (365→281), base (420→314), 3 calcoli (~189→~133 ciascuno)
+  - Session 2: popup_ccnl_occhio (116→71), crea_pagopa (107→75), calcoli_malattia (105→91), stampe_invii (100→69), calcoli_inverso (98→66), redigere_cu (96→76), ajax_form (100→38)
+  - Session 3: configurazioni_servizi (94→28), calcoli_sostituzione (90→68), calcoli_tfr (77→58), agenda (74→57), ajax_form_progetto (72→43), calcoli_notturno (72→60)
+  - Session 4: _modale_ccnl_occhio (58→51), comparatore (57→27), log_inps_list (54→39)
+  - Session 5: contratti_list (49→41), buste_archivio (47→24), documenti_list (55→32), crea_pagopa_manuale (42→39)
+- **New classes in `utils.css`** (~45 nuove): `cell-label`, `cell-label-bordered`, `th-storico`, `h5-sezione`, `th-sticky`, `periodo-tab`, `select-custom`, `card-hidden`, `separator-v`, `cell-right-padded`, `fw-4`, `label-form-uppercase`, `cell-border-bottom`, `value-busta-sm`, `label-ml`, `mb-20`, `btn-lg-padding`, `btn-nav-padding`, `select-nav`, `bar-track`, `h3-sezione`, `badge-warn`, `label-uppercase-wide`, `cell-padded`, `cell-padded-right`, `empty-state-sm`, `px-10`, `px-8-0`, `value-tfr`, `value-tfr-right`, `label-tfr`, `evento-input`, `filter-input`, `tab-filter`, `fs-9`, `mb-6`, `mt-6`, `click-muted`, `accent-checkbox`, `label-form-uppercase-muted`, `inps-input`, `page-link-custom`, `th-inps`, `c-info`, `label-uppercase-block`, `input-sm`, `shadow-modal`, `input-massivo`, `btn-doc-sm`, `w-7`
+- `manage.py check` OK
+- **Commit**: prossimo
+
 ## Comandi utili
 ```powershell
 # Avviare il server

@@ -65,10 +65,10 @@
 </div>
 
 <div class="d-flex gap-2 mb-3 flex-wrap">
-    <button type="button" class="btn btn-sm btn-ghost-primary agenda-filtro" data-filtro="tutti" onclick="filtraAgenda('tutti')" style="padding:4px 12px;font-size:11px;">Tutti</button>
-    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-warning" data-filtro="SCADENZA" onclick="filtraAgenda('SCADENZA')" style="padding:4px 12px;font-size:11px;">Scadenze</button>
-    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-primary" data-filtro="APPUNTAMENTO" onclick="filtraAgenda('APPUNTAMENTO')" style="padding:4px 12px;font-size:11px;">Appuntamenti</button>
-    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-success" data-filtro="PROMEMORIA" onclick="filtraAgenda('PROMEMORIA')" style="padding:4px 12px;font-size:11px;">Promemoria</button>
+    <button type="button" class="btn btn-sm btn-ghost-primary agenda-filtro" data-filtro="tutti" onclick="filtraAgenda('tutti')" class="tab-filter">Tutti</button>
+    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-warning" data-filtro="SCADENZA" onclick="filtraAgenda('SCADENZA')" class="tab-filter">Scadenze</button>
+    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-primary" data-filtro="APPUNTAMENTO" onclick="filtraAgenda('APPUNTAMENTO')" class="tab-filter">Appuntamenti</button>
+    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-success" data-filtro="PROMEMORIA" onclick="filtraAgenda('PROMEMORIA')" class="tab-filter">Promemoria</button>
 </div>
 
 {% if prossime_scadenze %}
@@ -231,35 +231,35 @@
       <div class="modal-body" style="padding:18px;">
         <input type="hidden" id="agendaPk" value="">
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Data</label>
-            <input type="date" id="agendaData" class="form-control" value="{{ oggi|date:'Y-m-d' }}" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+            <label class="mb-1 fw-bold" class="c-11-m">Data</label>
+            <input type="date" id="agendaData" class="form-control" value="{{ oggi|date:'Y-m-d' }}" class="filter-input">
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Ora (opzionale)</label>
-            <input type="time" id="agendaOra" class="form-control" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+            <label class="mb-1 fw-bold" class="c-11-m">Ora (opzionale)</label>
+            <input type="time" id="agendaOra" class="form-control" class="filter-input">
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Titolo</label>
-            <input type="text" id="agendaTitolo" class="form-control" placeholder="Descrizione breve" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+            <label class="mb-1 fw-bold" class="c-11-m">Titolo</label>
+            <input type="text" id="agendaTitolo" class="form-control" placeholder="Descrizione breve" class="filter-input">
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Tipo</label>
-            <select id="agendaTipo" class="form-select" onchange="aggiornaColoreDaTipo()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+            <label class="mb-1 fw-bold" class="c-11-m">Tipo</label>
+            <select id="agendaTipo" class="form-select" onchange="aggiornaColoreDaTipo()" class="filter-input">
                 <option value="PROMEMORIA">Promemoria</option>
                 <option value="APPUNTAMENTO">Appuntamento</option>
                 <option value="SCADENZA">Scadenza</option>
             </select>
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Colore</label>
+            <label class="mb-1 fw-bold" class="c-11-m">Colore</label>
             <div class="d-flex gap-2 flex-wrap">
                 <input type="color" id="agendaColore" class="form-control form-control-color" style="width:44px;height:36px;padding:2px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);cursor:pointer;">
                 <button type="button" onclick="document.getElementById('agendaColore').value='';this.style.outline='2px solid #5E6AD2'" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#8A8F98;padding:4px 10px;font-size:11px;cursor:pointer;">Nessuno</button>
             </div>
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Ricorrenza</label>
-            <select id="agendaRicorrenza" class="form-select" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
+            <label class="mb-1 fw-bold" class="c-11-m">Ricorrenza</label>
+            <select id="agendaRicorrenza" class="form-select" class="filter-input">
                 <option value="NESSUNA">Nessuna</option>
                 <option value="SETTIMANALE">Settimanale</option>
                 <option value="MENSILE">Mensile</option>
@@ -267,8 +267,8 @@
             </select>
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Descrizione (opzionale)</label>
-            <textarea id="agendaDescrizione" class="form-control" rows="2" placeholder="Dettagli..." style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;"></textarea>
+            <label class="mb-1 fw-bold" class="c-11-m">Descrizione (opzionale)</label>
+            <textarea id="agendaDescrizione" class="form-control" rows="2" placeholder="Dettagli..." class="filter-input"></textarea>
         </div>
       </div>
       <div class="modal-footer" style="border-top:1px solid #27282D;padding:14px 18px;">

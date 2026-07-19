@@ -11,7 +11,7 @@
 {% block content %}
 {% block search_bar %}{% endblock %}
 <div class="container-fluid p-4">
-  <h4 class="mb-4" style="color:#EDEDED;"><i class="bi bi-gear-wide-connected me-2"></i>Configurazioni Servizi Web
+  <h4 class="mb-4" class="c-text"><i class="bi bi-gear-wide-connected me-2"></i>Configurazioni Servizi Web
     <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
   </h4>
 
@@ -19,7 +19,7 @@
     <!-- Chromedriver -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-browser-chrome me-2"></i>Chromedriver</h6>
+        <h6 class="h3-sezione"><i class="bi bi-browser-chrome me-2"></i>Chromedriver</h6>
         <form method="post" class="mb-3">
           {% csrf_token %}
           <div class="d-flex gap-2 align-items-center">
@@ -27,24 +27,24 @@
             <button type="submit" class="btn btn-sm btn-ghost-primary" style="padding:6px 14px;font-size:12px;white-space:nowrap;"><i class="bi bi-check-lg"></i></button>
           </div>
         </form>
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <div class="c-muted fs-12 mb-6">
           File presente:
           {% if driver_exists %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> SI</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> SI</span>
           {% else %}
-            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> NO</span>
+            <span class="c-red"><i class="bi bi-x-circle-fill"></i> NO</span>
           {% endif %}
         </div>
         {% if driver_version %}
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
-          Versione: <span style="color:#EDEDED;">{{ driver_version }}</span>
+        <div class="c-muted fs-12 mb-6">
+          Versione: <span class="c-text">{{ driver_version }}</span>
         </div>
         {% endif %}
         {% if compatible is not None %}
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <div class="c-muted fs-12 mb-6">
           Compatibilità Chrome:
           {% if compatible %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Compatibile</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Compatibile</span>
           {% else %}
             <span style="color:#fbbf24;"><i class="bi bi-exclamation-triangle-fill"></i> Versioni diverse</span>
           {% endif %}
@@ -56,14 +56,14 @@
     <!-- Chrome Browser -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-google me-2"></i>Google Chrome</h6>
+        <h6 class="h3-sezione"><i class="bi bi-google me-2"></i>Google Chrome</h6>
         {% if chrome_version %}
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
-          Versione: <span style="color:#EDEDED;">{{ chrome_version }}</span>
+        <div class="c-muted fs-12 mb-6">
+          Versione: <span class="c-text">{{ chrome_version }}</span>
         </div>
-        <div style="font-size:12px;color:#8A8F98;">
+        <div class="c-muted fs-12">
           Stato:
-          <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Installato</span>
+          <span class="c-green"><i class="bi bi-check-circle-fill"></i> Installato</span>
         </div>
         {% else %}
         <div style="font-size:12px;color:#f87171;">
@@ -76,20 +76,20 @@
     <!-- Selenium -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-box-seam me-2"></i>Selenium</h6>
+        <h6 class="h3-sezione"><i class="bi bi-box-seam me-2"></i>Selenium</h6>
         {% if selenium_versione %}
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
-          Versione: <span style="color:#EDEDED;">{{ selenium_versione }}</span>
+        <div class="c-muted fs-12 mb-6">
+          Versione: <span class="c-text">{{ selenium_versione }}</span>
         </div>
-        <div style="font-size:12px;color:#8A8F98;">
+        <div class="c-muted fs-12">
           Stato:
-          <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Installato</span>
+          <span class="c-green"><i class="bi bi-check-circle-fill"></i> Installato</span>
         </div>
         {% else %}
         <div style="font-size:12px;color:#f87171;">
           <i class="bi bi-x-circle-fill"></i> Selenium non installato
         </div>
-        <div style="font-size:11px;color:#8A8F98;margin-top:6px;">Esegui: <code style="background:#27282D;padding:2px 6px;border-radius:4px;color:#f59e0b;">pip install selenium</code></div>
+        <div class="c-11-m mt-6">Esegui: <code class="badge-warn">pip install selenium</code></div>
         {% endif %}
       </div>
     </div>
@@ -97,28 +97,28 @@
     <!-- Playwright -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-mask me-2"></i>Playwright</h6>
+        <h6 class="h3-sezione"><i class="bi bi-mask me-2"></i>Playwright</h6>
         {% if playwright_versione %}
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
-          Versione: <span style="color:#EDEDED;">{{ playwright_versione }}</span>
+        <div class="c-muted fs-12 mb-6">
+          Versione: <span class="c-text">{{ playwright_versione }}</span>
         </div>
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <div class="c-muted fs-12 mb-6">
           Chromium:
           {% if playwright_chromium_ok %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Installato</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Installato</span>
             <span style="color:#8A8F98;font-size:11px;">({{ playwright_chromium_path }})</span>
           {% else %}
-            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non installato</span>
+            <span class="c-red"><i class="bi bi-x-circle-fill"></i> Non installato</span>
           {% endif %}
         </div>
-        <div style="font-size:11px;color:#8A8F98;margin-top:6px;">
-          Esegui: <code style="background:#27282D;padding:2px 6px;border-radius:4px;color:#f59e0b;">playwright install chromium</code>
+        <div class="c-11-m mt-6">
+          Esegui: <code class="badge-warn">playwright install chromium</code>
         </div>
         {% else %}
         <div style="font-size:12px;color:#f87171;">
           <i class="bi bi-x-circle-fill"></i> Playwright non installato
         </div>
-        <div style="font-size:11px;color:#8A8F98;margin-top:6px;">Esegui: <code style="background:#27282D;padding:2px 6px;border-radius:4px;color:#f59e0b;">pip install playwright</code></div>
+        <div class="c-11-m mt-6">Esegui: <code class="badge-warn">pip install playwright</code></div>
         {% endif %}
       </div>
     </div>
@@ -126,35 +126,35 @@
     <!-- Collegamenti INPS -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-link-45deg me-2"></i>Collegamenti INPS</h6>
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <h6 class="h3-sezione"><i class="bi bi-link-45deg me-2"></i>Collegamenti INPS</h6>
+        <div class="c-muted fs-12 mb-6">
           Iscrizione:
           {% if link_iscrizione_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span class="c-muted">—</span>
           {% elif link_iscrizione_ok %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
-            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+            <span class="c-red"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
           {% endif %}
         </div>
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <div class="c-muted fs-12 mb-6">
           Cessazione:
           {% if link_cessazione_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span class="c-muted">—</span>
           {% elif link_cessazione_ok %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
-            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+            <span class="c-red"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
           {% endif %}
         </div>
-        <div style="font-size:12px;color:#8A8F98;">
+        <div class="c-muted fs-12">
           PAGOPA:
           {% if link_pagopa_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span class="c-muted">—</span>
           {% elif link_pagopa_ok %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
-            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+            <span class="c-red"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
           {% endif %}
         </div>
       </div>
@@ -165,7 +165,7 @@
     <!-- Automazione (Selenium / Playwright) -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-robot me-2"></i>Automazione</h6>
+        <h6 class="h3-sezione"><i class="bi bi-robot me-2"></i>Automazione</h6>
         <form method="post" action="{% url 'configurazioni_servizi' %}" class="mb-2">
           {% csrf_token %}
           <div class="d-flex gap-2 align-items-center flex-wrap" style="margin-bottom:8px;">
@@ -178,7 +178,7 @@
             <button type="submit" class="btn btn-sm btn-ghost-primary" style="padding:4px 12px;font-size:11px;"><i class="bi bi-check-lg"></i></button>
           </div>
         </form>
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <div class="c-muted fs-12 mb-6">
           Motore:
           <form method="post" action="{% url 'configurazioni_servizi' %}" style="display:inline-block;margin-left:6px;">
             {% csrf_token %}
@@ -192,20 +192,20 @@
             </button>
           </form>
         </div>
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <div class="c-muted fs-12 mb-6">
           Headless:
           {% if web_config.headless %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Attivo</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Attivo</span>
           {% else %}
-            <span style="color:#8A8F98;"><i class="bi bi-circle"></i> Disattivo</span>
+            <span class="c-muted"><i class="bi bi-circle"></i> Disattivo</span>
           {% endif %}
         </div>
-        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;">
+        <div class="c-muted fs-12 mb-6">
           Profilo Chrome:
           {% if web_config.chrome_user_data_dir %}
-            <span style="color:#EDEDED;">{{ web_config.chrome_user_data_dir }}</span>
+            <span class="c-text">{{ web_config.chrome_user_data_dir }}</span>
           {% else %}
-            <span style="color:#8A8F98;"><i>— default temporaneo</i></span>
+            <span class="c-muted"><i>— default temporaneo</i></span>
           {% endif %}
         </div>
       </div>
@@ -214,18 +214,18 @@
     <!-- Collegamento Cessazione -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-link me-2"></i>Link Cessazione INPS</h6>
+        <h6 class="h3-sezione"><i class="bi bi-link me-2"></i>Link Cessazione INPS</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
           {{ web_config.link_inps_cessazione|default:"—" }}
         </div>
-        <div style="font-size:12px;color:#8A8F98;">
+        <div class="c-muted fs-12">
           Raggiungibilità:
           {% if link_cessazione_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span class="c-muted">—</span>
           {% elif link_cessazione_ok %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
-            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+            <span class="c-red"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
           {% endif %}
         </div>
       </div>
@@ -234,18 +234,18 @@
     <!-- Collegamento PagoPA -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-credit-card-2-front me-2"></i>Link PagoPA INPS</h6>
+        <h6 class="h3-sezione"><i class="bi bi-credit-card-2-front me-2"></i>Link PagoPA INPS</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
           {{ web_config.link_inps_pagopa|default:"—" }}
         </div>
-        <div style="font-size:12px;color:#8A8F98;">
+        <div class="c-muted fs-12">
           Raggiungibilità:
           {% if link_pagopa_ok is None %}
-            <span style="color:#8A8F98;">—</span>
+            <span class="c-muted">—</span>
           {% elif link_pagopa_ok %}
-            <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
+            <span class="c-green"><i class="bi bi-check-circle-fill"></i> Raggiungibile</span>
           {% else %}
-            <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
+            <span class="c-red"><i class="bi bi-x-circle-fill"></i> Non raggiungibile</span>
           {% endif %}
         </div>
       </div>
@@ -254,29 +254,29 @@
     <!-- Cartelle Documenti -->
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
-        <h6 style="color:#EDEDED;font-size:13px;font-weight:700;margin-bottom:12px;"><i class="bi bi-folder2-open me-2"></i>Cartelle Documenti</h6>
+        <h6 class="h3-sezione"><i class="bi bi-folder2-open me-2"></i>Cartelle Documenti</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">
           Documenti (PagoPA, buste, TFR):
           <div style="color:#EDEDED;word-break:break-all;margin-top:2px;">{{ cartella_documenti }}</div>
           <div class="d-flex align-items-center gap-2" style="margin-top:4px;">
             {% if cartella_documenti_esiste %}
-              <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Presente</span>
+              <span class="c-green"><i class="bi bi-check-circle-fill"></i> Presente</span>
               <button type="button" class="btn btn-sm btn-ghost" onclick="fetch('/ajax/apri-cartella-documenti/').then(function(r){return r.json()}).then(function(d){if(!d.success){mostraToast(d.error, false)}})" style="padding:4px 12px;font-size:11px;">
                 <i class="bi bi-folder-symlink me-1"></i> Apri cartella
               </button>
             {% else %}
-              <span style="color:#f87171;"><i class="bi bi-x-circle-fill"></i> Non trovata</span>
+              <span class="c-red"><i class="bi bi-x-circle-fill"></i> Non trovata</span>
             {% endif %}
           </div>
         </div>
-        <div style="font-size:12px;color:#8A8F98;">
+        <div class="c-muted fs-12">
           Sottocartella SCREENSHOT:
           <div style="color:#EDEDED;word-break:break-all;margin-top:2px;">{{ cartella_screenshot }}</div>
           <div style="margin-top:2px;">
             {% if cartella_screenshot_esiste %}
-              <span style="color:#34d399;"><i class="bi bi-check-circle-fill"></i> Presente</span>
+              <span class="c-green"><i class="bi bi-check-circle-fill"></i> Presente</span>
             {% else %}
-              <span style="color:#8A8F98;"><i class="bi bi-circle"></i> Verrà creata al primo screenshot</span>
+              <span class="c-muted"><i class="bi bi-circle"></i> Verrà creata al primo screenshot</span>
             {% endif %}
           </div>
         </div>

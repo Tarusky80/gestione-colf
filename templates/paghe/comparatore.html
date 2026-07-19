@@ -21,7 +21,7 @@
 <form method="GET" id="compareForm" class="mb-4">
 <div class="row g-3 align-items-end" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px;">
     <div class="col-md-4">
-        <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98;">Contratto</label>
+        <label class="mb-1 fw-bold" class="label-form-uppercase-muted">Contratto</label>
         <select name="contratto" class="form-select" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;width:calc(400px + 6cm);" onchange="this.form.submit()">
             <option value="">— Seleziona un contratto —</option>
             {% for c in contratti %}
@@ -30,7 +30,7 @@
         </select>
     </div>
     <div class="col-md-2" style="margin-left:2.5cm;">
-        <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98;">Mese</label>
+        <label class="mb-1 fw-bold" class="label-form-uppercase-muted">Mese</label>
         <select name="mese" class="form-select" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;" onchange="this.form.submit()">
             <option value="1" {% if mese == 1 %}selected{% endif %}>Gennaio</option>
             <option value="2" {% if mese == 2 %}selected{% endif %}>Febbraio</option>
@@ -47,7 +47,7 @@
         </select>
     </div>
     <div class="col-md-2">
-        <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #8A8F98;">Anno</label>
+        <label class="mb-1 fw-bold" class="label-form-uppercase-muted">Anno</label>
         <select name="anno" class="form-select" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;" onchange="this.form.submit()">
             <option value="2024" {% if anno == 2024 %}selected{% endif %}>2024</option>
             <option value="2025" {% if anno == 2025 %}selected{% endif %}>2025</option>
@@ -66,16 +66,16 @@
             </div>
             {% if current %}
             <table class="table custom-table" style="font-size: 12px;">
-                <tr><td style="color:#8A8F98;">Budget mensile</td><td class="fw-bold text-end">€ {{ current.budget_mensile|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Ore mensili</td><td class="fw-bold text-end">{{ current.ore_mensili|floatformat:1 }}h</td></tr>
-                <tr><td style="color:#8A8F98;">Ore settimanali</td><td class="fw-bold text-end">{{ current.ore_settimanali|floatformat:1 }}h</td></tr>
-                <tr><td style="color:#8A8F98;">Paga oraria lorda</td><td class="fw-bold text-end">€ {{ current.paga_oraria_lorda|floatformat:4 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale lordo</td><td class="fw-bold text-end">€ {{ current.totale_lordo|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Contributi INPS</td><td class="fw-bold text-end">€ {{ current.contributi.inps.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Contributi Cassa</td><td class="fw-bold text-end">€ {{ current.contributi.cassa.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale contributi</td><td class="fw-bold text-end">€ {{ current.contributi.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ current.netto|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Stima trimestrale contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ current.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Budget mensile</td><td class="fw-bold text-end">€ {{ current.budget_mensile|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Ore mensili</td><td class="fw-bold text-end">{{ current.ore_mensili|floatformat:1 }}h</td></tr>
+                <tr><td class="c-muted">Ore settimanali</td><td class="fw-bold text-end">{{ current.ore_settimanali|floatformat:1 }}h</td></tr>
+                <tr><td class="c-muted">Paga oraria lorda</td><td class="fw-bold text-end">€ {{ current.paga_oraria_lorda|floatformat:4 }}</td></tr>
+                <tr><td class="c-muted">Totale lordo</td><td class="fw-bold text-end">€ {{ current.totale_lordo|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Contributi INPS</td><td class="fw-bold text-end">€ {{ current.contributi.inps.totale|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Contributi Cassa</td><td class="fw-bold text-end">€ {{ current.contributi.cassa.totale|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Totale contributi</td><td class="fw-bold text-end">€ {{ current.contributi.totale|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ current.netto|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Stima trimestrale contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ current.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
             </table>
             {% else %}
             <div class="text-secondary small py-3 text-center">Errore nel calcolo: {{ current.errore|default:"parametri mancanti" }}</div>
@@ -97,56 +97,56 @@
                 <input type="number" step="0.5" name="ore_alt" class="form-control" value="{{ ore_alt|default:current.ore_mensili }}" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;">
             </div>
             <div class="d-flex flex-wrap gap-3 mb-3">
-                <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
-                    <input type="checkbox" name="ind_funzione" value="1" {% if request.GET.ind_funzione == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Ind. Funzione
+                <label class="d-flex align-items-center gap-2" class="click-muted">
+                    <input type="checkbox" name="ind_funzione" value="1" {% if request.GET.ind_funzione == '1' %}checked{% endif %} class="accent-checkbox"> Ind. Funzione
                 </label>
-                <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
-                    <input type="checkbox" name="ind_bambini_6" value="1" {% if request.GET.ind_bambini_6 == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Bambini &lt;6
+                <label class="d-flex align-items-center gap-2" class="click-muted">
+                    <input type="checkbox" name="ind_bambini_6" value="1" {% if request.GET.ind_bambini_6 == '1' %}checked{% endif %} class="accent-checkbox"> Bambini &lt;6
                 </label>
-                <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
-                    <input type="checkbox" name="ind_piu_assistiti" value="1" {% if request.GET.ind_piu_assistiti == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Più Assistiti
+                <label class="d-flex align-items-center gap-2" class="click-muted">
+                    <input type="checkbox" name="ind_piu_assistiti" value="1" {% if request.GET.ind_piu_assistiti == '1' %}checked{% endif %} class="accent-checkbox"> Più Assistiti
                 </label>
-                <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
-                    <input type="checkbox" name="ind_cert_qualita" value="1" {% if request.GET.ind_cert_qualita == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Cert. Qualità
+                <label class="d-flex align-items-center gap-2" class="click-muted">
+                    <input type="checkbox" name="ind_cert_qualita" value="1" {% if request.GET.ind_cert_qualita == '1' %}checked{% endif %} class="accent-checkbox"> Cert. Qualità
                 </label>
-                <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:11px;color:#8A8F98;">
-                    <input type="checkbox" name="scatti" value="1" {% if request.GET.scatti == '1' %}checked{% endif %} style="accent-color:#5E6AD2;"> Scatti
+                <label class="d-flex align-items-center gap-2" class="click-muted">
+                    <input type="checkbox" name="scatti" value="1" {% if request.GET.scatti == '1' %}checked{% endif %} class="accent-checkbox"> Scatti
                 </label>
             </div>
 
             {% if alternative %}
             <table class="table custom-table" style="font-size: 12px;">
-                <tr><td style="color:#8A8F98;">Budget mensile</td><td class="fw-bold text-end">€ {{ alternative.budget_mensile|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Ore mensili</td><td class="fw-bold text-end">{{ alternative.ore_mensili|floatformat:1 }}h</td></tr>
-                <tr><td style="color:#8A8F98;">Paga oraria lorda</td><td class="fw-bold text-end">€ {{ alternative.paga_oraria_lorda|floatformat:4 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale lordo</td><td class="fw-bold text-end">€ {{ alternative.totale_lordo|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Totale contributi</td><td class="fw-bold text-end">€ {{ alternative.contributi.totale|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ alternative.netto|floatformat:2 }}</td></tr>
-                <tr><td style="color:#8A8F98;">Stima trim. contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ alternative.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Budget mensile</td><td class="fw-bold text-end">€ {{ alternative.budget_mensile|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Ore mensili</td><td class="fw-bold text-end">{{ alternative.ore_mensili|floatformat:1 }}h</td></tr>
+                <tr><td class="c-muted">Paga oraria lorda</td><td class="fw-bold text-end">€ {{ alternative.paga_oraria_lorda|floatformat:4 }}</td></tr>
+                <tr><td class="c-muted">Totale lordo</td><td class="fw-bold text-end">€ {{ alternative.totale_lordo|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Totale contributi</td><td class="fw-bold text-end">€ {{ alternative.contributi.totale|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ alternative.netto|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Stima trim. contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ alternative.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
             </table>
 
             <div style="background: rgba(94,106,210,0.08); border-radius: 10px; padding: 12px; margin-top: 10px;">
                 <div class="small fw-bold mb-1" style="color:#9ca3ff;">Differenza vs Corrente</div>
                 <div class="d-flex justify-content-between small">
-                    <span style="color:#8A8F98;">Lordo:</span>
+                    <span class="c-muted">Lordo:</span>
                     <span class="fw-bold" style="color:{% if diff_lordo >= 0 %}#34d399{% else %}#f87171{% endif %};">
                         € {{ diff_lordo|floatformat:2 }}
                     </span>
                 </div>
                 <div class="d-flex justify-content-between small">
-                    <span style="color:#8A8F98;">Contributi:</span>
+                    <span class="c-muted">Contributi:</span>
                     <span class="fw-bold" style="color:{% if diff_contributi >= 0 %}#34d399{% else %}#f87171{% endif %};">
                         € {{ diff_contributi|floatformat:2 }}
                     </span>
                 </div>
                 <div class="d-flex justify-content-between small">
-                    <span style="color:#8A8F98;">Netto:</span>
+                    <span class="c-muted">Netto:</span>
                     <span class="fw-bold" style="color:{% if diff_netto >= 0 %}#34d399{% else %}#f87171{% endif %};">
                         € {{ diff_netto|floatformat:2 }}
                     </span>
                 </div>
                 <div class="d-flex justify-content-between small">
-                    <span style="color:#8A8F98;">Stima trim. contributi:</span>
+                    <span class="c-muted">Stima trim. contributi:</span>
                     <span class="fw-bold" style="color:{% if diff_trimestrale >= 0 %}#34d399{% else %}#f87171{% endif %};">
                         € {{ diff_trimestrale|floatformat:2 }}
                     </span>

@@ -160,11 +160,11 @@
             <div class="skeleton skeleton-text" style="width:11%"></div>
             <div class="skeleton skeleton-text" style="width:6%"></div>
             <div class="skeleton skeleton-text" style="width:4%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
             <div class="skeleton skeleton-text" style="width:4%"></div>
             <div class="skeleton" style="width:40px;height:22px;border-radius:10px;flex-shrink:0;"></div>
         </div>
@@ -511,12 +511,12 @@ function apriDocumentiContratto(pk) {
             var html = '<div class="list-group">';
             d.documenti.forEach(function(doc) {
                 html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">';
-                html += '<div><strong style="color:#EDEDED;">' + doc.tipo + '</strong><br><small style="color:#8A8F98;">' + doc.titolo + ' &middot; ' + doc.creato_il + '</small></div>';
+                html += '<div><strong class="c-text">' + doc.tipo + '</strong><br><small style="color:#8A8F98;">' + doc.titolo + ' &middot; ' + doc.creato_il + '</small></div>';
                 html += '<div class="d-flex gap-1">';
-                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn btn-sm btn-ghost-info" style="padding:3px 10px;font-size:11px;"><i class="bi bi-eye"></i></a>';
-                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" download class="btn btn-sm btn-ghost-success" style="padding:3px 10px;font-size:11px;"><i class="bi bi-download"></i></a>';
+                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn btn-sm btn-ghost-info" class="btn-doc-sm"><i class="bi bi-eye"></i></a>';
+                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" download class="btn btn-sm btn-ghost-success" class="btn-doc-sm"><i class="bi bi-download"></i></a>';
                 html += '<a href="/apri-cartella-documento/' + doc.pk + '/" class="btn btn-sm btn-ghost" style="padding:3px 10px;font-size:11px;text-decoration:none;"><i class="bi bi-folder2-open"></i></a>';
-                html += '<button type="button" onclick="eliminaDocContratto(' + doc.pk + ', this)" class="btn btn-sm btn-ghost-danger" style="padding:3px 10px;font-size:11px;"><i class="bi bi-trash3"></i></button>';
+                html += '<button type="button" onclick="eliminaDocContratto(' + doc.pk + ', this)" class="btn btn-sm btn-ghost-danger" class="btn-doc-sm"><i class="bi bi-trash3"></i></button>';
                 html += '</div></div>';
             });
             html += '</div>';
@@ -538,7 +538,7 @@ function creaModaleDocumenti() {
     div.className = 'modal fade';
     div.id = 'modaleDocumentiContratto';
     div.tabIndex = -1;
-    div.innerHTML = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="background:#17181C;border:1px solid #27282D;"><div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" style="color:#EDEDED;">Documenti Contratto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button></div><div class="modal-body" style="color:#EDEDED;"></div></div></div>';
+    div.innerHTML = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="background:#17181C;border:1px solid #27282D;"><div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" class="c-text">Documenti Contratto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button></div><div class="modal-body" class="c-text"></div></div></div>';
     document.body.appendChild(div);
     return div;
 }

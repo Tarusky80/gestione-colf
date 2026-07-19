@@ -28,57 +28,57 @@
         {# --- RIEPILOGO --- #}
         <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px 28px;">
             <div class="fw-bold d-flex align-items-center" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98; margin-bottom: 18px;">
-                <span><i class="bi bi-info-circle" style="margin-right: 6px; color: #5E6AD2;"></i>Riepilogo</span>
+                <span><i class="bi bi-info-circle" class="me-1 c-accent"></i>Riepilogo</span>
             </div>
             <div class="row g-3 align-items-center">
                 <div class="col-md-12 col-12">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Beneficiario</div>
+                    <div class="label-riepilogo">Beneficiario</div>
                     <div id="r_beneficiario" style="font-size: 17px; font-weight: 700; color: #EDEDED;">—</div>
                 </div>
             </div>
             <div class="row g-3 align-items-center mt-2">
                 <div class="col-md-4 col-6">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Data Inizio</div>
-                    <div id="r_data_inizio" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                    <div class="label-riepilogo">Data Inizio</div>
+                    <div id="r_data_inizio" class="value-riepilogo">—</div>
                 </div>
                 <div class="col-md-4 col-6">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Data Fine</div>
-                    <div id="r_data_fine" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                    <div class="label-riepilogo">Data Fine</div>
+                    <div id="r_data_fine" class="value-riepilogo">—</div>
                 </div>
                 <div class="col-md-4 col-6">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Durata</div>
-                    <div id="r_durata" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                    <div class="label-riepilogo">Durata</div>
+                    <div id="r_durata" class="value-riepilogo">—</div>
                 </div>
             </div>
             <div class="row g-3 align-items-center mt-2">
                 <div class="col-md-4 col-6">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Budget Annuale</div>
+                    <div class="label-riepilogo">Budget Annuale</div>
                     <div id="r_budget_annuale" style="font-size: 15px; font-weight: 600; color: #EDEDED;">—</div>
                 </div>
                 <div class="col-md-4 col-6">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Mesi</div>
-                    <div id="r_mesi" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                    <div class="label-riepilogo">Mesi</div>
+                    <div id="r_mesi" class="value-riepilogo">—</div>
                 </div>
                 <div class="col-md-4 col-6">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Budget Mensile</div>
+                    <div class="label-riepilogo">Budget Mensile</div>
                     <div id="r_budget_mensile" style="font-size: 15px; font-weight: 600; color: #EDEDED;">—</div>
                 </div>
             </div>
             <div class="row g-3 align-items-center mt-2">
                 <div class="col-md-6 col-12">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Tipo</div>
-                    <div id="r_tipo" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                    <div class="label-riepilogo">Tipo</div>
+                    <div id="r_tipo" class="value-riepilogo">—</div>
                 </div>
                 <div class="col-md-6 col-12">
-                    <div style="font-size: 9px; color: #8A8F98; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px;">Contratti collegati</div>
-                    <div id="r_contratti_count" style="font-size: 14px; font-weight: 600; color: #EDEDED;">—</div>
+                    <div class="label-riepilogo">Contratti collegati</div>
+                    <div id="r_contratti_count" class="value-riepilogo">—</div>
                 </div>
             </div>
         </div>
 
         {# --- BENEFICIARIO --- #}
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.beneficiario.label }}</label>
+            <label class="mb-1 fw-bold" class="label-form-uppercase">{{ form.beneficiario.label }}</label>
             <select name="beneficiario" class="form-control" id="id_beneficiario" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff !important; font-size:14px; padding:10px 12px; border-radius:8px; -webkit-appearance:none; appearance:none;">
                 <option value="">---------</option>
                 {% for ben in form.fields.beneficiario.queryset %}
@@ -92,37 +92,37 @@
                     data-cap="{{ ben.cap|default:'' }}">{{ ben.nome_cognome }}</option>
                 {% endfor %}
             </select>
-            {% for error in form.beneficiario.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            {% for error in form.beneficiario.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
         </div>
 
         {# --- SCHEDA BENEFICIARIO --- #}
         <div id="beneficiarioCard" class="mb-3" style="display:none; background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 16px 20px;">
             <div class="fw-bold mb-2" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98;">
-                <i class="bi bi-person-badge" style="margin-right: 6px; color: #5E6AD2;"></i>Dettagli beneficiario
+                <i class="bi bi-person-badge" class="me-1 c-accent"></i>Dettagli beneficiario
             </div>
             <div class="row g-2">
-                <div class="col-3"><div style="font-size:9px; color:#8A8F98;">CF</div><div id="ben_cf" style="font-size:12px; font-weight:600; color:#EDEDED; font-family:monospace;">—</div></div>
-                <div class="col-3"><div style="font-size:9px; color:#8A8F98;">Indirizzo</div><div id="ben_indirizzo" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
-                <div class="col-3"><div style="font-size:9px; color:#8A8F98;">Comune</div><div id="ben_comune" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
-                <div class="col-1"><div style="font-size:9px; color:#8A8F98;">Prov.</div><div id="ben_provincia" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
-                <div class="col-2"><div style="font-size:9px; color:#8A8F98;">CAP</div><div id="ben_cap" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-3"><div class="c-muted fs-9">CF</div><div id="ben_cf" style="font-size:12px; font-weight:600; color:#EDEDED; font-family:monospace;">—</div></div>
+                <div class="col-3"><div class="c-muted fs-9">Indirizzo</div><div id="ben_indirizzo" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-3"><div class="c-muted fs-9">Comune</div><div id="ben_comune" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-1"><div class="c-muted fs-9">Prov.</div><div id="ben_provincia" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-2"><div class="c-muted fs-9">CAP</div><div id="ben_cap" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
             </div>
         </div>
 
         {# --- DATA INIZIO + FINE --- #}
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
-                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.data_inizio.label }}</label>
+                <label class="mb-1 fw-bold" class="label-form-uppercase">{{ form.data_inizio.label }}</label>
                 <div class="d-flex align-items-center gap-2">
                     <div style="flex:1;">{{ form.data_inizio }}</div>
                     <button type="button" id="copiaDataBtn" style="background:rgba(94,106,210,0.1); color:#9ca3ff; border:1px solid rgba(94,106,210,0.15); border-radius:6px; padding:6px; font-size:13px; line-height:1; cursor:pointer; transition:all 0.15s; flex-shrink:0; display:flex; align-items:center; justify-content:center; width:32px; height:32px;" title="Copia data dal primo contratto">
                         <i class="bi bi-copy"></i>
                     </button>
                 </div>
-                {% for error in form.data_inizio.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                {% for error in form.data_inizio.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-6 col-12">
-                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.data_fine.label }}</label>
+                <label class="mb-1 fw-bold" class="label-form-uppercase">{{ form.data_fine.label }}</label>
                 <div class="d-flex align-items-center gap-2">
                     <div style="flex:1;">{{ form.data_fine }}</div>
                     <button type="button" id="fineAnnoBtn" style="background:rgba(94,106,210,0.1); color:#9ca3ff; border:1px solid rgba(94,106,210,0.15); border-radius:6px; padding:6px; font-size:13px; line-height:1; cursor:pointer; transition:all 0.15s; flex-shrink:0; display:flex; align-items:center; justify-content:center; width:32px; height:32px;" title="Imposta a fine anno">
@@ -135,22 +135,22 @@
                 <div id="dataFineWarningProgetto" style="display:none;font-size:11px;color:#f87171;margin-top:2px;">
                     <i class="bi bi-exclamation-triangle-fill me-1"></i> <span id="dataFineWarningProgettoTesto"></span>
                 </div>
-                {% for error in form.data_fine.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+                {% for error in form.data_fine.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
             </div>
         </div>
 
         {# --- BUDGET ANNUALE + MESI + MENSILE --- #}
         <div class="row g-3 mb-3">
             <div class="col-md-4 col-12">
-                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.budget_annuale.label }}</label>
+                <label class="mb-1 fw-bold" class="label-form-uppercase">{{ form.budget_annuale.label }}</label>
                 {{ form.budget_annuale }}
             </div>
             <div class="col-md-2 col-12">
-                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.mesi.label }}</label>
+                <label class="mb-1 fw-bold" class="label-form-uppercase">{{ form.mesi.label }}</label>
                 {{ form.mesi }}
             </div>
             <div class="col-md-4 col-12">
-                <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.budget_mensile.label }}</label>
+                <label class="mb-1 fw-bold" class="label-form-uppercase">{{ form.budget_mensile.label }}</label>
                 {{ form.budget_mensile }}
             </div>
             <div class="col-md-2 col-12 d-flex align-items-end pb-1">
@@ -160,7 +160,7 @@
 
         {# --- TIPO --- #}
         <div class="mb-3">
-            <label class="mb-1 fw-bold" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #EDEDED;">{{ form.tipo.label }}</label>
+            <label class="mb-1 fw-bold" class="label-form-uppercase">{{ form.tipo.label }}</label>
             <select name="tipo" class="form-control" id="id_tipo" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff !important; font-size:14px; padding:10px 12px; border-radius:8px;">
                 <option value="">---------</option>
                 {% for t in form.fields.tipo.queryset %}
@@ -170,14 +170,14 @@
                 {% endfor %}
             </select>
             <div id="tipoDesc" class="mt-1 text-secondary" style="font-size: 10px; display:none;"></div>
-            {% for error in form.tipo.errors %}<div class="mt-1 fw-bold" style="font-size: 11px; color: #ff6b6b;">{{ error }}</div>{% endfor %}
+            {% for error in form.tipo.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
         </div>
 
         {# --- CONTRATTI COLLEGATI (CLICCABILI) --- #}
         {% if contratti_collegati %}
         <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px 24px;">
             <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
-                <i class="bi bi-file-earmark-text" style="margin-right: 6px; color: #5E6AD2;"></i>Contratti collegati
+                <i class="bi bi-file-earmark-text" class="me-1 c-accent"></i>Contratti collegati
             </div>
             {% for c in contratti_collegati %}
             <a href="#" class="contratto-link text-decoration-none" data-data-inizio="{{ c.data_assunzione|date:'Y-m-d' }}" data-data-fine="{{ c.data_fine|date:'Y-m-d'|default:'' }}" onclick="event.preventDefault(); loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">

@@ -24,7 +24,7 @@
              style="font-size:13px;padding:6px 14px;border-radius:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#8A8F98;text-decoration:none;white-space:nowrap;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;"
              onmouseenter="this.style.background='rgba(255,255,255,0.08)';this.style.color='#EDEDED'"
              onmouseleave="this.style.background='rgba(255,255,255,0.04)';this.style.color='#8A8F98'">
-            <i class="{{ voce.icona }}" style="font-size:10px;"></i>
+            <i class="{{ voce.icona }} fs-10"></i>
             <span>{{ voce.label|truncatechars:22 }}</span>
           </a>
           {% endfor %}
@@ -43,59 +43,59 @@
             </div>
             <div class="alert-dropdown-body" id="alertDropdownBody">
                 {% if scaduti_count > 0 %}
-                <div class="alert-dropdown-item" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()" style="cursor:pointer;flex-wrap:wrap;">
+                <div class="alert-dropdown-item flex-wrap-pointer" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()">
                     <span class="dot" style="background:#ff6b6b;"></span>
-                    <span class="al-label" style="font-weight:600;">Scaduti da aggiornare</span>
-                    <span class="al-count" style="color:#ff6b6b;">{{ scaduti_count }}</span>
+                    <span class="al-label fw-6">Scaduti da aggiornare</span>
+                    <span class="al-count c-rose">{{ scaduti_count }}</span>
                     {% for c in scaduti_items|slice:":3" %}
-                    <div style="width:100%;padding:2px 0 2px 18px;font-size:11px;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
+                    <div class="fs-11" style="padding:2px 0 2px 18px;width:100%;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
                     {% endfor %}
-                    {% if scaduti_count > 3 %}<div style="width:100%;padding:2px 0 2px 18px;font-size:10px;color:#8A8F98;">...e altri {{ scaduti_count|add:"-3" }}</div>{% endif %}
+                    {% if scaduti_count > 3 %}<div class="label-info" style="padding:2px 0 2px 18px;width:100%;">...e altri {{ scaduti_count|add:"-3" }}</div>{% endif %}
                 </div>
                 {% endif %}
                 {% if contratti_in_scadenza > 0 %}
                 <div class="alert-dropdown-item">
                     <span class="dot" style="background:#f59e0b;"></span>
                     <span class="al-label">Progetti in scadenza (30gg)</span>
-                    <span class="al-count" style="color:#f59e0b;">{{ contratti_in_scadenza }}</span>
+                    <span class="al-count c-amber">{{ contratti_in_scadenza }}</span>
                 </div>
                 {% endif %}
                 {% if nuovi_mese > 0 %}
                 <div class="alert-dropdown-item">
                     <span class="dot" style="background:#10b981;"></span>
                     <span class="al-label">Nuovi assunti (mese)</span>
-                    <span class="al-count" style="color:#10b981;">{{ nuovi_mese }}</span>
+                    <span class="al-count c-green2">{{ nuovi_mese }}</span>
                 </div>
                 {% endif %}
                 {% if senza_progetto > 0 %}
                 <div class="alert-dropdown-item">
                     <span class="dot" style="background:#06b6d4;"></span>
                     <span class="al-label">Senza progetto</span>
-                    <span class="al-count" style="color:#06b6d4;">{{ senza_progetto }}</span>
+                    <span class="al-count c-cyan">{{ senza_progetto }}</span>
                 </div>
                 {% endif %}
                 {% if senza_budget_count > 0 %}
-                <div class="alert-dropdown-item" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()" style="cursor:pointer;flex-wrap:wrap;">
+                <div class="alert-dropdown-item flex-wrap-pointer" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()">
                     <span class="dot" style="background:#fb923c;"></span>
-                    <span class="al-label" style="font-weight:600;">Senza budget</span>
-                    <span class="al-count" style="color:#fb923c;">{{ senza_budget_count }}</span>
+                    <span class="al-label fw-6">Senza budget</span>
+                    <span class="al-count c-orange">{{ senza_budget_count }}</span>
                     {% for c in senza_budget_items|slice:":3" %}
-                    <div style="width:100%;padding:2px 0 2px 18px;font-size:11px;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
+                    <div class="fs-11" style="padding:2px 0 2px 18px;width:100%;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
                     {% endfor %}
-                    {% if senza_budget_count > 3 %}<div style="width:100%;padding:2px 0 2px 18px;font-size:10px;color:#8A8F98;">...e altri {{ senza_budget_count|add:"-3" }}</div>{% endif %}
+                    {% if senza_budget_count > 3 %}<div class="label-info" style="padding:2px 0 2px 18px;width:100%;">...e altri {{ senza_budget_count|add:"-3" }}</div>{% endif %}
                 </div>
                 {% endif %}
                 {% if patrono_count > 0 %}
                 <div class="alert-dropdown-item">
                     <span class="dot" style="background:#f59e0b;"></span>
                     <span class="al-label">Festivit&agrave; patrono</span>
-                    <span class="al-count" style="color:#f59e0b;">{{ patrono_count }}</span>
+                    <span class="al-count c-amber">{{ patrono_count }}</span>
                 </div>
                 {% endif %}
             </div>
             {% if totale_alert > 0 %}
             <div class="alert-dropdown-footer" style="border-top:1px solid #27282D;padding:8px 16px;text-align:center;">
-                <span style="font-size:11px;color:#8A8F98;">{{ totale_alert }} alert attivi</span>
+                <span class="c-11-m">{{ totale_alert }} alert attivi</span>
             </div>
             {% endif %}
         </div>
@@ -106,9 +106,9 @@
 {% with mc=contratti_per_comune.0.count|default:1 %}
 <div class="row g-3 mb-4 mt-2 skeleton">
     <div class="col-md-3 col-6">
-        <div class="kpi-dash" style="background:linear-gradient(135deg,rgba(94,106,210,0.12),rgba(94,106,210,0.04));border:1px solid rgba(94,106,210,0.15);">
+        <div class="kpi-dash kpi-card-accent">
             <div class="d-flex align-items-center gap-3">
-                <div class="icon-wrap-42" style="background:rgba(94,106,210,0.15);"><i class="bi bi-file-earmark-check c-accent" style="font-size:20px;"></i></div>
+                <div class="icon-wrap-42 icon-wrap-accent"><i class="bi bi-file-earmark-check c-accent fs-20"></i></div>
                 <div>
                     <div class="c-9-up">Contratti Attivi</div>
                     <div class="kpi-val-lg">{{ totale_attivi }}</div>
@@ -118,9 +118,9 @@
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="kpi-dash" style="background:linear-gradient(135deg,rgba(16,185,129,0.12),rgba(16,185,129,0.04));border:1px solid rgba(16,185,129,0.15);">
+        <div class="kpi-dash kpi-card-teal">
             <div class="d-flex align-items-center gap-3">
-                <div class="icon-wrap-42" style="background:rgba(16,185,129,0.15);"><i class="bi bi-clock-history c-green2" style="font-size:20px;"></i></div>
+                <div class="icon-wrap-42 icon-wrap-teal"><i class="bi bi-clock-history c-green2 fs-20"></i></div>
                 <div>
                     <div class="c-9-up">Ore / Mese</div>
                     <div class="kpi-val-lg">{{ ore_totali|floatformat:0 }}</div>
@@ -130,9 +130,9 @@
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="kpi-dash" style="background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(245,158,11,0.04));border:1px solid rgba(245,158,11,0.15);">
+        <div class="kpi-dash kpi-card-amber">
             <div class="d-flex align-items-center gap-3">
-                <div class="icon-wrap-42" style="background:rgba(245,158,11,0.15);"><i class="bi bi-calendar-check c-amber" style="font-size:20px;"></i></div>
+                <div class="icon-wrap-42 icon-wrap-amber"><i class="bi bi-calendar-check c-amber fs-20"></i></div>
                 <div>
                     <div class="c-9-up">Prossima Scadenza</div>
                     <div style="font-size:16px;font-weight:700;color:#EDEDED;line-height:1.2;">{{ prossima_scadenza_label }}</div>
@@ -142,9 +142,9 @@
         </div>
     </div>
     <div class="col-md-3 col-6">
-        <div class="kpi-dash" style="background:linear-gradient(135deg,rgba(168,85,247,0.12),rgba(168,85,247,0.04));border:1px solid rgba(168,85,247,0.15);">
+        <div class="kpi-dash kpi-card-purple">
             <div class="d-flex align-items-center gap-3">
-                <div class="icon-wrap-42" style="background:rgba(168,85,247,0.15);"><i class="bi bi-archive" style="color:#a855f7;font-size:20px;"></i></div>
+                <div class="icon-wrap-42 icon-wrap-purple"><i class="bi bi-archive c-purple fs-20"></i></div>
                 <div>
                     <div class="c-9-up">Buste Archiviate</div>
                     <div class="kpi-val-lg">{{ buste_archiviate_pct }}%</div>
@@ -209,15 +209,15 @@
     <div class="col-md-3">
         <div class="link-card">
             <h4 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#8A8F98;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05);">
-                <i class="bi bi-link-45deg" style="color:#5E6AD2;"></i> Link Utili Settore
+                <i class="bi bi-link-45deg c-accent"></i> Link Utili Settore
             </h4>
-            <a href="https://www.inps.it/it/it/dettaglio-scheda.it.schede-servizio-strumento.schede-aree-tematiche.accesso-ai-servizi-per-i-lavoratori-domestici-50275.accesso-ai-servizi-per-i-lavoratori-domestici.html" target="_blank" rel="noopener"><i class="bi bi-building" style="color:#5E6AD2;"></i> INPS — Accesso Servizi Domestici</a>
-            <a href="https://www.webcolf.com/exec/isapi.dll/calcolo-online-costo-colf-badanti.html" target="_blank" rel="noopener"><i class="bi bi-calculator" style="color:#10b981;"></i> WebColf — Calcolo Costo Online</a>
-            <a href="https://www.webcolf.com/risorse/paghe-e-contributi-annuali/tabella-paga-minima-colf-badanti.html" target="_blank" rel="noopener"><i class="bi bi-table" style="color:#06b6d4;"></i> WebColf — Tabella Paga Minima</a>
-            <a href="https://www.webcolf.com/risorse/paghe-e-contributi-annuali/contributi-inps.html" target="_blank" rel="noopener"><i class="bi bi-percent" style="color:#ec4899;"></i> WebColf — Contributi INPS</a>
-            <a href="https://lavorodomestico.assindatcolf.it/tabella-retributiva/" target="_blank" rel="noopener"><i class="bi bi-file-earmark-text" style="color:#a855f7;"></i> Assindatcolf — Tabella Retributiva 2026</a>
+            <a href="https://www.inps.it/it/it/dettaglio-scheda.it.schede-servizio-strumento.schede-aree-tematiche.accesso-ai-servizi-per-i-lavoratori-domestici-50275.accesso-ai-servizi-per-i-lavoratori-domestici.html" target="_blank" rel="noopener"><i class="bi bi-building c-accent"></i> INPS — Accesso Servizi Domestici</a>
+            <a href="https://www.webcolf.com/exec/isapi.dll/calcolo-online-costo-colf-badanti.html" target="_blank" rel="noopener"><i class="bi bi-calculator c-green2"></i> WebColf — Calcolo Costo Online</a>
+            <a href="https://www.webcolf.com/risorse/paghe-e-contributi-annuali/tabella-paga-minima-colf-badanti.html" target="_blank" rel="noopener"><i class="bi bi-table c-cyan"></i> WebColf — Tabella Paga Minima</a>
+            <a href="https://www.webcolf.com/risorse/paghe-e-contributi-annuali/contributi-inps.html" target="_blank" rel="noopener"><i class="bi bi-percent c-pink"></i> WebColf — Contributi INPS</a>
+            <a href="https://lavorodomestico.assindatcolf.it/tabella-retributiva/" target="_blank" rel="noopener"><i class="bi bi-file-earmark-text c-purple"></i> Assindatcolf — Tabella Retributiva 2026</a>
             <a href="https://www.colf.info/minimi-contrattuali-colf-badanti-2026.asp" target="_blank" rel="noopener"><i class="bi bi-file-spreadsheet" style="color:#f97316;"></i> Colf.info — Minimi Contrattuali 2026</a>
-            <a href="https://www.cafmcl.it/" target="_blank" rel="noopener"><i class="bi bi-shield-check" style="color:#f59e0b;"></i> CAF MCL</a>
+            <a href="https://www.cafmcl.it/" target="_blank" rel="noopener"><i class="bi bi-shield-check c-amber"></i> CAF MCL</a>
         </div>
     </div>
 </div>
@@ -227,7 +227,7 @@
     <div class="col-12">
         <div class="mini-card">
             <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
-                <h4 class="mb-0"><i class="bi bi-geo-alt me-1" style="color:#5E6AD2;"></i> Mappa Beneficiari</h4>
+                <h4 class="mb-0"><i class="bi bi-geo-alt me-1 c-accent"></i> Mappa Beneficiari</h4>
                 <div class="d-flex gap-2 align-items-center">
                     <select id="mapComuneFiltro" class="form-control bg-input" style="width:auto;font-size:12px;padding:4px 10px;border-radius:6px;height:32px;">
                         <option value="">Tutti i comuni</option>
@@ -252,7 +252,7 @@
 <div class="row g-4 mb-4">
     <div class="col-md-6">
         <div class="mini-card skeleton">
-            <h4><i class="bi bi-calendar-event me-1" style="color:#5E6AD2;"></i> Prossimi appuntamenti</h4>
+            <h4><i class="bi bi-calendar-event me-1 c-accent"></i> Prossimi appuntamenti</h4>
             {% if agenda_prossimi %}
                 {% for app in agenda_prossimi %}
                 <div class="stat-row d-flex justify-content-between align-items-center py-1">
@@ -260,7 +260,7 @@
                         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:{% if app.tipo == 'SCADENZA' %}#f59e0b{% elif app.tipo == 'APPUNTAMENTO' %}#5E6AD2{% else %}#34d399{% endif %};"></span>
                         {{ app.titolo }}
                     </span>
-                    <span class="value" style="font-size:11px;color:#8A8F98;white-space:nowrap;">{{ app.data|date:"d/m/Y" }}</span>
+                    <span class="value c-11-m nowrap">{{ app.data|date:"d/m/Y" }}</span>
                 </div>
                 {% endfor %}
             {% else %}
@@ -271,12 +271,12 @@
     </div>
     <div class="col-md-6">
         <div class="mini-card skeleton">
-            <h4><i class="bi bi-file-earmark-text me-1" style="color:#5E6AD2;"></i> Ultimi documenti</h4>
+            <h4><i class="bi bi-file-earmark-text me-1 c-accent"></i> Ultimi documenti</h4>
             {% if ultimi_documenti %}
                 {% for doc in ultimi_documenti %}
                 <div class="stat-row d-flex justify-content-between align-items-center py-1">
                     <span class="label" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ doc.titolo|truncatechars:45 }}</span>
-                    <span class="value" style="font-size:11px;color:#8A8F98;white-space:nowrap;">{{ doc.creato_il|date:"d/m/Y" }}</span>
+                    <span class="value c-11-m nowrap">{{ doc.creato_il|date:"d/m/Y" }}</span>
                 </div>
                 {% endfor %}
             {% else %}
@@ -292,18 +292,18 @@
         <span style="font-size:13px;font-weight:600;color:#a1a1aa;"><i class="bi bi-bar-chart-line me-2"></i> Grafici e Report</span>
         <span class="collapse-toggle" id="statsToggle"><i class="bi bi-chevron-down"></i></span>
     </div>
-    <div class="collapse-content" id="statsCollapse" style="display:none;">
+    <div class="collapse-content" id="statsCollapse" class="d-none">
     {% if totale_attivi %}
     {% with mc=contratti_per_comune.0.count|default:1 %}
     <div class="row g-4 mb-4 mt-3">
         <div class="col-md-3 dash-card">
             <div class="mini-card">
                 <h4><i class="bi bi-geo-alt me-1"></i> Per Comune</h4>
-                <div class="stat-row"><span class="label"><i class="bi bi-file-earmark-check text-success me-1"></i>Contratti Attivi</span><span class="value" style="color:#10b981;">{{ totale_attivi }}</span></div>
-                <div class="stat-row"><span class="label"><i class="bi bi-person-vcard text-primary me-1"></i>Datori</span><span class="value" style="color:#5E6AD2;">{{ datori_count }}</span></div>
-                <div class="stat-row"><span class="label"><i class="bi bi-people text-info me-1"></i>Lavoratori</span><span class="value" style="color:#06b6d4;">{{ lavoratori_count }}</span></div>
-                <div class="stat-row"><span class="label"><i class="bi bi-person-heart text-warning me-1"></i>Beneficiari</span><span class="value" style="color:#f59e0b;">{{ beneficiari_count }}</span></div>
-                <div style="border-top:1px solid rgba(255,255,255,0.06); margin:8px 0 10px 0;"></div>
+                <div class="stat-row"><span class="label"><i class="bi bi-file-earmark-check text-success me-1"></i>Contratti Attivi</span><span class="value c-green2">{{ totale_attivi }}</span></div>
+                <div class="stat-row"><span class="label"><i class="bi bi-person-vcard text-primary me-1"></i>Datori</span><span class="value c-accent">{{ datori_count }}</span></div>
+                <div class="stat-row"><span class="label"><i class="bi bi-people text-info me-1"></i>Lavoratori</span><span class="value c-cyan">{{ lavoratori_count }}</span></div>
+                <div class="stat-row"><span class="label"><i class="bi bi-person-heart text-warning me-1"></i>Beneficiari</span><span class="value c-amber">{{ beneficiari_count }}</span></div>
+                <div class="divider-light" style="margin:8px 0 10px;"></div>
                 {% for c in contratti_per_comune %}
                 <div class="stat-row"><span class="label">{{ c.datore__comune|default:"N/D" }}</span><span class="value">{{ c.count }}</span></div>
                 <div class="bar-wrap bar-purple"><div class="bar-fill" style="width: {% widthratio c.count mc 100 %}%;"></div></div>
@@ -318,13 +318,13 @@
                 <div class="chart-wrap"><canvas id="chartLivello"></canvas></div>
                 <div class="section-title">Tipologia</div>
                 {% for t in tipi %}
-                <div class="stat-row"><span class="label">{{ t.tipo_contratto|default:"N/D" }}</span><span class="value">{{ t.count }}<span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:4px;">/{{ totale_attivi }}</span></span></div>
+                <div class="stat-row"><span class="label">{{ t.tipo_contratto|default:"N/D" }}</span><span class="value">{{ t.count }}<span class="c-11-m ml-4">/{{ totale_attivi }}</span></span></div>
                 <div class="bar-wrap"><div class="bar-fill" style="width: {% widthratio t.count totale_attivi 100 %}%; background:#5E6AD2;"></div></div>
                 {% endfor %}
                 <div class="section-title">Conviventi</div>
-                <div class="stat-row"><span class="label">Convivente</span><span class="value">{{ conviventi }}<span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:4px;">/{{ totale_attivi }}</span></span></div>
+                <div class="stat-row"><span class="label">Convivente</span><span class="value">{{ conviventi }}<span class="c-11-m ml-4">/{{ totale_attivi }}</span></span></div>
                 <div class="bar-wrap bar-green"><div class="bar-fill" style="width: {% widthratio conviventi totale_attivi 100 %}%;"></div></div>
-                <div class="stat-row"><span class="label">Non convivente</span><span class="value">{{ non_conviventi }}<span style="font-size:11px;font-weight:400;color:#8A8F98;margin-left:4px;">/{{ totale_attivi }}</span></span></div>
+                <div class="stat-row"><span class="label">Non convivente</span><span class="value">{{ non_conviventi }}<span class="c-11-m ml-4">/{{ totale_attivi }}</span></span></div>
                 <div class="bar-wrap bar-pink"><div class="bar-fill" style="width: {% widthratio non_conviventi totale_attivi 100 %}%;"></div></div>
             </div>
         </div>
@@ -338,14 +338,14 @@
                 <div class="chart-wrap"><canvas id="chartBudget"></canvas></div>
                 {% endif %}
                 {% if contratti_in_scadenza %}
-                <div class="stat-row" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 6px; padding-top: 10px;">
+                <div class="stat-row stat-row-bordered">
                     <span class="label text-warning"><i class="bi bi-exclamation-triangle me-1"></i>In scadenza (30gg)</span>
                     <span class="value text-warning">{{ contratti_in_scadenza }}</span>
                 </div>
                 {% endif %}
-                <div class="stat-row" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 6px; padding-top: 10px;">
-                    <span class="label" style="color:#a855f7;"><i class="bi bi-piggy-bank me-1"></i>TFR proiettato {{ anno_corr }}</span>
-                    <span class="value" style="color:#a855f7;">&euro; {{ tfr_annuale_totale|floatformat:0 }}</span>
+                <div class="stat-row stat-row-bordered">
+                    <span class="label c-purple"><i class="bi bi-piggy-bank me-1"></i>TFR proiettato {{ anno_corr }}</span>
+                    <span class="value c-purple">&euro; {{ tfr_annuale_totale|floatformat:0 }}</span>
                 </div>
             </div>
         </div>
@@ -356,9 +356,9 @@
                 <div class="stat-row"><span class="label" style="color:{{ p.colore|default:'#10b981' }};">{{ p.nome }}</span><span class="value">{{ p.count }}</span></div>
                 <div class="bar-wrap"><div class="bar-fill" style="width: {% widthratio p.count totale_attivi 100 %}%; background:{{ p.colore|default:'#10b981' }};"></div></div>
                 {% endfor %}
-                <div class="stat-row" style="border-top: 1px solid rgba(255,255,255,0.05); margin-top: 4px; padding-top: 8px;">
-                    <span class="label" style="color: #8A8F98;">Nessun progetto</span>
-                    <span class="value" style="color: #8A8F98;">{{ senza_progetto }}</span>
+                <div class="stat-row stat-row-bordered-sm">
+                    <span class="label c-muted">Nessun progetto</span>
+                    <span class="value c-muted">{{ senza_progetto }}</span>
                 </div>
             </div>
     </div>
@@ -371,7 +371,7 @@
         <div class="col-12">
             <div class="mini-card">
                 <h4><i class="bi bi-bar-chart me-1"></i> Assunzioni vs Cessazioni</h4>
-                <div class="chart-wrap" style="height:220px;"><canvas id="chartConfronto"></canvas></div>
+                <div class="chart-wrap chart-h-220"><canvas id="chartConfronto"></canvas></div>
             </div>
         </div>
     </div>
@@ -380,15 +380,15 @@
         <div class="col-md-6">
             <div class="mini-card">
                 <h4><i class="bi bi-clock-history me-1"></i> Ore Lavorate / Mese</h4>
-                <div class="chart-wrap" style="height:180px;"><canvas id="chartOreMensili"></canvas></div>
-                <h4 style="margin-top:14px;font-size:13px;color:#a1a1aa;border-top:1px solid #27282D;padding-top:12px;"><i class="bi bi-file-earmark-text me-1"></i> Buste Paga Mese</h4>
+                <div class="chart-wrap chart-h-180"><canvas id="chartOreMensili"></canvas></div>
+                <h4 class="h4-bordered">><i class="bi bi-file-earmark-text me-1"></i> Buste Paga Mese</h4>
                 <div class="d-flex align-items-baseline gap-3 mt-2">
                     <div>
-                        <div class="display-6 fw-bold" style="color:#5E6AD2;">{{ totale_attivi }}</div>
+                        <div class="display-6 fw-bold c-accent">{{ totale_attivi }}</div>
                         <div class="small text-secondary">Contratti attivi</div>
                     </div>
                     <div>
-                        <div class="display-6 fw-bold" style="color:#10b981;">{{ ore_totali|floatformat:0 }}</div>
+                        <div class="display-6 fw-bold c-green2">{{ ore_totali|floatformat:0 }}</div>
                         <div class="small text-secondary">Ore/mese totali</div>
                     </div>
                 </div>
@@ -403,8 +403,8 @@
         <div class="col-md-6">
             <div class="mini-card">
                 <h4><i class="bi bi-geo-alt me-1"></i> Distribuzione Geografica</h4>
-                <div class="chart-wrap" style="height:180px;"><canvas id="chartGeo"></canvas></div>
-                <h4 style="margin-top:14px;font-size:13px;color:#a1a1aa;border-top:1px solid #27282D;padding-top:12px;"><i class="bi bi-diagram-3 me-1"></i> Stato Progetti</h4>
+                <div class="chart-wrap chart-h-180"><canvas id="chartGeo"></canvas></div>
+                <h4 class="h4-bordered">><i class="bi bi-diagram-3 me-1"></i> Stato Progetti</h4>
                 {% widthratio con_progetto totale_attivi 100 as pct_prog %}
                 <div class="mt-2">
                     <div class="d-flex justify-content-between small mb-1">
@@ -421,9 +421,9 @@
                         {% endif %}
                     </div>
                     <div class="d-flex justify-content-between small mt-2 pt-2" style="border-top:1px solid #27282D;">
-                        <span><i class="bi bi-clock-history me-1" style="color:#dc2626;"></i>{{ scaduti_count }} scaduti</span>
-                        <span><i class="bi bi-currency-euro me-1" style="color:#dc2626;"></i>{{ senza_budget_count }} no budget</span>
-                        <span><i class="bi bi-calendar me-1" style="color:#f59e0b;"></i>{{ trimestre_parziale_count }} trim. parz.</span>
+                        <span><i class="bi bi-clock-history me-1 c-red2"></i>{{ scaduti_count }} scaduti</span>
+                        <span><i class="bi bi-currency-euro me-1 c-red2"></i>{{ senza_budget_count }} no budget</span>
+                        <span><i class="bi bi-calendar me-1 c-amber"></i>{{ trimestre_parziale_count }} trim. parz.</span>
                     </div>
                 </div>
             </div>
@@ -437,7 +437,7 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         {% with tot_buste=buste_bozze|add:buste_approvate|add:buste_archiviate|default:1 %}
-                        <div class="section-title" style="font-size:10px;margin-top:0;">Stato Buste Paga</div>
+                        <div class="section-title fs-10">Stato Buste Paga</div>
                         <div class="stat-row"><span class="label">Bozze</span><span class="value">{{ buste_bozze }}</span></div>
                         <div class="bar-wrap"><div class="bar-fill" style="width:{% widthratio buste_bozze tot_buste 100 %}%;background:#f59e0b;"></div></div>
                         <div class="stat-row"><span class="label">Approvate</span><span class="value">{{ buste_approvate }}</span></div>
@@ -447,14 +447,14 @@
                         {% endwith %}
                     </div>
                     <div class="col-md-4">
-                        <div class="section-title" style="font-size:10px;margin-top:0;">UNIEMENS</div>
+                        <div class="section-title fs-10">UNIEMENS</div>
                         <div class="stat-row"><span class="label">Con CU</span><span class="value">{{ contratti_con_cu }}</span></div>
                         <div class="bar-wrap bar-purple"><div class="bar-fill" style="width:{% widthratio contratti_con_cu totale_attivi 100 %}%;"></div></div>
                         <div class="stat-row"><span class="label">Senza CU</span><span class="value">{{ contratti_senza_cu }}</span></div>
                         <div class="bar-wrap bar-pink"><div class="bar-fill" style="width:{% widthratio contratti_senza_cu totale_attivi 100 %}%;"></div></div>
                     </div>
                     <div class="col-md-4">
-                        <div class="section-title" style="font-size:10px;margin-top:0;">Contributi Trimestre</div>
+                        <div class="section-title fs-10">Contributi Trimestre</div>
                         <div class="stat-row"><span class="label">Versati</span><span class="value">{{ contratti_contributi_versati }}</span></div>
                         <div class="bar-wrap bar-green"><div class="bar-fill" style="width:{% widthratio contratti_contributi_versati totale_attivi 100 %}%;"></div></div>
                         <div class="stat-row"><span class="label">Da Versare</span><span class="value">{{ contratti_contributi_da_versare }}</span></div>
@@ -471,13 +471,13 @@
         <div class="col-md-6">
             <div class="mini-card">
                 <h4><i class="bi bi-file-earmark me-1"></i> Documenti per tipo</h4>
-                <div class="chart-wrap" style="height:180px;"><canvas id="chartDocumentiTipo"></canvas></div>
+                <div class="chart-wrap chart-h-180"><canvas id="chartDocumentiTipo"></canvas></div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="mini-card">
                 <h4><i class="bi bi-graph-up me-1"></i> Trend Contributi (12 mesi)</h4>
-                <div class="chart-wrap" style="height:180px;"><canvas id="chartContributiTrend"></canvas></div>
+                <div class="chart-wrap chart-h-180"><canvas id="chartContributiTrend"></canvas></div>
             </div>
         </div>
     </div>
@@ -511,7 +511,7 @@
                 <div class="alert-item"><span class="item-label"><i class="bi bi-clock me-1"></i>Ore totali/mese</span><span class="item-date"><strong>{{ ore_totali }}</strong> h</span></div>
                 <div class="alert-item"><span class="item-label"><i class="bi bi-cash me-1"></i>Budget mensile</span><span class="item-date">&euro;{{ budget_totale|floatformat:0 }}</span></div>
                 <div class="alert-item"><span class="item-label"><i class="bi bi-check-circle me-1"></i>Anagrafiche complete</span><span class="item-date"><strong>{{ anagrafiche_complete_pct }}%</strong></span></div>
-                <div class="alert-item"><span class="item-label"><i class="bi bi-database me-1"></i>Ultimo backup</span><span class="item-date">{% if ultimo_backup %}<span style="color:{% if backup_fresco %}#34d399{% elif backup_recente %}#f59e0b{% else %}#f87171{% endif %}">{{ ultimo_backup.data_creazione|timesince }}</span>{% else %}<span style="color:#f87171;">Mai effettuato</span>{% endif %}</span></div>
+                <div class="alert-item"><span class="item-label"><i class="bi bi-database me-1"></i>Ultimo backup</span><span class="item-date">{% if ultimo_backup %}<span style="color:{% if backup_fresco %}#34d399{% elif backup_recente %}#f59e0b{% else %}#f87171{% endif %}">{{ ultimo_backup.data_creazione|timesince }}</span>{% else %}<span class="c-red">Mai effettuato</span>{% endif %}</span></div>
             </div>
         </div>
 
@@ -527,7 +527,7 @@
             </div>
             <div class="alert-card-body">
                 {% for c in scaduti_items %}
-                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                     {% with primo_progetto=c.progetto.all.0 %}
                     <span class="item-date">Fine: {{ primo_progetto.data_fine|date:"d/m/y"|default:"—" }}</span>
@@ -567,8 +567,8 @@
             </div>
             <div class="alert-card-body">
                 {% for c in contratti_scadenza_30gg_items %}
-                <div class="alert-item" style="cursor:pointer;">
-                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="flex:1;display:flex;align-items:center;gap:8px;">
+                <div class="alert-item">
+                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" class="flex-1">
                         <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                         <span class="item-date">Fine: {{ c.data_fine|date:"d/m/y" }}</span>
                     </div>
@@ -609,8 +609,8 @@
             </div>
             <div class="alert-card-body">
                 {% for c in contratti_scadenza_90gg_items %}
-                <div class="alert-item" style="cursor:pointer;">
-                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="flex:1;display:flex;align-items:center;gap:8px;">
+                <div class="alert-item">
+                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" class="flex-1">
                         <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                         <span class="item-date">Fine: {{ c.data_fine|date:"d/m/y" }}</span>
                     </div>
@@ -668,7 +668,7 @@
             </div>
             <div class="alert-card-body">
                 {% for c in senza_budget_items %}
-                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                 </div>
                 {% endfor %}
@@ -728,7 +728,7 @@
                 <i class="bi bi-chevron-down alert-card-chevron"></i>
             </div>
             <div class="alert-card-body">
-                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'" style="cursor:pointer;">
+                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'">
                     <span class="item-label">Scadenza</span>
                     <span class="item-date">{{ prossima_scadenza|date:"d/m/Y" }}</span>
                 </div>
@@ -736,9 +736,9 @@
                     <span class="item-label">Conto alla rovescia</span>
                     <span class="item-date fw-bold" id="countdownPagoPA">{{ prossima_scadenza|timeuntil }}</span>
                 </div>
-                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'" style="cursor:pointer;">
-                    <span class="item-label"><i class="bi bi-box-arrow-up-right me-1" style="font-size:10px;"></i>Vai a PagoPA</span>
-                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'">
+                    <span class="item-label"><i class="bi bi-box-arrow-up-right me-1 fs-10"></i>Vai a PagoPA</span>
+                    <span class="item-date c-accent">&rarr;</span>
                 </div>
             </div>
         </div>
@@ -794,7 +794,7 @@
             <div class="alert-card-body">
                 <div class="alert-empty">Assunti dopo il {{ trimestre_parziale_mese|date:"d/m/Y" }} — contributi non dovuti per l'intero trimestre.</div>
                 {% for c in trimestre_parziale_items %}
-                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                     <span class="item-date">{{ c.data_assunzione|date:"d/m/y" }}</span>
                 </div>
@@ -816,7 +816,7 @@
             </div>
             <div class="alert-card-body">
                 {% for item in scostamento_items %}
-                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ item.contratto.pk }}/', 'Modifica Contratto')" style="cursor:pointer;">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ item.contratto.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ item.contratto.datore.nome_cognome }} &rarr; {{ item.contratto.lavoratore.nome_cognome }}</span>
                     <span class="item-date" style="color:{% if item.eccesso %}#f87171{% else %}#f59e0b{% endif %};">
                         {{ item.scostamento_pct }}% (€{{ item.costo|floatformat:0 }} vs €{{ item.budget|floatformat:0 }})
@@ -863,12 +863,12 @@
             <div class="alert-card-body">
                 <a href="{% url 'checklist_mensile' %}" style="text-decoration:none;display:block;">
                     <div class="d-flex align-items-center gap-3 mb-2">
-                        <div style="font-size:11px;color:#8A8F98;">{{ buste_archiviate_pct }}% buste archiviate</div>
+                        <div class="c-11-m">{{ buste_archiviate_pct }}% buste archiviate</div>
                         <div style="flex:1;height:4px;background:#27282D;border-radius:2px;">
                             <div style="width:{{ buste_archiviate_pct }}%;height:100%;background:#5E6AD2;border-radius:2px;"></div>
                         </div>
                     </div>
-                    <div style="font-size:11px;color:#8A8F98;">{{ buste_mese_corrente }} buste caricate, {{ buste_mese_mancanti }} da fare</div>
+                    <div class="c-11-m">{{ buste_mese_corrente }} buste caricate, {{ buste_mese_mancanti }} da fare</div>
                     <div style="font-size:11px;color:#5E6AD2;margin-top:4px;">Vai alla Checklist mensile &rarr;</div>
                 </a>
             </div>
@@ -884,34 +884,34 @@
                 <i class="bi bi-chevron-down alert-card-chevron"></i>
             </div>
             <div class="alert-card-body">
-                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'" style="cursor:pointer;">
-                    <span class="item-label"><i class="bi bi-journal-text me-1" style="font-size:10px;"></i>Buste BOZZA</span>
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'">
+                    <span class="item-label"><i class="bi bi-journal-text me-1 fs-10"></i>Buste BOZZA</span>
                     <span class="item-date{% if buste_bozze > 0 %} text-warning{% else %} text-success{% endif %}">{{ buste_bozze }}</span>
                 </div>
-                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'" style="cursor:pointer;">
-                    <span class="item-label"><i class="bi bi-journal-check me-1" style="font-size:10px;"></i>Buste APPROVATE</span>
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'">
+                    <span class="item-label"><i class="bi bi-journal-check me-1 fs-10"></i>Buste APPROVATE</span>
                     <span class="item-date text-success">{{ buste_approvate }}</span>
                 </div>
-                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'" style="cursor:pointer;">
-                    <span class="item-label"><i class="bi bi-archive me-1" style="font-size:10px;"></i>Buste ARCHIVIATE</span>
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'">
+                    <span class="item-label"><i class="bi bi-archive me-1 fs-10"></i>Buste ARCHIVIATE</span>
                     <span class="item-date">{{ buste_archiviate }}</span>
                 </div>
                 <hr class="my-1">
-                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'" style="cursor:pointer;">
-                    <span class="item-label"><i class="bi bi-file-earmark-text me-1" style="font-size:10px;"></i>CU {{ anno_corr }} presenti</span>
+                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'">
+                    <span class="item-label"><i class="bi bi-file-earmark-text me-1 fs-10"></i>CU {{ anno_corr }} presenti</span>
                     <span class="item-date text-success">{{ contratti_con_cu }}</span>
                 </div>
-                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'" style="cursor:pointer;">
-                    <span class="item-label"><i class="bi bi-file-earmark-x me-1" style="font-size:10px;"></i>CU {{ anno_corr }} mancanti</span>
+                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'">
+                    <span class="item-label"><i class="bi bi-file-earmark-x me-1 fs-10"></i>CU {{ anno_corr }} mancanti</span>
                     <span class="item-date{% if contratti_senza_cu > 0 %} text-danger{% else %} text-success{% endif %}">{{ contratti_senza_cu }}</span>
                 </div>
                 <hr class="my-1">
                 <div class="alert-item">
-                    <span class="item-label"><i class="bi bi-cash-coin me-1" style="font-size:10px;"></i>Contributi trim. versati</span>
+                    <span class="item-label"><i class="bi bi-cash-coin me-1 fs-10"></i>Contributi trim. versati</span>
                     <span class="item-date text-success">{{ contratti_contributi_versati }}</span>
                 </div>
                 <div class="alert-item">
-                    <span class="item-label"><i class="bi bi-exclamation-circle me-1" style="font-size:10px;"></i>Contributi trim. da versare</span>
+                    <span class="item-label"><i class="bi bi-exclamation-circle me-1 fs-10"></i>Contributi trim. da versare</span>
                     <span class="item-date{% if contratti_contributi_da_versare > 0 %} text-warning{% else %} text-success{% endif %}">{{ contratti_contributi_da_versare }}</span>
                 </div>
             </div>
@@ -927,21 +927,21 @@
                 <i class="bi bi-chevron-down alert-card-chevron"></i>
             </div>
             <div class="alert-card-body">
-                <div class="alert-item" style="cursor:pointer;" onclick="loadAjaxForm('/ajax/nuovo-contratto/', 'Nuovo Contratto')">
-                    <span class="item-label"><i class="bi bi-plus-circle me-1" style="color:#5E6AD2;"></i>Nuovo Contratto</span>
-                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/nuovo-contratto/', 'Nuovo Contratto')">
+                    <span class="item-label"><i class="bi bi-plus-circle me-1 c-accent"></i>Nuovo Contratto</span>
+                    <span class="item-date c-accent">&rarr;</span>
                 </div>
-                <div class="alert-item" style="cursor:pointer;" onclick="loadAjaxForm('/ajax/nuovo-datore/', 'Nuovo Datore')">
-                    <span class="item-label"><i class="bi bi-person-plus me-1" style="color:#5E6AD2;"></i>Nuovo Datore</span>
-                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/nuovo-datore/', 'Nuovo Datore')">
+                    <span class="item-label"><i class="bi bi-person-plus me-1 c-accent"></i>Nuovo Datore</span>
+                    <span class="item-date c-accent">&rarr;</span>
                 </div>
-                <div class="alert-item" style="cursor:pointer;" onclick="window.location.href='{% url 'admin:index' %}'">
-                    <span class="item-label"><i class="bi bi-gear me-1" style="color:#5E6AD2;"></i>Dashboard Admin</span>
-                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                <div class="alert-item" onclick="window.location.href='{% url 'admin:index' %}'">
+                    <span class="item-label"><i class="bi bi-gear me-1 c-accent"></i>Dashboard Admin</span>
+                    <span class="item-date c-accent">&rarr;</span>
                 </div>
-                <div class="alert-item" style="cursor:pointer;" onclick="window.location.reload()">
-                    <span class="item-label"><i class="bi bi-arrow-clockwise me-1" style="color:#5E6AD2;"></i>Aggiorna pagina</span>
-                    <span class="item-date" style="color:#5E6AD2;">&rarr;</span>
+                <div class="alert-item" onclick="window.location.reload()">
+                    <span class="item-label"><i class="bi bi-arrow-clockwise me-1 c-accent"></i>Aggiorna pagina</span>
+                    <span class="item-date c-accent">&rarr;</span>
                 </div>
             </div>
         </div>

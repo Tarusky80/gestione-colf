@@ -27,10 +27,10 @@
         <p class="text-secondary small mb-0">Liquidazione trattamento di fine rapporto</p>
       </div>
       <div class="d-flex gap-2">
-        <button type="button" id="btnLiquidaTfr" disabled onclick="liquidaTfr()" class="btn btn-sm btn-ghost-pink" style="padding:8px 14px;font-size:12px;">
+        <button type="button" id="btnLiquidaTfr" disabled onclick="liquidaTfr()" class="btn btn-sm btn-ghost-pink" class="evento-input">
           <i class="bi bi-cash-stack me-1"></i> LIQUIDA TFR
         </button>
-        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="padding:8px 14px;font-size:12px;">
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" class="evento-input">
           <i class="bi bi-journal-text me-1"></i> Archivio Buste
         </a>
         <div id="tfrToast" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9999;background:#18181B;border:1px solid #27282D;border-radius:10px;padding:14px 22px;font-size:13px;font-weight:600;color:#EDEDED;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
@@ -39,7 +39,7 @@
         <button type="button" id="btnVediContratto" onclick="apriContratto()" class="btn btn-sm btn-ghost-primary" style="display:none;padding:8px 14px;font-size:13px;">
           <i class="bi bi-box-arrow-up-right me-1"></i> Contratto
         </button>
-        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" style="padding:8px 14px;font-size:12px;" id="btnCcnlOcchio" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" class="evento-input" id="btnCcnlOcchio" disabled>
             <i class="bi bi-eye me-1"></i> CCNL
         </button>
         <button type="button" onclick="calcola()" class="btn btn-sm btn-ghost-warning" style="padding:8px 20px;font-size:13px;">
@@ -64,7 +64,7 @@
     <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 24px;margin-bottom:16px;">
       <div class="row g-3 align-items-end">
         <div class="col-md-5">
-          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-person-vcard me-1"></i>Contratto</label>
+          <label class="label-tfr"><i class="bi bi-person-vcard me-1"></i>Contratto</label>
           <div class="d-flex align-items-center gap-2">
             <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9664;</button>
             <select id="fContratto" class="form-control" onchange="onCambioContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;width:100%;">
@@ -77,7 +77,7 @@
           </div>
         </div>
         <div class="col-md-4">
-          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-calendar-start me-1"></i>Data inizio maturazione</label>
+          <label class="label-tfr"><i class="bi bi-calendar-start me-1"></i>Data inizio maturazione</label>
           <div class="d-flex gap-1">
             <input type="date" id="fDataInizio" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
           </div>
@@ -88,7 +88,7 @@
           </div>
         </div>
         <div class="col-md-3">
-          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-calendar-end me-1"></i>Fine maturazione</label>
+          <label class="label-tfr"><i class="bi bi-calendar-end me-1"></i>Fine maturazione</label>
           <div class="d-flex gap-1">
             <select id="fMese" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
               {% for m in mesi_range %}
@@ -333,35 +333,35 @@ window.renderTfr = function(d) {
   // Scheda datore/lavoratore
   html += '<div style="background:rgba(94,106,210,0.06);border:1px solid rgba(94,106,210,0.15);border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#9ca3ff;margin-bottom:8px;"><i class="bi bi-people me-1"></i> DATORE / LAVORATORE</div>';
-  html += '<table style="width:100%;">';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:90px;">Datore</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.datore + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Lavoratore</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.lavoratore + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Livello</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.livello + '</td></tr>';
+  html += '<table class="w-100">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:90px;">Datore</td><td class="value-tfr">' + d.datore + '</td></tr>';
+  html += '<tr><td class="px-8-0">Lavoratore</td><td class="value-tfr">' + d.lavoratore + '</td></tr>';
+  html += '<tr><td class="px-8-0">Livello</td><td class="value-tfr">' + d.livello + '</td></tr>';
   html += '</table>';
   html += '</div>';
 
   // Info contratto
   html += '<div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#34d399;margin-bottom:8px;"><i class="bi bi-file-text me-1"></i> CONTRATTO</div>';
-  html += '<table style="width:100%;">';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Data assunzione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.data_assunzione + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Inizio TFR effettivo</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.data_inizio_tfr_eff + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Paga base oraria</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.paga_base.toFixed(4) + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Budget mensile</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.budget_mensile.toFixed(2) + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Modalità TFR</td><td style="font-size:12px;font-weight:600;color:#fbbf24;padding:2px 0;">' + d.modalita_tfr + '</td></tr>';
+  html += '<table class="w-100">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Data assunzione</td><td class="value-tfr">' + d.data_assunzione + '</td></tr>';
+  html += '<tr><td class="px-8-0">Inizio TFR effettivo</td><td class="value-tfr">' + d.data_inizio_tfr_eff + '</td></tr>';
+  html += '<tr><td class="px-8-0">Paga base oraria</td><td class="value-tfr">\u20AC ' + d.paga_base.toFixed(4) + '</td></tr>';
+  html += '<tr><td class="px-8-0">Budget mensile</td><td class="value-tfr">\u20AC ' + d.budget_mensile.toFixed(2) + '</td></tr>';
+  html += '<tr><td class="px-8-0">Modalità TFR</td><td style="font-size:12px;font-weight:600;color:#fbbf24;padding:2px 0;">' + d.modalita_tfr + '</td></tr>';
   html += '</table>';
   html += '</div>';
 
   // Dettaglio calcolo
   html += '<div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:12px 14px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px;"><i class="bi bi-calculator me-1"></i> CALCOLO TFR</div>';
-  html += '<table style="width:100%;">';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Periodo maturazione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.data_inizio + ' — ' + d.data_fine + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Mesi trascorsi</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.mesi + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Ore mensili</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.ore_mensili + ' h</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">TFR orario</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">\u20AC ' + d.tfr_orario.toFixed(4) + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Coefficiente</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + (d.coeff * 100) + '%</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Rateo mensile</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">\u20AC ' + d.tfr_mensile.toFixed(4) + '</td></tr>';
+  html += '<table class="w-100">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Periodo maturazione</td><td class="value-tfr-right">' + d.data_inizio + ' — ' + d.data_fine + '</td></tr>';
+  html += '<tr><td class="px-8-0">Mesi trascorsi</td><td class="value-tfr-right">' + d.mesi + '</td></tr>';
+  html += '<tr><td class="px-8-0">Ore mensili</td><td class="value-tfr-right">' + d.ore_mensili + ' h</td></tr>';
+  html += '<tr><td class="px-8-0">TFR orario</td><td class="value-tfr-right">\u20AC ' + d.tfr_orario.toFixed(4) + '</td></tr>';
+  html += '<tr><td class="px-8-0">Coefficiente</td><td class="value-tfr-right">' + (d.coeff * 100) + '%</td></tr>';
+  html += '<tr><td class="px-8-0">Rateo mensile</td><td class="value-tfr-right">\u20AC ' + d.tfr_mensile.toFixed(4) + '</td></tr>';
   html += '<tr style="border-top:1px solid rgba(251,191,36,0.25);"><td style="font-size:12px;font-weight:800;color:#fbbf24;padding:6px 8px 2px 0;">TOTALE ACCANTONATO</td><td style="font-size:16px;font-weight:800;color:#fbbf24;padding:6px 0 2px 0;text-align:right;">\u20AC ' + d.cumulativo.toFixed(2) + '</td></tr>';
   html += '</table>';
   html += '</div>';

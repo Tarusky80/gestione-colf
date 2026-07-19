@@ -118,22 +118,22 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:16px;font-size:12px;flex-wrap:wrap;">
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Paga Base</span>
+          <span class="label-info">Paga Base</span>
           <div class="ccnl-sum-pagabase" style="color:#EDEDED;font-weight:600;">€ {{ paga_base|floatformat:4 }}</div>
         </div>
-        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div class="c-gray fs-16">+</div>
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Indennità</span>
+          <span class="label-info">Indennità</span>
           <div class="ccnl-sum-indennita" style="color:#34d399;font-weight:600;">€ {{ totale_indennita|floatformat:4 }}</div>
         </div>
-        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div class="c-gray fs-16">+</div>
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Scatti</span>
+          <span class="label-info">Scatti</span>
           <div class="ccnl-sum-scatti" style="color:#f59e0b;font-weight:600;">€ {{ scatto_value|floatformat:4 }}</div>
         </div>
-        <div style="color:#5C5F66;font-size:16px;">=</div>
+        <div class="c-gray fs-16">=</div>
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Paga Oraria Lorda</span>
+          <span class="label-info">Paga Oraria Lorda</span>
           <div class="ccnl-sum-totale" style="font-size:16px;font-weight:700;color:#5E6AD2;">€ {{ paga_oraria_lorda|floatformat:4 }}</div>
         </div>
       </div>

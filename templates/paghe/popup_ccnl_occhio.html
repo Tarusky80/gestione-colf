@@ -20,6 +20,9 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
 #busta-anteprima .busta-sezione:last-child { border-bottom:none; }
 #busta-anteprima .loading-overlay { position:absolute; inset:0; background:rgba(14,15,17,0.7); display:flex; align-items:center; justify-content:center; border-radius:10px; z-index:5; opacity:0; pointer-events:none; transition:opacity 0.2s; }
 #busta-anteprima .loading-overlay.active { opacity:1; pointer-events:auto; }
+.busta-conv-item { display:flex; align-items:center; gap:6px; padding:3px 0 3px 12px; font-size:10px; color:#8A8F98; cursor:pointer; }
+.totale-row { border-top:1px solid #27282D; margin-top:4px; padding-top:4px; display:flex; justify-content:space-between; font-size:12px; font-weight:700; }
+.label-sezione { font-size:9px; text-transform:uppercase; letter-spacing:0.03em; color:#8A8F98; margin-bottom:6px; }
 </style>
 </head>
 <body>
@@ -122,83 +125,83 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
           <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.03);">
             <div><i class="bi bi-calculator me-1"></i> Anteprima Busta Paga</div>
             <div style="display:flex;gap:14px;font-size:10px;font-weight:400;text-transform:none;">
-              <span>Budget: <span class="busta-budget" style="color:#34d399;font-weight:600;">€ {{ b.budget_mensile|floatformat:2 }}</span></span>
+              <span>Budget: <span class="busta-budget" class="c-green fw-6">€ {{ b.budget_mensile|floatformat:2 }}</span></span>
               <span>Ore: <span class="busta-ore" style="color:#5E6AD2;font-weight:600;">{{ b.ore_mensili }}h</span></span>
             </div>
           </div>
 
           {% comment %} RETRIBUZIONE LORDA {% endcomment %}
           <div class="busta-sezione">
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#8A8F98;margin-bottom:6px;">Retribuzione Lorda</div>
+            <div class="label-sezione">Retribuzione Lorda</div>
             <div class="busta-riga">
-              <span style="color:#8A8F98;">Paga base</span>
+              <span class="c-muted">Paga base</span>
               <span class="busta-pagabase-val" style="color:#EDEDED;font-weight:600;">€ {{ b.paga_base.totale|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
-              <span style="color:#8A8F98;">Indennità</span>
-              <span class="busta-indennita-val" style="color:#34d399;font-weight:600;">€ {{ b.totale_indennita|floatformat:2 }}</span>
+              <span class="c-muted">Indennità</span>
+              <span class="busta-indennita-val" class="c-green fw-6">€ {{ b.totale_indennita|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
-              <span style="color:#8A8F98;">Scatti</span>
-              <span class="busta-scatti-val" style="color:#f59e0b;font-weight:600;">€ {{ b.scatti_anzianita.valore|floatformat:2 }}</span>
+              <span class="c-muted">Scatti</span>
+              <span class="busta-scatti-val" class="c-amber fw-6">€ {{ b.scatti_anzianita.valore|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
-              <span style="color:#8A8F98;">Ratei pagati</span>
-              <span class="busta-ratei-val" style="color:#34d399;font-weight:600;">€ {{ b.totale_ratei_pagati|floatformat:2 }}</span>
+              <span class="c-muted">Ratei pagati</span>
+              <span class="busta-ratei-val" class="c-green fw-6">€ {{ b.totale_ratei_pagati|floatformat:2 }}</span>
             </div>
-            <div style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
-              <span style="color:#EDEDED;">TOTALE LORDO</span>
+            <div class="totale-row">
+              <span class="c-white">TOTALE LORDO</span>
               <span class="busta-totale-lordo-val" style="color:#34d399;">€ {{ b.totale_lordo|floatformat:2 }}</span>
             </div>
           </div>
 
           {% comment %} CONTRIBUTI {% endcomment %}
           <div class="busta-sezione">
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#8A8F98;margin-bottom:6px;">Contributi</div>
+            <div class="label-sezione">Contributi</div>
             <div class="busta-riga">
-              <span style="color:#8A8F98;">INPS <span class="busta-inps-rate">(€ {{ b.contributi.inps.orario|floatformat:4 }}/h)</span></span>
-              <span class="busta-inps-val" style="color:#f87171;font-weight:600;">€ {{ b.contributi.inps.totale|floatformat:2 }}</span>
+              <span class="c-muted">INPS <span class="busta-inps-rate">(€ {{ b.contributi.inps.orario|floatformat:4 }}/h)</span></span>
+              <span class="busta-inps-val" class="c-red fw-6">€ {{ b.contributi.inps.totale|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
-              <span style="color:#8A8F98;">{{ b.contributi.cassa.nome|default:'Cassa' }} <span class="busta-cassa-rate">(€ {{ b.contributi.cassa.orario|floatformat:4 }}/h)</span></span>
-              <span class="busta-cassa-val" style="color:#f87171;font-weight:600;">€ {{ b.contributi.cassa.totale|floatformat:2 }}</span>
+              <span class="c-muted">{{ b.contributi.cassa.nome|default:'Cassa' }} <span class="busta-cassa-rate">(€ {{ b.contributi.cassa.orario|floatformat:4 }}/h)</span></span>
+              <span class="busta-cassa-val" class="c-red fw-6">€ {{ b.contributi.cassa.totale|floatformat:2 }}</span>
             </div>
-            <div style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
-              <span style="color:#EDEDED;">Totale contributi</span>
+            <div class="totale-row">
+              <span class="c-white">Totale contributi</span>
               <span class="busta-totale-contributi-val" style="color:#f87171;">€ {{ b.contributi.totale|floatformat:2 }}</span>
             </div>
           </div>
 
           {% comment %} TRATTENUTE {% endcomment %}
           <div class="busta-sezione">
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.03em;color:#8A8F98;margin-bottom:6px;">Trattenute</div>
+            <div class="label-sezione">Trattenute</div>
 
             {% comment %} Convivenza toggles {% endcomment %}
             <div class="busta-convivenza-section">
               <div class="busta-riga">
-                <span style="color:#8A8F98;">Convivenza</span>
-                <span class="busta-convivenza-val" style="color:#f87171;font-weight:600;">€ {{ b.trattenute.convivenza.totale|floatformat:2 }}</span>
+                <span class="c-muted">Convivenza</span>
+                <span class="busta-convivenza-val" class="c-red fw-6">€ {{ b.trattenute.convivenza.totale|floatformat:2 }}</span>
               </div>
-              <div class="busta-conv-item" data-key="conv_pranzo" style="display:flex;align-items:center;gap:6px;padding:3px 0 3px 12px;font-size:10px;color:#8A8F98;cursor:pointer;">
-                <span class="busta-conv-icon" style="font-size:10px;color:#5C5F66;"><i class="bi bi-square"></i></span>
+              <div class="busta-conv-item" data-key="conv_pranzo">
+                <span class="busta-conv-icon" class="c-muted fs-10"><i class="bi bi-square"></i></span>
                 Pranzo (<span class="busta-conv-rate">{{ conv_pranzo_rate|floatformat:4 }}</span> €/g)
               </div>
-              <div class="busta-conv-item" data-key="conv_cena" style="display:flex;align-items:center;gap:6px;padding:3px 0 3px 12px;font-size:10px;color:#8A8F98;cursor:pointer;">
-                <span class="busta-conv-icon" style="font-size:10px;color:#5C5F66;"><i class="bi bi-square"></i></span>
+              <div class="busta-conv-item" data-key="conv_cena">
+                <span class="busta-conv-icon" class="c-muted fs-10"><i class="bi bi-square"></i></span>
                 Cena (<span class="busta-conv-rate">{{ conv_cena_rate|floatformat:4 }}</span> €/g)
               </div>
-              <div class="busta-conv-item" data-key="conv_alloggio" style="display:flex;align-items:center;gap:6px;padding:3px 0 3px 12px;font-size:10px;color:#8A8F98;cursor:pointer;">
-                <span class="busta-conv-icon" style="font-size:10px;color:#5C5F66;"><i class="bi bi-square"></i></span>
+              <div class="busta-conv-item" data-key="conv_alloggio">
+                <span class="busta-conv-icon" class="c-muted fs-10"><i class="bi bi-square"></i></span>
                 Alloggio (<span class="busta-conv-rate">{{ conv_alloggio_rate|floatformat:4 }}</span> €/g)
               </div>
             </div>
 
             <div class="busta-riga" style="margin-top:4px;">
-              <span style="color:#8A8F98;">Ratei accantonati</span>
-              <span class="busta-ratei-accantonati-val" style="color:#f87171;font-weight:600;">€ {{ b.trattenute.ratei_accantonati|floatformat:2 }}</span>
+              <span class="c-muted">Ratei accantonati</span>
+              <span class="busta-ratei-accantonati-val" class="c-red fw-6">€ {{ b.trattenute.ratei_accantonati|floatformat:2 }}</span>
             </div>
-            <div style="border-top:1px solid #27282D;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:700;">
-              <span style="color:#EDEDED;">Totale trattenute</span>
+            <div class="totale-row">
+              <span class="c-white">Totale trattenute</span>
               <span class="busta-totale-trattenute-val" style="color:#f87171;">€ {{ b.trattenute.totale|floatformat:2 }}</span>
             </div>
           </div>
@@ -206,15 +209,15 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
           {% comment %} NETTO {% endcomment %}
           <div class="busta-sezione">
             <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;">
-              <span style="color:#EDEDED;">NETTO IN BUSTA</span>
+              <span class="c-white">NETTO IN BUSTA</span>
               <span class="busta-netto-val" style="color:#5E6AD2;">€ {{ b.netto|floatformat:2 }}</span>
             </div>
             <div class="busta-riga" style="margin-top:4px;">
-              <span style="color:#8A8F98;">TFR accumulato</span>
-              <span class="busta-tfr-val" style="color:#f59e0b;font-weight:600;">€ {{ b.tfr_accumulato|floatformat:2 }}</span>
+              <span class="c-muted">TFR accumulato</span>
+              <span class="busta-tfr-val" class="c-amber fw-6">€ {{ b.tfr_accumulato|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
-              <span style="color:#8A8F98;">Differenza budget</span>
+              <span class="c-muted">Differenza budget</span>
               <span class="busta-differenza-val" style="font-weight:600;">€ {{ b.differenza|floatformat:2 }}</span>
             </div>
           </div>
@@ -230,7 +233,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
               <i class="bi bi-arrow-up-circle"></i>
               Scatti di Anzianità
               <span style="margin-left:auto;font-size:11px;color:#5C5F66;font-weight:400;text-transform:none;">
-                <span class="ccnl-scatto-label" style="color:#f59e0b;font-weight:600;">€ {{ scatto_value|floatformat:4 }}/h</span> per biennio · <span style="color:#8A8F98;">{{ bienni_accumulati }} bienni maturati</span>
+                <span class="ccnl-scatto-label" class="c-amber fw-6">€ {{ scatto_value|floatformat:4 }}/h</span> per biennio · <span class="c-muted">{{ bienni_accumulati }} bienni maturati</span>
               </span>
             </div>
             <div class="scatti-table-wrapper" style="padding:6px 14px;transition:opacity 0.2s;opacity:0.4;">
@@ -268,22 +271,22 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
     <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
       <div style="display:flex;align-items:center;gap:16px;font-size:12px;flex-wrap:wrap;">
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Paga Base</span>
+          <span class="label-info">Paga Base</span>
           <div class="ccnl-sum-pagabase" data-pagabase="{{ paga_base|stringformat:'.4f' }}" data-retribsost="{{ retrib_sost_value|stringformat:'.4f' }}" data-retribsost-attiva="{{ retrib_sost_attiva|yesno:'true,false' }}" style="color:#EDEDED;font-weight:600;">€ {{ paga_base_effettiva|floatformat:4 }}</div>
         </div>
-        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div class="c-gray fs-16">+</div>
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Voci Var.</span>
-          <div class="ccnl-sum-voci" style="color:#34d399;font-weight:600;">€ {{ totale_toggleabili|floatformat:4 }}</div>
+          <span class="label-info">Voci Var.</span>
+          <div class="ccnl-sum-voci" class="c-green fw-6">€ {{ totale_toggleabili|floatformat:4 }}</div>
         </div>
-        <div style="color:#5C5F66;font-size:16px;">+</div>
+        <div class="c-gray fs-16">+</div>
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Scatti</span>
-          <div class="ccnl-sum-scatti" style="color:#f59e0b;font-weight:600;">€ 0.0000</div>
+          <span class="label-info">Scatti</span>
+          <div class="ccnl-sum-scatti" class="c-amber fw-6">€ 0.0000</div>
         </div>
-        <div style="color:#5C5F66;font-size:16px;">=</div>
+        <div class="c-gray fs-16">=</div>
         <div>
-          <span style="color:#8A8F98;font-size:10px;text-transform:uppercase;letter-spacing:0.03em;">Totale Orario Lordo</span>
+          <span class="label-info">Totale Orario Lordo</span>
           <div class="ccnl-sum-totale" style="font-size:16px;font-weight:700;color:#5E6AD2;">€ {{ paga_oraria_lorda|floatformat:4 }}</div>
         </div>
       </div>

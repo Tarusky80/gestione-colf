@@ -157,19 +157,19 @@
         <thead>
             <tr>
                 <th style="width:32px;position:sticky;top:0;z-index:1;background:#17181C;"></th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Datore</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Lavoratore</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Beneficiario</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Progetto Regionale</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Paese Ben.</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Liv.</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Data Ass.</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Data Fine</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Budg. Ann. &euro;</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Budg. Mes. &euro;</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">TFR accum. &euro;</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">ORE</th>
-                <th style="position:sticky;top:0;z-index:1;background:#17181C;">Stato</th>
+                <th class="th-sticky">Datore</th>
+                <th class="th-sticky">Lavoratore</th>
+                <th class="th-sticky">Beneficiario</th>
+                <th class="th-sticky">Progetto Regionale</th>
+                <th class="th-sticky">Paese Ben.</th>
+                <th class="th-sticky">Liv.</th>
+                <th class="th-sticky">Data Ass.</th>
+                <th class="th-sticky">Data Fine</th>
+                <th class="th-sticky">Budg. Ann. &euro;</th>
+                <th class="th-sticky">Budg. Mes. &euro;</th>
+                <th class="th-sticky">TFR accum. &euro;</th>
+                <th class="th-sticky">ORE</th>
+                <th class="th-sticky">Stato</th>
             </tr>
         </thead>
         <tbody>
@@ -232,7 +232,7 @@
                 <div class="d-flex flex-wrap gap-1">
                     {% for tipo in cat.tipi %}
                     <label class="doc-type-label" data-categoria="{{ cat.id }}" data-tipo="{{ tipo.id }}" data-usa-periodo="{{ tipo.usa_periodo|lower }}" data-usa-template="{{ tipo.usa_template|lower }}" title="{{ tipo.descrizione }}" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;border:1px solid #333;cursor:pointer;font-size:12px;color:#ccc;transition:all .15s;background:transparent;">
-                        <input type="radio" name="tipoDocumento" value="{{ tipo.id }}" data-categoria="{{ cat.id }}" style="display:none;" onchange="onTipoDocChange(this)">
+                        <input type="radio" name="tipoDocumento" value="{{ tipo.id }}" data-categoria="{{ cat.id }}" class="d-none" onchange="onTipoDocChange(this)">
                         <i class="bi {{ tipo.icona }} doc-type-icon" style="font-size:13px;color:#666;flex-shrink:0;transition:color .15s;"></i>
                         <span>{{ tipo.nome }}</span>
                     </label>
@@ -249,7 +249,7 @@
     <label class="mb-2 fw-bold" class="c-10-up">COMPOSIZIONE MULTIPLA</label>
     <div class="d-flex flex-wrap gap-1">
         <label class="doc-type-label" data-categoria="COMPOSIZIONE" data-tipo="COMPOSIZIONE" data-usa-periodo="false" data-usa-template="false" title="Composizione personalizzata di più tipi documento" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;border:1px solid #5E6AD2;cursor:pointer;font-size:12px;color:#9ca3ff;transition:all .15s;background:rgba(94,106,210,0.08);">
-            <input type="radio" name="tipoDocumento" value="COMPOSIZIONE" data-categoria="COMPOSIZIONE" style="display:none;" onchange="onTipoDocChange(this)">
+            <input type="radio" name="tipoDocumento" value="COMPOSIZIONE" data-categoria="COMPOSIZIONE" class="d-none" onchange="onTipoDocChange(this)">
             <i class="bi bi-layers doc-type-icon" style="font-size:13px;color:#7b7fff;flex-shrink:0;transition:color .15s;"></i>
             <span>Documento Personalizzato</span>
         </label>
@@ -257,14 +257,14 @@
 </div>
 
 <!-- COMPOSITORE (hidden) -->
-<div id="compositorePanel" class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;display:none;">
+<div id="compositorePanel" class="custom-table-container" class="card-hidden">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <label class="fw-bold c-10-up">COMPONI DOCUMENTO</label>
         <div class="d-flex gap-2">
             <select id="selCaricaComposizione" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:12px;padding:4px 10px;border-radius:6px;width:220px;" onchange="onCaricaComposizione(this)">
                 <option value="">&mdash; Nuova composizione &mdash;</option>
             </select>
-            <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaComposizione()" title="Elimina composizione" style="display:none;" id="btnEliminaComp"><i class="bi bi-trash3"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaComposizione()" title="Elimina composizione" class="d-none" id="btnEliminaComp"><i class="bi bi-trash3"></i></button>
         </div>
     </div>
 
@@ -306,7 +306,7 @@
 
 
 <!-- Template selector (hidden per default) -->
-<div id="templateSelector" class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;display:none;">
+<div id="templateSelector" class="custom-table-container" class="card-hidden">
     <label class="mb-2 fw-bold" class="c-10-up">Template</label>
     <select id="selTemplate" class="form-control" class="bg-input" style="max-width:400px;">
         <option value="">&mdash; Template predefinito &mdash;</option>
@@ -314,13 +314,13 @@
 </div>
 
 <!-- Periodo -->
-<div id="periodoSelector" class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;display:none;">
+<div id="periodoSelector" class="custom-table-container" class="card-hidden">
     <label class="mb-2 fw-bold" class="c-10-up">PERIODO</label>
     <div class="mb-2 d-flex gap-1">
-        <button type="button" class="btn btn-sm periodo-tab active" data-periodo="singolo" onclick="setPeriodo('singolo')" style="border-radius:6px;font-size:11px;padding:4px 12px;">Mese singolo</button>
-        <button type="button" class="btn btn-sm periodo-tab" data-periodo="range" onclick="setPeriodo('range')" style="border-radius:6px;font-size:11px;padding:4px 12px;">Range</button>
-        <button type="button" class="btn btn-sm periodo-tab" data-periodo="trimestre" onclick="setPeriodo('trimestre')" style="border-radius:6px;font-size:11px;padding:4px 12px;">Trimestre</button>
-        <button type="button" class="btn btn-sm periodo-tab" data-periodo="anno" onclick="setPeriodo('anno')" style="border-radius:6px;font-size:11px;padding:4px 12px;display:none;">Anno</button>
+        <button type="button" class="btn btn-sm periodo-tab active" data-periodo="singolo" onclick="setPeriodo('singolo')">Mese singolo</button>
+        <button type="button" class="btn btn-sm periodo-tab" data-periodo="range" onclick="setPeriodo('range')">Range</button>
+        <button type="button" class="btn btn-sm periodo-tab" data-periodo="trimestre" onclick="setPeriodo('trimestre')">Trimestre</button>
+        <button type="button" class="btn btn-sm periodo-tab d-none" data-periodo="anno" onclick="setPeriodo('anno')">Anno</button>
     </div>
     <div class="row g-2 align-items-center">
         <div class="col-auto periodo-fields" id="periodoSingolo">
@@ -329,13 +329,13 @@
                 <option value="{{ num }}" {% if num == mese_corrente %}selected{% endif %}>{{ nome }}</option>
                 {% endfor %}
             </select>
-            <select id="perAnno" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:100px;">
+            <select id="perAnno" class="form-control" class="select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-auto periodo-fields" id="periodoRange" style="display:none;">
+        <div class="col-auto periodo-fields" id="periodoRange" class="d-none">
             <span class="text-secondary small me-1">Da</span>
             <select id="perMeseDa" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;display:inline-block;">
                 {% for num, nome in mesi %}
@@ -360,21 +360,21 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-auto periodo-fields" id="periodoTrimestre" style="display:none;">
+        <div class="col-auto periodo-fields" id="periodoTrimestre" class="d-none">
             <select id="perTrimestre" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;">
                 <option value="1">1&deg; Trimestre</option>
                 <option value="2">2&deg; Trimestre</option>
                 <option value="3">3&deg; Trimestre</option>
                 <option value="4">4&deg; Trimestre</option>
             </select>
-            <select id="perAnnoT" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:100px;">
+            <select id="perAnnoT" class="form-control" class="select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="col-auto periodo-fields" id="periodoAnno" style="display:none;">
-            <select id="perAnnoSolo" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:100px;">
+        <div class="col-auto periodo-fields" id="periodoAnno" class="d-none">
+            <select id="perAnnoSolo" class="form-control" class="select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
@@ -1119,7 +1119,7 @@ function elaboraRisultato(d, azione) {
     html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.totale_ok + '</div>';
     html += '<div class="small text-secondary">Documenti generati</div>';
     if (d.totale_errori > 0) {
-        html += '<div class="display-6 fw-bold mt-2" style="color:#dc2626;">' + d.totale_errori + '</div>';
+        html += '<div class="display-6 fw-bold mt-2" class="c-red2">' + d.totale_errori + '</div>';
         html += '<div class="small text-secondary">Errori</div>';
     }
     html += '</div>';
@@ -1132,7 +1132,7 @@ function elaboraRisultato(d, azione) {
     if (d.dettaglio) {
         html += '<hr><div class="small" style="max-height:250px;overflow-y:auto;">';
         d.dettaglio.forEach(function(e) {
-            var icon = e.errore ? '<i class="bi bi-x-circle" style="color:#dc2626;"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
+            var icon = e.errore ? '<i class="bi bi-x-circle" class="c-red2"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
             var periodo = e.periodo ? ' (' + e.periodo + ')' : '';
             var tipoInfo = e.tipo ? ' <span class="text-secondary" style="font-size:9px;">[' + e.tipo + ']</span>' : '';
             html += '<div class="d-flex align-items-center gap-2 py-1">' + icon + ' <span>' + e.datore + ' &rarr; ' + e.lavoratore + periodo + tipoInfo;
@@ -1156,7 +1156,7 @@ function elaboraRisultato(d, azione) {
         var stampati = d.stampati !== undefined ? d.stampati : (d.totale_ok || 0);
         var errori = d.totale_errori || 0;
         html += '<div class="alert alert-success py-2 mt-2 small"><i class="bi bi-printer-fill me-1"></i> Inviati in stampa <strong>' + stampati + '</strong> documenti';
-        if (errori > 0) html += ' (<span style="color:#dc2626;">' + errori + ' errori</span>)';
+        if (errori > 0) html += ' (<span class="c-red2">' + errori + ' errori</span>)';
         html += '. Controlla la coda di stampa di Foxit Reader.</div>';
     }
 
