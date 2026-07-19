@@ -22,28 +22,7 @@
 
 <div id="mobile-list">
 {% for b in buste %}
-<div class="m-swipe-wrap" data-busta="{{ b.pk }}">
-    <div class="m-swipe-actions">
-        {% if b.documento %}
-        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriPDF({{ b.documento.pk }})"><i class="bi bi-file-pdf" style="font-size:18px;"></i></button>
-        <button class="m-swipe-btn m-swipe-btn-warning" onclick="condividiPDF({{ b.documento.pk }}, '{{ b.contratto.lavoratore.nome_cognome|escapejs }}')"><i class="bi bi-share" style="font-size:18px;"></i></button>
-        {% endif %}
-    </div>
-    <div class="m-swipe-card m-card m-card-top-busta" href="#" onclick="apriDettaglioBusta(this, {{ b.pk }})">
-        <div style="display:flex;justify-content:space-between;align-items:start;">
-            <div style="flex:1;min-width:0;">
-                <div style="font-size:12px;color:#8A8F98;">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
-                <div class="m-list-title" style="margin:2px 0;">{{ b.contratto.lavoratore.nome_cognome|default:"?" }}</div>
-                <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }} &middot; {{ b.tipo_calcolo|default:"Standard" }}</div>
-            </div>
-            <span class="m-badge {% if b.stato == 'APPROVATA' %}m-badge-green{% else %}m-badge-gray{% endif %}">{{ b.stato }}</span>
-        </div>
-        <div style="display:flex;gap:12px;margin-top:8px;font-size:13px;">
-            <span>Lordo: <strong>&euro; {{ b.totale_lordo }}</strong></span>
-            <span>Netto: <strong>&euro; {{ b.netto }}</strong></span>
-        </div>
-    </div>
-</div>
+{% include "mobile/_busta_card.html" %}
 {% empty %}
 <div class="m-empty">
     <i class="bi bi-calculator"></i>
@@ -95,11 +74,11 @@ function filterBuste(q){
 
 /* ── PDF / Share ── */
 function apriPDF(pk){
-    window.open('/documenti/?focus='+pk, '_blank');
+    window.open('/ajax/vedi-documento/'+pk+'/', '_blank');
 }
 function condividiPDF(pk, nome){
     if(navigator.share){
-        navigator.share({ title: 'Busta paga '+nome, url: '/documenti/?focus='+pk });
+        navigator.share({ title: 'Busta paga '+nome, url: '/ajax/vedi-documento/'+pk+'/' });
     } else {
         apriPDF(pk);
     }
@@ -127,5 +106,14 @@ function chiudiDettaglioBusta(){
 function es(s){ return (s||'—').trim(); }
 
 {% include "mobile/_swipe_js.html" %}
+/* ── Infinite scroll ── */
+(function(){
+    {% if totale_buste > buste|length %}
+    var container = document.getElementById('mobile-list');
+    var q = new URLSearchParams(location.search);
+    var url = '/m/buste/json/?' + q.toString();
+    avviaInfiniteScroll(url, container, {{ buste|length }}, 20);
+    {% endif %}
+})();
 </script>
 {% endblock %}

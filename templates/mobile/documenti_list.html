@@ -17,29 +17,7 @@
 
 <div id="mobile-list">
 {% for d in documenti %}
-<div class="m-swipe-wrap" data-pk="{{ d.pk }}">
-    <div class="m-swipe-actions">
-        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriDoc({{ d.pk }})"><i class="bi bi-eye" style="font-size:18px;"></i></button>
-    </div>
-    <div class="m-swipe-card m-card m-card-top-doc" href="#" onclick="apriDoc({{ d.pk }})">
-        <div style="display:flex;align-items:center;gap:10px;">
-            <div><i class="bi bi-file-earmark" style="font-size:22px;color:#f59e0b;"></i></div>
-            <div style="flex:1;min-width:0;">
-                <div class="m-list-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ d.titolo|default:"Senza titolo" }}</div>
-                <div class="m-list-sub">
-                    {% if d.contratto %}
-                    {{ d.contratto.datore.nome_cognome|default:"" }} &mdash; {{ d.contratto.lavoratore.nome_cognome|default:"" }}
-                    {% endif %}
-                </div>
-                <div style="display:flex;gap:4px;margin-top:4px;">
-                    <span class="m-badge m-badge-gray">{{ d.tipo }}</span>
-                    <span class="m-badge m-badge-gray">{{ d.creato_il|date:"d/m/Y" }}</span>
-                </div>
-            </div>
-            <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
-        </div>
-    </div>
-</div>
+{% include "mobile/_doc_card.html" %}
 {% empty %}
 <div class="m-empty">
     <i class="bi bi-folder"></i>
@@ -54,7 +32,7 @@
 
 <script>
 function apriDoc(pk){
-    window.open('/documenti/?focus='+pk, '_blank');
+    window.open('/ajax/vedi-documento/'+pk+'/', '_blank');
 }
 
 document.querySelectorAll('.m-chips').forEach(function(chips){
@@ -78,5 +56,14 @@ function filterDocList(q){
     });
 }
 {% include "mobile/_swipe_js.html" %}
+/* ── Infinite scroll ── */
+(function(){
+    {% if totale_documenti > documenti|length %}
+    var container = document.getElementById('mobile-list');
+    var q = new URLSearchParams(location.search);
+    var url = '/m/documenti/json/?' + q.toString();
+    avviaInfiniteScroll(url, container, {{ documenti|length }}, 20);
+    {% endif %}
+})();
 </script>
 {% endblock %}

@@ -1,0 +1,23 @@
+<div class="m-swipe-wrap" data-pk="{{ d.pk }}">
+    <div class="m-swipe-actions">
+        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriDoc({{ d.pk }})"><i class="bi bi-eye" style="font-size:18px;"></i></button>
+    </div>
+    <div class="m-swipe-card m-card m-card-top-doc" href="#" onclick="apriDoc({{ d.pk }})">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <div><i class="bi bi-file-earmark" style="font-size:22px;color:#f59e0b;"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ d.titolo|default:"Senza titolo" }}</div>
+                <div class="m-list-sub">
+                    {% if d.contratto %}
+                    {{ d.contratto.datore.nome_cognome|default:"" }} &mdash; {{ d.contratto.lavoratore.nome_cognome|default:"" }}
+                    {% endif %}
+                </div>
+                <div style="display:flex;gap:4px;margin-top:4px;">
+                    <span class="m-badge m-badge-gray">{{ d.tipo }}</span>
+                    <span class="m-badge m-badge-gray">{{ d.creato_il|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+            <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
+        </div>
+    </div>
+</div>

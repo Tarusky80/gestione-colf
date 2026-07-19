@@ -156,6 +156,8 @@
 - ✅ **Pulizia**: NAS sync risolta spostando venv fuori dal progetto (`..\.venv_gestione_colf`), `git rm --cached` di 46 file spuri.
 - ✅ **CI**: 12 errori ruff risolti (import/variabili inutilizzati, bare except).
 - ✅ **setup_venv.bat**: crea/ricrea virtualenv, `GESTIONE.bat` lo chiama automaticamente.
+- ✅ **Infinite scroll** (Feature 5 completata): endpoint JSON `mobile_buste_json` e `mobile_documenti_json` in `_mobile.py`, route `/m/buste/json/` e `/m/documenti/json/`, partial template `_busta_card.html`/`_doc_card.html`. Render iniziale limitato a 20, chiamata `avviaInfiniteScroll()` su scroll.
+- ✅ **PDF mobile**: `apriPDF()`/`apriDoc()` ora puntano a `/ajax/vedi-documento/<pk>/` invece di `/documenti/?focus=<pk>` (desktop ignorava focus).
 - **Commit**: `7cfa970` — Mobile: 6 nuove feature + fix form contratto
 
 ## Comandi utili

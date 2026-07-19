@@ -27,5 +27,8 @@ urlpatterns = [
     path('progetti/<int:pk>/', views.mobile_progetto_detail, name='mobile_progetto_detail'),
     path('ricerca/', views.mobile_ricerca, name='mobile_ricerca'),
     path('altri-calcoli/', views.mobile_altri_calcoli, name='mobile_altri_calcoli'),
+    # JSON endpoints for infinite scroll
+    path('buste/json/', views.mobile_buste_json, name='mobile_buste_json'),
+    path('documenti/json/', views.mobile_documenti_json, name='mobile_documenti_json'),
     path('about/', views.mobile_about, name='mobile_about'),
 ]

@@ -92,10 +92,13 @@ def mobile_buste_archivio(request):
         buste = buste.filter(mese=int(mese))
     if anno:
         buste = buste.filter(anno=int(anno))
+    buste = buste.order_by('-anno', '-mese')
+    total = buste.count()
     oggi = date.today()
     return render(request, 'mobile/buste_archivio.html', {
         'm_nav': 'buste',
-        'buste': buste.order_by('-anno', '-mese'),
+        'buste': buste[:20],
+        'totale_buste': total,
         'mese': int(mese) if mese else oggi.month,
         'anno': int(anno) if anno else oggi.year,
         'mesi_range': range(1, 13),
@@ -110,12 +113,59 @@ def mobile_documenti(request):
     tipo = request.GET.get('tipo')
     if tipo:
         docs = docs.filter(tipo=tipo)
+    docs = docs.order_by('-creato_il')
+    total = docs.count()
     return render(request, 'mobile/documenti_list.html', {
         'm_nav': 'docs',
-        'documenti': docs.order_by('-creato_il'),
+        'documenti': docs[:20],
+        'totale_documenti': total,
         'tipi_documento': DocumentoArchiviato.objects.values_list('tipo', flat=True).distinct().order_by('tipo'),
         'tipo_filtro': tipo or '',
     })
+
+
+@login_required
+@permesso_richiesto('buste.vedi')
+@never_cache
+def mobile_buste_json(request):
+    buste = BustaPaga.objects.select_related('contratto__datore', 'contratto__lavoratore', 'documento')
+    mese = request.GET.get('mese')
+    anno = request.GET.get('anno')
+    if mese:
+        buste = buste.filter(mese=int(mese))
+    if anno:
+        buste = buste.filter(anno=int(anno))
+    buste = buste.order_by('-anno', '-mese')
+    offset = int(request.GET.get('offset', 0))
+    limit = int(request.GET.get('limit', 20))
+    total = buste.count()
+    items = buste[offset:offset + limit]
+    has_more = (offset + limit) < total
+    from django.template.loader import render_to_string
+    html_items = []
+    for b in items:
+        html_items.append({'html': render_to_string('mobile/_busta_card.html', {'b': b}, request=request)})
+    return JsonResponse({'items': html_items, 'has_more': has_more})
+
+
+@login_required
+@never_cache
+def mobile_documenti_json(request):
+    docs = DocumentoArchiviato.objects.select_related('contratto__datore', 'contratto__lavoratore')
+    tipo = request.GET.get('tipo')
+    if tipo:
+        docs = docs.filter(tipo=tipo)
+    docs = docs.order_by('-creato_il')
+    offset = int(request.GET.get('offset', 0))
+    limit = int(request.GET.get('limit', 20))
+    total = docs.count()
+    items = docs[offset:offset + limit]
+    has_more = (offset + limit) < total
+    from django.template.loader import render_to_string
+    html_items = []
+    for d in items:
+        html_items.append({'html': render_to_string('mobile/_doc_card.html', {'d': d}, request=request)})
+    return JsonResponse({'items': html_items, 'has_more': has_more})
 
 
 @login_required
