@@ -144,6 +144,20 @@
 - Tutte le stringhe hardcoded in italiano
 - Aggiungere `{% trans %}` / `{% blocktranslate %}` per futura traduzione
 
+### 20. 📱 Versione Mobile — 6 nuove feature
+- ✅ **Feature 1+2**: Form nativi modifica/creazione mobile — view generica `_mobile_entity_form_view()`, template `entity_form.html` con 3 sezioni collassabili via JS, widget `SelectMultiple` compatto per M2M. 5 FAB `+` aggiornati a `/m/nuovo/?tipo=...`.
+- ✅ **Feature 3**: Ricerca globale mobile — view `mobile_ricerca()` cerca in 5 entità (Datore, Lavoratore, Contratto, Beneficiario, Progetto), template con debounce 400ms, icona lente in topbar di `base_mobile.html`.
+- ✅ **Feature 4**: Chart.js line chart 12 mesi trend contributi su dashboard mobile (`/m/`), `responsive: false` per evitare infinite resize loop.
+- ✅ **Feature 5**: Infinite scroll — JS `avviaInfiniteScroll()` con IntersectionObserver in `_swipe_js.html`. Limiti `[:50]` rimossi da viste archivio buste e documenti. **Manca** endpoint JSON backend paginato.
+- ✅ **Feature 6**: Pagina "Altri calcoli" — view, template `altri_calcoli.html`, route `/m/altri-calcoli/`.
+- ✅ **Fix**: `reverse` import mancante in `_mobile.py` (NameError 500 su modifica).
+- ✅ **Fix**: pulsanti "Modifica" su tutti i dettagli mobile ora puntano a `/m/{entity}/{pk}/modifica/` (non più 404 desktop).
+- ✅ **Fix**: form contratto mobile — `CheckboxSelectMultiple` → `SelectMultiple` (compatto), `form.save_m2m()` per salvare M2M, sezioni dati/visibilità/altri.
+- ✅ **Pulizia**: NAS sync risolta spostando venv fuori dal progetto (`..\.venv_gestione_colf`), `git rm --cached` di 46 file spuri.
+- ✅ **CI**: 12 errori ruff risolti (import/variabili inutilizzati, bare except).
+- ✅ **setup_venv.bat**: crea/ricrea virtualenv, `GESTIONE.bat` lo chiama automaticamente.
+- **Commit**: `7cfa970` — Mobile: 6 nuove feature + fix form contratto
+
 ## Comandi utili
 ```powershell
 # Avviare il server
