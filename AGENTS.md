@@ -110,7 +110,7 @@
 - ✅ `color:#8A8F98;font-size:11px` → `.c-11-m` (1 occorrenza)
 - ✅ `color:#8A8F98;font-size:13px` → `.c-muted.fs-13` (1 occorrenza)
 - ✅ `font-size:10px;color:#8A8F98;display:block` → `.label-info` (12 occorrenze in renderBusta())
-- ⏳ ~4218 style= inline in ~80 file (top 5: base.html 344, ajax_form_contratto.html 325, dashboard.html 160, calcoli_conviventi_ccnl.html 158, calcoli_non_convivente.html 158)
+- ⏳ ~3410 style= inline in ~80 file (top 5: base.html 376, ajax_form_contratto.html 305, calcoli_conviventi_ccnl.html 158, calcoli_non_convivente.html 157, calcoli_list.html 156)
 - 📝 Da fare più avanti: convertire per pattern ricorrenti, iniziando dai top 5 file
 
 ### 16. 📱 Responsive Design — Versione Mobile Separata
@@ -185,6 +185,13 @@
 - **Mobile completata**: versioni desktop e mobile allineate, merge conflitti risolti
 - `manage.py check` — 0 errori
 - **Commit**: `8640bd6` (help), `659107a` (style+button), `cd81f77` (merge)
+
+## Session Log — 2026-07-21 (II)
+- **Fix regressione d-none → style="display:none"**: ripristinato `style="display:none"` su 4 file (calcoli_inverso, calcoli_malattia, calcoli_notturno, stampe_invii) per elementi togglati via JS `style.display` (Bootstrap `d-none` usava `!important`, bloccava lo show)
+- **Select scuri uniformi**: regola globale `select, select.form-control, select.form-select { background: #09090B; color: #EDEDED; font-size: 13px; }` in `utils.css`, rimosso `!important` (specificità sufficiente vs Bootstrap)
+- **Style→classi rimasti**: ~3410 (1309 convertiti finora)
+- `manage.py check` OK, 31/31 test OK
+- **Commit**: `3e9c4b8` (fix d-none), `e9cb52a` (select scuri), `152426a` (font-size select, rimossi !important)
 
 ## Comandi utili
 ```powershell
