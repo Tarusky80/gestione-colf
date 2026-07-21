@@ -335,7 +335,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-auto periodo-fields" id="periodoRange" class="d-none">
+        <div class="col-auto periodo-fields" id="periodoRange" style="display:none;">
             <span class="text-secondary small me-1">Da</span>
             <select id="perMeseDa" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;display:inline-block;">
                 {% for num, nome in mesi %}
@@ -360,7 +360,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-auto periodo-fields" id="periodoTrimestre" class="d-none">
+        <div class="col-auto periodo-fields" id="periodoTrimestre" style="display:none;">
             <select id="perTrimestre" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;">
                 <option value="1">1&deg; Trimestre</option>
                 <option value="2">2&deg; Trimestre</option>
@@ -373,7 +373,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-auto periodo-fields" id="periodoAnno" class="d-none">
+        <div class="col-auto periodo-fields" id="periodoAnno" style="display:none;">
             <select id="perAnnoSolo" class="form-control" class="select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>

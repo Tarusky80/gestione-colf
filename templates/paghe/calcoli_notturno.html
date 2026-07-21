@@ -113,7 +113,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         </label>
       </div>
     </div>
-    <div class="col-md-4" id="oreNotturneContainer" class="d-none">
+    <div class="col-md-4" id="oreNotturneContainer" style="display:none;">
       <label class="mb-1 fw-bold" class="c-10-up">Ore Notturne: <input type="number" id="oreNotturneInput" min="0" max="200" step="0.5" value="0" onchange="daInputOre()" style="width:65px;background:#09090B;border:1px solid #27282D;color:#818cf8;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> h</label>
       <input type="range" id="fOreNotturne" min="0" max="200" step="0.5" value="0" oninput="daSliderOre();calcola()" style="background-color:#09090B;">
       <div class="d-flex justify-content-between" style="font-size:9px;color:#5C5F66;margin-top:2px;"><span>0 h</span><span>200 h</span>      </div>
@@ -180,11 +180,11 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   </div>
 </div>
 
-<div id="resultContainer" class="d-none">
+<div id="resultContainer" style="display:none;">
   <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
-  <div id="resultLoading" class="py-4" class="d-none">
+  <div id="resultLoading" class="py-4" style="display:none;">
     <div class="skeleton-card">
       <div class="skeleton-row mb-3">
         <div class="skeleton-avatar skeleton"></div>
