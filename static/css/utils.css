@@ -491,3 +491,15 @@
 .help-section code { background: rgba(94,106,210,0.12); color: #a5b4fc; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
 .help-section .badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; }
 .help-divider { height: 1px; background: #27282D; margin: 16px 0; }
+
+/* --- Utility comuni (consolidate da template) --- */
+.card-warning-banner { display: none; padding: 10px 14px; margin-bottom: 12px; background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; color: #ef4444; font-size: 12px; font-weight: 600; }
+.skeleton-flex-child { flex: 1; padding-top: 4px; }
+.skeleton-row-flex { display: flex; gap: 10px; }
+.empty-state-icon { color: #27282D; }
+.br-8 { border-radius: 8px; }
+.bg-090 { background: #09090B; }
+.b-1-2728 { border: 1px solid #27282D; }
+.cursor-pointer { cursor: pointer; }
+.btn-xs { padding: 4px 10px; font-size: 10px; }
+.btn-nav-arrow { padding: 4px 8px; line-height: 1; }
