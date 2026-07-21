@@ -15,16 +15,6 @@
     #dynamicForm .toggle-switch { display: flex; align-items: center; gap: 18px; padding: 8px 14px; border-radius: 8px; cursor: pointer; user-select: none; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
     #dynamicForm .toggle-switch:hover { background: rgba(94,106,210,0.08); border-color: rgba(94,106,210,0.2); }
     #dynamicForm .toggle-label { font-size: 11px; }
-    #dynamicForm .label-riepilogo i { margin-right: 3px; }
-    #dynamicForm .section-header .title i { margin-right: 6px; color: #5E6AD2; }
-    #dynamicForm .toggle-value { font-size: 10px; color: #8A8F98; flex-shrink: 0; width: 55px; text-align: right; white-space: nowrap; }
-    #dynamicForm .buste-menu a { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 6px; font-size: 11px; color: #EDEDED; text-decoration: none; font-weight: 500; }
-    #dynamicForm .ml-auto-flex { margin-left: auto; display: flex; gap: 4px; align-items: center; }
-    #dynamicForm .value-unit { font-size: 9px; color: #8A8F98; margin-left: 3px; }
-    #dynamicForm .sep-pipe { color: #555; margin: 0 4px; }
-    #dynamicForm .value-detail { font-size: 12px; font-weight: 500; color: #EDEDED; }
-    #dynamicForm .value-detail-muted { font-size: 12px; font-weight: 500; color: #8A8F98; }
-    #dynamicForm .value-detail-sm-muted-trunc { font-size: 11px; font-weight: 500; color: #8A8F98; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
     {% with s=form.stato.value|default:'ATTIVO' tc=form.tipo_contratto.value|default:'INDETERMINATO' %}
 
@@ -56,13 +46,13 @@
     <div class="mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px 28px; flex-shrink:0;">
         <div class="fw-bold d-flex align-items-center gap-2" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98; margin-bottom: 18px;">
             <i class="bi bi-info-circle" style="color: #5E6AD2;"></i>Riepilogo contratto
-            <div class="ml-auto-flex">
+            <div style="margin-left:auto;display:flex;gap:4px;align-items:center;">
                 {% if instance.pk %}
                 <span style="font-size:10px;color:#8A8F98;margin-right:2px;">NAVIGAZIONE:</span>
                 <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" id="btnPrevContratto" title="Contratto precedente" style="padding:4px 8px;font-size:13px;line-height:1;"><i class="bi bi-chevron-left"></i></button>
                 <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" id="btnNextContratto" title="Contratto successivo" style="padding:4px 8px;font-size:13px;line-height:1;"><i class="bi bi-chevron-right"></i></button>
                 <select id="navContrattoSelect" onchange="navContrattoTo(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;color:#facc15;font-size:12px;font-weight:700;padding:2px 8px;width:calc(340px + 5cm);flex-shrink:0;cursor:pointer;"><option value="" style="color:#8A8F98;font-weight:400;">—</option></select>
-                <span class="fs-10 sep-pipe">|</span>
+                <span class="fs-10" style="color:#555;margin:0 4px;">|</span>
                 {% endif %}
                 <span style="font-size:10px;color:#8A8F98;margin-right:2px;">STATI:</span>
                 <span id="riepilogoStato" style="font-size: 11px; padding: 3px 10px; border-radius: 5px; font-weight: 700;
@@ -70,10 +60,10 @@
                     {% else %}background: rgba(248,113,113,0.15); color: #f87171;{% endif %}">
                     {% if s == 'ATTIVO' %}● ATTIVO{% else %}● CESSATO{% endif %}
                 </span>
-                <span class="fs-10 sep-pipe">-</span>
+                <span class="fs-10" style="color:#555;margin:0 4px;">-</span>
                 <span id="riepilogoOreSett" style="display:none; font-size:11px; padding:3px 10px; border-radius:5px; font-weight:700;">—</span>
                 {% if is_rinnovo and contratto_rinnovato_da %}
-                <span class="fs-10 sep-pipe">|</span>
+                <span class="fs-10" style="color:#555;margin:0 4px;">|</span>
                 <span style="font-size:10px;padding:3px 10px;border-radius:5px;background:rgba(52,211,153,0.1);color:#34d399;font-weight:600;">
                     <i class="bi bi-arrow-repeat me-1"></i> Rinnovo contratto del {{ contratto_rinnovato_da.data_assunzione|date:"d/m/Y" }}
                 </span>
@@ -82,91 +72,91 @@
         </div>
         <div class="row gx-4 gy-3">
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-person-vcard"></i>Datore</div>
+                <div class="label-riepilogo"><i class="bi bi-person-vcard" style="margin-right: 3px;"></i>Datore</div>
                 <div id="riepilogoDatore" class="value-riepilogo-trunc">—</div>
                 <div id="riepilogoDatoreCF" style="font-size: 10px; color: #8A8F98; font-family: monospace;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-people"></i>Lavoratore</div>
+                <div class="label-riepilogo"><i class="bi bi-people" style="margin-right: 3px;"></i>Lavoratore</div>
                 <div id="riepilogoLavoratore" class="value-riepilogo-trunc">—</div>
                 <div id="riepilogoLavoratoreCF" style="font-size: 10px; color: #8A8F98; font-family: monospace;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-person-heart"></i>Beneficiario</div>
+                <div class="label-riepilogo"><i class="bi bi-person-heart" style="margin-right: 3px;"></i>Beneficiario</div>
                 <div id="riepilogoBeneficiario" class="value-riepilogo-trunc">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-building"></i>Ente</div>
+                <div class="label-riepilogo"><i class="bi bi-building" style="margin-right: 3px;"></i>Ente</div>
                 <div id="riepilogoEnte" class="value-riepilogo-trunc">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-tag"></i>Livello</div>
+                <div class="label-riepilogo"><i class="bi bi-tag" style="margin-right: 3px;"></i>Livello</div>
                 <div id="riepilogoParametri" class="value-riepilogo">—</div>
                 <div id="riepilogoDescrizione" style="font-size: 10px; color: #8A8F98; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-file-text"></i>Contratto</div>
+                <div class="label-riepilogo"><i class="bi bi-file-text" style="margin-right: 3px;"></i>Contratto</div>
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                     <span id="riepilogoTipoContratto" style="font-size: 13px; font-weight: 600; color: #EDEDED;">—</span>
                     <span id="riepilogoConvivente" style="font-size:10px;padding:1px 7px;border-radius:4px;font-weight:600;display:none;">—</span>
                 </div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-calendar-event"></i>Data ass.</div>
+                <div class="label-riepilogo"><i class="bi bi-calendar-event" style="margin-right: 3px;"></i>Data ass.</div>
                 <div id="riepilogoDataAss" class="value-riepilogo">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-upc-scan"></i>Cod. INPS</div>
+                <div class="label-riepilogo"><i class="bi bi-upc-scan" style="margin-right: 3px;"></i>Cod. INPS</div>
                 <div id="riepilogoCodice" class="value-riepilogo-trunc">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-coin"></i>Paga base</div>
+                <div class="label-riepilogo"><i class="bi bi-coin" style="margin-right: 3px;"></i>Paga base</div>
                 <div id="riepilogoPagaBase" style="font-size: 14px; font-weight: 600; color: #34d399;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-cash-stack"></i>TFR orario</div>
+                <div class="label-riepilogo"><i class="bi bi-cash-stack" style="margin-right: 3px;"></i>TFR orario</div>
                 <div id="riepilogoPagaTfr" style="font-size: 13px; font-weight: 600;">—</div>
             </div>
             <div class="col-md-3 col-6" id="riepilogoAccantonatoTfrCol" style="display:none;">
-                <div class="label-riepilogo"><i class="bi bi-piggy-bank"></i>TFR accumulato</div>
+                <div class="label-riepilogo"><i class="bi bi-piggy-bank" style="margin-right: 3px;"></i>TFR accumulato</div>
                 <div id="riepilogoTfrAccumulato" style="font-size: 13px; font-weight: 600; color:#fbbf24;">€ 0.00</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-cash-stack"></i>13ma oraria</div>
+                <div class="label-riepilogo"><i class="bi bi-cash-stack" style="margin-right: 3px;"></i>13ma oraria</div>
                 <div id="riepilogoPaga13ma" style="font-size: 13px; font-weight: 600;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-cash-stack"></i>Ferie orarie</div>
+                <div class="label-riepilogo"><i class="bi bi-cash-stack" style="margin-right: 3px;"></i>Ferie orarie</div>
                 <div id="riepilogoPagaFerie" style="font-size: 13px; font-weight: 600;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-cash-stack"></i>Festivi orari</div>
+                <div class="label-riepilogo"><i class="bi bi-cash-stack" style="margin-right: 3px;"></i>Festivi orari</div>
                 <div id="riepilogoPagaFestivi" style="font-size: 13px; font-weight: 600;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-currency-euro"></i>Paga tot.</div>
+                <div class="label-riepilogo"><i class="bi bi-currency-euro" style="margin-right: 3px;"></i>Paga tot.</div>
                 <div id="riepilogoTotale" style="font-size: 14px; font-weight: 700; color: #5E6AD2;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-chevron-bar-contract"></i>Min. mensile</div>
+                <div class="label-riepilogo"><i class="bi bi-chevron-bar-contract" style="margin-right: 3px;"></i>Min. mensile</div>
                 <div style="display:flex;align-items:baseline;gap:4px;">
                     <span id="riepilogoMinMensileFt" style="font-size:13px;font-weight:600;color:#f59e0b;">—</span>
-                    <span class="value-unit">FT</span>
+                    <span style="font-size:9px;color:#8A8F98;">FT</span>
                     <span style="font-size:10px;color:#8A8F98;margin:0 2px;">/</span>
                     <span id="riepilogoMinMensilePt" style="font-size:13px;font-weight:600;color:#f59e0b;">—</span>
-                    <span class="value-unit">PT</span>
+                    <span style="font-size:9px;color:#8A8F98;">PT</span>
                 </div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-stopwatch"></i>Ore</div>
+                <div class="label-riepilogo"><i class="bi bi-stopwatch" style="margin-right:3px;"></i>Ore</div>
                 <div style="display:flex;flex-direction:column;gap:2px;">
-                    <div><span id="riepilogoOre" style="font-size:13px;font-weight:600;color:#06b6d4;">—</span><span class="value-unit">MENSILI ARROTONDATE</span><span class="value-unit">(INPS: <span id="riepilogoOreInps">—</span> h)</span></div>
-                    <div><span id="riepilogoOreDet" class="value-detail-muted">—</span><span class="value-unit">MENSILI DECIMALI</span></div>
-                    <div><span id="riepilogoOreCrono" style="font-size:12px;font-weight:600;color:#06b6d4;">—</span><span class="value-unit">MENSILI CRONOMETRO</span></div>
+                    <div><span id="riepilogoOre" style="font-size:13px;font-weight:600;color:#06b6d4;">—</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI ARROTONDATE</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">(INPS: <span id="riepilogoOreInps">—</span> h)</span></div>
+                    <div><span id="riepilogoOreDet" style="font-size:12px;font-weight:500;color:#8A8F98;">—</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI DECIMALI</span></div>
+                    <div><span id="riepilogoOreCrono" style="font-size:12px;font-weight:600;color:#06b6d4;">—</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI CRONOMETRO</span></div>
                     <div class="divider" style="margin:3px 0;"></div>
-                    <div><span id="riepilogoOreSettArrotondate" style="font-size:13px;font-weight:600;color:#10b981;">—</span><span class="value-unit">SETTIMANALI ARROTONDATE</span></div>
-                    <div><span id="riepilogoOreSettDet" class="value-detail-muted">—</span><span class="value-unit">SETTIMANALI DECIMALI</span><span class="value-unit">(INPS: <span id="riepilogoOreSettInps">—</span> h)</span></div>
-                    <div><span id="riepilogoOreSettCrono" style="font-size:12px;font-weight:600;color:#10b981;">—</span><span class="value-unit">SETTIMANALI CRONOMETRO</span></div>
+                    <div><span id="riepilogoOreSettArrotondate" style="font-size:13px;font-weight:600;color:#10b981;">—</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">SETTIMANALI ARROTONDATE</span></div>
+                    <div><span id="riepilogoOreSettDet" style="font-size:12px;font-weight:500;color:#8A8F98;">—</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">SETTIMANALI DECIMALI</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">(INPS: <span id="riepilogoOreSettInps">—</span> h)</span></div>
+                    <div><span id="riepilogoOreSettCrono" style="font-size:12px;font-weight:600;color:#10b981;">—</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">SETTIMANALI CRONOMETRO</span></div>
                     <div class="divider" style="margin:3px 0;"></div>
                     <div id="riepilogoOreSettLine" style="display:none;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;">—</div>
                 </div>
@@ -175,11 +165,11 @@
                 </div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-graph-up-arrow"></i>Scatti</div>
+                <div class="label-riepilogo"><i class="bi bi-graph-up-arrow" style="margin-right: 3px;"></i>Scatti</div>
                 <div id="riepilogoScatti" style="font-size: 14px; font-weight: 600; color: #a78bfa;">—</div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-list-check"></i>Opzioni</div>
+                <div class="label-riepilogo"><i class="bi bi-list-check" style="margin-right: 3px;"></i>Opzioni</div>
                 <div id="riepilogoOpzioni" style="font-size: 12px; font-weight: 500; color: #8A8F98;">—</div>
             </div>
         </div>
@@ -197,31 +187,31 @@
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-telephone"></i> Tel. Datore</div>
-                    <div id="riepilogoDatoreTel" class="value-detail">—</div>
+                    <div id="riepilogoDatoreTel" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-geo-alt"></i> Indirizzo Datore</div>
-                    <div id="riepilogoDatoreIndirizzo" class="value-detail-sm-muted-trunc">—</div>
+                    <div id="riepilogoDatoreIndirizzo" style="font-size:11px;font-weight:500;color:#8A8F98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-buildings"></i> Comune Datore</div>
-                    <div id="riepilogoDatoreComune" class="value-detail">—</div>
+                    <div id="riepilogoDatoreComune" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-2 col-4">
                     <div class="label-riepilogo"><i class="bi bi-pin-map"></i> Prov. Datore</div>
-                    <div id="riepilogoDatoreProv" class="value-detail-muted">—</div>
+                    <div id="riepilogoDatoreProv" style="font-size:12px;font-weight:500;color:#8A8F98;">—</div>
                 </div>
                 <div class="col-md-2 col-4">
                     <div class="label-riepilogo"><i class="bi bi-mailbox"></i> CAP Datore</div>
-                    <div id="riepilogoDatoreCap" class="value-detail-muted">—</div>
+                    <div id="riepilogoDatoreCap" style="font-size:12px;font-weight:500;color:#8A8F98;">—</div>
                 </div>
                 <div class="col-md-2 col-4">
                     <div class="label-riepilogo"><i class="bi bi-calendar3"></i> Data nascita Datore</div>
-                    <div id="riepilogoDatoreDataNascita" class="value-detail">—</div>
+                    <div id="riepilogoDatoreDataNascita" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-1 col-3">
                     <div class="label-riepilogo"><i class="bi bi-gender-ambiguous"></i> Sesso</div>
-                    <div id="riepilogoDatoreSesso" class="value-detail">—</div>
+                    <div id="riepilogoDatoreSesso" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-2 col-6">
                     <div class="label-riepilogo"><i class="bi bi-globe2"></i> Comune nascita</div>
@@ -241,31 +231,31 @@
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-telephone"></i> Tel. Lavoratore</div>
-                    <div id="riepilogoLavoratoreTel" class="value-detail">—</div>
+                    <div id="riepilogoLavoratoreTel" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-geo-alt"></i> Indirizzo Lavoratore</div>
-                    <div id="riepilogoLavoratoreIndirizzo" class="value-detail-sm-muted-trunc">—</div>
+                    <div id="riepilogoLavoratoreIndirizzo" style="font-size:11px;font-weight:500;color:#8A8F98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-buildings"></i> Comune Lavoratore</div>
-                    <div id="riepilogoLavoratoreComune" class="value-detail">—</div>
+                    <div id="riepilogoLavoratoreComune" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-2 col-4">
                     <div class="label-riepilogo"><i class="bi bi-pin-map"></i> Prov. Lavoratore</div>
-                    <div id="riepilogoLavoratoreProv" class="value-detail-muted">—</div>
+                    <div id="riepilogoLavoratoreProv" style="font-size:12px;font-weight:500;color:#8A8F98;">—</div>
                 </div>
                 <div class="col-md-2 col-4">
                     <div class="label-riepilogo"><i class="bi bi-mailbox"></i> CAP Lavoratore</div>
-                    <div id="riepilogoLavoratoreCap" class="value-detail-muted">—</div>
+                    <div id="riepilogoLavoratoreCap" style="font-size:12px;font-weight:500;color:#8A8F98;">—</div>
                 </div>
                 <div class="col-md-2 col-4">
                     <div class="label-riepilogo"><i class="bi bi-calendar3"></i> Data nascita Lav.</div>
-                    <div id="riepilogoLavoratoreDataNascita" class="value-detail">—</div>
+                    <div id="riepilogoLavoratoreDataNascita" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-1 col-3">
                     <div class="label-riepilogo"><i class="bi bi-gender-ambiguous"></i> Sesso</div>
-                    <div id="riepilogoLavoratoreSesso" class="value-detail">—</div>
+                    <div id="riepilogoLavoratoreSesso" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-2 col-6">
                     <div class="label-riepilogo"><i class="bi bi-globe2"></i> Comune nascita</div>
@@ -281,7 +271,7 @@
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-calendar2"></i> Data inizio TFR</div>
-                    <div id="riepilogoDataInizioTfr" class="value-detail">—</div>
+                    <div id="riepilogoDataInizioTfr" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-check2-square"></i> Paghe abilitate</div>
@@ -289,11 +279,11 @@
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-folder"></i> Progetti</div>
-                    <div id="riepilogoProgetti" class="value-detail">—</div>
+                    <div id="riepilogoProgetti" style="font-size:12px;font-weight:500;color:#EDEDED;">—</div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="label-riepilogo"><i class="bi bi-sticky"></i> Note</div>
-                    <div id="riepilogoNote" class="value-detail-sm-muted-trunc">—</div>
+                    <div id="riepilogoNote" style="font-size:11px;font-weight:500;color:#8A8F98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
                 </div>
             </div>
         </details>
@@ -314,14 +304,14 @@
             <div class="buste-dropdown" style="position:relative;display:inline-block;">
                 <button type="button" class="btn btn-sm btn-ghost-success" style="padding:5px 12px;font-size:11px;cursor:pointer;"><i class="bi bi-file-earmark-text"></i> Buste <i class="bi bi-chevron-down" style="font-size:9px;"></i></button>
                 <div class="buste-menu" style="display:none;position:absolute;top:100%;left:0;z-index:100;min-width:210px;background:#1C1C1F;border:1px solid #27282D;border-radius:8px;padding:6px;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.5);flex-direction:column;gap:2px;">
-                    <a href="/calcoli/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm"><i class="bi bi-file-earmark-text" style="color:#34d399;"></i> Standard</a>
-                    <a href="/calcoli/non-convivente/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm"><i class="bi bi-person" style="color:#5E6AD2;"></i> Non Convivente</a>
-                    <a href="/calcoli/conviventi-ccnl/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm"><i class="bi bi-house-heart" style="color:#a78bfa;"></i> Conviventi CCNL</a>
-                    <a href="/calcoli/inverso/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm"><i class="bi bi-arrow-left-right" style="color:#f59e0b;"></i> Calcolo Inverso</a>
-                    <a href="/calcoli/malattia/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm"><i class="bi bi-heart-pulse" style="color:#34d399;"></i> Malattia</a>
-                    <a href="/calcoli/notturno/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm"><i class="bi bi-moon-stars" style="color:#818cf8;"></i> Notturno</a>
-                    <a href="/calcoli/sostituzione/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm"><i class="bi bi-arrow-repeat" style="color:#14b8a6;"></i> Sostituzione</a>
-                    <a href="/calcoli/tfr/?contratto={{ instance.pk }}" class="btn btn-sm"><i class="bi bi-piggy-bank" style="color:#fbbf24;"></i> Busta TFR</a>
+                    <a href="/calcoli/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-file-earmark-text" style="color:#34d399;"></i> Standard</a>
+                    <a href="/calcoli/non-convivente/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-person" style="color:#5E6AD2;"></i> Non Convivente</a>
+                    <a href="/calcoli/conviventi-ccnl/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-house-heart" style="color:#a78bfa;"></i> Conviventi CCNL</a>
+                    <a href="/calcoli/inverso/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-arrow-left-right" style="color:#f59e0b;"></i> Calcolo Inverso</a>
+                    <a href="/calcoli/malattia/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-heart-pulse" style="color:#34d399;"></i> Malattia</a>
+                    <a href="/calcoli/notturno/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-moon-stars" style="color:#818cf8;"></i> Notturno</a>
+                    <a href="/calcoli/sostituzione/?contratto={{ instance.pk }}&mese={{ mese_corr }}&anno={{ anno_corr }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-arrow-repeat" style="color:#14b8a6;"></i> Sostituzione</a>
+                    <a href="/calcoli/tfr/?contratto={{ instance.pk }}" class="btn btn-sm" style="display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:6px;font-size:11px;color:#EDEDED;text-decoration:none;font-weight:500;"><i class="bi bi-piggy-bank" style="color:#fbbf24;"></i> Busta TFR</a>
                 </div>
             </div>
 
@@ -338,25 +328,25 @@
 
         {# --- VERTICAL STEPPER --- #}
         <div style="display:flex;flex-direction:column;flex-shrink:0;padding:6px 4px 6px 0;width:auto;min-width:115px;border-right:1px solid #27282D;margin-right:12px;">
-            <button type="button" class="step-dot active" data-step="1" onclick="vaiAStep(1)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid rgba(94,106,210,0.2);background:rgba(94,106,210,0.08);">
+            <div class="step-dot active" data-step="1" onclick="vaiAStep(1)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid rgba(94,106,210,0.2);background:rgba(94,106,210,0.08);">
                 <span class="step-circle" style="background:#5E6AD2;color:white;box-shadow:0 2px 6px rgba(94,106,210,0.4);">1</span>
                 <span style="font-size:12px;font-weight:600;color:#EDEDED;white-space:nowrap;line-height:1.2;">Anagrafica</span>
-            </button>
+            </div>
             <div class="step-line"></div>
-            <button type="button" class="step-dot" data-step="2" onclick="vaiAStep(2)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid #27282D;background:#1C1C1F;">
+            <div class="step-dot" data-step="2" onclick="vaiAStep(2)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid #27282D;background:#1C1C1F;">
                 <span class="step-circle" style="background:#27282D;color:#8A8F98;">2</span>
                 <span style="font-size:12px;font-weight:600;color:#8A8F98;white-space:nowrap;line-height:1.2;">Parametri</span>
-            </button>
+            </div>
             <div class="step-line"></div>
-            <button type="button" class="step-dot" data-step="3" onclick="vaiAStep(3)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid #27282D;background:#1C1C1F;">
+            <div class="step-dot" data-step="3" onclick="vaiAStep(3)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid #27282D;background:#1C1C1F;">
                 <span class="step-circle" style="background:#27282D;color:#8A8F98;">3</span>
                 <span style="font-size:12px;font-weight:600;color:#8A8F98;white-space:nowrap;line-height:1.2;">Opzioni</span>
-            </button>
+            </div>
             <div class="step-line"></div>
-            <button type="button" class="step-dot" data-step="4" onclick="vaiAStep(4)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid #27282D;background:#1C1C1F;">
+            <div class="step-dot" data-step="4" onclick="vaiAStep(4)" style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:pointer;border:1px solid #27282D;background:#1C1C1F;">
                 <span class="step-circle" style="background:#27282D;color:#8A8F98;">4</span>
                 <span style="font-size:12px;font-weight:600;color:#8A8F98;white-space:nowrap;line-height:1.2;">Busta</span>
-            </button>
+            </div>
         </div>
 
         {# --- SCROLLABLE STEPS --- #}
@@ -368,7 +358,7 @@
         {# --- DATORE + LAVORATORE --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-people"></i>Anagrafica</div>
+                <div class="title"><i class="bi bi-people" style="margin-right:6px;color:#5E6AD2;"></i>Anagrafica</div>
                 <div class="subtitle">Seleziona datore e lavoratore del contratto</div>
             </div>
             <div class="row g-3">
@@ -396,7 +386,7 @@
         {# --- PROGETTI COLLEGATI (Drag&Drop) --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-diagram-3"></i>Progetti collegati</div>
+                <div class="title"><i class="bi bi-diagram-3" style="margin-right:6px;color:#5E6AD2;"></i>Progetti collegati</div>
                 <div class="subtitle">Assegna progetti al contratto tramite drag &amp; drop</div>
             </div>
             {% for field in form %}
@@ -452,7 +442,7 @@
         {# --- RIGA CODICI + DATE --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-card-text"></i>Dati contratto</div>
+                <div class="title"><i class="bi bi-card-text" style="margin-right:6px;color:#5E6AD2;"></i>Dati contratto</div>
                 <div class="subtitle">Codice rapporto INPS, date e ore</div>
             </div>
             <div class="row g-3">
@@ -493,7 +483,7 @@
         {# --- PARAMETRI MINIMI + ENTE BILATERALE (affiancati) --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-layers"></i>Parametri contratto</div>
+                <div class="title"><i class="bi bi-layers" style="margin-right:6px;color:#5E6AD2;"></i>Parametri contratto</div>
                 <div class="subtitle">Parametri minimi ed ente bilaterale</div>
             </div>
             <div class="row g-3">
@@ -536,7 +526,7 @@
             {% if field.name == 'note_post_it' %}
             <div class="section-card">
                 <div class="section-header">
-                    <div class="title"><i class="bi bi-sticky"></i>{{ field.label }}</div>
+                    <div class="title"><i class="bi bi-sticky" style="margin-right:6px;color:#5E6AD2;"></i>{{ field.label }}</div>
                     <div class="subtitle">Eventuali note interne o promemoria</div>
                 </div>
                 {{ field }}
@@ -617,98 +607,98 @@
         {# --- OPZIONI CONTRATTO (boolean toggles) — RETRIBUZIONE --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-coin"></i>Retribuzione</div>
+                <div class="title"><i class="bi bi-coin" style="margin-right:6px;color:#5E6AD2;"></i>Retribuzione</div>
             </div>
             <div class="row g-2">
                 {% with mt=form.modalita_tfr.value|default:'INCLUSO' %}
                 <div class="col-md-4 col-6"><label class="toggle-switch toggle-danger"><input type="hidden" name="paga_tfr" value="false"><input type="checkbox" name="paga_tfr" value="true"{% if mt != 'INCLUSO' %}checked{% endif %} onchange="aggiornaTfrToggle()" id="tfr_separato"><span class="toggle-slider" style="border-color:#f8717166;"></span><span class="toggle-label" style="color:#f87171;">TFR Separato</span></label></div>
                 <div class="col-md-4 col-6"><label class="toggle-switch toggle-warning"><input type="hidden" value="false"><input type="checkbox"{% if mt == 'SEPARATO_70' %}checked{% endif %}{% if mt == 'INCLUSO' %} disabled{% endif %} onchange="aggiornaTfrToggle()" id="anticipo_70"><span class="toggle-slider" style="border-color:#fbbf2466;"></span><span class="toggle-label" style="color:#fbbf24;">Anticipo 70%</span></label></div>
                 {% endwith %}
-                {% with f=form.paga_13ma %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_13ma' in parametri_map_keys %}<span class="toggle-value" data-field="paga_13ma">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_ferie %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_ferie' in parametri_map_keys %}<span class="toggle-value" data-field="paga_ferie">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_festivi %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_festivi' in parametri_map_keys %}<span class="toggle-value" data-field="paga_festivi">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.usa_retribuzione_sostituzione %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_retribuzione_sostituzione' in parametri_map_keys %}<span class="toggle-value" data-field="usa_retribuzione_sostituzione">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_13ma %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_13ma' in parametri_map_keys %}<span class="toggle-value" data-field="paga_13ma" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_ferie %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_ferie' in parametri_map_keys %}<span class="toggle-value" data-field="paga_ferie" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_festivi %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_festivi' in parametri_map_keys %}<span class="toggle-value" data-field="paga_festivi" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.usa_retribuzione_sostituzione %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_retribuzione_sostituzione' in parametri_map_keys %}<span class="toggle-value" data-field="usa_retribuzione_sostituzione" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
             </div>
         </div>
 
         {# --- INDENNITÀ --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-award"></i>Indennità</div>
+                <div class="title"><i class="bi bi-award" style="margin-right:6px;color:#5E6AD2;"></i>Indennità</div>
             </div>
             <div class="row g-2">
-                {% with f=form.ind_certificazione_qualita %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_certificazione_qualita' in parametri_map_keys %}<span class="toggle-value" data-field="ind_certificazione_qualita">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_piu_persone_non_conv %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_piu_persone_non_conv' in parametri_map_keys %}<span class="toggle-value" data-field="ind_piu_persone_non_conv">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_minori_non_conv %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_minori_non_conv' in parametri_map_keys %}<span class="toggle-value" data-field="ind_minori_non_conv">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_piu_persone_qualita %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_piu_persone_qualita' in parametri_map_keys %}<span class="toggle-value" data-field="ind_piu_persone_qualita">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_minori_qualita %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_minori_qualita' in parametri_map_keys %}<span class="toggle-value" data-field="ind_minori_qualita">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_assistenza_piu_persone_ft %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_assistenza_piu_persone_ft' in parametri_map_keys %}<span class="toggle-value" data-field="ind_assistenza_piu_persone_ft">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_assistenza_piu_persone_pt %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_assistenza_piu_persone_pt' in parametri_map_keys %}<span class="toggle-value" data-field="ind_assistenza_piu_persone_pt">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_minori_6_anni_ft %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_minori_6_anni_ft' in parametri_map_keys %}<span class="toggle-value" data-field="ind_minori_6_anni_ft">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_certificazione_qualita %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_certificazione_qualita' in parametri_map_keys %}<span class="toggle-value" data-field="ind_certificazione_qualita" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_piu_persone_non_conv %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_piu_persone_non_conv' in parametri_map_keys %}<span class="toggle-value" data-field="ind_piu_persone_non_conv" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_minori_non_conv %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_minori_non_conv' in parametri_map_keys %}<span class="toggle-value" data-field="ind_minori_non_conv" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_piu_persone_qualita %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_piu_persone_qualita' in parametri_map_keys %}<span class="toggle-value" data-field="ind_piu_persone_qualita" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_minori_qualita %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_minori_qualita' in parametri_map_keys %}<span class="toggle-value" data-field="ind_minori_qualita" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_assistenza_piu_persone_ft %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_assistenza_piu_persone_ft' in parametri_map_keys %}<span class="toggle-value" data-field="ind_assistenza_piu_persone_ft" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_assistenza_piu_persone_pt %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_assistenza_piu_persone_pt' in parametri_map_keys %}<span class="toggle-value" data-field="ind_assistenza_piu_persone_pt" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_minori_6_anni_ft %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_minori_6_anni_ft' in parametri_map_keys %}<span class="toggle-value" data-field="ind_minori_6_anni_ft" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
             </div>
         </div>
 
         {# --- INDENNITÀ MENSILI --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-calendar-check"></i>Indennità Mensili</div>
+                <div class="title"><i class="bi bi-calendar-check" style="margin-right:6px;color:#5E6AD2;"></i>Indennità Mensili</div>
                 <div class="subtitle">Importi mensili alternativi (sostituiscono le indennità orarie corrispondenti)</div>
             </div>
             <div class="row g-2">
-                {% with f=form.usa_ind_funzione_mensile %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_funzione_mensile' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_funzione_mensile">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.usa_ind_minori_6_mensile_ft %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_minori_6_mensile_ft' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_minori_6_mensile_ft">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.usa_ind_minori_6_mensile_pt %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_minori_6_mensile_pt' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_minori_6_mensile_pt">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.usa_ind_piu_assistiti_mensile %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_piu_assistiti_mensile' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_piu_assistiti_mensile">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.usa_ind_cert_qualita_mensile %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_cert_qualita_mensile' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_cert_qualita_mensile">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.usa_ind_funzione_mensile %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_funzione_mensile' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_funzione_mensile" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.usa_ind_minori_6_mensile_ft %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_minori_6_mensile_ft' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_minori_6_mensile_ft" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.usa_ind_minori_6_mensile_pt %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_minori_6_mensile_pt' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_minori_6_mensile_pt" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.usa_ind_piu_assistiti_mensile %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_piu_assistiti_mensile' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_piu_assistiti_mensile" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.usa_ind_cert_qualita_mensile %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'usa_ind_cert_qualita_mensile' in parametri_map_keys %}<span class="toggle-value" data-field="usa_ind_cert_qualita_mensile" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
             </div>
         </div>
 
         {# --- NOTTURNO --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-moon-stars"></i>Notturno</div>
+                <div class="title"><i class="bi bi-moon-stars" style="margin-right:6px;color:#5E6AD2;"></i>Notturno</div>
             </div>
             <div class="row g-2">
-                {% with f=form.applica_notturno_assistenza %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_assistenza' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_assistenza">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.applica_notturno_presenza %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_presenza' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_presenza">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.applica_notturno_base %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_base' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_base">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.applica_notturno_20 %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_20' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_20">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_notturno_tfr %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_tfr' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_tfr">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_notturno_13ma %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_13ma' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_13ma">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_notturno_festivi %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_festivi' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_festivi">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_notturno_ferie %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_ferie' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_ferie">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.applica_notturno_assistenza %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_assistenza' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_assistenza" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.applica_notturno_presenza %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_presenza' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_presenza" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.applica_notturno_base %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_base' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_base" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.applica_notturno_20 %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'applica_notturno_20' in parametri_map_keys %}<span class="toggle-value" data-field="applica_notturno_20" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_notturno_tfr %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_tfr' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_tfr" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_notturno_13ma %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_13ma' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_13ma" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_notturno_festivi %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_festivi' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_festivi" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_notturno_ferie %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_notturno_ferie' in parametri_map_keys %}<span class="toggle-value" data-field="paga_notturno_ferie" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
             </div>
         </div>
 
         {# --- INDENNITÀ FUNZIONE --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-person-badge"></i>Indennità Funzione</div>
+                <div class="title"><i class="bi bi-person-badge" style="margin-right:6px;color:#5E6AD2;"></i>Indennità Funzione</div>
             </div>
             <div class="row g-2">
-                {% with f=form.ind_funzione_conviventi %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_funzione_conviventi' in parametri_map_keys %}<span class="toggle-value" data-field="ind_funzione_conviventi">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_funzione_conviventi %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_funzione_conviventi' in parametri_map_keys %}<span class="toggle-value" data-field="ind_funzione_conviventi" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
             </div>
         </div>
 
         {# --- CONVIVENTI --- #}
         <div class="section-card">
             <div class="section-header">
-                <div class="title"><i class="bi bi-house-heart"></i>Conviventi</div>
+                <div class="title"><i class="bi bi-house-heart" style="margin-right:6px;color:#5E6AD2;"></i>Conviventi</div>
             </div>
             <div class="row g-2">
-                {% with f=form.is_convivente %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'is_convivente' in parametri_map_keys %}<span class="toggle-value" data-field="is_convivente">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_conviventi_ft_54h %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_conviventi_ft_54h' in parametri_map_keys %}<span class="toggle-value" data-field="ind_conviventi_ft_54h">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.ind_conviventi_pt_30h %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_conviventi_pt_30h' in parametri_map_keys %}<span class="toggle-value" data-field="ind_conviventi_pt_30h">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_pranzo %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_pranzo' in parametri_map_keys %}<span class="toggle-value" data-field="paga_pranzo">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_cena %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_cena' in parametri_map_keys %}<span class="toggle-value" data-field="paga_cena">€ —</span>{% endif %}</label></div>{% endwith %}
-                {% with f=form.paga_alloggio %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_alloggio' in parametri_map_keys %}<span class="toggle-value" data-field="paga_alloggio">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.is_convivente %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'is_convivente' in parametri_map_keys %}<span class="toggle-value" data-field="is_convivente" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_conviventi_ft_54h %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_conviventi_ft_54h' in parametri_map_keys %}<span class="toggle-value" data-field="ind_conviventi_ft_54h" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.ind_conviventi_pt_30h %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'ind_conviventi_pt_30h' in parametri_map_keys %}<span class="toggle-value" data-field="ind_conviventi_pt_30h" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_pranzo %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_pranzo' in parametri_map_keys %}<span class="toggle-value" data-field="paga_pranzo" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_cena %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_cena' in parametri_map_keys %}<span class="toggle-value" data-field="paga_cena" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
+                {% with f=form.paga_alloggio %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_alloggio' in parametri_map_keys %}<span class="toggle-value" data-field="paga_alloggio" style="font-size:10px;color:#8A8F98;flex-shrink:0;width:55px;text-align:right;white-space:nowrap;">€ —</span>{% endif %}</label></div>{% endwith %}
             </div>
         </div>
 
         {# --- VISIBILITÀ OPERATORI --- #}
         <div class="section-card" id="visibilitaOperatorSectionContratto">
             <div class="section-header">
-                <div class="title"><i class="bi bi-eye"></i>Visibilità Operatori</div>
+                <div class="title"><i class="bi bi-eye" style="margin-right:6px;color:#5E6AD2;"></i>Visibilità Operatori</div>
                 <div class="subtitle">Seleziona gli operatori che possono vedere questo contratto (vuoto = visibile a tutti)</div>
             </div>
             <div class="row g-2">
@@ -739,7 +729,7 @@
         {# --- PREVISIONE BUSTA PAGA --- #}
         <div class="section-card" style="display:flex;flex-direction:column;flex:1;min-height:0;margin-bottom:0;">
             <div class="section-header">
-                <div class="title"><i class="bi bi-receipt" style="color:#06b6d4;"></i>Previsione Busta Paga</div>
+                <div class="title"><i class="bi bi-receipt" style="margin-right:6px;color:#06b6d4;"></i>Previsione Busta Paga</div>
                 <div class="subtitle">Calcola il netto del periodo selezionato
                     <span id="bustaStepBadge" style="display:none;margin-left:8px;font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(6,182,212,0.12);color:#06b6d4;">Salvato</span>
                 </div>
@@ -774,9 +764,9 @@
 
     {% if instance.pk and modelli_precompilati %}
     <div style="border-top:1px solid #27282D;padding-top:10px;margin-top:10px;flex-shrink:0;">
-        <button type="button" style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'flex':'none'">
+        <div style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'flex':'none'">
             <i class="bi bi-file-earmark-text me-1"></i> Documenti precompilati <i class="bi bi-chevron-down" style="font-size:10px;"></i>
-        </button>
+        </div>
         <div style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
             {% for m in modelli_precompilati %}
             <a href="#" onclick="generaPdfTemplateAjax({{ instance.pk }}, {{ m.pk }}); return false;" style="display:inline-flex;align-items:center;gap:4px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:500;color:#a855f7;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.15)'" onmouseout="this.style.background='rgba(168,85,247,0.08)'">
@@ -789,9 +779,9 @@
 
     {% if instance.pk %}
     <div class="section-sep" style="flex-shrink:0;padding-top:10px;">
-        <button type="button" style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="toggleAnticipiTFR(this, {{ instance.pk }})">
+        <div style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="toggleAnticipiTFR(this, {{ instance.pk }})">
             <i class="bi bi-cash-stack me-1"></i> Anticipi TFR <span id="anticipiTfrCount" style="color:#f59e0b;"></span> <i class="bi bi-chevron-down" style="font-size:10px;"></i>
-        </button>
+        </div>
         <div id="anticipiTfrSection" style="display:none;">
             <div id="anticipiTfrList"></div>
             <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
@@ -803,9 +793,9 @@
         </div>
     </div>
     <div class="section-sep" style="flex-shrink:0;padding-top:10px;">
-        <button type="button" style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="toggleStoricoModifiche(this, {{ instance.pk }})">
+        <div style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="toggleStoricoModifiche(this, {{ instance.pk }})">
             <i class="bi bi-clock-history me-1"></i> Storico variazioni <span id="storicoModificheCount" style="color:#8b5cf6;"></span> <i class="bi bi-chevron-down" style="font-size:10px;"></i>
-        </button>
+        </div>
         <div id="storicoModificheSection" style="display:none;">
             <div id="storicoModificheList" style="font-size:12px;color:#8A8F98;"></div>
         </div>

@@ -9,14 +9,6 @@
 </nav>
 {% endblock %}
 {% block content %}
-<style>
-.input-compare { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px; }
-.bg-1718 { background: #17181C !important; }
-.br-14 { border-radius: 14px; }
-.p-20 { padding: 20px; }
-.fs-11 { font-size: 11px; }
-.c-8a98 { color: #8A8F98; }
-</style>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 fw-bold mb-1">COMPARATORE COSTO LAVORATORE
@@ -27,10 +19,10 @@
 </div>
 
 <form method="GET" id="compareForm" class="mb-4">
-<div class="row g-3 align-items-end bg-1718 br-14 p-20" style="border: 1px solid #27282D;">
+<div class="row g-3 align-items-end" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px;">
     <div class="col-md-4">
         <label class="mb-1 fw-bold" class="label-form-uppercase-muted">Contratto</label>
-        <select name="contratto" class="form-select input-compare" style="width:calc(400px + 6cm);" onchange="this.form.submit()">
+        <select name="contratto" class="form-select" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;width:calc(400px + 6cm);" onchange="this.form.submit()">
             <option value="">— Seleziona un contratto —</option>
             {% for c in contratti %}
             <option value="{{ c.pk }}" {% if contratto and contratto.pk == c.pk %}selected{% endif %}>{{ c|contratto_option }}</option>
@@ -39,7 +31,7 @@
     </div>
     <div class="col-md-2" style="margin-left:2.5cm;">
         <label class="mb-1 fw-bold" class="label-form-uppercase-muted">Mese</label>
-        <select name="mese" class="form-select input-compare" onchange="this.form.submit()">
+        <select name="mese" class="form-select" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;" onchange="this.form.submit()">
             <option value="1" {% if mese == 1 %}selected{% endif %}>Gennaio</option>
             <option value="2" {% if mese == 2 %}selected{% endif %}>Febbraio</option>
             <option value="3" {% if mese == 3 %}selected{% endif %}>Marzo</option>
@@ -56,7 +48,7 @@
     </div>
     <div class="col-md-2">
         <label class="mb-1 fw-bold" class="label-form-uppercase-muted">Anno</label>
-        <select name="anno" class="form-select input-compare" onchange="this.form.submit()">
+        <select name="anno" class="form-select" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;" onchange="this.form.submit()">
             <option value="2024" {% if anno == 2024 %}selected{% endif %}>2024</option>
             <option value="2025" {% if anno == 2025 %}selected{% endif %}>2025</option>
             <option value="2026" {% if anno == 2026 %}selected{% endif %}>2026</option>
@@ -68,8 +60,8 @@
 {% if contratto %}
 <div class="row mt-4 g-4">
     <div class="col-md-6">
-        <div class="bg-1718 br-14 p-20" style="border: 1px solid #27282D;">
-            <div class="fw-bold mb-3 c-text fs-11" style="text-transform: uppercase; letter-spacing: 0.05em;">
+        <div style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px;">
+            <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
                 <i class="bi bi-file-earmark-text" style="margin-right: 6px; color: #5E6AD2;"></i>Scenario Corrente
             </div>
             {% if current %}
@@ -92,17 +84,17 @@
     </div>
 
     <div class="col-md-6">
-        <div class="bg-1718 br-14 p-20" style="border: 1px solid #5E6AD2;">
-            <div class="fw-bold mb-3 fs-11" style="text-transform: uppercase; letter-spacing: 0.05em; color: #5E6AD2;">
+        <div style="background: #17181C; border: 1px solid #5E6AD2; border-radius: 14px; padding: 20px;">
+            <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #5E6AD2;">
                 <i class="bi bi-arrow-left-right" style="margin-right: 6px;"></i>Scenario Alternativo
             </div>
             <div class="mb-3">
                 <label class="mb-1 fw-bold" style="font-size: 11px; color: #8A8F98;">Budget mensile (€)</label>
-                <input type="number" step="0.01" name="budget_alt" class="form-control input-compare" value="{{ budget_alt|default:current.budget_mensile }}">
+                <input type="number" step="0.01" name="budget_alt" class="form-control" value="{{ budget_alt|default:current.budget_mensile }}" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;">
             </div>
             <div class="mb-3">
                 <label class="mb-1 fw-bold" style="font-size: 11px; color: #8A8F98;">Ore mensili</label>
-                <input type="number" step="0.5" name="ore_alt" class="form-control input-compare" value="{{ ore_alt|default:current.ore_mensili }}">
+                <input type="number" step="0.5" name="ore_alt" class="form-control" value="{{ ore_alt|default:current.ore_mensili }}" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #EDEDED; padding: 8px 12px; font-size: 12px;">
             </div>
             <div class="d-flex flex-wrap gap-3 mb-3">
                 <label class="d-flex align-items-center gap-2" class="click-muted">

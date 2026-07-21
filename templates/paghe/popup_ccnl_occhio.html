@@ -23,8 +23,6 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
 .busta-conv-item { display:flex; align-items:center; gap:6px; padding:3px 0 3px 12px; font-size:10px; color:#8A8F98; cursor:pointer; }
 .totale-row { border-top:1px solid #27282D; margin-top:4px; padding-top:4px; display:flex; justify-content:space-between; font-size:12px; font-weight:700; }
 .label-sezione { font-size:9px; text-transform:uppercase; letter-spacing:0.03em; color:#8A8F98; margin-bottom:6px; }
-.section-header-ccnl { display:flex; align-items:center; gap:8px; padding:10px 14px; border-bottom:1px solid #27282D; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#8A8F98; background:rgba(255,255,255,0.02); }
-.cell-padded { padding:4px 6px; }
 </style>
 </head>
 <body>
@@ -84,7 +82,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
 
         {% for group in groups %}
         <div style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;margin-bottom:10px;overflow:hidden;">
-          <div class="section-header-ccnl">
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.02);">
             <i class="bi bi-{{ group.icon }}"></i>
             {{ group.title }}
           </div>
@@ -124,7 +122,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
 
           {% with b=busta_json %}
           {% comment %} Intestazione Budget / Ore {% endcomment %}
-          <div class="section-header-ccnl" style="justify-content:space-between;background:rgba(255,255,255,0.03);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.03);">
             <div><i class="bi bi-calculator me-1"></i> Anteprima Busta Paga</div>
             <div style="display:flex;gap:14px;font-size:10px;font-weight:400;text-transform:none;">
               <span>Budget: <span class="busta-budget" class="c-green fw-6">€ {{ b.budget_mensile|floatformat:2 }}</span></span>
@@ -227,8 +225,8 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
 
           {% comment %} Scatti di Anzianità {% endcomment %}
           <div class="ccnl-scatti-section" style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;margin-top:10px;overflow:hidden;transition:all 0.15s;">
-            <div class="ccnl-scatti-header section-header-ccnl" data-key="scatti" data-value="{{ scatto_effettivo|stringformat:'.4f' }}" data-attiva="{{ scatti_attiva|yesno:'true,false' }}"
-              style="cursor:pointer;transition:all 0.15s;">
+            <div class="ccnl-scatti-header" data-key="scatti" data-value="{{ scatto_effettivo|stringformat:'.4f' }}" data-attiva="{{ scatti_attiva|yesno:'true,false' }}"
+              style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.02);cursor:pointer;transition:all 0.15s;">
               <span class="ccnl-toggle-icon" style="font-size:13px;color:#5C5F66;">
                 <i class="bi bi-toggle-off"></i>
               </span>
@@ -242,19 +240,19 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
               <table style="width:100%;border-collapse:collapse;font-size:11px;">
                 <thead>
                   <tr style="border-bottom:1px solid #27282D;color:#5C5F66;font-size:9px;text-transform:uppercase;letter-spacing:0.04em;">
-                    <th class="cell-padded" style="text-align:left;">Biennio</th>
-                    <th class="cell-padded" style="text-align:left;">Anzianità</th>
-                    <th class="cell-padded" style="text-align:right;">Orario</th>
-                    <th class="cell-padded" style="text-align:right;">Mensile (170h)</th>
+                    <th style="padding:4px 6px;text-align:left;">Biennio</th>
+                    <th style="padding:4px 6px;text-align:left;">Anzianità</th>
+                    <th style="padding:4px 6px;text-align:right;">Orario</th>
+                    <th style="padding:4px 6px;text-align:right;">Mensile (170h)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for b in bienni %}
                   <tr style="border-bottom:1px solid rgba(39,40,45,0.3);">
-                    <td class="cell-padded" style="color:#8A8F98;">{{ b.biennio }}°</td>
-                    <td class="cell-padded" style="color:#EDEDEB;">{{ b.anni }} anni</td>
-                    <td class="cell-padded" style="text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.orario|floatformat:4 }}</td>
-                    <td class="cell-padded" style="text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.mensile|floatformat:2 }}</td>
+                    <td style="padding:4px 6px;color:#8A8F98;">{{ b.biennio }}°</td>
+                    <td style="padding:4px 6px;color:#EDEDEB;">{{ b.anni }} anni</td>
+                    <td style="padding:4px 6px;text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.orario|floatformat:4 }}</td>
+                    <td style="padding:4px 6px;text-align:right;color:#f59e0b;font-weight:600;">€ {{ b.mensile|floatformat:2 }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>

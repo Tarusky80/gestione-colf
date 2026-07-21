@@ -9,14 +9,6 @@
 </nav>
 {% endblock %}
 {% block content %}
-<style>
-.c-err-msg { font-size:12px; color:#f87171; }
-.word-break-all { word-break:break-all; }
-.mt-2px { margin-top:2px; }
-.br-6 { border-radius:6px; }
-.b-1-2728 { border:1px solid #27282D; }
-.bg-090 { background:#09090B; }
-</style>
 {% block search_bar %}{% endblock %}
 <div class="container-fluid p-4">
   <h4 class="mb-4" class="c-text"><i class="bi bi-gear-wide-connected me-2"></i>Configurazioni Servizi Web
@@ -74,7 +66,7 @@
           <span class="c-green"><i class="bi bi-check-circle-fill"></i> Installato</span>
         </div>
         {% else %}
-        <div class="c-err-msg">
+        <div style="font-size:12px;color:#f87171;">
           <i class="bi bi-x-circle-fill"></i> Chrome non rilevato
         </div>
         {% endif %}
@@ -94,7 +86,7 @@
           <span class="c-green"><i class="bi bi-check-circle-fill"></i> Installato</span>
         </div>
         {% else %}
-        <div class="c-err-msg">
+        <div style="font-size:12px;color:#f87171;">
           <i class="bi bi-x-circle-fill"></i> Selenium non installato
         </div>
         <div class="c-11-m mt-6">Esegui: <code class="badge-warn">pip install selenium</code></div>
@@ -123,7 +115,7 @@
           Esegui: <code class="badge-warn">playwright install chromium</code>
         </div>
         {% else %}
-        <div class="c-err-msg">
+        <div style="font-size:12px;color:#f87171;">
           <i class="bi bi-x-circle-fill"></i> Playwright non installato
         </div>
         <div class="c-11-m mt-6">Esegui: <code class="badge-warn">pip install playwright</code></div>
@@ -223,8 +215,8 @@
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-link me-2"></i>Link Cessazione INPS</h6>
-<div class="c-muted fs-12 mb-6 word-break-all">
-        {{ web_config.link_inps_cessazione|default:"—" }}
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
+          {{ web_config.link_inps_cessazione|default:"—" }}
         </div>
         <div class="c-muted fs-12">
           Raggiungibilità:
@@ -243,8 +235,8 @@
     <div class="col-md-6">
       <div class="p-3" class="card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-credit-card-2-front me-2"></i>Link PagoPA INPS</h6>
-<div class="c-muted fs-12 mb-6 word-break-all">
-        {{ web_config.link_inps_pagopa|default:"—" }}
+        <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
+          {{ web_config.link_inps_pagopa|default:"—" }}
         </div>
         <div class="c-muted fs-12">
           Raggiungibilità:
@@ -265,7 +257,7 @@
         <h6 class="h3-sezione"><i class="bi bi-folder2-open me-2"></i>Cartelle Documenti</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">
           Documenti (PagoPA, buste, TFR):
-          <div class="c-text mt-2px word-break-all">{{ cartella_documenti }}</div>
+          <div style="color:#EDEDED;word-break:break-all;margin-top:2px;">{{ cartella_documenti }}</div>
           <div class="d-flex align-items-center gap-2" style="margin-top:4px;">
             {% if cartella_documenti_esiste %}
               <span class="c-green"><i class="bi bi-check-circle-fill"></i> Presente</span>
@@ -279,7 +271,7 @@
         </div>
         <div class="c-muted fs-12">
           Sottocartella SCREENSHOT:
-          <div class="c-text mt-2px word-break-all">{{ cartella_screenshot }}</div>
+          <div style="color:#EDEDED;word-break:break-all;margin-top:2px;">{{ cartella_screenshot }}</div>
           <div style="margin-top:2px;">
             {% if cartella_screenshot_esiste %}
               <span class="c-green"><i class="bi bi-check-circle-fill"></i> Presente</span>

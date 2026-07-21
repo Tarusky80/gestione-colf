@@ -3,10 +3,6 @@
 {% block title %}Stampe e Invii{% endblock %}
 {% block extra_css %}
 {% include 'paghe/partials/_stampe_styles.html' %}
-<style>
-.card-stampe{background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;}
-.budget-val{font-size:12px;font-weight:600;color:#9ca3ff;min-width:50px;}
-</style>
 {% endblock %}
 {% block breadcrumb %}
 <nav aria-label="Breadcrumb" class="breadcrumb-nav">
@@ -105,27 +101,27 @@
             <div class="col-md-6">
                 <label class="mb-1 fw-bold" class="c-10-up">Budget Annuale (&euro;)</label>
                 <div class="d-flex align-items-center gap-3">
-                    <span id="bAnDaVal" class="budget-val" style="text-align:right;">0</span>
+                    <span id="bAnDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
                     <div style="flex:1; position:relative; height:40px;">
                         <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
                         <div id="bAnProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
                         <input type="range" id="fBAnDa" min="0" max="50000" step="500" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
                         <input type="range" id="fBAnA" min="0" max="50000" step="500" value="50000" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
                     </div>
-                    <span id="bAnAVal" class="budget-val">50k</span>
+                    <span id="bAnAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">50k</span>
                 </div>
             </div>
             <div class="col-md-6">
                 <label class="mb-1 fw-bold" class="c-10-up">Budget Mensile (&euro;)</label>
                 <div class="d-flex align-items-center gap-3">
-                    <span id="bMenDaVal" class="budget-val" style="text-align:right;">0</span>
+                    <span id="bMenDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
                     <div style="flex:1; position:relative; height:40px;">
                         <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
                         <div id="bMenProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
                         <input type="range" id="fBMenDa" min="0" max="2500" step="25" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
                         <input type="range" id="fBMenA" min="0" max="2500" step="25" value="2500" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
                     </div>
-                    <span id="bMenAVal" class="budget-val">2.5k</span>
+                    <span id="bMenAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">2.5k</span>
                 </div>
             </div>
         </div>
@@ -148,7 +144,7 @@
 </div>
 
 <!-- Tabella contratti -->
-<div class="custom-table-container card-stampe">
+<div class="custom-table-container" style="background: #17181C; padding: 20px; border-radius: 8px; margin-bottom:16px;">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="d-flex align-items-center gap-2">
             <input type="checkbox" id="selTutti" onchange="toggleTutti(this)" style="accent-color:#5E6AD2;width:16px;height:16px;">
@@ -226,7 +222,7 @@
 </div>
 
 <!-- Tipo Documento -->
-<div class="custom-table-container card-stampe">
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;">
     <label class="mb-2 fw-bold" class="c-10-up">TIPO DOCUMENTO</label>
     <div class="row g-2">
         {% for cat in categorie_documenti %}
@@ -249,7 +245,7 @@
 </div>
 
 <!-- CATEGORIA COMPOSIZIONE -->
-<div class="custom-table-container card-stampe" style="border-left:3px solid #5E6AD2;--cat-color:#5E6AD2;">
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;border-left:3px solid #5E6AD2;--cat-color:#5E6AD2;">
     <label class="mb-2 fw-bold" class="c-10-up">COMPOSIZIONE MULTIPLA</label>
     <div class="d-flex flex-wrap gap-1">
         <label class="doc-type-label" data-categoria="COMPOSIZIONE" data-tipo="COMPOSIZIONE" data-usa-periodo="false" data-usa-template="false" title="Composizione personalizzata di più tipi documento" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;border:1px solid #5E6AD2;cursor:pointer;font-size:12px;color:#9ca3ff;transition:all .15s;background:rgba(94,106,210,0.08);">
@@ -328,12 +324,12 @@
     </div>
     <div class="row g-2 align-items-center">
         <div class="col-auto periodo-fields" id="periodoSingolo">
-            <select id="perMese" class="form-control select-custom" style="width:140px;">
+            <select id="perMese" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:140px;">
                 {% for num, nome in mesi %}
                 <option value="{{ num }}" {% if num == mese_corrente %}selected{% endif %}>{{ nome }}</option>
                 {% endfor %}
             </select>
-            <select id="perAnno" class="form-control select-custom">
+            <select id="perAnno" class="form-control" class="select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
@@ -341,44 +337,44 @@
         </div>
         <div class="col-auto periodo-fields" id="periodoRange" class="d-none">
             <span class="text-secondary small me-1">Da</span>
-            <select id="perMeseDa" class="form-control select-custom" style="width:120px;display:inline-block;">
+            <select id="perMeseDa" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;display:inline-block;">
                 {% for num, nome in mesi %}
                 <option value="{{ num }}" {% if num == 1 %}selected{% endif %}>{{ nome }}</option>
                 {% endfor %}
             </select>
-            <select id="perAnnoDa" class="form-control select-custom" style="width:90px;display:inline-block;">
+            <select id="perAnnoDa" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:90px;display:inline-block;">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
             <span class="text-secondary small mx-1">&rarr;</span>
             <span class="text-secondary small me-1">A</span>
-            <select id="perMeseA" class="form-control select-custom" style="width:120px;display:inline-block;">
+            <select id="perMeseA" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;display:inline-block;">
                 {% for num, nome in mesi %}
                 <option value="{{ num }}" {% if num == mese_corrente %}selected{% endif %}>{{ nome }}</option>
                 {% endfor %}
             </select>
-            <select id="perAnnoA" class="form-control select-custom" style="width:90px;display:inline-block;">
+            <select id="perAnnoA" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:90px;display:inline-block;">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="col-auto periodo-fields" id="periodoTrimestre" class="d-none">
-            <select id="perTrimestre" class="form-control select-custom" style="width:120px;">
+            <select id="perTrimestre" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 10px;border-radius:8px;width:120px;">
                 <option value="1">1&deg; Trimestre</option>
                 <option value="2">2&deg; Trimestre</option>
                 <option value="3">3&deg; Trimestre</option>
                 <option value="4">4&deg; Trimestre</option>
             </select>
-            <select id="perAnnoT" class="form-control select-custom">
+            <select id="perAnnoT" class="form-control" class="select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="col-auto periodo-fields" id="periodoAnno" class="d-none">
-            <select id="perAnnoSolo" class="form-control select-custom">
+            <select id="perAnnoSolo" class="form-control" class="select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
@@ -388,7 +384,7 @@
 </div>
 
 <!-- Modello Email -->
-<div class="custom-table-container card-stampe">
+<div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;">
     <div class="row g-2 align-items-center">
         <div class="col-md-3">
             <label class="mb-1 fw-bold" class="c-10-up">Modello Email</label>

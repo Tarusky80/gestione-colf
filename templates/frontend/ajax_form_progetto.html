@@ -1,7 +1,6 @@
 <style>
     #id_beneficiario { color: #ffffff !important; }
     #id_beneficiario option, #id_beneficiario optgroup { background: #09090B; color: #ffffff; }
-    .ben-val{font-size:12px;font-weight:600;color:#EDEDED}
 </style>
 <form id="dynamicForm" method="POST">
     {% csrf_token %}
@@ -14,7 +13,7 @@
 
         {# --- NAVIGAZIONE (box separato) --- #}
         {% if progetti_pks %}
-        <div class="mb-3 card-simple" style="padding: 14px 28px;">
+        <div class="mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 14px 28px;">
             <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;">
                 <span style="font-size:10px;color:#8A8F98;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;flex-shrink:0;">NAVIGAZIONE:</span>
                 <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
@@ -27,7 +26,7 @@
         {% endif %}
 
         {# --- RIEPILOGO --- #}
-        <div class="mb-4 card-simple" style="padding: 24px 28px;">
+        <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 24px 28px;">
             <div class="fw-bold d-flex align-items-center" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98; margin-bottom: 18px;">
                 <span><i class="bi bi-info-circle" class="me-1 c-accent"></i>Riepilogo</span>
             </div>
@@ -97,16 +96,16 @@
         </div>
 
         {# --- SCHEDA BENEFICIARIO --- #}
-        <div id="beneficiarioCard" class="mb-3 card-simple" style="display:none; padding: 16px 20px;">
+        <div id="beneficiarioCard" class="mb-3" style="display:none; background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 16px 20px;">
             <div class="fw-bold mb-2" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98;">
                 <i class="bi bi-person-badge" class="me-1 c-accent"></i>Dettagli beneficiario
             </div>
             <div class="row g-2">
-                <div class="col-3"><div class="c-muted fs-9">CF</div><div id="ben_cf" class="ben-val" style="font-family:monospace;">—</div></div>
-                <div class="col-3"><div class="c-muted fs-9">Indirizzo</div><div id="ben_indirizzo" class="ben-val">—</div></div>
-                <div class="col-3"><div class="c-muted fs-9">Comune</div><div id="ben_comune" class="ben-val">—</div></div>
-                <div class="col-1"><div class="c-muted fs-9">Prov.</div><div id="ben_provincia" class="ben-val">—</div></div>
-                <div class="col-2"><div class="c-muted fs-9">CAP</div><div id="ben_cap" class="ben-val">—</div></div>
+                <div class="col-3"><div class="c-muted fs-9">CF</div><div id="ben_cf" style="font-size:12px; font-weight:600; color:#EDEDED; font-family:monospace;">—</div></div>
+                <div class="col-3"><div class="c-muted fs-9">Indirizzo</div><div id="ben_indirizzo" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-3"><div class="c-muted fs-9">Comune</div><div id="ben_comune" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-1"><div class="c-muted fs-9">Prov.</div><div id="ben_provincia" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
+                <div class="col-2"><div class="c-muted fs-9">CAP</div><div id="ben_cap" style="font-size:12px; font-weight:600; color:#EDEDED;">—</div></div>
             </div>
         </div>
 
@@ -176,7 +175,7 @@
 
         {# --- CONTRATTI COLLEGATI (CLICCABILI) --- #}
         {% if contratti_collegati %}
-        <div class="mb-4 card-simple" style="padding: 20px 24px;">
+        <div class="mb-4" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px; padding: 20px 24px;">
             <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
                 <i class="bi bi-file-earmark-text" class="me-1 c-accent"></i>Contratti collegati
             </div>

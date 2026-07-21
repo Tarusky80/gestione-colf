@@ -73,8 +73,6 @@
 }
 .cu-grid-input:focus { outline:none; border-bottom-color:#5E6AD2; }
 .cu-manuale-input { background:#09090B !important; border:1px solid #27282D !important; color:#EDEDED !important; font-size:14px !important; }
-.label-cu { font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em; }
-.input-dark-cu { background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:6px; }
 </style>
 
 <div class="container-fluid p-4">
@@ -92,14 +90,14 @@
   {# --- Modalità CU --- #}
   <div class="p-4" class="card-simple" class="mb-20">
     <div class="d-flex gap-2 align-items-center mb-3">
-      <span class="label-cu">Modalità:</span>
+      <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Modalità:</span>
       <button type="button" class="btn-tab active" data-mode="1" onclick="setMode(1)"><i class="bi bi-magic me-1"></i> Automatica</button>
       <button type="button" class="btn-tab" data-mode="2" onclick="setMode(2)"><i class="bi bi-pencil me-1"></i> Semi-Automatica (13 mensilità)</button>
       <button type="button" class="btn-tab" data-mode="3" onclick="setMode(3)"><i class="bi bi-hand-index me-1"></i> Manuale</button>
     </div>
     <div class="row g-3 align-items-end">
       <div class="col-md-8">
-        <label class="label-cu" style="margin-bottom:6px;">Contratto</label>
+        <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
         <div class="d-flex gap-2 align-items-center">
           <button type="button" class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrev" style="padding:8px 14px;font-size:16px;line-height:1;">
             <i class="bi bi-chevron-left"></i>
@@ -117,7 +115,7 @@
         </div>
       </div>
       <div class="col-md-4">
-        <label class="label-cu" style="margin-bottom:6px;">Anno</label>
+        <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Anno</label>
         <input type="number" id="selAnno" class="form-control" value="{{ anno_corrente }}" min="{{ anno_iniziale }}" max="{{ anno_corrente }}" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;">
       </div>
     </div>
@@ -158,7 +156,7 @@
   {# --- Toolbar batch fissa --- #}
   <div class="p-3" class="card-simple" class="mb-20">
     <div id="batchToolbar">
-      <span class="label-cu" style="white-space:nowrap;"><i class="bi bi-collection me-1"></i>Operazioni batch</span>
+      <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-collection me-1"></i>Operazioni batch</span>
       <span id="badgeContrattoCorrente" class="badge-contratto" style="display:none;"></span>
       <div style="flex:1;"></div>
       <button type="button" onclick="generaBatchPdf()" id="btnBatchPdf" disabled class="btn btn-sm btn-ghost-primary" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-files me-1"></i> Genera PDF selezionati (0)</button>
@@ -248,7 +246,7 @@
       </div>
     </div>
     <div id="storicoInviiCuSection" style="display:none;margin-top:8px;background:#17181C;border:1px solid #27282D;border-radius:10px;padding:12px;">
-      <div class="label-cu" style="margin-bottom:6px;">Storico invii email</div>
+      <div style="font-size:11px;font-weight:600;color:#8A8F98;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Storico invii email</div>
       <div id="storicoInviiCuList" style="font-size:12px;color:#8A8F98;">Caricamento...</div>
     </div>
   </div>
@@ -262,7 +260,7 @@
 {# Modale invio email CU #}
 <div class="modal fade" id="modaleInvioEmailCu" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content card-dark shadow-modal">
+    <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold" class="c-text">Invia CU via Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -276,7 +274,7 @@
   {# Modale esito batch PDF #}
   <div class="modal fade" id="modaleBatchPdf" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-dark shadow-modal">
+      <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
         <div class="modal-header border-0 pb-0">
           <h5 class="modal-title fw-bold" class="c-text"><i class="bi bi-files me-2" class="c-accent"></i>Esito generazione batch</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -308,7 +306,7 @@
   {# Modale esito invio massivo #}
   <div class="modal fade" id="modaleMassivoEmail" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-dark shadow-modal">
+      <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
         <div class="modal-header border-0 pb-0">
           <h5 class="modal-title fw-bold" class="c-text"><i class="bi bi-envelope-paper me-2" style="color:#2563eb;"></i>Esito invio massivo</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -395,18 +393,18 @@
         <div class="row g-3 mt-3">
           <div class="col-md-6">
             <label class="c-11-m fw-6">Data fine personalizzata <span style="color:#5C5F66;font-weight:400;">(opzionale)</span></label>
-            <input type="date" id="saDataFineCustom" class="form-control input-dark-cu" style="padding:8px 12px;font-size:13px;">
+            <input type="date" id="saDataFineCustom" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:6px;padding:8px 12px;font-size:13px;">
           </div>
         </div>
         <div class="row g-3 mt-3">
           <div class="col-md-6">
             <label class="c-11-m fw-6">Carico familiare</label>
-            <textarea id="saCaricoFamiliare" oninput="anteprimaTestoCu('saCaricoFamiliare','saCaricoFamiliarePrev')" class="form-control input-dark-cu" style="font-size:12px;min-height:50px;resize:vertical;"></textarea>
+            <textarea id="saCaricoFamiliare" oninput="anteprimaTestoCu('saCaricoFamiliare','saCaricoFamiliarePrev')" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:6px;font-size:12px;min-height:50px;resize:vertical;"></textarea>
             <div id="saCaricoFamiliarePrev" style="margin-top:4px;padding:8px 10px;background:#131316;border:1px solid #27282D;border-radius:6px;font-size:12px;color:#8A8F98;line-height:1.5;white-space:pre-wrap;display:none;"></div>
           </div>
           <div class="col-md-6">
             <label class="c-11-m fw-6">Presentazione dichiarazione dei redditi</label>
-            <textarea id="saPresentazioneRedditi" oninput="anteprimaTestoCu('saPresentazioneRedditi','saPresentazioneRedditiPrev')" class="form-control input-dark-cu" style="font-size:12px;min-height:50px;resize:vertical;"></textarea>
+            <textarea id="saPresentazioneRedditi" oninput="anteprimaTestoCu('saPresentazioneRedditi','saPresentazioneRedditiPrev')" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:6px;font-size:12px;min-height:50px;resize:vertical;"></textarea>
             <div id="saPresentazioneRedditiPrev" style="margin-top:4px;padding:8px 10px;background:#131316;border:1px solid #27282D;border-radius:6px;font-size:12px;color:#8A8F98;line-height:1.5;white-space:pre-wrap;display:none;"></div>
           </div>
         </div>

@@ -7,7 +7,6 @@
 {% endblock %}
 
 {% block content %}
-<style>.alert-sub-item{padding:2px 0 2px 18px;width:100%}</style>
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
     <div>
         <h1 class="h3 fw-bold mb-1"><i class="bi bi-speedometer2 me-2 c-accent"></i>Riepilogo Ufficio
@@ -44,14 +43,14 @@
             </div>
             <div class="alert-dropdown-body" id="alertDropdownBody">
                 {% if scaduti_count > 0 %}
-                <div class="alert-dropdown-item flex-wrap-pointer" role="button" tabindex="0" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()">
+                <div class="alert-dropdown-item flex-wrap-pointer" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()">
                     <span class="dot" style="background:#ff6b6b;"></span>
                     <span class="al-label fw-6">Scaduti da aggiornare</span>
                     <span class="al-count c-rose">{{ scaduti_count }}</span>
                     {% for c in scaduti_items|slice:":3" %}
-                    <div class="fs-11 alert-sub-item" style="color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
+                    <div class="fs-11" style="padding:2px 0 2px 18px;width:100%;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
                     {% endfor %}
-                    {% if scaduti_count > 3 %}<div class="label-info alert-sub-item">...e altri {{ scaduti_count|add:"-3" }}</div>{% endif %}
+                    {% if scaduti_count > 3 %}<div class="label-info" style="padding:2px 0 2px 18px;width:100%;">...e altri {{ scaduti_count|add:"-3" }}</div>{% endif %}
                 </div>
                 {% endif %}
                 {% if contratti_in_scadenza > 0 %}
@@ -76,14 +75,14 @@
                 </div>
                 {% endif %}
                 {% if senza_budget_count > 0 %}
-                <div class="alert-dropdown-item flex-wrap-pointer" role="button" tabindex="0" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()">
+                <div class="alert-dropdown-item flex-wrap-pointer" onclick="event.stopPropagation();closeAlertDropdown();toggleAlertPanel()">
                     <span class="dot" style="background:#fb923c;"></span>
                     <span class="al-label fw-6">Senza budget</span>
                     <span class="al-count c-orange">{{ senza_budget_count }}</span>
                     {% for c in senza_budget_items|slice:":3" %}
-                    <div class="fs-11 alert-sub-item" style="color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
+                    <div class="fs-11" style="padding:2px 0 2px 18px;width:100%;color:#b0b0b8;">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</div>
                     {% endfor %}
-                    {% if senza_budget_count > 3 %}<div class="label-info alert-sub-item">...e altri {{ senza_budget_count|add:"-3" }}</div>{% endif %}
+                    {% if senza_budget_count > 3 %}<div class="label-info" style="padding:2px 0 2px 18px;width:100%;">...e altri {{ senza_budget_count|add:"-3" }}</div>{% endif %}
                 </div>
                 {% endif %}
                 {% if patrono_count > 0 %}
@@ -289,10 +288,10 @@
 </div>
 
 <div class="section-card collapsible" id="statsAccordion">
-    <button type="button" onclick="toggleStatsAccordion()" style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid rgba(255,255,255,0.04);border-radius:8px 8px 0 0;background:rgba(255,255,255,0.02);width:100%;">
+    <div onclick="toggleStatsAccordion()" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid rgba(255,255,255,0.04);border-radius:8px 8px 0 0;background:rgba(255,255,255,0.02);">
         <span style="font-size:13px;font-weight:600;color:#a1a1aa;"><i class="bi bi-bar-chart-line me-2"></i> Grafici e Report</span>
         <span class="collapse-toggle" id="statsToggle"><i class="bi bi-chevron-down"></i></span>
-    </button>
+    </div>
     <div class="collapse-content" id="statsCollapse" class="d-none">
     {% if totale_attivi %}
     {% with mc=contratti_per_comune.0.count|default:1 %}
@@ -487,7 +486,7 @@
 </div>
 
 <!-- === PANNELLO ALERT === -->
-<button type="button" class="alert-overlay cursor-pointer" id="alertOverlay" onclick="closeAlertPanel()"></button>
+<div class="alert-overlay" id="alertOverlay" onclick="closeAlertPanel()"></div>
 <div class="alert-panel" id="alertPanel">
     <div class="alert-panel-header">
         <h5><i class="bi bi-bell-fill me-2"></i>Alert e Scadenze</h5>
@@ -496,7 +495,7 @@
     <div class="alert-panel-body">
 
         <!-- === RIEPILOGO RAPIDO === -->
-        <div class="alert-card alert-gray open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-speedometer2"></i>
@@ -517,7 +516,7 @@
         </div>
 
         {% if scaduti_count > 0 %}
-        <div class="alert-card alert-red open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-red open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-exclamation-octagon-fill"></i>
@@ -528,12 +527,12 @@
             </div>
             <div class="alert-card-body">
                 {% for c in scaduti_items %}
-                <button type="button" class="alert-item cursor-pointer" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                     {% with primo_progetto=c.progetto.all.0 %}
                     <span class="item-date">Fine: {{ primo_progetto.data_fine|date:"d/m/y"|default:"—" }}</span>
                     {% endwith %}
-                </button>
+                </div>
                 {% endfor %}
                 {% if scaduti_count > 20 %}<div class="alert-empty">...e altri {{ scaduti_count|add:"-20" }}</div>{% endif %}
             </div>
@@ -541,7 +540,7 @@
         {% endif %}
 
         {% if contratti_in_scadenza > 0 %}
-        <div class="alert-card alert-yellow open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-yellow open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-exclamation-triangle-fill"></i>
@@ -557,7 +556,7 @@
         {% endif %}
 
         {% if contratti_scadenza_30gg_count > 0 %}
-        <div class="alert-card alert-orange open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-orange open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-clock-fill"></i>
@@ -569,11 +568,11 @@
             <div class="alert-card-body">
                 {% for c in contratti_scadenza_30gg_items %}
                 <div class="alert-item">
-                    <button type="button" class="flex-1 cursor-pointer" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
+                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" class="flex-1">
                         <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                         <span class="item-date">Fine: {{ c.data_fine|date:"d/m/y" }}</span>
-                    </button>
-                    <button type="button" onclick="event.stopPropagation(); loadAjaxForm('/ajax/rinnova-contratto/{{ c.pk }}/', 'Nuovo Contratto (Rinnovo)')" style="font-size:10px;color:#34d399;white-space:nowrap;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);flex-shrink:0;"><i class="bi bi-arrow-repeat me-1"></i> Rinnova</button>
+                    </div>
+                    <span onclick="event.stopPropagation(); loadAjaxForm('/ajax/rinnova-contratto/{{ c.pk }}/', 'Nuovo Contratto (Rinnovo)')" style="font-size:10px;color:#34d399;cursor:pointer;white-space:nowrap;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);flex-shrink:0;"><i class="bi bi-arrow-repeat me-1"></i> Rinnova</span>
                 </div>
                 {% endfor %}
                 {% if contratti_scadenza_30gg_items|length < contratti_scadenza_30gg_count %}
@@ -584,7 +583,7 @@
         {% endif %}
 
         {% if contratti_scadenza_60gg_count > 0 and contratti_scadenza_30gg_count == 0 %}
-        <div class="alert-card alert-gray open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-clock"></i>
@@ -599,7 +598,7 @@
         </div>
         {% endif %}
         {% if contratti_scadenza_90gg_count > 0 and contratti_scadenza_30gg_count == 0 and contratti_scadenza_60gg_count == 0 %}
-        <div class="alert-card open cursor-pointer" role="button" tabindex="0" style="border-left:3px solid #6b7280;" onclick="toggleAlertCard(this)">
+        <div class="alert-card open" style="border-left:3px solid #6b7280;" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-clock-history"></i>
@@ -611,11 +610,11 @@
             <div class="alert-card-body">
                 {% for c in contratti_scadenza_90gg_items %}
                 <div class="alert-item">
-                    <button type="button" class="flex-1 cursor-pointer" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
+                    <div onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')" class="flex-1">
                         <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                         <span class="item-date">Fine: {{ c.data_fine|date:"d/m/y" }}</span>
-                    </button>
-                    <button type="button" onclick="event.stopPropagation(); loadAjaxForm('/ajax/rinnova-contratto/{{ c.pk }}/', 'Nuovo Contratto (Rinnovo)')" style="font-size:10px;color:#34d399;white-space:nowrap;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);flex-shrink:0;"><i class="bi bi-arrow-repeat me-1"></i> Rinnova</button>
+                    </div>
+                    <span onclick="event.stopPropagation(); loadAjaxForm('/ajax/rinnova-contratto/{{ c.pk }}/', 'Nuovo Contratto (Rinnovo)')" style="font-size:10px;color:#34d399;cursor:pointer;white-space:nowrap;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);flex-shrink:0;"><i class="bi bi-arrow-repeat me-1"></i> Rinnova</span>
                 </div>
                 {% endfor %}
                 {% if contratti_scadenza_90gg_items|length < contratti_scadenza_90gg_count %}
@@ -626,7 +625,7 @@
         {% endif %}
 
         {% if nuovi_mese > 0 %}
-        <div class="alert-card alert-green open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-green open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-calendar-plus-fill"></i>
@@ -642,7 +641,7 @@
         {% endif %}
 
         {% if senza_progetto > 0 %}
-        <div class="alert-card alert-blue open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-blue open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-diagram-3"></i>
@@ -658,7 +657,7 @@
         {% endif %}
 
         {% if senza_budget_count > 0 %}
-        <div class="alert-card alert-orange open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-orange open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-cash-stack"></i>
@@ -669,9 +668,9 @@
             </div>
             <div class="alert-card-body">
                 {% for c in senza_budget_items %}
-                <button type="button" class="alert-item cursor-pointer" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
-                </button>
+                </div>
                 {% endfor %}
                 {% if senza_budget_count > 20 %}<div class="alert-empty">...e altri {{ senza_budget_count|add:"-20" }}</div>{% endif %}
             </div>
@@ -679,7 +678,7 @@
         {% endif %}
 
         {% if datori_incompleti > 0 or lavoratori_incompleti > 0 %}
-        <div class="alert-card alert-purple open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-purple open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-person-lines-fill"></i>
@@ -700,7 +699,7 @@
         {% endif %}
 
         {% if patrono_count > 0 %}
-        <div class="alert-card alert-yellow open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-yellow open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-building"></i>
@@ -720,7 +719,7 @@
         </div>
         {% endif %}
 
-        <div class="alert-card alert-orange open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-orange open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-hourglass-split"></i>
@@ -729,22 +728,22 @@
                 <i class="bi bi-chevron-down alert-card-chevron"></i>
             </div>
             <div class="alert-card-body">
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'crea_pagopa' %}'">
+                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'">
                     <span class="item-label">Scadenza</span>
                     <span class="item-date">{{ prossima_scadenza|date:"d/m/Y" }}</span>
-                </button>
+                </div>
                 <div class="alert-item">
                     <span class="item-label">Conto alla rovescia</span>
                     <span class="item-date fw-bold" id="countdownPagoPA">{{ prossima_scadenza|timeuntil }}</span>
                 </div>
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'crea_pagopa' %}'">
+                <div class="alert-item" onclick="window.location.href='{% url 'crea_pagopa' %}'">
                     <span class="item-label"><i class="bi bi-box-arrow-up-right me-1 fs-10"></i>Vai a PagoPA</span>
                     <span class="item-date c-accent">&rarr;</span>
-                </button>
+                </div>
             </div>
         </div>
 
-        <div class="alert-card alert-gray open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-calendar2-week-fill"></i>
@@ -760,7 +759,7 @@
             </div>
         </div>
 
-        <div class="alert-card alert-gray open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-calendar-event"></i>
@@ -783,7 +782,7 @@
         </div>
 
         {% if trimestre_parziale_count > 0 %}
-        <div class="alert-card alert-red open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-red open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-clock-history"></i>
@@ -795,10 +794,10 @@
             <div class="alert-card-body">
                 <div class="alert-empty">Assunti dopo il {{ trimestre_parziale_mese|date:"d/m/Y" }} — contributi non dovuti per l'intero trimestre.</div>
                 {% for c in trimestre_parziale_items %}
-                <button type="button" class="alert-item cursor-pointer" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ c.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ c.datore.nome_cognome }} &rarr; {{ c.lavoratore.nome_cognome }}</span>
                     <span class="item-date">{{ c.data_assunzione|date:"d/m/y" }}</span>
-                </button>
+                </div>
                 {% endfor %}
                 {% if trimestre_parziale_count > 20 %}<div class="alert-empty">...e altri {{ trimestre_parziale_count|add:"-20" }}</div>{% endif %}
             </div>
@@ -806,7 +805,7 @@
         {% endif %}
 
         {% if scostamento_count > 0 %}
-        <div class="alert-card alert-red open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-red open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-graph-up-arrow"></i>
@@ -817,12 +816,12 @@
             </div>
             <div class="alert-card-body">
                 {% for item in scostamento_items %}
-                <button type="button" class="alert-item cursor-pointer" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ item.contratto.pk }}/', 'Modifica Contratto')">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/modifica-contratto/{{ item.contratto.pk }}/', 'Modifica Contratto')">
                     <span class="item-label">{{ item.contratto.datore.nome_cognome }} &rarr; {{ item.contratto.lavoratore.nome_cognome }}</span>
                     <span class="item-date" style="color:{% if item.eccesso %}#f87171{% else %}#f59e0b{% endif %};">
                         {{ item.scostamento_pct }}% (€{{ item.costo|floatformat:0 }} vs €{{ item.budget|floatformat:0 }})
                     </span>
-                </button>
+                </div>
                 {% endfor %}
                 {% if scostamento_count > 20 %}<div class="alert-empty">...e altri {{ scostamento_count|add:"-20" }}</div>{% endif %}
             </div>
@@ -830,7 +829,7 @@
         {% endif %}
 
         {% if richieste_pendenti > 0 %}
-        <div class="alert-card alert-yellow open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-yellow open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-chat-dots"></i>
@@ -853,7 +852,7 @@
         {% endif %}
 
         <!-- === CHECKLIST MENSILE === -->
-        <div class="alert-card alert-gray open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-check2-square"></i>
@@ -876,7 +875,7 @@
         </div>
 
         <!-- === CHECKLIST ANNUALE {{ anno_corr }} === -->
-        <div class="alert-card alert-gray open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-calendar-check"></i>
@@ -885,27 +884,27 @@
                 <i class="bi bi-chevron-down alert-card-chevron"></i>
             </div>
             <div class="alert-card-body">
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'buste_archivio' %}'">
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'">
                     <span class="item-label"><i class="bi bi-journal-text me-1 fs-10"></i>Buste BOZZA</span>
                     <span class="item-date{% if buste_bozze > 0 %} text-warning{% else %} text-success{% endif %}">{{ buste_bozze }}</span>
-                </button>
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'buste_archivio' %}'">
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'">
                     <span class="item-label"><i class="bi bi-journal-check me-1 fs-10"></i>Buste APPROVATE</span>
                     <span class="item-date text-success">{{ buste_approvate }}</span>
-                </button>
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'buste_archivio' %}'">
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'buste_archivio' %}'">
                     <span class="item-label"><i class="bi bi-archive me-1 fs-10"></i>Buste ARCHIVIATE</span>
                     <span class="item-date">{{ buste_archiviate }}</span>
-                </button>
+                </div>
                 <hr class="my-1">
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'redigere_cu' %}'">
+                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'">
                     <span class="item-label"><i class="bi bi-file-earmark-text me-1 fs-10"></i>CU {{ anno_corr }} presenti</span>
                     <span class="item-date text-success">{{ contratti_con_cu }}</span>
-                </button>
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'redigere_cu' %}'">
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'redigere_cu' %}'">
                     <span class="item-label"><i class="bi bi-file-earmark-x me-1 fs-10"></i>CU {{ anno_corr }} mancanti</span>
                     <span class="item-date{% if contratti_senza_cu > 0 %} text-danger{% else %} text-success{% endif %}">{{ contratti_senza_cu }}</span>
-                </button>
+                </div>
                 <hr class="my-1">
                 <div class="alert-item">
                     <span class="item-label"><i class="bi bi-cash-coin me-1 fs-10"></i>Contributi trim. versati</span>
@@ -919,7 +918,7 @@
         </div>
 
         <!-- === AZIONI RAPIDE === -->
-        <div class="alert-card alert-gray open cursor-pointer" role="button" tabindex="0" onclick="toggleAlertCard(this)">
+        <div class="alert-card alert-gray open" onclick="toggleAlertCard(this)">
             <div class="alert-card-header">
                 <div class="alert-card-header-left">
                     <i class="bi bi-lightning-fill"></i>
@@ -928,22 +927,22 @@
                 <i class="bi bi-chevron-down alert-card-chevron"></i>
             </div>
             <div class="alert-card-body">
-                <button type="button" class="alert-item cursor-pointer" onclick="loadAjaxForm('/ajax/nuovo-contratto/', 'Nuovo Contratto')">
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/nuovo-contratto/', 'Nuovo Contratto')">
                     <span class="item-label"><i class="bi bi-plus-circle me-1 c-accent"></i>Nuovo Contratto</span>
                     <span class="item-date c-accent">&rarr;</span>
-                </button>
-                <button type="button" class="alert-item cursor-pointer" onclick="loadAjaxForm('/ajax/nuovo-datore/', 'Nuovo Datore')">
+                </div>
+                <div class="alert-item" onclick="loadAjaxForm('/ajax/nuovo-datore/', 'Nuovo Datore')">
                     <span class="item-label"><i class="bi bi-person-plus me-1 c-accent"></i>Nuovo Datore</span>
                     <span class="item-date c-accent">&rarr;</span>
-                </button>
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.href='{% url 'admin:index' %}'">
+                </div>
+                <div class="alert-item" onclick="window.location.href='{% url 'admin:index' %}'">
                     <span class="item-label"><i class="bi bi-gear me-1 c-accent"></i>Dashboard Admin</span>
                     <span class="item-date c-accent">&rarr;</span>
-                </button>
-                <button type="button" class="alert-item cursor-pointer" onclick="window.location.reload()">
+                </div>
+                <div class="alert-item" onclick="window.location.reload()">
                     <span class="item-label"><i class="bi bi-arrow-clockwise me-1 c-accent"></i>Aggiorna pagina</span>
                     <span class="item-date c-accent">&rarr;</span>
-                </button>
+                </div>
             </div>
         </div>
 

@@ -76,7 +76,6 @@
 {% endblock %}
 
 {% block content %}
-<style>.cp { cursor:pointer; }</style>
 <div class="doc-page">
   <div class="page-header">
     <div>
@@ -339,10 +338,10 @@ function cercaContrattoCollega(q) {
       var html = '';
       if (d.contratti && d.contratti.length) {
         d.contratti.forEach(function(c) {
-           html += '<button type="button" class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaContrattoCollega(' + c.pk + ',\'' + c.datore.replace(/'/g,"\\'") + ' - ' + c.lavoratore.replace(/'/g,"\\'") + '\')">';
-           html += '<strong style="color:#EDEDED;">' + c.datore + ' &rarr; ' + c.lavoratore + '</strong>';
-           html += '<br><small class="c-muted">#' + c.pk + ' ' + (c.codice_rapporto_inps || '') + '</small>';
-           html += '</button>';
+          html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaContrattoCollega(' + c.pk + ',\'' + c.datore.replace(/'/g,"\\'") + ' - ' + c.lavoratore.replace(/'/g,"\\'") + '\')">';
+          html += '<strong style="color:#EDEDED;">' + c.datore + ' &rarr; ' + c.lavoratore + '</strong>';
+          html += '<br><small class="c-muted">#' + c.pk + ' ' + (c.codice_rapporto_inps || '') + '</small>';
+          html += '</div>';
         });
       } else {
         html = '<div class="text-secondary small py-3 text-center">Nessun contratto trovato</div>';
@@ -599,9 +598,9 @@ function cercaEmailRaggruppato(q) {
       var html = '';
       if (d.results && d.results.length) {
         d.results.forEach(function(r) {
-           html += '<button type="button" class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaEmailRaggruppato(\'' + r.email.replace(/'/g,"\\'") + '\',\'' + r.label.replace(/'/g,"\\'") + '\')">';
-           html += '<strong style="color:#EDEDED;font-size:12px;">' + r.label + '</strong>';
-           html += '</button>';
+          html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaEmailRaggruppato(\'' + r.email.replace(/'/g,"\\'") + '\',\'' + r.label.replace(/'/g,"\\'") + '\')">';
+          html += '<strong style="color:#EDEDED;font-size:12px;">' + r.label + '</strong>';
+          html += '</div>';
         });
       } else {
         html = '<div class="text-secondary small py-2 text-center" class="c-muted">Nessun risultato</div>';
@@ -804,11 +803,11 @@ window.toggleAlbero = function() {
         var keys = Object.keys(headers).sort();
         keys.forEach(function(d) {
             html += '<div class="albero-gruppo">';
-            html += '<button type="button" class="albero-header expanded" onclick="this.classList.toggle(\'expanded\');var b=this.nextElementSibling;b.classList.toggle(\'open\');">';
+            html += '<div class="albero-header expanded" onclick="this.classList.toggle(\'expanded\');var b=this.nextElementSibling;b.classList.toggle(\'open\');">';
             html += '<i class="bi bi-chevron-right albero-icon"></i>';
             html += '<i class="bi bi-person-circle" style="color:#5E6AD2;font-size:16px;"></i>';
             html += '<span style="flex:1;font-weight:600;font-size:13px;color:#EDEDED;">' + d + '</span>';
-            html += '<span class="albero-count">' + headers[d].length + '</span></button>';
+            html += '<span class="albero-count">' + headers[d].length + '</span></div>';
             html += '<div class="albero-body open"><table style="margin:0;"><tbody>';
             headers[d].forEach(function(tr) {
                 html += '<tr>' + tr.innerHTML + '</tr>';

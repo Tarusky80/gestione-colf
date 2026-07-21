@@ -16,19 +16,6 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .bar-track { height: 20px; border-radius: 4px; position: relative; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
 .bar-value { font-size: 10px; color: #8A8F98; text-align: right; }
-.btn-nav-arrow { padding:4px 8px; font-size:12px; line-height:1; }
-.card-warning-banner { display:none; padding:10px 14px; margin-bottom:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; color:#ef4444; font-size:12px; font-weight:600; }
-.section-label { font-size:9px; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:#5C5F66; }
-.controls-text { font-size:11px; color:#8A8F98; }
-.skeleton-flex-child { flex:1; padding-top:4px; }
-.skeleton-row-flex { display:flex; gap:10px; }
-.empty-state-icon { color:#27282D; }
-.input-notturno-sm { width:65px; background:#09090B; border:1px solid #27282D; color:#818cf8; font-weight:600; font-size:13px; padding:2px 6px; border-radius:6px; text-align:center; }
-.label-notturno-sm { font-size:10px; color:#8A8F98; }
-.separator-top { margin-top:12px; padding-top:12px; border-top:1px solid #27282D; }
-.range-bg { background-color:#09090B; }
-.c-danger { color:#f87171; }
-.c-warning { color:#fbbf24; }
 </style>
 {% endblock %}
 {% block breadcrumb %}
@@ -75,14 +62,14 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
     <div class="col-md-6">
       <label class="mb-1 fw-bold c-10-up">Contratto</label>
       <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-sm btn-ghost btn-nav-arrow" onclick="navContratto(-1)">&#9664;</button>
-        <select id="fContratto" class="form-control bg-input" onchange="calcola()">
+        <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;font-size:12px;line-height:1;">&#9664;</button>
+        <select id="fContratto" class="form-control" onchange="calcola()" class="bg-input">
           <option value="">— Seleziona —</option>
           {% for c in contratti %}
           <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
           {% endfor %}
         </select>
-        <button type="button" class="btn btn-sm btn-ghost btn-nav-arrow" onclick="navContratto(1)">&#9654;</button>
+        <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;font-size:12px;line-height:1;">&#9654;</button>
       </div>
     </div>
     <div class="col-md-2">
@@ -112,12 +99,12 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         <label class="radio-card selected" id="rc-presenza" onclick="selezionaTipo('presenza')">
           <input type="radio" name="tipoNotturno" value="presenza" checked>
           <div class="label-tipo">Presenza Notturna</div>
-          <div class="sotto-tipo">Art. 11 — €811,09/mese <span class="c-muted fs-9">(onnicomprensivo)</span></div>
+          <div class="sotto-tipo">Art. 11 — €811,09/mese <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
         </label>
         <label class="radio-card" id="rc-assistenza" onclick="selezionaTipo('assistenza')">
           <input type="radio" name="tipoNotturno" value="assistenza">
           <div class="label-tipo">Assistenza Notturna</div>
-          <div class="sotto-tipo">Art. 10 — per livello <span class="c-muted fs-9">(onnicomprensivo)</span></div>
+          <div class="sotto-tipo">Art. 10 — per livello <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
         </label>
         <label class="radio-card" id="rc-a_ore" onclick="selezionaTipo('a_ore')">
           <input type="radio" name="tipoNotturno" value="a_ore">
@@ -127,22 +114,22 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
       </div>
     </div>
     <div class="col-md-4" id="oreNotturneContainer" class="d-none">
-      <label class="mb-1 fw-bold c-10-up">Ore Notturne: <input type="number" id="oreNotturneInput" min="0" max="200" step="0.5" value="0" onchange="daInputOre()" class="input-notturno-sm"> h</label>
-      <input type="range" id="fOreNotturne" min="0" max="200" step="0.5" value="0" oninput="daSliderOre();calcola()" class="range-bg">
-      <div class="d-flex justify-content-between c-muted fs-9" style="margin-top:2px;"><span>0 h</span><span>200 h</span>      </div>
+      <label class="mb-1 fw-bold" class="c-10-up">Ore Notturne: <input type="number" id="oreNotturneInput" min="0" max="200" step="0.5" value="0" onchange="daInputOre()" style="width:65px;background:#09090B;border:1px solid #27282D;color:#818cf8;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> h</label>
+      <input type="range" id="fOreNotturne" min="0" max="200" step="0.5" value="0" oninput="daSliderOre();calcola()" style="background-color:#09090B;">
+      <div class="d-flex justify-content-between" style="font-size:9px;color:#5C5F66;margin-top:2px;"><span>0 h</span><span>200 h</span>      </div>
     </div>
-    <div class="col-12 separator-top">
-      <div class="d-flex align-items-center flex-wrap gap-4 controls-text">
-        <span class="section-label">Ratei Notturni</span>
+    <div class="col-12" style="margin-top:12px;padding-top:12px;border-top:1px solid #27282D;">
+      <div class="d-flex align-items-center flex-wrap gap-4" style="font-size:11px;color:#8A8F98;">
+        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Ratei Notturni</span>
         <span class="toggle-item">
-          <span class="c-danger fw-6">TFR Separato</span>
+          <span style="color:#f87171;font-weight:600;">TFR Separato</span>
           <label class="toggle-switch">
             <input type="checkbox" id="rateoTfrSeparato" checked onchange="calcola();aggiornaTfrCalcoli()">
             <span class="toggle-slider" style="border-color:#f8717166;"></span>
           </label>
         </span>
         <span class="toggle-item">
-          <span class="c-warning fw-6">Anticipo 70%</span>
+          <span style="color:#fbbf24;font-weight:600;">Anticipo 70%</span>
           <label class="toggle-switch">
             <input type="checkbox" id="rateoAnticipo70" onchange="calcola()">
             <span class="toggle-slider" style="border-color:#fbbf2466;"></span>
@@ -162,16 +149,16 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         </span>
       </div>
     </div>
-    <div id="opzioniNotturneContainer" class="col-12 separator-top d-none">
-      <div class="d-flex align-items-center flex-wrap gap-4 controls-text">
-        <span class="section-label">Opzioni Notturne</span>
+    <div id="opzioniNotturneContainer" class="col-12" style="margin-top:12px;padding-top:12px;border-top:1px solid #27282D;display:none;">
+      <div class="d-flex align-items-center flex-wrap gap-4" style="font-size:11px;color:#8A8F98;">
+        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Opzioni Notturne</span>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="straordNott" onchange="toggleStraordNott()"><span class="toggle-slider"></span></label>
           <span class="c-text fw-6">Straordinario notturno 50%</span>
           <span class="fs-9">oltre orario normale (art. 15 c.3)</span>
         </span>
         <div id="straordNottContainer" style="display:none;width:180px;">
-          <label class="label-notturno-sm">Ore: <span id="straordNottDisplay">0</span></label>
+          <label style="font-size:10px;color:#8A8F98;">Ore: <span id="straordNottDisplay">0</span></label>
           <input type="range" id="fStraordNott" min="0" max="100" step="0.5" value="0" oninput="aggiornaStraordNott();calcola()">
         </div>
         <span class="toggle-item">
@@ -180,7 +167,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
           <span class="fs-9">art. 15 c.3</span>
         </span>
         <div id="festivoNottContainer" style="display:none;width:180px;">
-          <label class="label-notturno-sm">Ore: <span id="festivoNottDisplay">0</span></label>
+          <label style="font-size:10px;color:#8A8F98;">Ore: <span id="festivoNottDisplay">0</span></label>
           <input type="range" id="fFestivoNott" min="0" max="50" step="1" value="0" oninput="aggiornaFestivoNott();calcola()">
         </div>
         <span class="toggle-item">
@@ -194,14 +181,14 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 </div>
 
 <div id="resultContainer" class="d-none">
-  <div id="bustaEsistenteWarning" role="alert" class="card-warning-banner">
+  <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
-  <div id="resultLoading" class="py-4 d-none">
+  <div id="resultLoading" class="py-4" class="d-none">
     <div class="skeleton-card">
       <div class="skeleton-row mb-3">
         <div class="skeleton-avatar skeleton"></div>
-        <div class="skeleton-flex-child">
+        <div style="flex:1;padding-top:4px;">
           <div class="skeleton skeleton-text" style="width:40%"></div>
           <div class="skeleton skeleton-text-sm" style="width:25%"></div>
         </div>
@@ -209,7 +196,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
       <div class="skeleton skeleton-text"></div>
       <div class="skeleton skeleton-text" style="width:85%"></div>
       <div class="skeleton skeleton-text-sm" style="width:50%"></div>
-      <div class="mt-3 skeleton-row-flex">
+      <div class="mt-3" style="display:flex;gap:10px;">
         <div class="skeleton skeleton-text" style="width:30%"></div>
         <div class="skeleton skeleton-text" style="width:45%"></div>
       </div>
@@ -218,8 +205,8 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   <div id="resultContent"></div>
 </div>
 
-<div id="resultEmpty" class="text-center py-5 c-muted">
-  <i class="bi bi-moon-stars fs-1 d-block mb-3 empty-state-icon"></i>
+<div id="resultEmpty" class="text-center py-5" style="color:#5C5F66;">
+  <i class="bi bi-moon-stars fs-1 d-block mb-3" style="color:#27282D;"></i>
   <div>Seleziona un contratto per calcolare la busta notturna.</div>
 </div>
 <!-- HELP MODAL -->
