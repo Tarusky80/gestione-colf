@@ -90,26 +90,6 @@
 
 ### 13. ✅ Pulizia console.log/DEBUG
 - ✅ 36 occorrenze rimosse/sostituite in 14 file
-
-### 14. ✅ JS estratti da base.html
-- ✅ `sort-table.js`, `nav-layout.js`, `csrf-utils.js`, `toast.js`, `table-filters.js`
-
-### 15. ✅ Style→classe CSS parziale
-- ✅ `.ml-auto`, `.fw-8`, `.fs-16/18/20/22`, `.empty-state`, `.error-state`, `.label-info`, etc.
-
-### 16. ✅ Versione Mobile
-- ✅ Interfaccia touch-first con `/m/` — dashboard, datori, lavoratori, contratti, buste, documenti
-- ✅ Dettaglio entità, filtri a chips, pull-to-refresh, swipe-to-action
-- ✅ Grafica: topbar gradient, bottom nav pill, card bordo colorato, tap ripple
-
-### 17. ✅ Help/Aiuto unificati
-- ✅ Standardizzati tutti i ~44 modali Aiuto con struttura `modal-linear` + `help-section`
-- ✅ Contenuti completi riscritti (descrizione, come usare, parametri, scorciatoie)
-- ✅ CSS `.help-section` / `.help-section-title` in `utils.css`
-- ✅ `gestione_db.html` convertito da overlay custom a Bootstrap modal
-- ✅ Pushato su GitHub (`8640bd6`)
-
-## Prossimi miglioramenti proposti
 - ✅ `ajax_helpers.js`: 3 debug log rimossi
 - ✅ `base.html`: 19 console rimossi (DEBUG step, progetti, TinyMCE, RigeneraCessazione)
 - ✅ 7 template calcolo: console.error(e) rimossi (ridondanti con mostraToast già presenti)
@@ -164,13 +144,40 @@
 - Tutte le stringhe hardcoded in italiano
 - Aggiungere `{% trans %}` / `{% blocktranslate %}` per futura traduzione
 
+### 20. 📱 Versione Mobile — 6 nuove feature
+- ✅ **Feature 1+2**: Form nativi modifica/creazione mobile — view generica `_mobile_entity_form_view()`, template `entity_form.html` con 3 sezioni collassabili via JS, widget `SelectMultiple` compatto per M2M. 5 FAB `+` aggiornati a `/m/nuovo/?tipo=...`.
+- ✅ **Feature 3**: Ricerca globale mobile — view `mobile_ricerca()` cerca in 5 entità (Datore, Lavoratore, Contratto, Beneficiario, Progetto), template con debounce 400ms, icona lente in topbar di `base_mobile.html`.
+- ✅ **Feature 4**: Chart.js line chart 12 mesi trend contributi su dashboard mobile (`/m/`), `responsive: false` per evitare infinite resize loop.
+- ✅ **Feature 5**: Infinite scroll — JS `avviaInfiniteScroll()` con IntersectionObserver in `_swipe_js.html`. Limiti `[:50]` rimossi da viste archivio buste e documenti. **Manca** endpoint JSON backend paginato.
+- ✅ **Feature 6**: Pagina "Altri calcoli" — view, template `altri_calcoli.html`, route `/m/altri-calcoli/`.
+- ✅ **Fix**: `reverse` import mancante in `_mobile.py` (NameError 500 su modifica).
+- ✅ **Fix**: pulsanti "Modifica" su tutti i dettagli mobile ora puntano a `/m/{entity}/{pk}/modifica/` (non più 404 desktop).
+- ✅ **Fix**: form contratto mobile — `CheckboxSelectMultiple` → `SelectMultiple` (compatto), `form.save_m2m()` per salvare M2M, sezioni dati/visibilità/altri.
+- ✅ **Pulizia**: NAS sync risolta spostando venv fuori dal progetto (`..\.venv_gestione_colf`), `git rm --cached` di 46 file spuri.
+- ✅ **CI**: 12 errori ruff risolti (import/variabili inutilizzati, bare except).
+- ✅ **setup_venv.bat**: crea/ricrea virtualenv, `GESTIONE.bat` lo chiama automaticamente.
+- ✅ **Infinite scroll** (Feature 5 completata): endpoint JSON `mobile_buste_json` e `mobile_documenti_json` in `_mobile.py`, route `/m/buste/json/` e `/m/documenti/json/`, partial template `_busta_card.html`/`_doc_card.html`. Render iniziale limitato a 20, chiamata `avviaInfiniteScroll()` su scroll.
+- ✅ **PDF mobile**: `apriPDF()`/`apriDoc()` ora puntano a `/ajax/vedi-documento/<pk>/` invece di `/documenti/?focus=<pk>` (desktop ignorava focus).
+- **Commit**: `7cfa970` — Mobile: 6 nuove feature + fix form contratto
+
+## Session Log — 2026-07-19
+- **Refactoring style=inline → classi CSS** su 28 file, ~973 style rimossi (~32%):
+  - Session 1: dashboard (165→60), ajax_form_contratto (365→281), base (420→314), 3 calcoli (~189→~133 ciascuno)
+  - Session 2: popup_ccnl_occhio (116→71), crea_pagopa (107→75), calcoli_malattia (105→91), stampe_invii (100→69), calcoli_inverso (98→66), redigere_cu (96→76), ajax_form (100→38)
+  - Session 3: configurazioni_servizi (94→28), calcoli_sostituzione (90→68), calcoli_tfr (77→58), agenda (74→57), ajax_form_progetto (72→43), calcoli_notturno (72→60)
+  - Session 4: _modale_ccnl_occhio (58→51), comparatore (57→27), log_inps_list (54→39)
+  - Session 5: contratti_list (49→41), buste_archivio (47→24), documenti_list (55→32), crea_pagopa_manuale (42→39)
+- **New classes in `utils.css`** (~45 nuove): `cell-label`, `cell-label-bordered`, `th-storico`, `h5-sezione`, `th-sticky`, `periodo-tab`, `select-custom`, `card-hidden`, `separator-v`, `cell-right-padded`, `fw-4`, `label-form-uppercase`, `cell-border-bottom`, `value-busta-sm`, `label-ml`, `mb-20`, `btn-lg-padding`, `btn-nav-padding`, `select-nav`, `bar-track`, `h3-sezione`, `badge-warn`, `label-uppercase-wide`, `cell-padded`, `cell-padded-right`, `empty-state-sm`, `px-10`, `px-8-0`, `value-tfr`, `value-tfr-right`, `label-tfr`, `evento-input`, `filter-input`, `tab-filter`, `fs-9`, `mb-6`, `mt-6`, `click-muted`, `accent-checkbox`, `label-form-uppercase-muted`, `inps-input`, `page-link-custom`, `th-inps`, `c-info`, `label-uppercase-block`, `input-sm`, `shadow-modal`, `input-massivo`, `btn-doc-sm`, `w-7`
+- `manage.py check` OK
+- **Commit**: prossimo
+
 ## Comandi utili
 ```powershell
 # Avviare il server
-& ".venv\Scripts\python.exe" manage.py runserver
+& "..\.venv_gestione_colf\Scripts\python.exe" manage.py runserver
 
 # Verificare errori Django
-& ".venv\Scripts\python.exe" manage.py check
+& "..\.venv_gestione_colf\Scripts\python.exe" manage.py check
 
 # Backup file prima di modificare
 Copy-Item "file" "file.bak"

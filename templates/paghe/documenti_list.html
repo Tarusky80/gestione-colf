@@ -76,6 +76,7 @@
 {% endblock %}
 
 {% block content %}
+<style>.cp { cursor:pointer; }</style>
 <div class="doc-page">
   <div class="page-header">
     <div>
@@ -166,24 +167,24 @@
       <tr class="clickable-row" data-type="documento" data-pk="{{ d.pk }}" data-has-contratto="{% if d.contratto %}1{% else %}0{% endif %}" data-title="{{ d.get_tipo_display }}: {{ d.titolo }}" data-sub="{% if d.datore %}{{ d.datore.nome_cognome }}{% elif d.contratto %}{{ d.contratto.datore.nome_cognome }} → {{ d.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}"{% if d.datore and d.datore.email %} data-email="{{ d.datore.email }}"{% elif d.contratto and d.contratto.datore.email %} data-email="{{ d.contratto.datore.email }}"{% endif %} data-creato="{{ d.creato_il|date:'d/m/Y H:i' }}" data-file-size="{{ d.file_size|filesizeformat }}">
         <td class="check-col"><input type="checkbox" class="docCheck" value="{{ d.pk }}" onchange="aggiornaMassivoBar()"></td>
         <td><span class="badge-tipo" style="background:rgba({% with c=tipo_colori|get_item:d.tipo|default:'#60a5fa' %}{{ c|hex_to_rgb }}{% endwith %},0.12);color:{{ tipo_colori|get_item:d.tipo|default:'#60a5fa' }};">{{ d.get_tipo_display }}</span></td>
-        <td><strong>{{ d.titolo }}</strong>{% if d.note %}<br><span style="font-size:11px;color:#8A8F98;">{{ d.note|truncatechars:40 }}</span>{% endif %}</td>
+        <td><strong>{{ d.titolo }}</strong>{% if d.note %}<br><span class="c-11-m">{{ d.note|truncatechars:40 }}</span>{% endif %}</td>
         <td>
-          {% if d.datore %}{{ d.datore.nome_cognome }}{% if d.datore.email %}<br><span style="font-size:11px;color:#8A8F98;">{{ d.datore.email }}</span>{% endif %}{% elif d.contratto %}{{ d.contratto.datore.nome_cognome }}{% if d.contratto.datore.email %}<br><span style="font-size:11px;color:#8A8F98;">{{ d.contratto.datore.email }}</span>{% endif %} &rarr; {{ d.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}
+          {% if d.datore %}{{ d.datore.nome_cognome }}{% if d.datore.email %}<br><span class="c-11-m">{{ d.datore.email }}</span>{% endif %}{% elif d.contratto %}{{ d.contratto.datore.nome_cognome }}{% if d.contratto.datore.email %}<br><span class="c-11-m">{{ d.contratto.datore.email }}</span>{% endif %} &rarr; {{ d.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}
         </td>
-        <td style="font-size:12px;color:#8A8F98;">
+        <td class="c-muted fs-12">
           {% if d.contratto %}{% for p in d.contratto.progetto.all %}<span class="badge-tipo" style="background:rgba(45,212,191,0.12);color:#2dd4bf;font-size:10px;margin-right:2px;">{{ p.tipo.nome }}</span>{% empty %}-{% endfor %}{% else %}-{% endif %}
         </td>
-        <td style="font-size:12px;color:#8A8F98;">
+        <td class="c-muted fs-12">
           {% if d.contratto and d.contratto.progetto.all.0 %}{{ d.contratto.progetto.all.0.beneficiario.nome_cognome }}{% else %}-{% endif %}
         </td>
-        <td style="font-size:12px;color:#8A8F98;">{{ d.file_name|truncatechars:30 }}<br>{% if d.file_size > 1024 %}{{ d.file_size|filesizeformat }}{% else %}{{ d.file_size }} bytes{% endif %}</td>
+        <td class="c-muted fs-12">{{ d.file_name|truncatechars:30 }}<br>{% if d.file_size > 1024 %}{{ d.file_size|filesizeformat }}{% else %}{{ d.file_size }} bytes{% endif %}</td>
         <td class="text-center">
           <i class="stampa-badge bi {% if d.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ d.pk }}" title="{% if d.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
         </td>
         <td style="font-size:12px;white-space:nowrap;">{{ d.creato_il|date:"d/m/Y H:i" }}</td>
         <td>
           {% if d.inviato %}
-          <span class="badge-inviato" style="background:rgba(16,185,129,0.12);color:#10b981;">Inviato</span><br><span style="font-size:11px;color:#8A8F98;">{{ d.email_destinatario }}</span>
+          <span class="badge-inviato" style="background:rgba(16,185,129,0.12);color:#10b981;">Inviato</span><br><span class="c-11-m">{{ d.email_destinatario }}</span>
           {% else %}
           <span class="badge-inviato" style="background:rgba(100,100,100,0.12);color:#94a3b8;">Non inviato</span>
           {% endif %}
@@ -235,7 +236,7 @@
 <!-- Modale Nuovo Documento -->
 <div class="modal fade" id="modaleNuovoDocumento" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content card-dark" class="shadow-modal">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Nuovo Documento</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -250,7 +251,7 @@
 <!-- Modale Invio Email -->
 <div class="modal fade" id="modaleInvioEmail" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content card-dark" class="shadow-modal">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invia Documento via Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -264,7 +265,7 @@
 <!-- Modale Invio Massivo -->
 <div class="modal fade" id="modaleInvioMassivo" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content card-dark" class="shadow-modal">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Invio Massivo Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -278,7 +279,7 @@
 <!-- Modale Invio Raggruppato -->
 <div class="modal fade" id="modaleInvioRaggruppato" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content card-dark" class="shadow-modal">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Allega in una mail</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -292,7 +293,7 @@
 <!-- Modale Collega Contratto -->
 <div class="modal fade" id="modaleCollegaContratto" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div class="modal-content card-dark" class="shadow-modal">
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold">Collega Documento a Contratto</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -338,10 +339,10 @@ function cercaContrattoCollega(q) {
       var html = '';
       if (d.contratti && d.contratti.length) {
         d.contratti.forEach(function(c) {
-          html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaContrattoCollega(' + c.pk + ',\'' + c.datore.replace(/'/g,"\\'") + ' - ' + c.lavoratore.replace(/'/g,"\\'") + '\')">';
-          html += '<strong style="color:#EDEDED;">' + c.datore + ' &rarr; ' + c.lavoratore + '</strong>';
-          html += '<br><small style="color:#8A8F98;">#' + c.pk + ' ' + (c.codice_rapporto_inps || '') + '</small>';
-          html += '</div>';
+           html += '<button type="button" class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaContrattoCollega(' + c.pk + ',\'' + c.datore.replace(/'/g,"\\'") + ' - ' + c.lavoratore.replace(/'/g,"\\'") + '\')">';
+           html += '<strong style="color:#EDEDED;">' + c.datore + ' &rarr; ' + c.lavoratore + '</strong>';
+           html += '<br><small class="c-muted">#' + c.pk + ' ' + (c.codice_rapporto_inps || '') + '</small>';
+           html += '</button>';
         });
       } else {
         html = '<div class="text-secondary small py-3 text-center">Nessun contratto trovato</div>';
@@ -549,7 +550,7 @@ function apriInvioMassivo() {
   var pks = Array.from(checks).map(function(c) { return c.value; });
   if (pks.length === 0) return;
   var m = new bootstrap.Modal(document.getElementById('modaleInvioMassivo'));
-  document.getElementById('modaleInvioMassivoBody').innerHTML = '<div class="p-4"><form id="formInvioMassivo" onsubmit="inviaMassivo(event)"><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Modello Email</label><select class="form-control" id="modelloMailMassivo" required style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"><option value="">Caricamento...</option></select></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Destinatari</label><p class="small" style="color:#8A8F98;">Verrano inviati ai datori/lavoratori associati a ' + pks.length + ' documenti.</p></div><button type="submit" class="btn btn-ghost-primary" style="padding:10px;font-size:13px;width:100%;"><i class="bi bi-send"></i> Invia a ' + pks.length + ' documenti</button></form><div id="massivoProgress" class="mt-3"></div></div>';
+  document.getElementById('modaleInvioMassivoBody').innerHTML = '<div class="p-4"><form id="formInvioMassivo" onsubmit="inviaMassivo(event)"><div class="mb-3"><label class="form-label small fw-bold" class="c-zinc">Modello Email</label><select class="form-control" id="modelloMailMassivo" required class="input-massivo"><option value="">Caricamento...</option></select></div><div class="mb-3"><label class="form-label small fw-bold" class="c-zinc">Destinatari</label><p class="small" class="c-muted">Verrano inviati ai datori/lavoratori associati a ' + pks.length + ' documenti.</p></div><button type="submit" class="btn btn-ghost-primary" style="padding:10px;font-size:13px;width:100%;"><i class="bi bi-send"></i> Invia a ' + pks.length + ' documenti</button></form><div id="massivoProgress" class="mt-3"></div></div>';
   m.show();
   fetch('/ajax/modelli-email/').then(function(r) { return r.json(); }).then(function(modelli) {
     var sel = document.getElementById('modelloMailMassivo');
@@ -571,7 +572,7 @@ function apriInvioRaggruppato() {
     var label = c.closest('tr')?.querySelector('td:nth-child(3)')?.textContent?.trim() || 'doc #' + c.value;
     namesHtml += '<div style="padding:3px 0;font-size:12px;color:#d4d4d8;"><i class="bi bi-file-earmark" style="color:#6b7280;margin-right:6px;"></i>' + label + '</div>';
   });
-  document.getElementById('modaleInvioRaggruppatoBody').innerHTML = '<div class="p-4"><form id="formInvioRaggruppato" onsubmit="inviaRaggruppato(event)" novalidate><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Destinatario</label><input type="email" class="form-control" id="emailDestRaggruppato" value="' + firstEmail + '" required style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Cerca email</label><input type="text" class="form-control" id="cercaEmailRaggruppato" placeholder="Digita per cercare..." style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"><div id="cercaEmailRaggruppatoResults" style="max-height:200px;overflow-y:auto;margin-top:4px;"></div></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">Modello Email</label><select class="form-control" id="modelloMailRaggruppato" required style="background:#09090b;border:1px solid #27272a;color:#fafafa;border-radius:8px;padding:10px 12px;font-size:13px;"><option value="">Caricamento...</option></select></div><div class="mb-3"><label class="form-label small fw-bold" style="color:#a1a1aa;">File selezionati (' + pks.length + ')</label>' + namesHtml + '</div><button type="submit" class="btn btn-ghost-primary" style="padding:10px;font-size:13px;width:100%;"><i class="bi bi-envelope-paper"></i> Allega e invia</button></form><div id="raggruppatoProgress" class="mt-3"></div></div>';
+  document.getElementById('modaleInvioRaggruppatoBody').innerHTML = '<div class="p-4"><form id="formInvioRaggruppato" onsubmit="inviaRaggruppato(event)" novalidate><div class="mb-3"><label class="form-label small fw-bold" class="c-zinc">Destinatario</label><input type="email" class="form-control" id="emailDestRaggruppato" value="' + firstEmail + '" required class="input-massivo"></div><div class="mb-3"><label class="form-label small fw-bold" class="c-zinc">Cerca email</label><input type="text" class="form-control" id="cercaEmailRaggruppato" placeholder="Digita per cercare..." class="input-massivo"><div id="cercaEmailRaggruppatoResults" style="max-height:200px;overflow-y:auto;margin-top:4px;"></div></div><div class="mb-3"><label class="form-label small fw-bold" class="c-zinc">Modello Email</label><select class="form-control" id="modelloMailRaggruppato" required class="input-massivo"><option value="">Caricamento...</option></select></div><div class="mb-3"><label class="form-label small fw-bold" class="c-zinc">File selezionati (' + pks.length + ')</label>' + namesHtml + '</div><button type="submit" class="btn btn-ghost-primary" style="padding:10px;font-size:13px;width:100%;"><i class="bi bi-envelope-paper"></i> Allega e invia</button></form><div id="raggruppatoProgress" class="mt-3"></div></div>';
   m.show();
   var inp = document.getElementById('cercaEmailRaggruppato');
   if (inp) {
@@ -598,12 +599,12 @@ function cercaEmailRaggruppato(q) {
       var html = '';
       if (d.results && d.results.length) {
         d.results.forEach(function(r) {
-          html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaEmailRaggruppato(\'' + r.email.replace(/'/g,"\\'") + '\',\'' + r.label.replace(/'/g,"\\'") + '\')">';
-          html += '<strong style="color:#EDEDED;font-size:12px;">' + r.label + '</strong>';
-          html += '</div>';
+           html += '<button type="button" class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaEmailRaggruppato(\'' + r.email.replace(/'/g,"\\'") + '\',\'' + r.label.replace(/'/g,"\\'") + '\')">';
+           html += '<strong style="color:#EDEDED;font-size:12px;">' + r.label + '</strong>';
+           html += '</button>';
         });
       } else {
-        html = '<div class="text-secondary small py-2 text-center" style="color:#8A8F98;">Nessun risultato</div>';
+        html = '<div class="text-secondary small py-2 text-center" class="c-muted">Nessun risultato</div>';
       }
       resultsDiv.innerHTML = html;
     }).catch(function() {
@@ -624,7 +625,7 @@ function inviaRaggruppato(event) {
   if (!dest) return mostraToast('Inserisci un destinatario.', false);
   if (!modelloPk) return mostraToast('Seleziona un modello email.', false);
   document.getElementById('formInvioRaggruppato').querySelector('button').disabled = true;
-  document.getElementById('raggruppatoProgress').innerHTML = '<div class="text-center py-3"><div class="spinner-border text-light"></div><p class="small" style="color:#8A8F98;">Invio in corso...</p></div>';
+  document.getElementById('raggruppatoProgress').innerHTML = '<div class="text-center py-3"><div class="spinner-border text-light"></div><p class="small" class="c-muted">Invio in corso...</p></div>';
   fetch('/ajax/invia-email-raggruppata/', {
     method:'POST',
     headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/json'},
@@ -803,11 +804,11 @@ window.toggleAlbero = function() {
         var keys = Object.keys(headers).sort();
         keys.forEach(function(d) {
             html += '<div class="albero-gruppo">';
-            html += '<div class="albero-header expanded" onclick="this.classList.toggle(\'expanded\');var b=this.nextElementSibling;b.classList.toggle(\'open\');">';
+            html += '<button type="button" class="albero-header expanded" onclick="this.classList.toggle(\'expanded\');var b=this.nextElementSibling;b.classList.toggle(\'open\');">';
             html += '<i class="bi bi-chevron-right albero-icon"></i>';
             html += '<i class="bi bi-person-circle" style="color:#5E6AD2;font-size:16px;"></i>';
             html += '<span style="flex:1;font-weight:600;font-size:13px;color:#EDEDED;">' + d + '</span>';
-            html += '<span class="albero-count">' + headers[d].length + '</span></div>';
+            html += '<span class="albero-count">' + headers[d].length + '</span></button>';
             html += '<div class="albero-body open"><table style="margin:0;"><tbody>';
             headers[d].forEach(function(tr) {
                 html += '<tr>' + tr.innerHTML + '</tr>';

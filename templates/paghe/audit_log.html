@@ -50,7 +50,7 @@
         <span>Singola riga per dettagli</span>
     </div>
     {% for log in page_obj %}
-    <div class="audit-row" onclick="apriDettaglioAudit({{ log.pk }})">
+    <div class="audit-row cursor-pointer" role="button" tabindex="0" onclick="apriDettaglioAudit({{ log.pk }})">
         <div style="flex-shrink:0;width:50px;font-size:10px;color:#545;">{{ log.data_ora|date:"d/m" }}<br>{{ log.data_ora|date:"H:i" }}</div>
         <div class="audit-badge audit-{{ log.azione|lower }}">{{ log.azione|slice:':4' }}</div>
         <div style="flex-shrink:0;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.04);color:#8A8F98;">{{ log.modello_coinvolto }}</div>

@@ -62,8 +62,8 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
 
 <form method="GET" class="filtri" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:20px;">
     <div>
-        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Tipo</label>
-        <select name="tipo" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+        <label class="label-uppercase-block">Tipo</label>
+        <select name="tipo" class="input-sm">
             <option value="">Tutti</option>
             {% for t in tipi_calcolo %}
             <option value="{{ t }}" {% if filtro_tipo == t %}selected{% endif %}>{{ t }}</option>
@@ -71,8 +71,8 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
         </select>
     </div>
     <div>
-        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Stato</label>
-        <select name="stato" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+        <label class="label-uppercase-block">Stato</label>
+        <select name="stato" class="input-sm">
             <option value="">Tutti</option>
             {% for s in stati %}
             <option value="{{ s }}" {% if filtro_stato == s %}selected{% endif %}>{{ s }}</option>
@@ -80,16 +80,16 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
         </select>
     </div>
     <div>
-        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Datore</label>
+        <label class="label-uppercase-block">Datore</label>
         <input type="text" name="datore" value="{{ filtro_datore }}" placeholder="Cerca datore..." style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;width:180px;">
     </div>
     <div>
-        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Lavoratore</label>
+        <label class="label-uppercase-block">Lavoratore</label>
         <input type="text" name="lavoratore" value="{{ filtro_lavoratore }}" placeholder="Cerca lavoratore..." style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;width:180px;">
     </div>
     <div>
-        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Mese</label>
-        <select name="mese" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+        <label class="label-uppercase-block">Mese</label>
+        <select name="mese" class="input-sm">
             <option value="">Tutti</option>
             {% for m in mesi_range %}
             <option value="{{ m }}" {% if filtro_mese == m|stringformat:'s' %}selected{% endif %}>{{ m|stringformat:"02d" }}</option>
@@ -97,8 +97,8 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
         </select>
     </div>
     <div>
-        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;margin-bottom:4px;">Anno</label>
-        <select name="anno" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:6px 10px;border-radius:8px;font-size:12px;">
+        <label class="label-uppercase-block">Anno</label>
+        <select name="anno" class="input-sm">
             <option value="">Tutti</option>
             {% for a in anni_range %}
             <option value="{{ a }}" {% if filtro_anno == a|stringformat:'s' %}selected{% endif %}>{{ a }}</option>
@@ -151,7 +151,7 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                     {% if b.documento %}
                     <a href="#" onclick="event.preventDefault();apriNelPannello('/ajax/vedi-documento/{{ b.documento.pk }}/', {{ b.documento.pk }})" class="text-decoration-none" title="Apri PDF"><i class="bi bi-file-pdf" style="color:#ef4444;font-size:18px;"></i></a>
                     {% else %}
-                    <span class="text-muted" style="font-size:12px;">—</span>
+                    <span class="text-muted" class="fs-12">—</span>
                     {% endif %}
                 </td>
                 <td>
@@ -170,37 +170,37 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                         <span class="toggle-slider toggle-vis-knob" style="position:absolute;inset:0;background:{% if b.documento.visibile_al_datore %}#34C759{% else %}#3a3b40{% endif %};border:none;border-radius:12px;cursor:pointer;transition:background 0.25s ease;z-index:1;"></span>
                     </div>
                     {% else %}
-                    <span class="text-muted" style="font-size:12px;">—</span>
+                    <span class="text-muted" class="fs-12">—</span>
                     {% endif %}
                 </td>
                 <td class="text-center" style="white-space:nowrap;">
                     {% if b.documento %}
                     <i class="stampa-badge bi {% if b.documento.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ b.pk }}" title="{% if b.documento.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
                     {% else %}
-                    <span class="text-muted" style="font-size:12px;">—</span>
+                    <span class="text-muted" class="fs-12">—</span>
                     {% endif %}
                 </td>
                 <td>
                     <div class="d-flex gap-1 align-items-center flex-nowrap">
                         {% if b.tipo_calcolo == 'STANDARD' or b.tipo_calcolo == 'CONVIVENTE' %}
-                        <a href="{% url 'calcoli_list' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_list' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" class="c-info"></i></a>
                         {% elif b.tipo_calcolo == 'NON_CONVIVENTE' or b.tipo_calcolo == 'SOSTITUZIONE' %}
-                        <a href="{% url 'calcoli_non_convivente' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_non_convivente' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" class="c-info"></i></a>
                         {% elif b.tipo_calcolo == 'CONVIVENTI_CCNL' %}
-                        <a href="{% url 'calcoli_conviventi_ccnl' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_conviventi_ccnl' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" class="c-info"></i></a>
                         {% elif b.tipo_calcolo == 'NOTTURNO' %}
-                        <a href="{% url 'calcoli_notturno' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_notturno' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" class="c-info"></i></a>
                         {% elif b.tipo_calcolo == 'MALATTIA' %}
-                        <a href="{% url 'calcoli_malattia' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_malattia' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" class="c-info"></i></a>
                         {% elif b.tipo_calcolo == 'CALCOLO_INVERSO' %}
-                        <a href="{% url 'calcoli_inverso' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_inverso' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" class="c-info"></i></a>
                         {% elif b.tipo_calcolo == 'TFR' %}
-                        <a href="{% url 'calcoli_tfr' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" style="color:#5bc0de;"></i></a>
+                        <a href="{% url 'calcoli_tfr' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye" class="c-info"></i></a>
                         {% endif %}
                         <div class="btn-group btn-group-sm">
                             <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg" style="color:#10b981;"></i></button>
                             <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive" style="color:#5E6AD2;"></i></button>
-                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i></button>
+                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise" class="c-amber"></i></button>
                             <button type="button" class="btn btn-ghost btn-sm px-2" onclick="eliminaBusta({{ b.pk }})" title="Elimina"><i class="bi bi-trash" style="color:#ef4444;"></i></button>
                         </div>
                         <button type="button" class="btn btn-sm px-2 btn-ghost-primary" onclick="apriCcnlOcchioBusta({{ b.contratto.pk }}, {{ b.anno }})" title="Vedi parametri CCNL" style="font-size:11px;"><i class="bi bi-eye me-1"></i>CCNL</button>
@@ -339,7 +339,7 @@ function apriCcnlOcchioBusta(pk, anno) {
           <p><b>VEDI</b> <i class="bi bi-eye c-accent"></i> — apre la pagina di calcolo corrispondente ricaricando i dati del contratto e del periodo.</p>
           <p><b>APPROVA</b> <i class="bi bi-check-lg" style="color:#10b981;"></i> — cambia lo stato in "Approvata".</p>
           <p><b>ARCHIVIA</b> <i class="bi bi-archive c-accent"></i> — imposta lo stato "Archiviata".</p>
-          <p><b>BOZZA</b> <i class="bi bi-arrow-counterclockwise" style="color:#f59e0b;"></i> — riporta la busta a stato "Bozza".</p>
+          <p><b>BOZZA</b> <i class="bi bi-arrow-counterclockwise" class="c-amber"></i> — riporta la busta a stato "Bozza".</p>
           <p><b>ELIMINA</b> <i class="bi bi-trash" style="color:#ef4444;"></i> — elimina definitivamente la busta paga.</p>
           <p><b>CCNL</b> — apre il dettaglio dei parametri CCNL del contratto (paga oraria, livello, scatti).</p>
           <p><b>RICEVUTA</b> — genera e apre la ricevuta di pagamento in PDF.</p>
@@ -352,7 +352,7 @@ function apriCcnlOcchioBusta(pk, anno) {
         </div>
         <div class="help-section">
           <div class="help-section-title"><i class="bi bi-printer c-accent me-2"></i>Colonna Stampa</div>
-          <p>L'icona <i class="bi bi-printer-fill" style="color:#f59e0b;"></i> indica che la busta è già stata stampata. L'icona <i class="bi bi-printer text-muted"></i> indica che non è ancora stata stampata. Clicca <b>STAMPA BUSTA</b> nella colonna azioni per stampare e aggiornare automaticamente lo stato.</p>
+          <p>L'icona <i class="bi bi-printer-fill" class="c-amber"></i> indica che la busta è già stata stampata. L'icona <i class="bi bi-printer text-muted"></i> indica che non è ancora stata stampata. Clicca <b>STAMPA BUSTA</b> nella colonna azioni per stampare e aggiornare automaticamente lo stato.</p>
         </div>
         <div class="help-section">
           <div class="help-section-title"><i class="bi bi-download c-accent me-2"></i>Scarica Excel</div>

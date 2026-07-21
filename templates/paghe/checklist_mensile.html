@@ -70,9 +70,9 @@
 {% for c in completamenti %}
 {% with a=c.attivita %}
 <div class="checklist-item{% if c.completato %} completato{% endif %}" data-pk="{{ c.pk }}" data-obbligatorio="{{ a.obbligatorio|yesno:'si,no' }}">
-    <div class="checklist-circle{% if c.completato %} done{% endif %}{% if a.obbligatorio %} obbligatorio{% endif %}" onclick="toggleChecklist({{ c.pk }})">
+    <button type="button" class="checklist-circle{% if c.completato %} done{% endif %}{% if a.obbligatorio %} obbligatorio{% endif %} cursor-pointer" onclick="toggleChecklist({{ c.pk }})">
         {% if c.completato %}<i class="bi bi-check-lg"></i>{% endif %}
-    </div>
+    </button>
     <div class="cat-badge" style="background:{% if a.categoria == 'BUSTE_PAGA' %}rgba(94,106,210,0.12);color:#5E6AD2{% elif a.categoria == 'CONTRIBUTI' %}rgba(245,158,11,0.12);color:#f59e0b{% elif a.categoria == 'CU' %}rgba(16,185,129,0.12);color:#10b981{% elif a.categoria == 'DOCUMENTI' %}rgba(6,182,212,0.12);color:#06b6d4{% else %}rgba(139,92,246,0.12);color:#8b5cf6{% endif %};">{{ a.get_categoria_display }}</div>
     <div style="flex:1;min-width:0;">
         <div class="cl-label" style="font-size:13px;font-weight:600;color:#EDEDED;">{{ a.label }}</div>

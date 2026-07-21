@@ -1,34 +1,29 @@
-{% extends 'mobile/base_mobile.html' %}{% load static %}
+﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}{{ l.nome_cognome }} — Gestione Colf{% endblock %}
 {% block m_topbar_left %}<a href="/m/lavoratori/" class="m-topbar-back"><i class="bi bi-chevron-left"></i></a>{% endblock %}
 {% block m_topbar_title %}{{ l.nome_cognome }}{% endblock %}
 {% block m_content %}
-<div class="m-card m-card-lav">
+<div class="m-card m-card-top-lav">
     <div class="m-detail-row"><span class="label">Codice Fiscale</span><span class="value">{{ l.codice_fiscale|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">Nato il</span><span class="value">{{ l.data_nascita|date:"d/m/Y"|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">Comune nascita</span><span class="value">{{ l.comune_nascita|default:"—" }}{% if l.prov_nascita %} ({{ l.prov_nascita }}){% endif %}</span></div>
-    <div class="m-detail-row"><span class="label">Residenza</span><span class="value">{{ l.comune_residenza|default:"—" }}{% if l.prov_residenza %} ({{ l.prov_residenza }}){% endif %}</span></div>
-    <div class="m-detail-row"><span class="label">Indirizzo</span><span class="value">{{ l.indirizzo_residenza|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">CAP</span><span class="value">{{ l.cap_residenza|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Residenza</span><span class="value">{{ l.comune|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Indirizzo</span><span class="value">{{ l.indirizzo|default:"—" }}</span></div>
     <div class="m-detail-row"><span class="label">Telefono</span><span class="value">{{ l.telefono|default:"—" }}</span></div>
     <div class="m-detail-row"><span class="label">Email</span><span class="value">{{ l.email|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">Domicilio fiscale</span><span class="value">{{ l.comune_domicilio_fiscale|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">Cittadinanza</span><span class="value">{{ l.cittadinanza|default:"—" }}</span></div>
-    <div class="m-detail-row"><span class="label">Permesso soggiorno</span><span class="value">
-        {% if l.permesso_soggiorno %}Scade: {{ l.permesso_scadenza|date:"d/m/Y"|default:"—" }}{% else %}No{% endif %}
-    </span></div>
 </div>
 
 <h3 style="font-size:14px;margin:14px 0 8px;color:#8A8F98;">Contratti</h3>
 {% for c in contratti %}
-<a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-contr">
+<a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-top-contr">
     <div class="m-list-title">{{ c.datore.nome_cognome|default:"?" }}</div>
-    <div class="m-list-sub">{{ c.ccnl|default:"" }} — {{ c.mansione|default:"" }}</div>
+    <div class="m-list-sub">{{ c.parametri_minimi.descrizione_corta|default:"" }}{% if c.parametri_minimi.livello %} (liv. {{ c.parametri_minimi.livello }}){% endif %}</div>
 </a>
 {% empty %}
 <div class="m-empty"><i class="bi bi-file-earmark-text"></i>Nessun contratto</div>
 {% endfor %}
 
-<a class="m-btn m-btn-outline" href="/m/lavoratori/" style="margin-top:10px;">← Elenco lavoratori</a>
+<div style="display:flex;gap:8px;margin-top:10px;">
+    <a class="m-btn m-btn-outline" href="/m/lavoratori/" style="flex:1;">← Elenco</a>
+    <a class="m-btn m-btn-primary" href="/m/lavoratori/{{ l.pk }}/modifica/" style="flex:1;font-size:12px;padding:10px;">Modifica</a>
+</div>
 <a class="m-btn m-btn-outline" href="/">Versione desktop →</a>
 {% endblock %}

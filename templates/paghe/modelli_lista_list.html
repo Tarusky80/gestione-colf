@@ -12,6 +12,14 @@
 {% endblock %}
 
 {% block content %}
+<style>
+.btn-xs { padding:4px 10px; font-size:10px; }
+.overflow-y-auto { overflow-y:auto; }
+.b-1-2728 { border:1px solid #27282D; }
+.c-5c5f { color:#5C5F66; }
+.c-white { color:#ffffff; }
+.bg-090 { background:#09090B; }
+</style>
 {% block search_bar %}{% endblock %}
 {% csrf_token %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -71,16 +79,16 @@
                     <td class="clickable-row" data-type="tabella" data-pk="{{ obj.pk }}" data-title="{{ obj }}">{{ obj.created_at|date:"d/m/Y H:i" }}</td>
                     <td>
                         <div class="d-flex gap-1">
-                            <button type="button" onclick="event.stopPropagation(); openConfigColonne({{ obj.pk }}, '{{ obj.nome|escapejs }}', '{{ obj.tipo_sorgente }}')" class="btn btn-sm btn-ghost-primary" style="padding:4px 10px; font-size:10px;">
+                            <button type="button" onclick="event.stopPropagation(); openConfigColonne({{ obj.pk }}, '{{ obj.nome|escapejs }}', '{{ obj.tipo_sorgente }}')" class="btn btn-sm btn-ghost-primary btn-xs">
                                 <i class="bi bi-gear me-1"></i>Colonne
                             </button>
-                            <button type="button" onclick="event.stopPropagation(); loadAjaxForm('/ajax/modifica-tabella/modelli-lista/{{ obj.pk }}/', 'Modifica {{ obj.nome|escapejs }}')" class="btn btn-sm btn-ghost-primary" style="padding:4px 10px; font-size:10px;">
+                            <button type="button" onclick="event.stopPropagation(); loadAjaxForm('/ajax/modifica-tabella/modelli-lista/{{ obj.pk }}/', 'Modifica {{ obj.nome|escapejs }}')" class="btn btn-sm btn-ghost-primary btn-xs">
                                 <i class="bi bi-pencil me-1"></i>Modifica
                             </button>
-                            <button type="button" onclick="event.stopPropagation(); apriNelPannello('/ajax/genera-lista-personalizzata/{{ obj.pk }}/')" class="btn btn-sm btn-ghost-success" style="padding:4px 10px; font-size:10px;">
+                            <button type="button" onclick="event.stopPropagation(); apriNelPannello('/ajax/genera-lista-personalizzata/{{ obj.pk }}/')" class="btn btn-sm btn-ghost-success btn-xs">
                                 <i class="bi bi-file-pdf me-1"></i>PDF
                             </button>
-                            <button type="button" onclick="event.stopPropagation(); if(confirm('Eliminare il modello &quot;{{ obj.nome|escapejs }}&quot;?')){ fetch('/ajax/elimina-modello-lista/{{ obj.pk }}/', {method:'POST', headers:{'X-CSRFToken':document.querySelector('[name=csrfmiddlewaretoken]').value}}).then(function(r){return r.json();}).then(function(d){if(d.success)location.reload();else mostraToast(d.message, false);}); }" class="btn btn-sm btn-ghost-danger" style="padding:4px 10px; font-size:10px;">
+                            <button type="button" onclick="event.stopPropagation(); if(confirm('Eliminare il modello &quot;{{ obj.nome|escapejs }}&quot;?')){ fetch('/ajax/elimina-modello-lista/{{ obj.pk }}/', {method:'POST', headers:{'X-CSRFToken':document.querySelector('[name=csrfmiddlewaretoken]').value}}).then(function(r){return r.json();}).then(function(d){if(d.success)location.reload();else mostraToast(d.message, false);}); }" class="btn btn-sm btn-ghost-danger btn-xs">
                                 <i class="bi bi-trash3 me-1"></i>
                             </button>
                         </div>
@@ -210,11 +218,11 @@ function renderizzaCampiDisponibili() {
     Object.keys(groups).sort().forEach(function(g) {
         html += '<div class="fw-bold" style="font-size:9px; text-transform:uppercase; letter-spacing:0.04em; color:#9ca3ff; padding:8px 4px 4px 4px; border-bottom:1px solid rgba(156,163,255,0.08);">' + g + '</div>';
         groups[g].forEach(function(c) {
-            html += '<div class="field-item" onclick="aggiungiColonna(\'' + c.field_path + '\', \'' + c.label.replace(/'/g, "\\'") + '\', \'' + c.tipo + '\')" style="padding:5px 8px; border-radius:6px; border:1px solid transparent; font-size:11px; color:#cccccc;">';
+            html += '<button type="button" class="field-item" onclick="aggiungiColonna(\'' + c.field_path + '\', \'' + c.label.replace(/'/g, "\\'") + '\', \'' + c.tipo + '\')" style="padding:5px 8px; border-radius:6px; border:1px solid transparent; font-size:11px; color:#cccccc;">';
             html += '<span class="me-2" style="color:#5C5F66; font-size:9px;">' + iconaTipo(c.tipo) + '</span>';
             html += c.label;
             html += ' <span class="text-secondary ms-1" style="font-size:9px;">(' + c.field_path + ')</span>';
-            html += '</div>';
+            html += '</button>';
         });
     });
     container.innerHTML = html || '<div class="text-center text-secondary py-4" style="font-size:11px; color:#5C5F66;">Nessun campo disponibile</div>';

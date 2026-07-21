@@ -119,15 +119,15 @@ select.form-control option { background:#09090b; color:#e2e8f0; }
         <div style="display:flex;flex-direction:column;gap:2px;" id="varsContainer">
 {% for gruppo in variabili %}
           <div class="var-gruppo" data-categoria="{{ gruppo.categoria|lower }}">
-            <div class="var-header" onclick="toggleCategoria(this)" style="display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:6px;cursor:pointer;user-select:none;transition:background 0.12s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
+            <button type="button" class="var-header" onclick="toggleCategoria(this)" style="display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:6px;cursor:pointer;user-select:none;transition:background 0.12s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
               <span class="var-arrow" style="font-size:8px;color:#5C5F66;transition:transform 0.15s;">&#9654;</span>
               <span style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;color:#9ca3ff;">{{ gruppo.categoria }}</span>
               <span class="var-count" style="margin-left:auto;font-size:9px;color:#5C5F66;background:rgba(255,255,255,0.04);border-radius:10px;padding:0 7px;">{{ gruppo.items|length }}</span>
-            </div>
+            </button>
             <div class="var-body" style="display:none;padding:4px 6px 6px;">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;">
 {% for item in gruppo.items %}
-                <span class="var" data-var="{{ item.var }}" onclick="inserisciVarCkeditor('{{ item.var }}')" title="{{ item.var }}">{{ item.label }}</span>
+                <button type="button" class="var" data-var="{{ item.var }}" onclick="inserisciVarCkeditor('{{ item.var }}')" title="{{ item.var }}">{{ item.label }}</button>
 {% endfor %}
               </div>
             </div>

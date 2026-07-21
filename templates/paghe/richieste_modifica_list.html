@@ -1,18 +1,28 @@
 {% extends 'base.html' %}
 {% block title %}Richieste Modifica Datori{% endblock %}
 {% block content %}
+<style>
+.btn-filtro-stato { border-radius:8px; font-size:12px; }
+.btn-azione-icona { font-size:11px; }
+.br-8 { border-radius:8px; }
+.fs-12 { font-size:12px; }
+.fw-6 { font-weight:600; }
+.c-ed { color:#EDEDED; }
+.b-1-2728 { border:1px solid #27282D; }
+.bg-090 { background:#09090B; }
+</style>
 <div class="container-fluid py-3 px-4">
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
     <h5 style="color:#EDEDED;font-weight:700;margin:0;"><i class="bi bi-inbox me-2" style="color:#5E6AD2;"></i> Richieste Modifica Datori
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </h5>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <a href="{% url 'richieste_modifica_list' %}" class="btn btn-sm {% if not stato_f %}btn-ghost{% else %}btn-ghost{% endif %}" style="border-radius:8px;font-size:12px;">Tutte</a>
-      <a href="?stato=INVIATA" class="btn btn-sm {% if stato_f == 'INVIATA' %}btn-ghost-warning{% else %}btn-ghost{% endif %}" style="border-radius:8px;font-size:12px;">Inviate</a>
-      <a href="?stato=VISTA" class="btn btn-sm {% if stato_f == 'VISTA' %}btn-ghost-info{% else %}btn-ghost{% endif %}" style="border-radius:8px;font-size:12px;">Viste</a>
-      <a href="?stato=ACCETTATA" class="btn btn-sm {% if stato_f == 'ACCETTATA' %}btn-ghost-success{% else %}btn-ghost{% endif %}" style="border-radius:8px;font-size:12px;">Accettate</a>
-      <a href="?stato=RIFIUTATA" class="btn btn-sm {% if stato_f == 'RIFIUTATA' %}btn-ghost-danger{% else %}btn-ghost{% endif %}" style="border-radius:8px;font-size:12px;">Rifiutate</a>
-      <a href="?eliminate=1" class="btn btn-sm {% if mostra_eliminate %}btn-ghost{% else %}btn-ghost{% endif %}" style="border-radius:8px;font-size:12px;"><i class="bi bi-trash3 me-1"></i>Eliminate</a>
+      <a href="{% url 'richieste_modifica_list' %}" class="btn btn-sm btn-filtro-stato {% if not stato_f %}btn-ghost{% else %}btn-ghost{% endif %}">Tutte</a>
+      <a href="?stato=INVIATA" class="btn btn-sm btn-filtro-stato {% if stato_f == 'INVIATA' %}btn-ghost-warning{% else %}btn-ghost{% endif %}">Inviate</a>
+      <a href="?stato=VISTA" class="btn btn-sm btn-filtro-stato {% if stato_f == 'VISTA' %}btn-ghost-info{% else %}btn-ghost{% endif %}">Viste</a>
+      <a href="?stato=ACCETTATA" class="btn btn-sm btn-filtro-stato {% if stato_f == 'ACCETTATA' %}btn-ghost-success{% else %}btn-ghost{% endif %}">Accettate</a>
+      <a href="?stato=RIFIUTATA" class="btn btn-sm btn-filtro-stato {% if stato_f == 'RIFIUTATA' %}btn-ghost-danger{% else %}btn-ghost{% endif %}">Rifiutate</a>
+      <a href="?eliminate=1" class="btn btn-sm btn-filtro-stato {% if mostra_eliminate %}btn-ghost{% else %}btn-ghost{% endif %}"><i class="bi bi-trash3 me-1"></i>Eliminate</a>
     </div>
   </div>
 
@@ -48,13 +58,13 @@
           </td>
           <td>
             {% if r.eliminata %}
-            <button type="button" class="btn btn-sm btn-ghost-success px-2 py-1" onclick="event.stopPropagation();ripristinaRichiesta({{ r.pk }})" title="Ripristina" style="font-size:11px;"><i class="bi bi-arrow-counterclockwise"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost-success px-2 py-1 btn-azione-icona" onclick="event.stopPropagation();ripristinaRichiesta({{ r.pk }})" title="Ripristina"><i class="bi bi-arrow-counterclockwise"></i></button>
             {% else %}
             {% if r.stato == 'INVIATA' %}
-            <button type="button" class="btn btn-sm btn-ghost-info px-2 py-1" onclick="event.stopPropagation();gestisciRichiesta({{ r.pk }}, 'VISTA')" title="Segna come vista" style="font-size:11px;">Vista</button>
+            <button type="button" class="btn btn-sm btn-ghost-info px-2 py-1 btn-azione-icona" onclick="event.stopPropagation();gestisciRichiesta({{ r.pk }}, 'VISTA')" title="Segna come vista">Vista</button>
             {% endif %}
-            <button type="button" class="btn btn-sm btn-ghost-danger px-2 py-1" onclick="event.stopPropagation();eliminaRichiesta({{ r.pk }})" title="Elimina" style="font-size:11px;"><i class="bi bi-trash"></i></button>
-            <button type="button" class="btn btn-sm btn-ghost px-2 py-1" onclick="event.stopPropagation();apriDettaglioRichiesta(this)" title="Dettaglio" style="font-size:11px;"><i class="bi bi-eye"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost-danger px-2 py-1 btn-azione-icona" onclick="event.stopPropagation();eliminaRichiesta({{ r.pk }})" title="Elimina"><i class="bi bi-trash"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost px-2 py-1 btn-azione-icona" onclick="event.stopPropagation();apriDettaglioRichiesta(this)" title="Dettaglio"><i class="bi bi-eye"></i></button>
             {% endif %}
           </td>
         </tr>

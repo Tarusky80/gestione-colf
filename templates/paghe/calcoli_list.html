@@ -354,19 +354,19 @@ function renderBusta(d) {
     html += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
     html += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-1"></i>Busta Paga \u2014 ' + d.mese_nome + ' ' + d.anno + '</div>';
     html += '<div class="row g-2 mt-2">';
-    html += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.datore_indirizzo) + (d.datore_comune ? ' - ' + esc(d.datore_comune) : '') + '</span></div>';
-    html += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.lavoratore_indirizzo) + (d.lavoratore_comune ? ' - ' + esc(d.lavoratore_comune) : '') + '</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Data inizio</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.data_assunzione) + '</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo contratto</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.tipo_contratto) + '</span></div>';
+    html += '<div class="col-md-6"><span class="label-busta">Datore</span><span class="value-busta">' + esc(d.datore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.datore_indirizzo) + (d.datore_comune ? ' - ' + esc(d.datore_comune) : '') + '</span></div>';
+    html += '<div class="col-md-6"><span class="label-busta">Lavoratore</span><span class="value-busta">' + esc(d.lavoratore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.lavoratore_indirizzo) + (d.lavoratore_comune ? ' - ' + esc(d.lavoratore_comune) : '') + '</span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Data inizio</span><span class="value-busta">' + esc(d.data_assunzione) + '</span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Tipo contratto</span><span class="value-busta">' + esc(d.tipo_contratto) + '</span></div>';
     var _cH = Math.floor(d.ore_mensili), _cM = Math.floor((d.ore_mensili - _cH) * 60), _cS = Math.floor(((d.ore_mensili - _cH) * 60 - _cM) * 60);
     var _oreCrono = _cH + 'h ' + String(_cM).padStart(2,'0') + 'm ' + String(_cS).padStart(2,'0') + 's';
     var _sA = Math.ceil(d.ore_settimanali);
     html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:2px;">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + d.ore_inps + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI ARROTONDATE</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">(INPS: ' + d.ore_inps + ' h)</span></div><div><span style="font-size:12px;font-weight:500;color:#8A8F98;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI DECIMALI</span></div><div><span style="font-size:12px;font-weight:600;color:#06b6d4;">' + _oreCrono + '</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI CRONOMETRO</span></div><div style="border-top:1px solid #27282D;margin:2px 0;"></div><div><span style="font-size:9px;color:#8A8F98;">Ore settimanali</span> <span style="font-size:13px;font-weight:600;color:#10b981;">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Settimane mensili</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Codice Rapporto</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">' + esc(d.codice_rapporto_inps) + '</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga applicata</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_applicata_mensile.toFixed(2) + '/mese)</span></span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Settimane mensili</span><span class="value-busta">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Codice Rapporto</span><span class="value-busta-md">' + esc(d.codice_rapporto_inps) + '</span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Paga effettiva INPS</span><span class="value-busta-md">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Paga applicata</span><span class="value-busta-md">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_applicata_mensile.toFixed(2) + '/mese)</span></span></div>';
 
     // Progetti collegati
     if (d.progetti && d.progetti.length > 0) {
@@ -391,20 +391,20 @@ function renderBusta(d) {
     // Paga base
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:12px;color:#EDEDED;">Paga base <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
 
     // Indennit\u00e0
     for (var i = 0; i < d.indennita.length; i++) {
         var ind = d.indennita[i];
         html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
         html += '<span style="font-size:12px;color:#EDEDED;">' + esc(ind.label) + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
-        html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
+        html += '<span class="value-busta">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
     }
 
     // Scatti
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:12px;color:#EDEDED;">Scatti anzianit\u00e0 <span style="color:#8A8F98;font-size:11px;">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
 
     // Ratei pagati
     for (var i = 0; i < d.ratei_pagati.length; i++) {
@@ -413,7 +413,7 @@ function renderBusta(d) {
         var calcLabel = calcNote ? '<br><span style="font-size:10px;color:#8A8F98;font-style:italic;">' + calcNote + '</span>' : '';
         html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
         html += '<span style="font-size:12px;color:#EDEDED;">' + esc(rp.label) + (rp.incluso ? ' (*)' : '') + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h = \u20AC' + (rp.orario * d.ore_mensili).toFixed(2) + ')</span>' + calcLabel + '</span>';
-        html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
+        html += '<span class="value-busta">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
 
     // Combined Indennità e Ratei pagati (solo quelli inclusi nel lordo)
@@ -422,7 +422,7 @@ function renderBusta(d) {
     for (var irr = 0; irr < d.ratei_pagati.length; irr++) { if (d.ratei_pagati[irr].incluso) totalIndennitaRatei += d.ratei_pagati[irr].orario * d.ore_mensili; }
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:11px;color:#8A8F98;font-style:italic;">Indennit\u00e0 e Ratei pagati</span>';
-    html += '<span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC ' + totalIndennitaRatei.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta-md">\u20AC ' + totalIndennitaRatei.toFixed(2) + '</span></div>';
 
     // Totale lordo
     html += '<div class="d-flex justify-content-between align-items-center py-2 mt-2" style="border-top:2px solid rgba(52,211,153,0.3);">';
@@ -438,11 +438,11 @@ function renderBusta(d) {
 
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:12px;color:#EDEDED;">INPS <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h \u2014 ' + d.contributi.inps.fascia + ' soglia)</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:12px;color:#EDEDED;">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(245,158,11,0.3);">';
     html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">TOTALE CONTRIBUTI</span>';
@@ -450,7 +450,7 @@ function renderBusta(d) {
 
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="margin-top:4px;">';
     html += '<span style="font-size:11px;color:#8A8F98;">Stima contributi trimestrali</span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.contributi.trimestrale_stima.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta">\u20AC ' + d.contributi.trimestrale_stima.toFixed(2) + '</span></div>';
 
     html += '<div style="margin-top:24px;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f87171;font-weight:700;margin-bottom:8px;"><i class="bi bi-dash-circle me-1"></i>Trattenute</div>';
 
@@ -458,14 +458,14 @@ function renderBusta(d) {
     var convDett = (d.trattenute.convivenza.dettaglio && d.trattenute.convivenza.dettaglio.length > 0) ? d.trattenute.convivenza.dettaglio.join(', ') : '';
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:12px;color:#EDEDED;">' + convLabel + ' <span style="color:#8A8F98;font-size:11px;">(' + esc(convDett) + ')</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
 
     var accNomi = [];
     for (var ri = 0; ri < d.ratei_pagati.length; ri++) { if (!d.ratei_pagati[ri].incluso && d.ratei_pagati[ri].totale > 0) accNomi.push(d.ratei_pagati[ri].label); }
     var accNota = accNomi.length > 0 ? '(' + accNomi.join(', ') + ' non pagati)' : '';
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
     html += '<span style="font-size:12px;color:#EDEDED;">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
+    html += '<span class="value-busta">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
     var totInclusi = 0, nomiInclusi = [];
     for (var ri = 0; ri < d.ratei_pagati.length; ri++) {
         if (d.ratei_pagati[ri].incluso) { totInclusi += d.ratei_pagati[ri].orario * d.ore_mensili; nomiInclusi.push(d.ratei_pagati[ri].label); }

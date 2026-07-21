@@ -16,6 +16,19 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 .bar-track { height: 20px; border-radius: 4px; position: relative; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
 .bar-value { font-size: 10px; color: #8A8F98; text-align: right; }
+.btn-nav-arrow { padding:4px 8px; font-size:12px; line-height:1; }
+.card-warning-banner { display:none; padding:10px 14px; margin-bottom:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; color:#ef4444; font-size:12px; font-weight:600; }
+.section-label { font-size:9px; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:#5C5F66; }
+.controls-text { font-size:11px; color:#8A8F98; }
+.skeleton-flex-child { flex:1; padding-top:4px; }
+.skeleton-row-flex { display:flex; gap:10px; }
+.empty-state-icon { color:#27282D; }
+.input-notturno-sm { width:65px; background:#09090B; border:1px solid #27282D; color:#818cf8; font-weight:600; font-size:13px; padding:2px 6px; border-radius:6px; text-align:center; }
+.label-notturno-sm { font-size:10px; color:#8A8F98; }
+.separator-top { margin-top:12px; padding-top:12px; border-top:1px solid #27282D; }
+.range-bg { background-color:#09090B; }
+.c-danger { color:#f87171; }
+.c-warning { color:#fbbf24; }
 </style>
 {% endblock %}
 {% block breadcrumb %}
@@ -62,14 +75,14 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
     <div class="col-md-6">
       <label class="mb-1 fw-bold c-10-up">Contratto</label>
       <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;font-size:12px;line-height:1;">&#9664;</button>
-        <select id="fContratto" class="form-control" onchange="calcola()" class="bg-input">
+        <button type="button" class="btn btn-sm btn-ghost btn-nav-arrow" onclick="navContratto(-1)">&#9664;</button>
+        <select id="fContratto" class="form-control bg-input" onchange="calcola()">
           <option value="">— Seleziona —</option>
           {% for c in contratti %}
           <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
           {% endfor %}
         </select>
-        <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;font-size:12px;line-height:1;">&#9654;</button>
+        <button type="button" class="btn btn-sm btn-ghost btn-nav-arrow" onclick="navContratto(1)">&#9654;</button>
       </div>
     </div>
     <div class="col-md-2">
@@ -99,12 +112,12 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         <label class="radio-card selected" id="rc-presenza" onclick="selezionaTipo('presenza')">
           <input type="radio" name="tipoNotturno" value="presenza" checked>
           <div class="label-tipo">Presenza Notturna</div>
-          <div class="sotto-tipo">Art. 11 — €811,09/mese <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
+          <div class="sotto-tipo">Art. 11 — €811,09/mese <span class="c-muted fs-9">(onnicomprensivo)</span></div>
         </label>
         <label class="radio-card" id="rc-assistenza" onclick="selezionaTipo('assistenza')">
           <input type="radio" name="tipoNotturno" value="assistenza">
           <div class="label-tipo">Assistenza Notturna</div>
-          <div class="sotto-tipo">Art. 10 — per livello <span style="color:#5C5F66;font-size:9px;">(onnicomprensivo)</span></div>
+          <div class="sotto-tipo">Art. 10 — per livello <span class="c-muted fs-9">(onnicomprensivo)</span></div>
         </label>
         <label class="radio-card" id="rc-a_ore" onclick="selezionaTipo('a_ore')">
           <input type="radio" name="tipoNotturno" value="a_ore">
@@ -113,23 +126,23 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         </label>
       </div>
     </div>
-    <div class="col-md-4" id="oreNotturneContainer" style="display:none;">
-      <label class="mb-1 fw-bold" class="c-10-up">Ore Notturne: <input type="number" id="oreNotturneInput" min="0" max="200" step="0.5" value="0" onchange="daInputOre()" style="width:65px;background:#09090B;border:1px solid #27282D;color:#818cf8;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> h</label>
-      <input type="range" id="fOreNotturne" min="0" max="200" step="0.5" value="0" oninput="daSliderOre();calcola()" style="background-color:#09090B;">
-      <div class="d-flex justify-content-between" style="font-size:9px;color:#5C5F66;margin-top:2px;"><span>0 h</span><span>200 h</span>      </div>
+    <div class="col-md-4" id="oreNotturneContainer" class="d-none">
+      <label class="mb-1 fw-bold c-10-up">Ore Notturne: <input type="number" id="oreNotturneInput" min="0" max="200" step="0.5" value="0" onchange="daInputOre()" class="input-notturno-sm"> h</label>
+      <input type="range" id="fOreNotturne" min="0" max="200" step="0.5" value="0" oninput="daSliderOre();calcola()" class="range-bg">
+      <div class="d-flex justify-content-between c-muted fs-9" style="margin-top:2px;"><span>0 h</span><span>200 h</span>      </div>
     </div>
-    <div class="col-12" style="margin-top:12px;padding-top:12px;border-top:1px solid #27282D;">
-      <div class="d-flex align-items-center flex-wrap gap-4" style="font-size:11px;color:#8A8F98;">
-        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Ratei Notturni</span>
+    <div class="col-12 separator-top">
+      <div class="d-flex align-items-center flex-wrap gap-4 controls-text">
+        <span class="section-label">Ratei Notturni</span>
         <span class="toggle-item">
-          <span style="color:#f87171;font-weight:600;">TFR Separato</span>
+          <span class="c-danger fw-6">TFR Separato</span>
           <label class="toggle-switch">
             <input type="checkbox" id="rateoTfrSeparato" checked onchange="calcola();aggiornaTfrCalcoli()">
             <span class="toggle-slider" style="border-color:#f8717166;"></span>
           </label>
         </span>
         <span class="toggle-item">
-          <span style="color:#fbbf24;font-weight:600;">Anticipo 70%</span>
+          <span class="c-warning fw-6">Anticipo 70%</span>
           <label class="toggle-switch">
             <input type="checkbox" id="rateoAnticipo70" onchange="calcola()">
             <span class="toggle-slider" style="border-color:#fbbf2466;"></span>
@@ -137,58 +150,58 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         </span>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="rateo13ma" checked onchange="calcola()"><span class="toggle-slider"></span></label>
-          <span style="color:#EDEDED;font-weight:600;">13ª</span> <span style="font-size:9px;">0,3094/h</span>
+          <span class="c-text fw-6">13ª</span> <span class="fs-9">0,3094/h</span>
         </span>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="rateoFerie" checked onchange="calcola()"><span class="toggle-slider"></span></label>
-          <span style="color:#EDEDED;font-weight:600;">Ferie</span> <span style="font-size:9px;">0,3094/h</span>
+          <span class="c-text fw-6">Ferie</span> <span class="fs-9">0,3094/h</span>
         </span>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="rateoFestivi" checked onchange="calcola()"><span class="toggle-slider"></span></label>
-          <span style="color:#EDEDED;font-weight:600;">Festivi</span> <span style="font-size:9px;">0,3333/h</span>
+          <span class="c-text fw-6">Festivi</span> <span class="fs-9">0,3333/h</span>
         </span>
       </div>
     </div>
-    <div id="opzioniNotturneContainer" class="col-12" style="margin-top:12px;padding-top:12px;border-top:1px solid #27282D;display:none;">
-      <div class="d-flex align-items-center flex-wrap gap-4" style="font-size:11px;color:#8A8F98;">
-        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Opzioni Notturne</span>
+    <div id="opzioniNotturneContainer" class="col-12 separator-top d-none">
+      <div class="d-flex align-items-center flex-wrap gap-4 controls-text">
+        <span class="section-label">Opzioni Notturne</span>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="straordNott" onchange="toggleStraordNott()"><span class="toggle-slider"></span></label>
-          <span style="color:#EDEDED;font-weight:600;">Straordinario notturno 50%</span>
-          <span style="font-size:9px;">oltre orario normale (art. 15 c.3)</span>
+          <span class="c-text fw-6">Straordinario notturno 50%</span>
+          <span class="fs-9">oltre orario normale (art. 15 c.3)</span>
         </span>
         <div id="straordNottContainer" style="display:none;width:180px;">
-          <label style="font-size:10px;color:#8A8F98;">Ore: <span id="straordNottDisplay">0</span></label>
+          <label class="label-notturno-sm">Ore: <span id="straordNottDisplay">0</span></label>
           <input type="range" id="fStraordNott" min="0" max="100" step="0.5" value="0" oninput="aggiornaStraordNott();calcola()">
         </div>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="festivoNott" onchange="toggleFestivoNott()"><span class="toggle-slider"></span></label>
-          <span style="color:#EDEDED;font-weight:600;">Festivo/domenicale 60%</span>
-          <span style="font-size:9px;">art. 15 c.3</span>
+          <span class="c-text fw-6">Festivo/domenicale 60%</span>
+          <span class="fs-9">art. 15 c.3</span>
         </span>
         <div id="festivoNottContainer" style="display:none;width:180px;">
-          <label style="font-size:10px;color:#8A8F98;">Ore: <span id="festivoNottDisplay">0</span></label>
+          <label class="label-notturno-sm">Ore: <span id="festivoNottDisplay">0</span></label>
           <input type="range" id="fFestivoNott" min="0" max="50" step="1" value="0" oninput="aggiornaFestivoNott();calcola()">
         </div>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="conviventeNott" onchange="calcola()"><span class="toggle-slider"></span></label>
-          <span style="color:#EDEDED;font-weight:600;">Convivenza</span>
-          <span style="font-size:9px;">solo informativo (le % sono identiche)</span>
+          <span class="c-text fw-6">Convivenza</span>
+          <span class="fs-9">solo informativo (le % sono identiche)</span>
         </span>
       </div>
     </div>
   </div>
 </div>
 
-<div id="resultContainer" style="display:none;">
-  <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+<div id="resultContainer" class="d-none">
+  <div id="bustaEsistenteWarning" role="alert" class="card-warning-banner">
     <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
-  <div id="resultLoading" class="py-4" style="display:none;">
+  <div id="resultLoading" class="py-4 d-none">
     <div class="skeleton-card">
       <div class="skeleton-row mb-3">
         <div class="skeleton-avatar skeleton"></div>
-        <div style="flex:1;padding-top:4px;">
+        <div class="skeleton-flex-child">
           <div class="skeleton skeleton-text" style="width:40%"></div>
           <div class="skeleton skeleton-text-sm" style="width:25%"></div>
         </div>
@@ -196,7 +209,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
       <div class="skeleton skeleton-text"></div>
       <div class="skeleton skeleton-text" style="width:85%"></div>
       <div class="skeleton skeleton-text-sm" style="width:50%"></div>
-      <div class="mt-3" style="display:flex;gap:10px;">
+      <div class="mt-3 skeleton-row-flex">
         <div class="skeleton skeleton-text" style="width:30%"></div>
         <div class="skeleton skeleton-text" style="width:45%"></div>
       </div>
@@ -205,8 +218,8 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   <div id="resultContent"></div>
 </div>
 
-<div id="resultEmpty" class="text-center py-5" style="color:#5C5F66;">
-  <i class="bi bi-moon-stars fs-1 d-block mb-3" style="color:#27282D;"></i>
+<div id="resultEmpty" class="text-center py-5 c-muted">
+  <i class="bi bi-moon-stars fs-1 d-block mb-3 empty-state-icon"></i>
   <div>Seleziona un contratto per calcolare la busta notturna.</div>
 </div>
 <!-- HELP MODAL -->
@@ -433,12 +446,12 @@ function renderNotturno(d) {
   html += '<div style="padding:16px 24px;border-bottom:1px solid #27282D;">';
   html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-moon-stars me-1"></i>Busta Notturna — ' + d.mese_nome + ' ' + d.anno + '</div>';
   html += '<div class="row g-2 mt-2">';
-  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
-  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
-  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(' + rgb + ',0.2);color:' + lc + ';">' + esc(d.livello) + '</span></div>';
-  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
-  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Ore mensili</span><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + Number(d.ore_settimanali).toFixed(2) + ' h/sett)</span></div>';
-  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Paga base oraria</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
+  html += '<div class="col-md-4"><span class="label-info">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
+  html += '<div class="col-md-4"><span class="label-info">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
+  html += '<div class="col-md-2"><span class="label-info">Livello</span><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(' + rgb + ',0.2);color:' + lc + ';">' + esc(d.livello) + '</span></div>';
+  html += '<div class="col-md-2"><span class="label-info">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
+  html += '<div class="col-md-3 mt-2"><span class="label-info">Ore mensili</span><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + Number(d.ore_settimanali).toFixed(2) + ' h/sett)</span></div>';
+  html += '<div class="col-md-3 mt-2"><span class="label-info">Paga base oraria</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
   html += '<div class="col-md-6 mt-2"><span style="font-size:12px;font-weight:700;color:#818cf8;">' + esc(d.label_tipo) + '</span>';
   if (d.convivente) html += ' <span style="font-size:10px;color:#8A8F98;margin-left:6px;"><i class="bi bi-house-door"></i> Convivente</span>';
   html += '</div></div></div>';

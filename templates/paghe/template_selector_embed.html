@@ -27,11 +27,11 @@
         <div class="tpl-group" data-tipo="{{ tipo_nome }}">
             <div class="tpl-group-title">{{ tipo_nome }}</div>
             {% for t in templates %}
-            <div class="tpl-item" data-search="{{ t.codice|lower }} {{ t.titolo|lower }} {{ t.corpo_testo|striptags|truncatechars:150|lower }}" onclick="selezionaTemplate({{ contratto.pk }}, {{ t.pk }})">
+            <button type="button" class="tpl-item" data-search="{{ t.codice|lower }} {{ t.titolo|lower }} {{ t.corpo_testo|striptags|truncatechars:150|lower }}" onclick="selezionaTemplate({{ contratto.pk }}, {{ t.pk }})">
                 <span class="codice">{{ t.codice }}</span>
                 <span class="oggetto">{{ t.titolo }}</span>
                 <span class="anteprima">{{ t.corpo_testo|striptags|truncatechars:150 }}</span>
-            </div>
+            </button>
             {% endfor %}
         </div>
         {% endfor %}

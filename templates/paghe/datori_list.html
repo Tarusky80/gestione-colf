@@ -11,6 +11,15 @@
 {% endblock %}
 
 {% block content %}
+<style>
+.br-8 { border-radius:8px; }
+.br-circle { border-radius:50%; }
+.cursor-pointer { cursor:pointer; }
+.bg-090 { background:#09090B; }
+.b-1-2728 { border:1px solid #27282D; }
+.input-dark { background:#09090B; border:1px solid #27282D; color:#EDEDED; border-radius:8px; font-size:13px; outline:none; }
+.btn-modal-base { border-radius:8px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer; }
+</style>
 <div class="mb-4">
     <h1 class="h3 fw-bold mb-1">DATORI DI LAVORO
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
@@ -32,7 +41,7 @@
     </div>
     <div class="col-md-4">
         <label class="mb-1 fw-bold" class="c-10-up">Comune</label>
-        <select id="fComune" class="form-control" onchange="filtraPerComune('fComune', 'datoriTable')" style="background:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:8px 12px;border-radius:8px;">
+        <select id="fComune" class="form-control bg-input" onchange="filtraPerComune('fComune', 'datoriTable')">
             <option value="">Tutti</option>
             {% for c in comuni %}
             <option value="{{ c }}">{{ c }}</option>
@@ -80,7 +89,7 @@
                 <td>{{ datore.email|default:"-" }}</td>
                 <td>{{ datore.telefono|default:"-" }}</td>
                 <td style="text-align:center;vertical-align:middle;">
-                    <span id="accIcon_{{ datore.codice_fiscale }}" onclick="event.stopPropagation();apriModalAccesso('{{ datore.codice_fiscale }}','{{ datore.nome_cognome|escapejs }}')" title="Gestisci accesso" style="display:inline-block;width:28px;height:28px;border-radius:50%;background:#27282D;cursor:pointer;border:2px solid #3B3C42;transition:all .2s;"></span>
+                    <button type="button" id="accIcon_{{ datore.codice_fiscale }}" onclick="event.stopPropagation();apriModalAccesso('{{ datore.codice_fiscale }}','{{ datore.nome_cognome|escapejs }}')" title="Gestisci accesso" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#27282D;cursor:pointer;border:2px solid #3B3C42;transition:all .2s;"></button>
                 </td>
                 <td style="text-align:center;vertical-align:middle;">
                     <a href="/portal/?cf={{ datore.codice_fiscale }}" target="_blank" onclick="event.stopPropagation();" title="Apri portale datore" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#27282D;border:2px solid #3B3C42;color:#9ca3ff;text-decoration:none;font-size:13px;transition:all .2s;" onmouseover="this.style.background='#5E6AD2';this.style.borderColor='#5E6AD2';this.style.color='#fff';" onmouseout="this.style.background='#27282D';this.style.borderColor='#3B3C42';this.style.color='#9ca3ff';"><i class="bi bi-box-arrow-up-right"></i></a>
@@ -147,12 +156,12 @@ document.addEventListener('DOMContentLoaded', function() {
   <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
     <div class="modal-content card-alt">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
+        <h5 class="modal-title fs-15 fw-7 c-text">
           <i class="bi bi-shield-lock me-2" style="color:#5E6AD2;"></i> <span id="accModalTitle">Accesso Datore</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
-      <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;">
+      <div class="modal-body fs-13 c-muted" style="padding:18px;">
         <div style="margin-bottom:14px;">
           <span style="font-weight:600;color:#EDEDED;">Datore:</span>
           <span id="accModalNome" style="color:#8A8F98;margin-left:6px;"></span>
@@ -161,24 +170,24 @@ document.addEventListener('DOMContentLoaded', function() {
           <span style="font-weight:600;color:#EDEDED;">Codice Fiscale:</span>
           <span id="accModalCf" style="color:#8A8F98;margin-left:6px;font-family:monospace;"></span>
         </div>
-        <div id="accStatoAttuale" style="margin-bottom:16px;padding:8px 12px;background:#09090B;border:1px solid #27282D;border-radius:8px;font-size:12px;"></div>
+        <div id="accStatoAttuale" class="bg-090 b-1-2728 br-8 fs-12" style="margin-bottom:16px;padding:8px 12px;"></div>
         <div style="margin-bottom:12px;">
           <label style="font-size:12px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;">Nuova password</label>
           <div style="position:relative;">
-            <input type="password" id="accPassword" style="width:100%;background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:8px;padding:10px 40px 10px 14px;font-size:13px;outline:none;" placeholder="Inserisci password (min 4 caratteri)" autocomplete="new-password">
+            <input type="password" id="accPassword" class="input-dark w-100" style="padding:10px 40px 10px 14px;" placeholder="Inserisci password (min 4 caratteri)" autocomplete="new-password">
             <button type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#5C5F66;cursor:pointer;font-size:16px;padding:0;" onclick="var p=document.getElementById('accPassword');var i=this.querySelector('i');if(p.type==='password'){p.type='text';i.className='bi bi-eye-fill'}else{p.type='password';i.className='bi bi-eye-slash-fill'}"><i class="bi bi-eye-slash-fill"></i></button>
           </div>
         </div>
         <div style="margin-bottom:8px;">
           <label style="font-size:12px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;">Conferma password</label>
-          <input type="password" id="accPasswordConfirm" style="width:100%;background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:8px;padding:10px 14px;font-size:13px;outline:none;" placeholder="Ripeti la password" autocomplete="new-password">
+          <input type="password" id="accPasswordConfirm" class="input-dark w-100" style="padding:10px 14px;" placeholder="Ripeti la password" autocomplete="new-password">
         </div>
         <div id="accPassError" style="display:none;color:#f87171;font-size:12px;margin-top:6px;"></div>
       </div>
       <div class="modal-footer" style="border-top:1px solid #27282D;padding:12px 18px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-        <button type="button" id="btnDisabilitaAccesso" onclick="disabilitaAccessoDatore()" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;display:none;"><i class="bi bi-lock-fill me-1"></i> Disabilita accesso</button>
+        <button type="button" id="btnDisabilitaAccesso" onclick="disabilitaAccessoDatore()" class="btn-modal-base" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;display:none;"><i class="bi bi-lock-fill me-1"></i> Disabilita accesso</button>
         <div style="display:flex;gap:8px;margin-left:auto;">
-          <button type="button" data-bs-dismiss="modal" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;">Chiudi</button>
+          <button type="button" data-bs-dismiss="modal" class="btn-modal-base" style="background:transparent;border:1px solid #333;color:#8A8F98;">Chiudi</button>
           <button type="button" id="btnSalvaAccesso" onclick="salvaAccessoDatore()" class="btn btn-sm btn-ghost-primary" style="padding:8px 20px;font-size:12px;"><i class="bi bi-check-lg me-1"></i> <span id="btnAccLabel">Abilita accesso</span></button>
         </div>
       </div>

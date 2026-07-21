@@ -91,11 +91,11 @@
           <div id="grigliaPermessi" class="perm-griglia">
             {% for gruppo, chiavi in permessi_gruppi %}
             <div class="perm-gruppo">
-              <div class="perm-gruppo-header" onclick="toggleGruppo(this)">
+              <button type="button" class="perm-gruppo-header" onclick="toggleGruppo(this)">
                 <i class="bi {{ gruppo.icona }}"></i>{{ gruppo.label }}
                 <span class="perm-gruppo-count badge"></span>
                 <i class="bi bi-chevron-down perm-gruppo-arrow"></i>
-              </div>
+              </button>
               <div class="perm-gruppo-body">
                 {% for p in chiavi %}
                 <div class="perm-check-label" data-perm="{{ p }}">

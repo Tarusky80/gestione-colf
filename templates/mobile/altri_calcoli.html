@@ -1,0 +1,86 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Altri calcoli — Gestione Colf{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-busta"><i class="bi bi-calculator"></i></span> Altri calcoli{% endblock %}
+{% block m_content %}
+
+<div style="margin-bottom:12px;font-size:13px;color:var(--text-muted);line-height:1.5;">I calcoli speciali sono disponibili nella versione desktop. Seleziona il tipo e verrai reindirizzato.</div>
+
+<a href="/calcoli/non-convivente/" class="m-card m-card-top-busta" style="display:block;">
+    <div class="m-list-item">
+        <div><i class="bi bi-person" style="font-size:20px;color:var(--purple);"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">Non convivente</div>
+            <div class="m-list-sub">Calcolo busta per collaboratore non convivente</div>
+        </div>
+        <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+
+<a href="/calcoli/conviventi-ccnl/" class="m-card m-card-top-busta" style="display:block;">
+    <div class="m-list-item">
+        <div><i class="bi bi-house-heart" style="font-size:20px;color:var(--purple);"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">Conviventi CCNL</div>
+            <div class="m-list-sub">Calcolo busta per collaboratore convivente con CCNL</div>
+        </div>
+        <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+
+<a href="/calcoli/inverso/" class="m-card m-card-top-busta" style="display:block;">
+    <div class="m-list-item">
+        <div><i class="bi bi-arrow-left-right" style="font-size:20px;color:var(--purple);"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">Calcolo inverso</div>
+            <div class="m-list-sub">Dal netto al lordo — calcola la paga partendo dal netto desiderato</div>
+        </div>
+        <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+
+<a href="/calcoli/notturno/" class="m-card m-card-top-busta" style="display:block;">
+    <div class="m-list-item">
+        <div><i class="bi bi-moon-stars" style="font-size:20px;color:var(--purple);"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">Notturno</div>
+            <div class="m-list-sub">Calcolo maggiorazione per lavoro notturno</div>
+        </div>
+        <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+
+<a href="/calcoli/malattia/" class="m-card m-card-top-busta" style="display:block;">
+    <div class="m-list-item">
+        <div><i class="bi bi-heart-pulse" style="font-size:20px;color:var(--purple);"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">Malattia</div>
+            <div class="m-list-sub">Calcolo indennità di malattia INPS</div>
+        </div>
+        <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+
+<a href="/calcoli/sostituzione/" class="m-card m-card-top-busta" style="display:block;">
+    <div class="m-list-item">
+        <div><i class="bi bi-people" style="font-size:20px;color:var(--purple);"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">Sostituzione</div>
+            <div class="m-list-sub">Calcolo per sostituzione di collaboratore assente</div>
+        </div>
+        <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+
+<a href="/calcoli/tfr/" class="m-card m-card-top-busta" style="display:block;">
+    <div class="m-list-item">
+        <div><i class="bi bi-piggy-bank" style="font-size:20px;color:var(--purple);"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">TFR</div>
+            <div class="m-list-sub">Calcolo del Trattamento di Fine Rapporto</div>
+        </div>
+        <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+
+<a class="m-btn m-btn-outline" href="/m/buste/" style="margin-top:10px;">&larr; Calcola busta</a>
+{% endblock %}

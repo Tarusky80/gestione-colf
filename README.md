@@ -18,7 +18,6 @@ Genera buste paga, CU, TFR, contratti, e automatizza le operazioni INPS e PagoPA
 - **Mappa beneficiari** — geolocalizzazione su mappa (Leaflet.js + MarkerCluster)
 - **Multi-ruolo** — admin, consulente, operatore, datore di lavoro
 - **Interfaccia** — Bootstrap 5, dark mode, responsive + versione mobile nativa (`/m/`)
-- **Versione Mobile** — touch-first, bottom nav animata, pull-to-refresh, swipe-to-action
 
 ## Requisiti
 
@@ -31,13 +30,13 @@ Genera buste paga, CU, TFR, contratti, e automatizza le operazioni INPS e PagoPA
 ```bash
 git clone https://github.com/Tarusky80/gestione-colf.git
 cd gestione-colf
-python -m venv .venv
-.venv\Scripts\pip install -r requirements.txt
-.venv\Scripts\python manage.py migrate
-.venv\Scripts\python manage.py runserver
+python -m venv ..\.venv_gestione_colf
+..\.venv_gestione_colf\Scripts\pip install -r requirements.txt
+..\.venv_gestione_colf\Scripts\python manage.py migrate
+..\.venv_gestione_colf\Scripts\python manage.py runserver
 ```
 
-Oppure esegui `GESTIONE.bat` che automatizza tutto (venv, dipendenze, migrate, avvio).
+Oppure esegui `GESTIONE.bat` che automatizza tutto (venv esterno a `..\.venv_gestione_colf`, dipendenze, migrate, avvio).
 
 ### Variabili d'ambiente (`.env`)
 
@@ -65,12 +64,16 @@ drivers/             chromedriver
 
 Accessibile automaticamente su schermi <768px o manualmente a `/m/`.
 
-- Dashboard con riepilogo card
-- Datori / Lavoratori / Contratti con ricerca e dettaglio
-- Calcolo busta paga rapido (contratto + mese/anno → Lordo/Contributi/Netto)
-- Archivio buste e documenti con filtri a chips
-- Navigazione bottom nav con pill animata
-- Pull-to-refresh e swipe-to-action
+- **Dashboard** — card riepilogo + grafico trend contributi 12 mesi (Chart.js)
+- **Anagrafiche** — Datori / Lavoratori / Contratti / Beneficiari / Progetti con liste, dettaglio e modifica nativa
+- **Ricerca globale** — cerca in 5 entità con debounce live e icona in topbar
+- **Calcolo busta paga rapido** — contratto + mese/anno → Lordo/Contributi/Netto
+- **Altri calcoli** — indennità, malattia, notturno, TFR, rateo
+- **Archivio buste e documenti** — filtri a chips, infinite scroll, swipe-to-action PDF
+- **Form nativi** — creazione/modifica entità con sezioni collassabili, widget SelectMultiplatform compatti
+- **Navigazione** — bottom nav con pill animata, topbar con pulsante ricerca
+- **Pull-to-refresh** e **skeleton loading** su tutte le liste
+- **Tema scuro** — shadcn/ui-inspired design system
 
 ## Comandi principali
 
@@ -105,9 +108,9 @@ GitHub Actions (`.github/workflows/ci.yml`):
 ## Sviluppo
 
 ```bash
-# ambiente virtuale
-python -m venv .venv
-.venv\Scripts\activate
+# ambiente virtuale (posizionato fuori dal progetto per evitare sync NAS)
+python -m venv ..\.venv_gestione_colf
+..\.venv_gestione_colf\Scripts\activate
 
 # dipendenze
 pip install -r requirements.txt

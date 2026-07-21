@@ -1,0 +1,22 @@
+<div class="m-swipe-wrap" data-busta="{{ b.pk }}">
+    <div class="m-swipe-actions">
+        {% if b.documento %}
+        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriPDF({{ b.documento.pk }})"><i class="bi bi-file-pdf" style="font-size:18px;"></i></button>
+        <button class="m-swipe-btn m-swipe-btn-warning" onclick="condividiPDF({{ b.documento.pk }}, '{{ b.contratto.lavoratore.nome_cognome|escapejs }}')"><i class="bi bi-share" style="font-size:18px;"></i></button>
+        {% endif %}
+    </div>
+    <div role="button" tabindex="0" style="cursor:pointer;" class="m-swipe-card m-card m-card-top-busta" href="#" onclick="apriDettaglioBusta(this, {{ b.pk }})">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:12px;color:#8A8F98;">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
+                <div class="m-list-title" style="margin:2px 0;">{{ b.contratto.lavoratore.nome_cognome|default:"?" }}</div>
+                <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }} &middot; {{ b.tipo_calcolo|default:"Standard" }}</div>
+            </div>
+            <span class="m-badge {% if b.stato == 'APPROVATA' %}m-badge-green{% else %}m-badge-gray{% endif %}">{{ b.stato }}</span>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px;font-size:13px;">
+            <span>Lordo: <strong>&euro; {{ b.totale_lordo }}</strong></span>
+            <span>Netto: <strong>&euro; {{ b.netto }}</strong></span>
+        </div>
+    </div>
+</div>

@@ -20,6 +20,7 @@
   .pm-mcrd-title{color:#5E6AD2;font-size:11px;font-weight:700;margin-bottom:6px;border-bottom:1px solid #27282D;padding-bottom:4px;}
   .pm-row{display:flex;align-items:center;gap:6px;padding:2px 0;}
   .pm-row+.pm-row{border-top:1px solid #1E1F23;}
+.label-form-up{font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
 </style>
 <script>
 function inviaEmailPagopa() {
@@ -79,7 +80,7 @@ function inviaEmailPagopa() {
   <div class="p-4 card-simple" style="margin-bottom:20px;">
     <div class="d-flex align-items-start gap-3">
       <div class="flex-grow-1">
-        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" style="color:#5E6AD2;"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" class="c-accent"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
         <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto attivo e il trimestre per generare il riepilogo contributivo o avviare l'automazione sul sito INPS.</p>
       </div>
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
@@ -92,10 +93,10 @@ function inviaEmailPagopa() {
     <!-- CARD 1 — Selezione Contratto -->
     <div class="col-md-6">
       <div class="p-4" class="class="card-dark h-100"">
-        <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-search me-2" style="color:#5E6AD2;"></i>SELEZIONE CONTRATTO</h5>
+        <h5 class="h5-sezione"><i class="bi bi-search me-2" class="c-accent"></i>SELEZIONE CONTRATTO</h5>
         <div class="row g-3">
           <div class="col-12">
-            <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
+            <label class="label-form-up" style="margin-bottom:6px;">Contratto</label>
             <div class="d-flex gap-2 align-items-center">
               <button type="button" class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrevContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
                 <i class="bi bi-chevron-left"></i>
@@ -113,11 +114,11 @@ function inviaEmailPagopa() {
             </div>
           </div>
           <div class="col-md-4">
-            <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Anno</label>
+            <label class="label-form-up" style="margin-bottom:6px;">Anno</label>
             <input type="number" id="selAnno" class="form-control" min="2020" max="2035" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;">
           </div>
           <div class="col-12">
-            <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Trimestre</label>
+            <label class="label-form-up" style="margin-bottom:8px;">Trimestre</label>
             <div class="d-flex gap-3 flex-wrap" id="trimestreRadioGroup">
               <label class="radio-card" data-trimestre="Q1">
                 <input type="radio" name="trimestre" value="Q1">
@@ -167,25 +168,25 @@ function inviaEmailPagopa() {
           </button>
         </div>
         <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
-          <label class="toggle-ore" style="margin-left:0;">
+          <label class="toggle-ore" class="ms-0">
             <input type="checkbox" id="toggleAutoClose" onchange="localStorage.setItem('pagopa_auto_close', this.checked?'1':'0')" title="Chiude automaticamente Chromium/Playwright quando il PDF PagoPA viene creato">
             <span class="slider"></span>
-            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">CHIUDI BROWSER</span>
+            <span class="c-muted fs-10 text-nowrap">CHIUDI BROWSER</span>
           </label>
-          <label class="toggle-ore" style="margin-left:0;">
+          <label class="toggle-ore" class="ms-0">
             <input type="checkbox" id="toggleAutoShowPdf" onchange="localStorage.setItem('pagopa_auto_show_pdf', this.checked?'1':'0')" title="Mostra automaticamente l'anteprima PDF a fine automazione">
             <span class="slider"></span>
-            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">MOSTRA PDF</span>
+            <span class="c-muted fs-10 text-nowrap">MOSTRA PDF</span>
           </label>
-          <label class="toggle-ore" style="margin-left:0;">
+          <label class="toggle-ore" class="ms-0">
             <input type="checkbox" id="toggleBackgroundMode" onchange="if(this.checked){var nc=document.getElementById('toggleNascondiChromium');if(nc){nc.checked=false;localStorage.setItem('pagopa_nascondi_chromium','0')}}localStorage.setItem('pagopa_background_mode', this.checked?'1':'0')" title="Avvia browser minimizzato (visibile ma in secondo piano) e mostra il CAPTCHA nel CRUD">
             <span class="slider"></span>
-            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">SFONDO</span>
+            <span class="c-muted fs-10 text-nowrap">SFONDO</span>
           </label>
-          <label class="toggle-ore" style="margin-left:0;">
+          <label class="toggle-ore" class="ms-0">
             <input type="checkbox" id="toggleNascondiChromium" onchange="var me=this;if(me.checked){var sf=document.getElementById('toggleBackgroundMode');if(sf){sf.checked=false;localStorage.setItem('pagopa_background_mode','0')}var ac=document.getElementById('toggleAutoClose');if(ac){ac.checked=true;localStorage.setItem('pagopa_auto_close','1')}var ap=document.getElementById('toggleAutoShowPdf');if(ap){ap.checked=true;localStorage.setItem('pagopa_auto_show_pdf','1')}}localStorage.setItem('pagopa_nascondi_chromium', me.checked?'1':'0')" title="Esegue Playwright in modalità headless (nessuna finestra), CAPTCHA inline nel CRUD. Forza CHIUDI BROWSER e MOSTRA PDF">
             <span class="slider"></span>
-            <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">RIDUCI CHROMIUM</span>
+            <span class="c-muted fs-10 text-nowrap">RIDUCI CHROMIUM</span>
           </label>
         </div>
         <div id="captchaContainer" style="display:none;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:16px;margin-bottom:12px;">
@@ -200,10 +201,10 @@ function inviaEmailPagopa() {
 <button type="button" class="btn btn-ghost-success" onclick="inviaCaptcha()" id="btnInviaCaptcha">
             <i class="bi bi-send me-1"></i> Invia Codice Captcha
           </button>
-            <span style="font-size:11px;color:#8A8F98;"><i class="bi bi-arrow-repeat me-1"></i> Premi Invio per inviare</span>
+            <span class="c-11-m"><i class="bi bi-arrow-repeat me-1"></i> Premi Invio per inviare</span>
           </div>
         </div>
-        <div id="automationContainer" style="display:none;">
+        <div id="automationContainer" class="d-none">
           <div class="p-3" style="background:#0D0E10;border:1px solid #27282D;border-radius:10px;">
             <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
               <h6 style="color:#EDEDED;font-size:12px;margin-bottom:0;"><i class="bi bi-terminal me-2" style="color:#10b981;"></i>CONSOLE AUTOMAZIONE</h6>
@@ -217,7 +218,7 @@ function inviaEmailPagopa() {
             </div>
             <div id="automationLog" style="background:#0D0E10;border:1px solid #27282D;border-radius:8px;padding:12px;font-size:12px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;color:#cccccc;max-height:300px;overflow-y:auto;margin-bottom:12px;line-height:1.6;">
             </div>
-            <div id="stepActions" style="display:none;">
+            <div id="stepActions" class="d-none">
               <div style="background:rgba(92,106,210,0.08);border:1px solid rgba(92,106,210,0.3);border-radius:8px;padding:12px;">
                 <p id="stepActionsTitle" style="color:#f59e0b;font-size:13px;margin-bottom:8px;"><i class="bi bi-exclamation-triangle me-2"></i><b>RISOLVI IL CAPTCHA</b></p>
                 <p id="stepActionsDesc" style="color:#8A8F98;font-size:12px;margin-bottom:8px;">
@@ -226,7 +227,7 @@ function inviaEmailPagopa() {
                   2. Premi <kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Ctrl</kbd>+<kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Invio</kbd> nella finestra Chrome per proseguire.
                 </p>
                 <div style="margin-top:8px;">
-                  <span style="font-size:11px;color:#8A8F98;"><i class="bi bi-arrow-repeat me-1"></i> L&rsquo;automazione procede automaticamente dopo ogni step.</span>
+                  <span class="c-11-m"><i class="bi bi-arrow-repeat me-1"></i> L&rsquo;automazione procede automaticamente dopo ogni step.</span>
                 </div>
               </div>
             </div>
@@ -240,9 +241,9 @@ function inviaEmailPagopa() {
   <!-- RIGA 2: RIEPILOGO (full width) -->
   <div class="row g-3 mb-3">
     <div class="col-12">
-      <div id="riepilogoContainer" style="display:none;">
+      <div id="riepilogoContainer" class="d-none">
         <div class="p-4" class="card-simple">
-          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-text me-2" style="color:#5E6AD2;"></i>RIEPILOGO CONTRATTUALE</h5>
+          <h5 class="h5-sezione"><i class="bi bi-file-text me-2" class="c-accent"></i>RIEPILOGO CONTRATTUALE</h5>
           <div class="row g-3" id="riepilogoBody" style="font-size:13px;color:#EDEDED;"></div>
         </div>
       </div>
@@ -253,7 +254,7 @@ function inviaEmailPagopa() {
   <div class="row g-3 mb-3">
     <div class="col-md-6">
       <div class="p-4" class="class="card-dark h-100"">
-        <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark me-2" style="color:#5E6AD2;"></i>DOCUMENTI</h5>
+        <h5 class="h5-sezione"><i class="bi bi-file-earmark me-2" class="c-accent"></i>DOCUMENTI</h5>
         <div class="d-flex flex-wrap gap-2">
           <button type="button" class="btn btn-ghost-primary" onclick="scaricaPdfPagopa()" id="btnScaricaPdf">
             <i class="bi bi-filetype-pdf me-1"></i> Scarica riepilogo PDF
@@ -274,7 +275,7 @@ function inviaEmailPagopa() {
       </div>
     </div>
     <div class="col-md-6">
-      <div id="modificaOreContainer" style="display:none;">
+      <div id="modificaOreContainer" class="d-none">
         <div class="p-4" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:14px;height:100%;">
           <h5 style="color:#f59e0b;font-size:14px;margin-bottom:16px;"><i class="bi bi-pencil me-2" style="color:#f59e0b;"></i>MODIFICA ORE PAGOPA</h5>
           <div class="d-flex gap-2 align-items-center flex-wrap">
@@ -284,11 +285,11 @@ function inviaEmailPagopa() {
               <span style="font-size:11px;color:#8A8F98;white-space:nowrap;">Auto</span>
             </label>
             <input type="number" id="orePagopaInput" value="" placeholder="Lascia vuoto per ore calcolate" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;border-radius:8px;padding:8px 12px;max-width:180px;">
-            <span style="font-size:11px;color:#8A8F98;">ore trimestre</span>
+            <span class="c-11-m">ore trimestre</span>
             <button type="button" class="btn btn-ghost-warning" onclick="caricaOreModificate()"><i class="bi bi-upload me-1"></i> CARICA ORE MODIFICATE!</button>
             <button type="button" class="btn btn-ghost-info" onclick="salvaOreContratto()"><i class="bi bi-floppy me-1"></i> Salva nel contratto</button>
             <button type="button" class="btn btn-ghost" onclick="resettaOrePagopa()"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina originali</button>
-            <span id="orePagopaStatus" style="font-size:11px;color:#8A8F98;"></span>
+            <span id="orePagopaStatus" class="c-11-m"></span>
           </div>
         </div>
       </div>
@@ -298,9 +299,9 @@ function inviaEmailPagopa() {
   <!-- RIGA 4: STORICO (full width) -->
   <div class="row g-3">
     <div class="col-12">
-      <div id="storicoContainer" style="display:none;">
+      <div id="storicoContainer" class="d-none">
         <div class="p-4" class="card-simple">
-          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-clock-history me-2" style="color:#5E6AD2;"></i>STORICO PAGOPA</h5>
+          <h5 class="h5-sezione"><i class="bi bi-clock-history me-2" class="c-accent"></i>STORICO PAGOPA</h5>
           <div id="storicoBody" style="overflow-x:auto;">
             <div style="font-size:13px;color:#8A8F98;text-align:center;padding:20px;">Carica i dati del contratto per visualizzare lo storico.</div>
           </div>
@@ -537,15 +538,15 @@ function renderRiepilogo(d) {
     html += '<div class="col-md-6"><div class="pm-mcrd">';
     html += '<div class="pm-mcrd-title">PARAMETRI RETRIBUTIVI</div>';
     html += '<table style="width:100%;font-size:12px;">';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore mensili</td><td style="text-align:right;color:#EDEDED;">' + d.ore_mensili.toFixed(2) + ' h</td></tr>';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore settimanali</td><td style="text-align:right;color:#EDEDED;">' + d.ore_settimanali.toFixed(2) + ' h</td></tr>';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Paga base oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.paga_base.toFixed(4) + '</td></tr>';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Tredicesima oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.tredicesima_oraria.toFixed(4) + '</td></tr>';
+    html += '<tr><td class="cell-label">Ore mensili</td><td class="text-end c-text">' + d.ore_mensili.toFixed(2) + ' h</td></tr>';
+    html += '<tr><td class="cell-label">Ore settimanali</td><td class="text-end c-text">' + d.ore_settimanali.toFixed(2) + ' h</td></tr>';
+    html += '<tr><td class="cell-label">Paga base oraria</td><td class="text-end c-text">\u20ac ' + d.paga_base.toFixed(4) + '</td></tr>';
+    html += '<tr><td class="cell-label">Tredicesima oraria</td><td class="text-end c-text">\u20ac ' + d.tredicesima_oraria.toFixed(4) + '</td></tr>';
     var pagaInpsVal = d.paga_oraria_inps.toFixed(2);
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;border-bottom:1px solid #27282D;">Paga oraria INPS</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;"><b>\u20ac ' + pagaInpsVal + '</b> <span style="color:#5C5F66;font-size:10px;">(troncata)</span> <button type="button" onclick="copiaAppunti(\'' + pagaInpsVal + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr><td class="cell-label-bordered">Paga oraria INPS</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;"><b>\u20ac ' + pagaInpsVal + '</b> <span style="color:#5C5F66;font-size:10px;">(troncata)</span> <button type="button" onclick="copiaAppunti(\'' + pagaInpsVal + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
     html += '<tr><td style="color:#8A8F98;padding:2px 0;padding-top:6px;">Soglia</td><td style="text-align:right;color:#EDEDED;padding-top:6px;">&gt; ' + d.soglia_ore + ' h/sett</td></tr>';
     var sopraColor = d.is_sopra_soglia ? '#34d399' : '#f87171';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Fascia</td><td style="text-align:right;color:' + sopraColor + ';"><b>' + escapeHtml(d.fascia_desc) + '</b></td></tr>';
+    html += '<tr><td class="cell-label">Fascia</td><td style="text-align:right;color:' + sopraColor + ';"><b>' + escapeHtml(d.fascia_desc) + '</b></td></tr>';
     html += '</table>';
     html += '</div></div>';
 
@@ -553,14 +554,14 @@ function renderRiepilogo(d) {
     html += '<div class="col-md-6"><div class="pm-mcrd">';
     html += '<div class="pm-mcrd-title">QUOTE ' + _pagopaTrimestre + ' ' + _pagopaAnno + ' (' + trimLabel + ')</div>';
     html += '<table style="width:100%;font-size:12px;">';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Ore trimestrali</td><td style="text-align:right;color:#EDEDED;">' + d.ore_trim + ' h <button type="button" onclick="copiaAppunti(\'' + d.ore_trim + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Quota associativa oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.cassa_orario.toFixed(4) + '</td></tr>';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Quota associativa trim.</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.imp_cassa_trim.toFixed(2) + '</td></tr>';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;">Aliquota INPS oraria</td><td style="text-align:right;color:#EDEDED;">\u20ac ' + d.aliquota_inps_orario.toFixed(4) + '</td></tr>';
-    html += '<tr><td style="color:#8A8F98;padding:2px 0;border-bottom:1px solid #27282D;">Stima contributi trim.</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;">\u20ac ' + d.stima_contrib_trim.toFixed(2) + '</td></tr>';
+    html += '<tr><td class="cell-label">Ore trimestrali</td><td class="text-end c-text">' + d.ore_trim + ' h <button type="button" onclick="copiaAppunti(\'' + d.ore_trim + '\', this)" style="background:none;border:none;color:#5C5F66;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
+    html += '<tr><td class="cell-label">Quota associativa oraria</td><td class="text-end c-text">\u20ac ' + d.cassa_orario.toFixed(4) + '</td></tr>';
+    html += '<tr><td class="cell-label">Quota associativa trim.</td><td class="text-end c-text">\u20ac ' + d.imp_cassa_trim.toFixed(2) + '</td></tr>';
+    html += '<tr><td class="cell-label">Aliquota INPS oraria</td><td class="text-end c-text">\u20ac ' + d.aliquota_inps_orario.toFixed(4) + '</td></tr>';
+    html += '<tr><td class="cell-label-bordered">Stima contributi trim.</td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid #27282D;">\u20ac ' + d.stima_contrib_trim.toFixed(2) + '</td></tr>';
     var contribTotaliVal = d.contrib_totali.toFixed(2);
     html += '<tr id="contribTotaliRow"><td style="color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">CONTRIBUTI TOTALI</td><td style="text-align:right;color:#34d399;padding:6px 0 2px 0;font-size:14px;font-weight:700;">\u20ac ' + contribTotaliVal + ' <button type="button" onclick="copiaAppunti(\'' + contribTotaliVal + '\', this)" style="background:none;border:none;color:#34d399;font-size:11px;padding:1px 6px;border-radius:4px;cursor:pointer;"><i class="bi bi-files me-1"></i>COPIA</button></td></tr>';
-    html += '<tr id="inpsCompareRow" style="display:none;"><td id="inpsCompareLabel" style="color:#8A8F98;font-size:12px;padding:2px 0;">Verifica INPS</td><td id="inpsCompareVal" style="text-align:right;font-size:12px;padding:2px 0;"></td></tr>';
+    html += '<tr id="inpsCompareRow" class="d-none"><td id="inpsCompareLabel" style="color:#8A8F98;font-size:12px;padding:2px 0;">Verifica INPS</td><td id="inpsCompareVal" style="text-align:right;font-size:12px;padding:2px 0;"></td></tr>';
     html += '</table>';
     html += '</div></div>';
 
@@ -671,10 +672,10 @@ function caricaStoricoPagopa() {
         container.style.display = 'block';
         var html = '<table style="width:100%;font-size:12px;border-collapse:collapse;">';
         html += '<thead><tr style="color:#5C5F66;text-transform:uppercase;font-size:10px;letter-spacing:0.05em;">';
-        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Trimestre</th>';
-        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Anno</th>';
-        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Tipo</th>';
-        html += '<th style="padding:6px 8px;text-align:left;border-bottom:1px solid #27282D;">Data</th>';
+        html += '<th class="th-storico">Trimestre</th>';
+        html += '<th class="th-storico">Anno</th>';
+        html += '<th class="th-storico">Tipo</th>';
+        html += '<th class="th-storico">Data</th>';
         html += '<th style="padding:6px 8px;text-align:right;border-bottom:1px solid #27282D;">Scarica</th>';
         html += '<th style="padding:6px 8px;text-align:center;border-bottom:1px solid #27282D;width:40px;"></th>';
         html += '</tr></thead><tbody>';

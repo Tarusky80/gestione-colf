@@ -1,0 +1,94 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}{{ titolo }} — Gestione Colf{% endblock %}
+{% block m_topbar_left %}<a href="{{ back_url }}" class="m-topbar-back"><i class="bi bi-chevron-left"></i></a>{% endblock %}
+{% block m_topbar_title %}{{ titolo }}{% endblock %}
+{% block m_content %}
+
+<form method="post" action="{{ action_url }}" style="margin-top:4px;">
+    {% csrf_token %}
+    <div id="m-form-fields">
+    {% for field in form %}
+        <div class="m-field" data-name="{{ field.name }}">
+            <label class="m-field-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="m-field-help">{{ field.help_text }}</div>{% endif %}
+            {% if field.errors %}<div class="m-field-error show">{{ field.errors.0 }}</div>{% endif %}
+        </div>
+    {% endfor %}
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px;">
+        <a class="m-btn m-btn-outline" href="{{ back_url }}" style="flex:1;">Annulla</a>
+        <button type="submit" class="m-btn m-btn-primary" style="flex:1;">Salva</button>
+    </div>
+</form>
+
+<style>
+.m-form-section { margin-bottom:8px; }
+.m-form-section-title { font-size:13px; font-weight:600; color:#a1a1aa; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #27272a; }
+.m-field { margin-bottom:10px; }
+.m-field-label { font-size:12px; color:#8A8F98; margin-bottom:3px; display:block; }
+.m-field-help { font-size:11px; color:#71717a; margin-top:2px; }
+.m-form-details { margin-bottom:8px; border:1px solid #27272a; border-radius:8px; overflow:hidden; background:#18181b; }
+.m-form-details-summary { font-size:13px; font-weight:600; color:#a1a1aa; padding:10px; cursor:pointer; background:#18181b; user-select:none; }
+.m-form-details[open] .m-form-details-summary { border-bottom:1px solid #27272a; }
+.m-form-details .m-field { padding:0 10px 10px; }
+.m-form-details .m-field:first-of-type { padding-top:10px; }
+.m-form-details .m-field:last-of-type { padding-bottom:10px; }
+</style>
+
+<script>
+(function(){
+    /* Classi agli input */
+    document.querySelectorAll('form input, form select, form textarea').forEach(function(el){
+        if(!el.classList.contains('m-input') && !el.classList.contains('m-select')){
+            if(el.tagName === 'SELECT') el.classList.add('m-select');
+            else el.classList.add('m-input');
+        }
+    });
+    /* Raggruppa in sezioni */
+    var mainNames = {{ main_fields|safe }};
+    var visNames = {{ visibility_fields|safe }};
+    var container = document.getElementById('m-form-fields');
+    if(!container) return;
+    var fields = container.querySelectorAll('.m-field');
+    var mainGroup = [], visGroup = [], otherGroup = [];
+    fields.forEach(function(f){
+        var name = f.getAttribute('data-name');
+        if(mainNames.indexOf(name) !== -1) mainGroup.push(f);
+        else if(visNames.indexOf(name) !== -1) visGroup.push(f);
+        else otherGroup.push(f);
+    });
+    container.innerHTML = '';
+    function makeSection(title, items, open){
+        if(!items.length) return null;
+        var sec = document.createElement('div');
+        sec.className = 'm-form-section';
+        var h = document.createElement('div');
+        h.className = 'm-form-section-title';
+        h.textContent = title;
+        sec.appendChild(h);
+        items.forEach(function(f){ sec.appendChild(f); });
+        return sec;
+    }
+    function makeDetails(title, items, open){
+        if(!items.length) return null;
+        var det = document.createElement('details');
+        det.className = 'm-form-details';
+        if(open) det.open = true;
+        var sum = document.createElement('summary');
+        sum.className = 'm-form-details-summary';
+        sum.textContent = title;
+        det.appendChild(sum);
+        items.forEach(function(f){ det.appendChild(f); });
+        return det;
+    }
+    var s1 = makeSection('Dati principali', mainGroup, true);
+    if(s1) container.appendChild(s1);
+    var s2 = makeDetails('Visibilità', visGroup, true);
+    if(s2) container.appendChild(s2);
+    var s3 = makeDetails('Altri campi', otherGroup, false);
+    if(s3) container.appendChild(s3);
+})();
+</script>
+{% endblock %}

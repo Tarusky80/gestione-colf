@@ -59,6 +59,27 @@
 .form-control-custom { background: #09090B; border: 1px solid #27282D; color: #EDEDED; padding: 7px 10px; border-radius: 6px; font-size: 13px; width: 100%; }
 .form-control-custom:focus { border-color: #5E6AD2; outline: none; }
 .form-control-custom::placeholder { color: #555; }
+.btn-sost-action { border-radius:8px; padding:6px 18px; font-weight:600; }
+.btn-sost-sm { border-radius:8px; padding:6px 16px; font-weight:600; }
+.h4-sost { font-size:15px; font-weight:700; color:#EDEDED; margin-top:2px; }
+.subtitle-sost { font-size:12px; color:#8A8F98; margin-top:2px; }
+.card-sost-panel { background:#17181C; border:1px solid #27282D; border-radius:14px; padding:18px 22px; margin-bottom:20px; }
+.badge-sost { background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:8px; padding:4px 14px; text-align:center; }
+.badge-sost-label { font-size:9px; text-transform:uppercase; color:#34d399; letter-spacing:0.04em; }
+.badge-sost-amount { font-size:16px; font-weight:700; color:#34d399; }
+.card-warning-banner { display:none; padding:10px 14px; margin-bottom:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; color:#ef4444; font-size:12px; font-weight:600; }
+.step2-results { display:none; margin-top:18px; padding-top:16px; border-top:1px solid #27282D; }
+.step3-actions { display:none; margin-top:16px; padding-top:16px; border-top:1px solid #27282D; }
+.empty-sost { text-align:center; padding:60px 20px; color:#555; }
+.modal-title-sost { font-size:15px; font-weight:700; }
+.input-giorni-sost { width:55px; background:#09090B; border:1px solid #27282D; color:#f59e0b; font-weight:600; font-size:13px; padding:2px 6px; border-radius:6px; text-align:center; }
+.range-bg-sost { background-color:#09090B; width:100%; }
+.error-sost { display:none; color:#f87171; font-size:12px; margin-top:10px; padding:8px 12px; background:rgba(248,113,113,0.1); border-radius:6px; }
+.label-check-sost { font-size:13px; color:#EDEDED; cursor:pointer; }
+.c-amber { color:#f59e0b; }
+.c-green2 { color:#10b981; }
+.checkbox-sost { accent-color:#dc3545; width:14px; height:14px; }
+.cerca-results { max-height:300px; overflow-y:auto; }
 </style>
 {% endblock %}
 
@@ -78,7 +99,7 @@
 
     <!-- TOP BAR -->
     <div class="d-flex justify-content-between align-items-center mb-3 no-print">
-        <h1 class="c-18-b" style="margin:0;">
+        <h1 class="c-18-b">
             <i class="bi bi-arrow-repeat me-2 c-green2"></i>Sostituzione Malattia
         </h1>
         <div class="d-flex align-items-center gap-2">
@@ -99,12 +120,12 @@
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
-            <button type="button" id="btnPrev" class="btn btn-sm btn-ghost" onclick="naviga(-1)" title="Mese precedente" style="padding:4px 10px;"><i class="bi bi-chevron-left"></i></button>
-            <button type="button" id="btnNext" class="btn btn-sm btn-ghost" onclick="naviga(1)" title="Mese successivo" style="padding:4px 10px;"><i class="bi bi-chevron-right"></i></button>
-            <button type="button" class="btn btn-sm btn-ghost" onclick="resetTutto()" title="Reset" style="padding:4px 10px;"><i class="bi bi-arrow-counterclockwise"></i></button>
+            <button type="button" id="btnPrev" class="btn btn-sm btn-ghost" onclick="naviga(-1)" title="Mese precedente"><i class="bi bi-chevron-left"></i></button>
+            <button type="button" id="btnNext" class="btn btn-sm btn-ghost" onclick="naviga(1)" title="Mese successivo"><i class="bi bi-chevron-right"></i></button>
+            <button type="button" class="btn btn-sm btn-ghost" onclick="resetTutto()" title="Reset"><i class="bi bi-arrow-counterclockwise"></i></button>
             <a href="{% url 'calcoli_malattia' %}?contratto={{ contratto_pk|default:'' }}&mese={{ mese_corrente }}&anno={{ anno_corrente }}" class="btn btn-sm btn-ghost-danger" style="padding:6px 14px;font-size:12px;"><i class="bi bi-heart-pulse me-1"></i> Malattia</a>
             <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
-            <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
+            <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary">
                 <i class="bi bi-journal-text me-1"></i> Archivio Buste
             </a>
         </div>
@@ -129,24 +150,24 @@
     </div>
 
     <!-- STEP 2: Malattia Parameters + Costo -->
-    <div id="step2Panel" class="no-print" style="display:none;">
+    <div id="step2Panel" class="no-print d-none">
         <div class="card-simple" style="padding:18px 22px;margin-bottom:20px;">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div>
                     <span class="c-10-up">Step 2</span>
                     <div class="c-15-b" style="margin-top:2px;">Malattia dell'assente</div>
-                    <div id="assenteInfo" style="font-size:12px;color:#8A8F98;margin-top:2px;"></div>
+                    <div id="assenteInfo" class="subtitle-sost"></div>
                 </div>
                 <div class="badge-count" style="padding:4px 14px;text-align:center;">
-                    <div class="c-9-up" style="color:#f59e0b;">Budget</div>
-                    <div id="assenteBudget" style="font-size:16px;font-weight:700;color:#f59e0b;">€ 0</div>
+                    <div class="c-9-up c-amber">Budget</div>
+                    <div id="assenteBudget" class="c-amber fw-7 fs-16">€ 0</div>
                 </div>
             </div>
 
             <div class="row g-3 mb-3">
                 <div class="col-md-6">
-                    <label class="mb-1 fw-bold c-10-up">Giorni di Malattia: <input type="number" id="giorniInput" min="0" max="180" step="1" value="1" onchange="daInputGiorni()" style="width:55px;background:#09090B;border:1px solid #27282D;color:#f59e0b;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> gg</label>
-                    <input type="range" id="fGiorni" min="0" max="180" step="1" value="1" oninput="daSliderGiorni()" style="background-color:#09090B;width:100%;">
+                    <label class="mb-1 fw-bold c-10-up">Giorni di Malattia: <input type="number" id="giorniInput" min="0" max="180" step="1" value="1" onchange="daInputGiorni()" class="input-giorni-sost"> gg</label>
+                    <input type="range" id="fGiorni" min="0" max="180" step="1" value="1" oninput="daSliderGiorni()" class="range-bg-sost">
                 </div>
                 <div class="col-md-6 d-flex align-items-end gap-4 pb-2">
                     <div><label class="mb-1 fw-bold c-10-up">Sostituzione</label>
@@ -162,13 +183,13 @@
             </div>
 
             <div class="step-actions d-flex gap-2">
-                <button type="button" class="btn btn-ghost-success btn-sm" onclick="calcolaCostoMalattia()" style="border-radius:8px;padding:6px 18px;font-weight:600;">
-                    <i class="bi bi-calculator me-1"></i>Calcola Costo Malattia
-                </button>
+                    <button type="button" class="btn btn-ghost-success btn-sm btn-sost-action" onclick="calcolaCostoMalattia()">
+                        <i class="bi bi-calculator me-1"></i>Calcola Costo Malattia
+                    </button>
             </div>
 
             <!-- Risultati Step 2 -->
-            <div id="step2Results" style="display:none;margin-top:18px;padding-top:16px;border-top:1px solid #27282D;">
+            <div id="step2Results" class="step2-results">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="budget-card subtle">
@@ -195,49 +216,49 @@
     </div>
 
     <!-- STEP 3: Sostituto -->
-    <div id="step3Panel" class="no-print" style="display:none;">
-        <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 22px;margin-bottom:20px;">
+    <div id="step3Panel" class="no-print d-none">
+        <div class="card-sost-panel">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div>
                     <span class="c-10-up">Step 3</span>
-                    <div style="font-size:15px;font-weight:700;color:#EDEDED;margin-top:2px;">Sostituto</div>
-                    <div style="font-size:12px;color:#8A8F98;margin-top:2px;">Seleziona o crea il contratto del lavoratore sostituto</div>
+                    <div class="h4-sost">Sostituto</div>
+                    <div class="subtitle-sost">Seleziona o crea il contratto del lavoratore sostituto</div>
                 </div>
-                <div id="budgetResiduoBadge" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:4px 14px;text-align:center;">
-                    <div style="font-size:9px;text-transform:uppercase;color:#34d399;letter-spacing:0.04em;">Budget residuo</div>
-                    <div id="budgetResiduoBadgeAmount" style="font-size:16px;font-weight:700;color:#34d399;">€ 0</div>
+                <div id="budgetResiduoBadge" class="badge-sost">
+                    <div class="badge-sost-label">Budget residuo</div>
+                    <div id="budgetResiduoBadgeAmount" class="badge-sost-amount">€ 0</div>
                 </div>
             </div>
 
             <div class="d-flex gap-3 align-items-center flex-wrap">
-                <button type="button" class="btn btn-ghost-primary btn-sm" onclick="apriModalCercaSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
+                <button type="button" class="btn btn-ghost-primary btn-sm btn-sost-sm" onclick="apriModalCercaSostituto()">
                     <i class="bi bi-search me-1"></i>Cerca esistente
                 </button>
-                <button type="button" class="btn btn-ghost-success btn-sm" onclick="apriModalNuovoSostituto()" style="border-radius:8px;padding:6px 16px;font-weight:600;">
+                <button type="button" class="btn btn-ghost-success btn-sm btn-sost-sm" onclick="apriModalNuovoSostituto()">
                     <i class="bi bi-person-plus me-1"></i>Nuovo sostituto
                 </button>
-                <span id="sostitutoSelezionato" style="font-size:13px;color:#8A8F98;display:none;">
-                    <i class="bi bi-check-circle-fill me-1" style="color:#10b981;"></i>
+                <span id="sostitutoSelezionato" class="c-muted" style="font-size:13px;display:none;">
+                    <i class="bi bi-check-circle-fill me-1 c-green2"></i>
                     <span id="sostitutoNome"></span>
                     <button type="button" class="btn btn-link btn-sm text-danger p-0 ms-2" onclick="deselezionaSostituto()" style="text-decoration:none;font-size:12px;"><i class="bi bi-x-circle"></i></button>
                 </span>
             </div>
 
-            <div id="step3Actions" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #27282D;">
+            <div id="step3Actions" class="step3-actions">
                 <div class="d-flex gap-2 align-items-center flex-wrap">
-                    <button type="button" class="btn btn-ghost-success btn-sm" onclick="calcolaBustaSostituto()" style="border-radius:8px;padding:6px 18px;font-weight:600;">
+                    <button type="button" class="btn btn-ghost-success btn-sm btn-sost-action" onclick="calcolaBustaSostituto()">
                         <i class="bi bi-calculator me-1"></i>Calcola Busta Sostituto
                     </button>
-                    <button type="button" id="btnPdfSostituto" class="btn btn-ghost-danger btn-sm" onclick="scaricaPdfSostituto()" style="border-radius:8px;padding:6px 16px;display:none;">
+                    <button type="button" id="btnPdfSostituto" class="btn btn-ghost-danger btn-sm btn-sost-sm d-none" onclick="scaricaPdfSostituto()">
                         <i class="bi bi-file-pdf me-1"></i>PDF
                     </button>
-                    <label style="font-size:10px;color:#8A8F98;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;margin-right:4px;">
-                        <input type="checkbox" id="chkAllegaLul" style="accent-color:#dc3545;width:14px;height:14px;"> Allega LUL
+                    <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap">
+                        <input type="checkbox" id="chkAllegaLul" class="checkbox-sost"> Allega LUL
                     </label>
-                    <button type="button" id="btnStampaSostituto" class="btn btn-ghost-warning btn-sm" onclick="stampaBustaSostituto(this)" style="padding:6px 16px;display:none;">
+                    <button type="button" id="btnStampaSostituto" class="btn btn-ghost-warning btn-sm d-none" onclick="stampaBustaSostituto(this)" style="padding:6px 16px;">
                         <i class="bi bi-printer me-1"></i>STAMPA
                     </button>
-                    <button type="button" id="btnSalvaBusta" class="btn btn-sm btn-ghost-warning" onclick="salvaBusta()" style="padding:6px 16px;display:none;">
+                    <button type="button" id="btnSalvaBusta" class="btn btn-sm btn-ghost-warning d-none" onclick="salvaBusta()" style="padding:6px 16px;">
                         <i class="bi bi-save me-1"></i> SALVA BUSTA
                     </button>
                 </div>
@@ -246,15 +267,15 @@
     </div>
 
     <!-- BUSTA SOSTITUTO -->
-    <div id="bustaSostituto" style="display:none;margin-top:12px;">
-        <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+    <div id="bustaSostituto" class="d-none" style="margin-top:12px;">
+        <div id="bustaEsistenteWarning" role="alert" class="card-warning-banner">
             <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
         </div>
         <div id="bustaSostitutoContent"></div>
     </div>
-    <div id="bustaSostitutoEmpty" style="text-align:center;padding:60px 20px;color:#555;">
+    <div id="bustaSostitutoEmpty" class="empty-sost">
         <i class="bi bi-file-earmark-text" style="font-size:32px;display:block;margin-bottom:12px;"></i>
-        <div style="font-size:14px;">Completa i passaggi per calcolare la busta del sostituto</div>
+        <div class="fs-14">Completa i passaggi per calcolare la busta del sostituto</div>
     </div>
 
     <!-- MODALE: Cerca sostituto esistente -->
@@ -262,13 +283,13 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="font-size:15px;font-weight:700;"><i class="bi bi-search me-2"></i>Cerca contratto esistente</h5>
+                    <h5 class="modal-title modal-title-sost"><i class="bi bi-search me-2"></i>Cerca contratto esistente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="text" id="cercaSostitutoInput" class="form-control-custom mb-3" placeholder="Cerca per nome lavoratore, datore o codice INPS..." oninput="cercaSostituti(this.value)">
-                    <div id="cercaSostitutoResults" style="max-height:300px;overflow-y:auto;">
-                        <div style="text-align:center;padding:30px;color:#555;font-size:13px;">Inizia a digitare per cercare...</div>
+                    <div id="cercaSostitutoResults" class="cerca-results">
+                        <div class="empty-state-sm">Inizia a digitare per cercare...</div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -283,25 +304,25 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" style="font-size:15px;font-weight:700;"><i class="bi bi-person-plus me-2"></i>Nuovo sostituto</h5>
+                    <h5 class="modal-title modal-title-sost"><i class="bi bi-person-plus me-2"></i>Nuovo sostituto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Nome *</label>
+                            <label class="label-uppercase-wide">Nome *</label>
                             <input type="text" id="nsNome" class="form-control-custom" placeholder="Nome">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Cognome *</label>
+                            <label class="label-uppercase-wide">Cognome *</label>
                             <input type="text" id="nsCognome" class="form-control-custom" placeholder="Cognome">
                         </div>
                         <div class="col-12">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Codice Fiscale *</label>
+                            <label class="label-uppercase-wide">Codice Fiscale *</label>
                             <input type="text" id="nsCF" class="form-control-custom" placeholder="Codice Fiscale" style="text-transform:uppercase;">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Livello *</label>
+                            <label class="label-uppercase-wide">Livello *</label>
                             <select id="nsLivello" class="form-control-custom">
                                 {% for l in livelli %}
                                 <option value="{{ l.pk }}">{{ l.codice }}</option>
@@ -309,24 +330,24 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Ore mensili *</label>
+                            <label class="label-uppercase-wide">Ore mensili *</label>
                             <input type="number" id="nsOre" class="form-control-custom" placeholder="es. 120" step="0.5" min="1" value="120">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Data inizio *</label>
+                            <label class="label-uppercase-wide">Data inizio *</label>
                             <input type="date" id="nsDataInizio" class="form-control-custom">
                         </div>
                         <div class="col-6">
-                            <label style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Data fine</label>
+                            <label class="label-uppercase-wide">Data fine</label>
                             <input type="date" id="nsDataFine" class="form-control-custom">
                         </div>
                         <div class="col-12">
-                            <label class="d-flex align-items-center gap-2" style="font-size:13px;color:#EDEDED;cursor:pointer;">
+                            <label class="d-flex align-items-center gap-2 label-check-sost">
                                 <input type="checkbox" id="nsConvivente" style="accent-color:#5E6AD2;"> Convivente
                             </label>
                         </div>
                     </div>
-                    <div id="nsErrore" style="display:none;color:#f87171;font-size:12px;margin-top:10px;padding:8px 12px;background:rgba(248,113,113,0.1);border-radius:6px;"></div>
+                    <div id="nsErrore" class="error-sost"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-ghost" data-bs-dismiss="modal">Annulla</button>
@@ -533,7 +554,7 @@ function selezionaSostituto(pk, nome) {
 
 function cercaSostituti(q) {
     if (q.length < 2) {
-        document.getElementById('cercaSostitutoResults').innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Digita almeno 2 caratteri...</div>';
+        document.getElementById('cercaSostitutoResults').innerHTML = '<div class="empty-state-sm">Digita almeno 2 caratteri...</div>';
         return;
     }
     fetch('/ajax/cerca-contratti-copia/?q=' + encodeURIComponent(q))
@@ -541,12 +562,12 @@ function cercaSostituti(q) {
     .then(function(d) {
         var html = '';
         if (d.results.length === 0) {
-            html = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Nessun risultato</div>';
+            html = '<div class="empty-state-sm">Nessun risultato</div>';
         } else {
             for (var i = 0; i < d.results.length; i++) {
                 var r = d.results[i];
                 if (r.pk == assentePk) continue; // exclude the sick worker
-                html += '<div class="d-flex align-items-center justify-content-between p-2" style="border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;border-radius:6px;" onmouseover="this.style.background=\'rgba(255,255,255,0.05)\'" onmouseout="this.style.background=\'transparent\'" onclick="selezionaSostituto(' + r.pk + ', \'' + r.lavoratore.replace(/'/g, "\\'") + ' — ' + r.datore.replace(/'/g, "\\'") + '\')">';
+                html += '<div role="button" tabindex="0" class="d-flex align-items-center justify-content-between p-2" style="border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;border-radius:6px;" onmouseover="this.style.background=\'rgba(255,255,255,0.05)\'" onmouseout="this.style.background=\'transparent\'" onclick="selezionaSostituto(' + r.pk + ', \'' + r.lavoratore.replace(/'/g, "\\'") + ' — ' + r.datore.replace(/'/g, "\\'") + '\')">';
                 html += '<div><div style="font-weight:600;font-size:13px;color:#EDEDED;">' + r.lavoratore + '</div>';
                 html += '<div style="font-size:11px;color:#8A8F98;">' + r.datore + ' — ' + r.tipo_contratto + (r.codice_inps ? ' — INPS: ' + r.codice_inps : '') + '</div></div>';
                 html += '<i class="bi bi-plus-circle" style="color:#10b981;font-size:18px;"></i>';
@@ -560,7 +581,7 @@ function cercaSostituti(q) {
 function apriModalCercaSostituto() {
     var modal = new bootstrap.Modal(document.getElementById('modalCercaSostituto'));
     document.getElementById('cercaSostitutoInput').value = '';
-    document.getElementById('cercaSostitutoResults').innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:13px;">Inizia a digitare per cercare...</div>';
+    document.getElementById('cercaSostitutoResults').innerHTML = '<div class="empty-state-sm">Inizia a digitare per cercare...</div>';
     modal.show();
 }
 
@@ -670,22 +691,22 @@ function renderBustaSostituto(d) {
     h += '<tr><th style="text-align:left;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Voce</th><th style="text-align:right;padding:6px 8px;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
     // Paga base
     var pb = d.paga_base || {};
-    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Paga base (' + (pb.orario || 0).toFixed(4) + '€/h &times; ' + (d.ore_mensili || 0) + ' h)</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (pb.totale || 0).toFixed(2) + '</td></tr>';
+    h += '<tr><td class="cell-padded">Paga base (' + (pb.orario || 0).toFixed(4) + '€/h &times; ' + (d.ore_mensili || 0) + ' h)</td><td class="cell-padded-right">€ ' + (pb.totale || 0).toFixed(2) + '</td></tr>';
     // Indennità
     var inds = d.indennita || [];
     for (var i = 0; i < inds.length; i++) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + (inds[i].label || '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (inds[i].totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">' + (inds[i].label || '') + '</td><td class="cell-padded-right">€ ' + (inds[i].totale || 0).toFixed(2) + '</td></tr>';
     }
     // Scatti
     var sc = d.scatti_anzianita || {};
     if (sc.valore > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Scatti anzianità (' + (sc.dettaglio || '') + ')</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (sc.orario || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">Scatti anzianità (' + (sc.dettaglio || '') + ')</td><td class="cell-padded-right">€ ' + (sc.orario || 0).toFixed(2) + '</td></tr>';
     }
     // Ratei
     var ratei = d.ratei_pagati || [];
     for (var j = 0; j < ratei.length; j++) {
         var r = ratei[j];
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">' + r.label + (r.incluso ? ' (incluso)' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (r.totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">' + r.label + (r.incluso ? ' (incluso)' : '') + '</td><td class="cell-padded-right">€ ' + (r.totale || 0).toFixed(2) + '</td></tr>';
     }
     // Lordo
     h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">TOTALE LORDO</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(52,211,153,0.3);color:#34d399;">€ ' + (d.totale_lordo || 0).toFixed(2) + '</td></tr>';
@@ -693,14 +714,14 @@ function renderBustaSostituto(d) {
     h += '<tr><td colspan="2" style="padding:2px;"></td></tr>';
     // Contributi
     var contr = d.contributi || {};
-    h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Contributi INPS' + (contr.inps && contr.inps.fascia ? ' (' + contr.inps.fascia + ')' : '') + '</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (contr.totale || 0).toFixed(2) + '</td></tr>';
+    h += '<tr><td class="cell-padded">Contributi INPS' + (contr.inps && contr.inps.fascia ? ' (' + contr.inps.fascia + ')' : '') + '</td><td class="cell-padded-right">€ ' + (contr.totale || 0).toFixed(2) + '</td></tr>';
     // Trattenute
     var trat = d.trattenute || {};
     if (trat.convivenza && trat.convivenza.totale > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Vitto e alloggio</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.convivenza.totale || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">Vitto e alloggio</td><td class="cell-padded-right">€ ' + (trat.convivenza.totale || 0).toFixed(2) + '</td></tr>';
     }
     if (trat.ratei_accantonati > 0) {
-        h += '<tr><td style="padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">Ratei accantonati</td><td style="text-align:right;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,0.04);">€ ' + (trat.ratei_accantonati || 0).toFixed(2) + '</td></tr>';
+        h += '<tr><td class="cell-padded">Ratei accantonati</td><td class="cell-padded-right">€ ' + (trat.ratei_accantonati || 0).toFixed(2) + '</td></tr>';
     }
     // Netto
     h += '<tr><td style="padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">NETTO A PAGARE</td><td style="text-align:right;padding:7px 8px;font-weight:700;border-top:2px solid rgba(16,185,129,0.3);color:#10b981;">€ ' + (d.netto || 0).toFixed(2) + '</td></tr>';
@@ -710,7 +731,7 @@ function renderBustaSostituto(d) {
         var vc = d.verifica_copertura;
         var vcColor = vc >= 0 ? '#10b981' : '#f87171';
         h += '<div style="margin-top:14px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;text-align:center;">';
-        h += '<span style="font-size:10px;text-transform:uppercase;color:#8A8F98;letter-spacing:0.04em;">Verifica copertura budget</span>';
+        h += '<span class="label-uppercase-wide">Verifica copertura budget</span>';
         h += '<div style="font-size:15px;font-weight:700;color:' + vcColor + ';">€ ' + vc.toFixed(2) + '</div></div>';
     }
     h += '</div>';

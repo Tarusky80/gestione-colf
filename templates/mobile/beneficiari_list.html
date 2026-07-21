@@ -1,0 +1,39 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}Beneficiari — Gestione Colf{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-benef"><i class="bi bi-people"></i></span> Beneficiari{% endblock %}
+{% block m_content %}
+<div class="m-search-wrap">
+    <i class="bi bi-search"></i>
+    <input class="m-search" type="search" placeholder="Cerca beneficiario..." oninput="filterMobileList(this.value)" id="m-search-input">
+</div>
+<div id="mobile-list">
+{% for b in beneficiari %}
+<div class="m-swipe-wrap" data-pk="{{ b.pk }}">
+    <div class="m-swipe-actions">
+        <button class="m-swipe-btn m-swipe-btn-warning" onclick="location.href='/m/beneficiari/{{ b.pk }}/'"><i class="bi bi-eye" style="font-size:18px;"></i></button>
+    </div>
+    <div role="button" tabindex="0" style="cursor:pointer;" class="m-swipe-card m-card m-card-top-benef" onclick="location.href='/m/beneficiari/{{ b.pk }}/'">
+        <div class="m-list-item">
+            <div><i class="bi bi-person-badge" style="font-size:20px;color:#6366f1;"></i></div>
+            <div style="flex:1;min-width:0;">
+                <div class="m-list-title">{{ b.nome_cognome }}</div>
+                <div class="m-list-sub">{{ b.comune|default:"" }}{% if b.codice_fiscale %} &middot; {{ b.codice_fiscale }}{% endif %}</div>
+            </div>
+            <i class="bi bi-chevron-right" style="color:#5C5F66;font-size:14px;"></i>
+        </div>
+    </div>
+</div>
+{% empty %}
+<div class="m-empty">
+    <i class="bi bi-people"></i>
+    <div class="m-empty-title">Nessun beneficiario</div>
+    <div class="m-empty-sub">Aggiungi il primo beneficiario dalla versione desktop</div>
+</div>
+{% endfor %}
+</div>
+<div class="m-scroll-sentinel" id="scroll-sentinel"></div>
+<a class="m-fab" href="/m/nuovo/?tipo=benef" title="Nuovo beneficiario"><i class="bi bi-plus"></i></a>
+<script>
+{% include "mobile/_swipe_js.html" %}
+</script>
+{% endblock %}

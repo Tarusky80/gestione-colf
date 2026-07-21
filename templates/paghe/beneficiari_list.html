@@ -11,6 +11,11 @@
 {% endblock %}
 
 {% block content %}
+<style>
+.btn-view-tab { padding:5px 14px; font-size:12px; }
+.b-1-2728 { border:1px solid #27282D; }
+.br-8 { border-radius:8px; }
+</style>
 <div class="mb-4">
     <h1 class="h3 fw-bold mb-1">BENEFICIARI
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
@@ -24,8 +29,8 @@
 </div>
 
 <div class="mb-3 d-flex gap-2 align-items-center" id="viewTabs">
-    <button type="button" class="btn btn-sm view-tab btn-ghost-primary active-tab" id="tabLista" onclick="mostraVista('lista')" style="padding:5px 14px;font-size:12px;"><i class="bi bi-list-ul me-1"></i> Lista</button>
-    <button type="button" class="btn btn-sm view-tab btn-ghost" id="tabMappa" onclick="mostraVista('mappa')" style="padding:5px 14px;font-size:12px;"><i class="bi bi-geo-alt me-1"></i> Mappa</button>
+    <button type="button" class="btn btn-sm view-tab btn-ghost-primary active-tab btn-view-tab" id="tabLista" onclick="mostraVista('lista')"><i class="bi bi-list-ul me-1"></i> Lista</button>
+    <button type="button" class="btn btn-sm view-tab btn-ghost btn-view-tab" id="tabMappa" onclick="mostraVista('mappa')"><i class="bi bi-geo-alt me-1"></i> Mappa</button>
 </div>
 
 <div id="tableView">
@@ -38,7 +43,7 @@
     </div>
     <div class="col-md-4">
         <label class="mb-1 fw-bold" class="c-10-up">Comune</label>
-        <select id="fComune" class="form-control" onchange="filtraPerComune('fComune', 'benTable')" style="background:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:8px 12px;border-radius:8px;">
+        <select id="fComune" class="form-control bg-input" onchange="filtraPerComune('fComune', 'benTable')">
             <option value="">Tutti</option>
             {% for c in comuni %}
             <option value="{{ c }}">{{ c }}</option>
@@ -118,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button type="button" class="btn btn-sm btn-ghost-primary" onclick="caricaMappaBen()"><i class="bi bi-map me-1"></i> Carica mappa</button>
             <button type="button" class="btn btn-sm btn-ghost" title="Aiuto mappa" onclick="mostraAiutoMappa()" style="border-radius:50%;width:30px;height:30px;padding:0;font-size:14px;line-height:1;"><i class="bi bi-question-lg"></i></button>
         </div>
-        <button type="button" class="btn btn-sm btn-ghost-danger" onclick="mostraVista('lista')" style="padding:5px 14px;font-size:12px;"><i class="bi bi-x-lg me-1"></i> Chiudi mappa</button>
+        <button type="button" class="btn btn-sm btn-ghost-danger btn-view-tab" onclick="mostraVista('lista')"><i class="bi bi-x-lg me-1"></i> Chiudi mappa</button>
     </div>
     <div id="mappaContainerBen" style="height:calc(100vh - 280px);border-radius:12px;border:1px solid #27282D;overflow:hidden;"></div>
     <div id="mappaPlaceholderBen" class="text-center py-5" style="color:#545;background:#17181C;border:1px solid #27282D;border-radius:12px;">

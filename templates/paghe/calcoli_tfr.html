@@ -5,6 +5,20 @@
   .quick-btn { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; font-size:10px; font-weight:600; border-radius:6px; border:1px solid rgba(251,191,36,0.2); background:rgba(251,191,36,0.06); color:#fbbf24; cursor:pointer; transition:all 0.15s; text-decoration:none; white-space:nowrap; }
   .quick-btn:hover { background:rgba(251,191,36,0.15); border-color:rgba(251,191,36,0.35); }
   .quick-btn.disabled { opacity:0.35; cursor:not-allowed; pointer-events:none; }
+  .container-tfr { max-width:1100px; margin:0 auto; }
+  .tfr-main-card { background:#17181C; border:1px solid #27282D; border-radius:14px; padding:18px 24px; margin-bottom:16px; }
+  .btn-tfr-action { padding:8px 20px; font-size:13px; }
+  .btn-tfr-link { padding:8px 14px; font-size:13px; }
+  .btn-tfr-nav { padding:4px 8px; font-size:13px; line-height:1; }
+  .select-tfr { background-color:#09090B; border:1px solid #27282D; color:#EDEDED; font-size:13px; padding:8px 10px; border-radius:8px; }
+  .flex-row-gap { display:flex; gap:4px; margin-top:5px; }
+  .tfr-toast { display:none; position:fixed; bottom:24px; right:24px; z-index:9999; background:#18181B; border:1px solid #27282D; border-radius:10px; padding:14px 22px; font-size:13px; font-weight:600; color:#EDEDED; box-shadow:0 8px 32px rgba(0,0,0,0.6); }
+  .card-warning-banner { display:none; padding:10px 14px; margin-bottom:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; color:#ef4444; font-size:12px; font-weight:600; }
+  .skeleton-card-clean { background:none; border:none; }
+  .skeleton-row-flex { display:flex; gap:10px; }
+  .empty-state-icon-lg { font-size:48px; color:#555; display:block; margin-bottom:12px; }
+  .c-warning { color:#fbbf24; }
+  .checkbox-tfr { accent-color:#fbbf24; width:14px; height:14px; }
 </style>
 {% endblock %}
 {% block breadcrumb %}
@@ -19,117 +33,117 @@
 {% block content %}
 {% block search_bar %}{% endblock %}
 <div class="container-fluid px-4 py-3">
-  <div style="max-width:1100px;margin:0 auto;">
+  <div class="container-tfr">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <div>
-        <h1 class="h3 fw-bold mb-1" style="color:#EDEDED;"><i class="bi bi-piggy-bank me-2" style="color:#fbbf24;"></i>BUSTA TFR</h1>
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-piggy-bank me-2 c-warning"></i>BUSTA TFR</h1>
         <p class="text-secondary small mb-0">Liquidazione trattamento di fine rapporto</p>
       </div>
       <div class="d-flex gap-2">
-        <button type="button" id="btnLiquidaTfr" disabled onclick="liquidaTfr()" class="btn btn-sm btn-ghost-pink" style="padding:8px 14px;font-size:12px;">
+        <button type="button" id="btnLiquidaTfr" disabled onclick="liquidaTfr()" class="btn btn-sm btn-ghost-pink">
           <i class="bi bi-cash-stack me-1"></i> LIQUIDA TFR
         </button>
-        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="padding:8px 14px;font-size:12px;">
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary">
           <i class="bi bi-journal-text me-1"></i> Archivio Buste
         </a>
-        <div id="tfrToast" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9999;background:#18181B;border:1px solid #27282D;border-radius:10px;padding:14px 22px;font-size:13px;font-weight:600;color:#EDEDED;box-shadow:0 8px 32px rgba(0,0,0,0.6);">
-          <i class="bi bi-check-circle me-2" style="font-size:16px;"></i><span id="tfrToastMsg">TFR Liquidato</span>
+        <div id="tfrToast" class="tfr-toast">
+          <i class="bi bi-check-circle me-2"></i><span id="tfrToastMsg">TFR Liquidato</span>
         </div>
-        <button type="button" id="btnVediContratto" onclick="apriContratto()" class="btn btn-sm btn-ghost-primary" style="display:none;padding:8px 14px;font-size:13px;">
+        <button type="button" id="btnVediContratto" onclick="apriContratto()" class="btn btn-sm btn-ghost-primary btn-tfr-link d-none">
           <i class="bi bi-box-arrow-up-right me-1"></i> Contratto
         </button>
-        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" style="padding:8px 14px;font-size:12px;" id="btnCcnlOcchio" disabled>
+        <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" id="btnCcnlOcchio" disabled>
             <i class="bi bi-eye me-1"></i> CCNL
         </button>
-        <button type="button" onclick="calcola()" class="btn btn-sm btn-ghost-warning" style="padding:8px 20px;font-size:13px;">
+        <button type="button" onclick="calcola()" class="btn btn-sm btn-ghost-warning btn-tfr-action">
           <i class="bi bi-arrow-repeat me-1"></i> Ricalcola
         </button>
-        <button type="button" id="btnPdf" disabled onclick="downloadPdf()" class="btn btn-sm btn-ghost-warning" style="padding:8px 20px;font-size:13px;">
+        <button type="button" id="btnPdf" disabled onclick="downloadPdf()" class="btn btn-sm btn-ghost-warning btn-tfr-action">
           <i class="bi bi-file-pdf me-1"></i> Genera PDF
         </button>
-        <label style="font-size:10px;color:#8A8F98;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;margin-right:4px;">
-            <input type="checkbox" id="chkAllegaLul" style="accent-color:#fbbf24;width:14px;height:14px;"> Allega LUL
+        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap" style="margin-right:4px;">
+            <input type="checkbox" id="chkAllegaLul" class="checkbox-tfr"> Allega LUL
         </label>
         <button type="button" id="btnStampa" disabled onclick="stampaBustaCalcolo(this)" class="btn btn-sm btn-ghost-warning">
           <i class="bi bi-printer me-1"></i> STAMPA
         </button>
         <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
-        <a href="{% url 'calcoli_list' %}" class="btn btn-sm btn-ghost-success" style="padding:8px 14px;font-size:13px;">
+        <a href="{% url 'calcoli_list' %}" class="btn btn-sm btn-ghost-success btn-tfr-link">
           <i class="bi bi-file-earmark-text"></i> Standard
         </a>
       </div>
     </div>
 
-    <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 24px;margin-bottom:16px;">
+    <div class="tfr-main-card">
       <div class="row g-3 align-items-end">
         <div class="col-md-5">
-          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-person-vcard me-1"></i>Contratto</label>
+          <label class="label-tfr"><i class="bi bi-person-vcard me-1"></i>Contratto</label>
           <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9664;</button>
-            <select id="fContratto" class="form-control" onchange="onCambioContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;width:100%;">
+            <button type="button" class="btn btn-sm btn-ghost btn-tfr-nav" onclick="navContratto(-1)">&#9664;</button>
+            <select id="fContratto" class="form-control select-tfr" onchange="onCambioContratto()">
               <option value="">— Seleziona contratto —</option>
               {% for c in contratti %}
               <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
               {% endfor %}
             </select>
-            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9654;</button>
+            <button type="button" class="btn btn-sm btn-ghost btn-tfr-nav" onclick="navContratto(1)">&#9654;</button>
           </div>
         </div>
         <div class="col-md-4">
-          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-calendar-start me-1"></i>Data inizio maturazione</label>
+          <label class="label-tfr"><i class="bi bi-calendar-start me-1"></i>Data inizio maturazione</label>
           <div class="d-flex gap-1">
-            <input type="date" id="fDataInizio" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
+            <input type="date" id="fDataInizio" class="form-control select-tfr" onchange="calcola()" style="flex:1;">
           </div>
-          <div style="display:flex;gap:4px;margin-top:5px;">
-            <span class="quick-btn" onclick="setDaInizioAnno()"><i class="bi bi-calendar3"></i> Inizio anno</span>
-            <span class="quick-btn" onclick="setDaInizioRapporto()"><i class="bi bi-person-up"></i> Inizio rapporto</span>
-            <span class="quick-btn" onclick="setDaInizioTfrContratto()"><i class="bi bi-piggy-bank"></i> Inizio TFR Contratto</span>
+          <div class="flex-row-gap">
+            <button type="button" class="quick-btn" onclick="setDaInizioAnno()"><i class="bi bi-calendar3"></i> Inizio anno</button>
+            <button type="button" class="quick-btn" onclick="setDaInizioRapporto()"><i class="bi bi-person-up"></i> Inizio rapporto</button>
+            <button type="button" class="quick-btn" onclick="setDaInizioTfrContratto()"><i class="bi bi-piggy-bank"></i> Inizio TFR Contratto</button>
           </div>
         </div>
         <div class="col-md-3">
-          <label style="font-size:11px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;"><i class="bi bi-calendar-end me-1"></i>Fine maturazione</label>
+          <label class="label-tfr"><i class="bi bi-calendar-end me-1"></i>Fine maturazione</label>
           <div class="d-flex gap-1">
-            <select id="fMese" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
+            <select id="fMese" class="form-control select-tfr" onchange="calcola()">
               {% for m in mesi_range %}
               <option value="{{ m }}" {% if m == mese_corrente %}selected{% endif %}>{{ m }}</option>
               {% endfor %}
             </select>
-            <select id="fAnno" class="form-control" onchange="calcola()" style="flex:1;background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;">
+            <select id="fAnno" class="form-control select-tfr" onchange="calcola()">
               {% for a in anni_range %}
               <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
               {% endfor %}
             </select>
           </div>
-          <div style="display:flex;gap:4px;margin-top:5px;">
-            <span class="quick-btn" onclick="setFineMeseCorrente()"><i class="bi bi-calendar-check"></i> Fine mese</span>
-            <span class="quick-btn" onclick="setFineAnnoCorrente()"><i class="bi bi-calendar2-check"></i> Fine anno</span>
-            <span class="quick-btn" onclick="mostraDatepickerFine()"><i class="bi bi-calendar-plus"></i> Data...</span>
-            <input type="date" id="fDataFineCustom" onchange="setFineDaDatepicker()" style="display:none;width:0;height:0;padding:0;border:none;">
+          <div class="flex-row-gap">
+            <button type="button" class="quick-btn" onclick="setFineMeseCorrente()"><i class="bi bi-calendar-check"></i> Fine mese</button>
+            <button type="button" class="quick-btn" onclick="setFineAnnoCorrente()"><i class="bi bi-calendar2-check"></i> Fine anno</button>
+            <button type="button" class="quick-btn" onclick="mostraDatepickerFine()"><i class="bi bi-calendar-plus"></i> Data...</button>
+            <input type="date" id="fDataFineCustom" onchange="setFineDaDatepicker()" class="d-none" style="width:0;height:0;padding:0;border:none;">
           </div>
         </div>
       </div>
     </div>
 
-    <div id="resultEmpty" style="display:{% if contratto_pk %}none{% else %}block{% endif %};">
-      <div class="class="card-dark" style="padding:60px 20px;text-align:center;"">
-        <i class="bi bi-piggy-bank" style="font-size:48px;color:#555;display:block;margin-bottom:12px;"></i>
-        <div style="font-size:16px;font-weight:600;color:#8A8F98;">Seleziona un contratto</div>
+    <div id="resultEmpty" class="{% if contratto_pk %}d-none{% endif %}">
+      <div class="card-dark" style="padding:60px 20px;text-align:center;">
+        <i class="bi bi-piggy-bank empty-state-icon-lg"></i>
+        <div class="c-muted fw-6 fs-16">Seleziona un contratto</div>
         <div style="font-size:12px;color:#666;margin-top:4px;">Il calcolo parte automaticamente al cambio dei parametri</div>
       </div>
     </div>
 
-    <div id="resultContainer" style="display:none;">
-      <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+    <div id="resultContainer" class="d-none">
+      <div id="bustaEsistenteWarning" role="alert" class="card-warning-banner">
         <i class="bi bi-exclamation-triangle-fill me-2"></i> Liquidazione TFR già salvata per questo periodo. Clicca <strong>LIQUIDA TFR</strong> per sovrascriverla.
       </div>
-      <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 24px;margin-bottom:16px;">
-        <div id="resultLoading" style="display:none;padding:20px;">
-          <div class="skeleton-card" style="background:none;border:none;">
+      <div class="tfr-main-card">
+        <div id="resultLoading" class="d-none" style="padding:20px;">
+          <div class="skeleton-card skeleton-card-clean">
             <div class="skeleton skeleton-text" style="width:45%"></div>
             <div class="skeleton skeleton-text" style="width:80%"></div>
             <div class="skeleton skeleton-text-sm" style="width:55%"></div>
-            <div class="mt-3" style="display:flex;gap:10px;">
+            <div class="mt-3 skeleton-row-flex">
               <div class="skeleton skeleton-text" style="width:35%"></div>
               <div class="skeleton skeleton-text" style="width:40%"></div>
             </div>
@@ -333,35 +347,35 @@ window.renderTfr = function(d) {
   // Scheda datore/lavoratore
   html += '<div style="background:rgba(94,106,210,0.06);border:1px solid rgba(94,106,210,0.15);border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#9ca3ff;margin-bottom:8px;"><i class="bi bi-people me-1"></i> DATORE / LAVORATORE</div>';
-  html += '<table style="width:100%;">';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:90px;">Datore</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.datore + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Lavoratore</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.lavoratore + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Livello</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.livello + '</td></tr>';
+  html += '<table class="w-100">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:90px;">Datore</td><td class="value-tfr">' + d.datore + '</td></tr>';
+  html += '<tr><td class="px-8-0">Lavoratore</td><td class="value-tfr">' + d.lavoratore + '</td></tr>';
+  html += '<tr><td class="px-8-0">Livello</td><td class="value-tfr">' + d.livello + '</td></tr>';
   html += '</table>';
   html += '</div>';
 
   // Info contratto
   html += '<div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#34d399;margin-bottom:8px;"><i class="bi bi-file-text me-1"></i> CONTRATTO</div>';
-  html += '<table style="width:100%;">';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Data assunzione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.data_assunzione + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Inizio TFR effettivo</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">' + d.data_inizio_tfr_eff + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Paga base oraria</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.paga_base.toFixed(4) + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Budget mensile</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;">\u20AC ' + d.budget_mensile.toFixed(2) + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Modalità TFR</td><td style="font-size:12px;font-weight:600;color:#fbbf24;padding:2px 0;">' + d.modalita_tfr + '</td></tr>';
+  html += '<table class="w-100">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Data assunzione</td><td class="value-tfr">' + d.data_assunzione + '</td></tr>';
+  html += '<tr><td class="px-8-0">Inizio TFR effettivo</td><td class="value-tfr">' + d.data_inizio_tfr_eff + '</td></tr>';
+  html += '<tr><td class="px-8-0">Paga base oraria</td><td class="value-tfr">\u20AC ' + d.paga_base.toFixed(4) + '</td></tr>';
+  html += '<tr><td class="px-8-0">Budget mensile</td><td class="value-tfr">\u20AC ' + d.budget_mensile.toFixed(2) + '</td></tr>';
+  html += '<tr><td class="px-8-0">Modalità TFR</td><td style="font-size:12px;font-weight:600;color:#fbbf24;padding:2px 0;">' + d.modalita_tfr + '</td></tr>';
   html += '</table>';
   html += '</div>';
 
   // Dettaglio calcolo
   html += '<div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:10px;padding:12px 14px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:8px;"><i class="bi bi-calculator me-1"></i> CALCOLO TFR</div>';
-  html += '<table style="width:100%;">';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Periodo maturazione</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.data_inizio + ' — ' + d.data_fine + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Mesi trascorsi</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.mesi + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Ore mensili</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + d.ore_mensili + ' h</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">TFR orario</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">\u20AC ' + d.tfr_orario.toFixed(4) + '</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Coefficiente</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">' + (d.coeff * 100) + '%</td></tr>';
-  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;">Rateo mensile</td><td style="font-size:12px;font-weight:600;color:#EDEDED;padding:2px 0;text-align:right;">\u20AC ' + d.tfr_mensile.toFixed(4) + '</td></tr>';
+  html += '<table class="w-100">';
+  html += '<tr><td style="font-size:10px;color:#8A8F98;padding:2px 8px 2px 0;width:110px;">Periodo maturazione</td><td class="value-tfr-right">' + d.data_inizio + ' — ' + d.data_fine + '</td></tr>';
+  html += '<tr><td class="px-8-0">Mesi trascorsi</td><td class="value-tfr-right">' + d.mesi + '</td></tr>';
+  html += '<tr><td class="px-8-0">Ore mensili</td><td class="value-tfr-right">' + d.ore_mensili + ' h</td></tr>';
+  html += '<tr><td class="px-8-0">TFR orario</td><td class="value-tfr-right">\u20AC ' + d.tfr_orario.toFixed(4) + '</td></tr>';
+  html += '<tr><td class="px-8-0">Coefficiente</td><td class="value-tfr-right">' + (d.coeff * 100) + '%</td></tr>';
+  html += '<tr><td class="px-8-0">Rateo mensile</td><td class="value-tfr-right">\u20AC ' + d.tfr_mensile.toFixed(4) + '</td></tr>';
   html += '<tr style="border-top:1px solid rgba(251,191,36,0.25);"><td style="font-size:12px;font-weight:800;color:#fbbf24;padding:6px 8px 2px 0;">TOTALE ACCANTONATO</td><td style="font-size:16px;font-weight:800;color:#fbbf24;padding:6px 0 2px 0;text-align:right;">\u20AC ' + d.cumulativo.toFixed(2) + '</td></tr>';
   html += '</table>';
   html += '</div>';

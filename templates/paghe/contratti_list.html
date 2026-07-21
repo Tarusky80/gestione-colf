@@ -20,6 +20,12 @@
 {% endblock %}
 
 {% block content %}
+<style>
+.budget-val { font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; }
+.c-9ca3ff { color:#9ca3ff; }
+.min-w-50 { min-width:50px; }
+.br-8 { border-radius:8px; }
+</style>
 <div class="mb-4">
     <h1 class="h3 fw-bold mb-1">CONTRATTI ATTIVI
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
@@ -106,27 +112,27 @@
             <div class="col-md-6">
                 <label class="c-10-up mb-1 fw-bold">Budget Annuale (&euro;)</label>
                 <div class="d-flex align-items-center gap-3">
-                    <span id="bAnDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
+                    <span id="bAnDaVal" class="budget-val text-end">0</span>
                     <div style="flex:1; position:relative; height:40px;">
                         <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
                         <div id="bAnProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
                         <input type="range" id="fBAnDa" min="0" max="50000" step="500" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
                         <input type="range" id="fBAnA" min="0" max="50000" step="500" value="50000" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
                     </div>
-                    <span id="bAnAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">50k</span>
+                    <span id="bAnAVal" class="budget-val">50k</span>
                 </div>
             </div>
             <div class="col-md-6">
                 <label class="c-10-up mb-1 fw-bold">Budget Mensile (&euro;)</label>
                 <div class="d-flex align-items-center gap-3">
-                    <span id="bMenDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
+                    <span id="bMenDaVal" class="budget-val text-end">0</span>
                     <div style="flex:1; position:relative; height:40px;">
                         <div style="position:absolute; top:50%; left:0; right:0; height:4px; background:#27282D; border-radius:2px; transform:translateY(-50%); z-index:1;"></div>
                         <div id="bMenProgress" style="position:absolute; top:50%; height:4px; background:#5E6AD2; border-radius:2px; transform:translateY(-50%); z-index:2;"></div>
                         <input type="range" id="fBMenDa" min="0" max="2500" step="25" value="0" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:3; margin:0;">
                         <input type="range" id="fBMenA" min="0" max="2500" step="25" value="2500" style="position:absolute; top:0; left:0; width:100%; height:100%; -webkit-appearance:none; appearance:none; background:transparent; pointer-events:none; z-index:4; margin:0;">
                     </div>
-                    <span id="bMenAVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px;">2.5k</span>
+                    <span id="bMenAVal" class="budget-val">2.5k</span>
                 </div>
             </div>
         </div>
@@ -160,11 +166,11 @@
             <div class="skeleton skeleton-text" style="width:11%"></div>
             <div class="skeleton skeleton-text" style="width:6%"></div>
             <div class="skeleton skeleton-text" style="width:4%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
-            <div class="skeleton skeleton-text" style="width:7%"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
+            <div class="skeleton skeleton-text" class="w-7"></div>
             <div class="skeleton skeleton-text" style="width:4%"></div>
             <div class="skeleton" style="width:40px;height:22px;border-radius:10px;flex-shrink:0;"></div>
         </div>
@@ -511,12 +517,12 @@ function apriDocumentiContratto(pk) {
             var html = '<div class="list-group">';
             d.documenti.forEach(function(doc) {
                 html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">';
-                html += '<div><strong style="color:#EDEDED;">' + doc.tipo + '</strong><br><small style="color:#8A8F98;">' + doc.titolo + ' &middot; ' + doc.creato_il + '</small></div>';
+                html += '<div><strong class="c-text">' + doc.tipo + '</strong><br><small style="color:#8A8F98;">' + doc.titolo + ' &middot; ' + doc.creato_il + '</small></div>';
                 html += '<div class="d-flex gap-1">';
-                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn btn-sm btn-ghost-info" style="padding:3px 10px;font-size:11px;"><i class="bi bi-eye"></i></a>';
-                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" download class="btn btn-sm btn-ghost-success" style="padding:3px 10px;font-size:11px;"><i class="bi bi-download"></i></a>';
+                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn btn-sm btn-ghost-info" class="btn-doc-sm"><i class="bi bi-eye"></i></a>';
+                html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" download class="btn btn-sm btn-ghost-success" class="btn-doc-sm"><i class="bi bi-download"></i></a>';
                 html += '<a href="/apri-cartella-documento/' + doc.pk + '/" class="btn btn-sm btn-ghost" style="padding:3px 10px;font-size:11px;text-decoration:none;"><i class="bi bi-folder2-open"></i></a>';
-                html += '<button type="button" onclick="eliminaDocContratto(' + doc.pk + ', this)" class="btn btn-sm btn-ghost-danger" style="padding:3px 10px;font-size:11px;"><i class="bi bi-trash3"></i></button>';
+                html += '<button type="button" onclick="eliminaDocContratto(' + doc.pk + ', this)" class="btn btn-sm btn-ghost-danger" class="btn-doc-sm"><i class="bi bi-trash3"></i></button>';
                 html += '</div></div>';
             });
             html += '</div>';
@@ -538,7 +544,7 @@ function creaModaleDocumenti() {
     div.className = 'modal fade';
     div.id = 'modaleDocumentiContratto';
     div.tabIndex = -1;
-    div.innerHTML = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="background:#17181C;border:1px solid #27282D;"><div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" style="color:#EDEDED;">Documenti Contratto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button></div><div class="modal-body" style="color:#EDEDED;"></div></div></div>';
+    div.innerHTML = '<div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="background:#17181C;border:1px solid #27282D;"><div class="modal-header border-0 pb-0"><h5 class="modal-title fw-bold" class="c-text">Documenti Contratto</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button></div><div class="modal-body" class="c-text"></div></div></div>';
     document.body.appendChild(div);
     return div;
 }

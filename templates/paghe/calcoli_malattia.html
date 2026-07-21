@@ -6,6 +6,11 @@
 input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: #27282D; border-radius: 3px; outline: none; cursor: pointer; }
 input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #5E6AD2; border: 2px solid #4c56b0; cursor: pointer; }
 input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #5E6AD2; border: 2px solid #4c56b0; cursor: pointer; }
+.btn-nav-arrow { padding:4px 8px; line-height:1; }
+.card-warning-banner { display:none; padding:10px 14px; margin-bottom:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; color:#ef4444; font-size:12px; font-weight:600; }
+.skeleton-flex-child { flex:1; padding-top:4px; }
+.skeleton-row-flex { display:flex; gap:10px; }
+.empty-state-icon { color:#27282D; }
 </style>
 {% endblock %}
 {% block breadcrumb %}
@@ -53,14 +58,14 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
     <div class="col-md-6">
       <label class="mb-1 fw-bold c-10-up">Contratto</label>
       <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;line-height:1;">&#9664;</button>
+        <button type="button" class="btn btn-sm btn-ghost btn-nav-arrow" onclick="navContratto(-1)">&#9664;</button>
         <select id="fContratto" class="form-control bg-input" onchange="calcola()">
           <option value="">— Seleziona —</option>
           {% for c in contratti %}
           <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
           {% endfor %}
         </select>
-        <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;line-height:1;">&#9654;</button>
+        <button type="button" class="btn btn-sm btn-ghost btn-nav-arrow" onclick="navContratto(1)">&#9654;</button>
       </div>
     </div>
     <div class="col-md-2">
@@ -118,15 +123,15 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   </div>
 </div>
 
-<div id="resultContainer" style="display:none;">
-  <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+<div id="resultContainer" class="d-none">
+  <div id="bustaEsistenteWarning" role="alert" class="card-warning-banner">
     <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
-  <div id="resultLoading" class="py-4" style="display:none;">
+  <div id="resultLoading" class="py-4 d-none">
     <div class="skeleton-card">
       <div class="skeleton-row mb-3">
         <div class="skeleton-avatar skeleton"></div>
-        <div style="flex:1;padding-top:4px;">
+        <div class="skeleton-flex-child">
           <div class="skeleton skeleton-text" style="width:40%"></div>
           <div class="skeleton skeleton-text-sm" style="width:25%"></div>
         </div>
@@ -134,7 +139,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
       <div class="skeleton skeleton-text"></div>
       <div class="skeleton skeleton-text" style="width:85%"></div>
       <div class="skeleton skeleton-text-sm" style="width:50%"></div>
-      <div class="mt-3" style="display:flex;gap:10px;">
+      <div class="mt-3 skeleton-row-flex">
         <div class="skeleton skeleton-text" style="width:30%"></div>
         <div class="skeleton skeleton-text" style="width:45%"></div>
       </div>
@@ -143,8 +148,8 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   <div id="resultContent"></div>
 </div>
 
-<div id="resultEmpty" class="text-center py-5" style="color:#5C5F66;">
-  <i class="bi bi-heart-pulse fs-1 d-block mb-3" style="color:#27282D;"></i>
+<div id="resultEmpty" class="text-center py-5 c-muted">
+  <i class="bi bi-heart-pulse fs-1 d-block mb-3 empty-state-icon"></i>
   <div>Seleziona un contratto per calcolare la busta malattia.</div>
 </div>
 <!-- HELP MODAL -->
@@ -308,14 +313,14 @@ function renderMalattia(d) {
   html += '<div style="padding:16px 24px;border-bottom:1px solid #27282D;">';
   html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:2px;"><i class="bi bi-heart-pulse me-1"></i>Busta Malattia — ' + d.mese_nome + ' ' + d.anno + '</div>';
   html += '<div class="row g-2 mt-2">';
-  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
-  html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
-  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(' + rgb + ',0.2);color:' + lc + ';">' + esc(d.livello) + '</span></div>';
-  html += '<div class="col-md-2"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
-  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Anzianit\u00e0</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.anzianita_mesi + ' mesi</span></div>';
-  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Paga base oraria</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
-  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">Ore mensili</span><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + (Number(d.ore_mensili)/26).toFixed(2) + ' h/gg)</span></div>';
-  html += '<div class="col-md-3 mt-2"><span style="font-size:10px;color:#8A8F98;display:block;">' + esc(d.label_paga) + '</span><span style="font-size:13px;font-weight:600;color:#' + (d.sostituzione ? 'f59e0b' : 'EDEDED') + ';">\u20AC ' + d.paga_oraria.toFixed(4) + '/h</span></div>';
+  html += '<div class="col-md-4"><span class="label-info">Datore</span><span class="value-busta">' + esc(d.datore) + '</span></div>';
+  html += '<div class="col-md-4"><span class="label-info">Lavoratore</span><span class="value-busta">' + esc(d.lavoratore) + '</span></div>';
+  html += '<div class="col-md-2"><span class="label-info">Livello</span><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(' + rgb + ',0.2);color:' + lc + ';">' + esc(d.livello) + '</span></div>';
+  html += '<div class="col-md-2"><span class="label-info">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
+  html += '<div class="col-md-3 mt-2"><span class="label-info">Anzianit\u00e0</span><span class="value-busta">' + d.anzianita_mesi + ' mesi</span></div>';
+  html += '<div class="col-md-3 mt-2"><span class="label-info">Paga base oraria</span><span class="value-busta">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
+  html += '<div class="col-md-3 mt-2"><span class="label-info">Ore mensili</span><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + (Number(d.ore_mensili)/26).toFixed(2) + ' h/gg)</span></div>';
+  html += '<div class="col-md-3 mt-2"><span class="label-info">' + esc(d.label_paga) + '</span><span style="font-size:13px;font-weight:600;color:#' + (d.sostituzione ? 'f59e0b' : 'EDEDED') + ';">\u20AC ' + d.paga_oraria.toFixed(4) + '/h</span></div>';
   html += '</div></div>';
 
   // Fasce anzianità
@@ -342,16 +347,16 @@ function renderMalattia(d) {
   html += '<div style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;margin-bottom:6px;">Plafond Malattia — Anno in Corso</div>';
   html += '<div class="d-flex gap-3 flex-wrap">';
   html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid #5E6AD2;background:rgba(94,106,210,0.06);">';
-  html += '<div style="font-size:10px;color:#8A8F98;">Gi\u00e0 usati</div>';
+  html += '<div class="c-muted fs-10">Gi\u00e0 usati</div>';
   html += '<div style="font-size:16px;font-weight:700;color:#5E6AD2;">' + d.giorni_usati + ' gg</div></div>';
   html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid ' + (d.plafond_esaurito ? '#f87171' : d.giorni_residui <= 3 ? '#f59e0b' : '#34d399') + ';background:rgba(' + (d.plafond_esaurito ? '248,113,113' : d.giorni_residui <= 3 ? '245,158,11' : '52,211,153') + ',0.06);">';
-  html += '<div style="font-size:10px;color:#8A8F98;">Residuo</div>';
+  html += '<div class="c-muted fs-10">Residuo</div>';
   html += '<div style="font-size:16px;font-weight:700;color:' + (d.plafond_esaurito ? '#f87171' : d.giorni_residui <= 3 ? '#f59e0b' : '#34d399') + ';">' + (d.plafond_esaurito ? 'ESAURITO' : d.giorni_residui + ' gg') + '</div></div>';
   html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid #8A8F98;background:transparent;">';
-  html += '<div style="font-size:10px;color:#8A8F98;">Massimo annuale</div>';
+  html += '<div class="c-muted fs-10">Massimo annuale</div>';
   html += '<div style="font-size:16px;font-weight:700;color:#EDEDED;">' + d.max_giorni + ' gg</div></div>';
   html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid #8A8F98;background:transparent;">';
-  html += '<div style="font-size:10px;color:#8A8F98;">Conservazione posto</div>';
+  html += '<div class="c-muted fs-10">Conservazione posto</div>';
   html += '<div style="font-size:16px;font-weight:700;color:#EDEDED;">' + d.conservazione + ' gg</div></div>';
   html += '</div></div>';
 
@@ -399,7 +404,7 @@ function renderMalattia(d) {
     if (d.importo_50 > 0) {
       html += '<div class="d-flex align-items-center gap-2 mb-2">';
       html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#fbbf24;">50% — ' + d.giorni_50 + ' gg</span>';
-      html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
+      html += '<div class="bar-track flex-grow-1">';
       html += '<div class="bar-fill" style="width:' + pct50.toFixed(1) + '%;background:#fbbf24;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
       html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.importo_50.toFixed(2) + ' (' + pct50.toFixed(1) + '%)</span>';
       html += '</div>';
@@ -407,7 +412,7 @@ function renderMalattia(d) {
     if (d.importo_100 > 0) {
       html += '<div class="d-flex align-items-center gap-2 mb-2">';
       html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#34d399;">100% — ' + d.giorni_100 + ' gg</span>';
-      html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
+      html += '<div class="bar-track flex-grow-1">';
       html += '<div class="bar-fill" style="width:' + pct100.toFixed(1) + '%;background:#34d399;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
       html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.importo_100.toFixed(2) + ' (' + pct100.toFixed(1) + '%)</span>';
       html += '</div>';
@@ -415,7 +420,7 @@ function renderMalattia(d) {
     if (d.indennita_va > 0) {
       html += '<div class="d-flex align-items-center gap-2 mb-2">';
       html += '<span class="bar-label" style="min-width:100px;font-size:11px;color:#f59e0b;">Vitto/alloggio</span>';
-      html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;">';
+      html += '<div class="bar-track flex-grow-1">';
       html += '<div class="bar-fill" style="width:' + pctVa.toFixed(1) + '%;background:#f59e0b;opacity:0.8;height:100%;border-radius:4px;transition:width 0.3s ease;"></div></div>';
       html += '<span class="bar-value" style="font-size:10px;color:#8A8F98;min-width:80px;text-align:right;">\u20AC ' + d.indennita_va.toFixed(2) + ' (' + pctVa.toFixed(1) + '%)</span>';
       html += '</div>';
@@ -423,7 +428,7 @@ function renderMalattia(d) {
     // Barra totale
     html += '<div class="d-flex align-items-center gap-2">';
     html += '<span class="bar-label" style="min-width:100px;font-size:11px;font-weight:600;color:#EDEDED;">Totale</span>';
-    html += '<div class="bar-track flex-grow-1" style="background:rgba(255,255,255,0.04);height:20px;border-radius:4px;overflow:hidden;position:relative;">';
+    html += '<div class="bar-track flex-grow-1" style="position:relative;">';
     var leftPos = 0;
     if (d.importo_50 > 0) {
       html += '<div class="bar-fill" style="width:' + pct50.toFixed(1) + '%;background:#fbbf24;opacity:0.8;height:100%;border-radius:4px 0 0 4px;position:absolute;left:0;top:0;transition:width 0.3s ease;"></div>';
@@ -468,14 +473,14 @@ function renderMalattia(d) {
   // Nota normativa Art. 26
   html += '<div style="margin-top:10px;padding:12px 14px;background:rgba(94,106,210,0.05);border:1px solid rgba(94,106,210,0.15);border-radius:10px;font-size:9px;color:#8A8F98;line-height:1.6;">';
   html += '<div style="font-size:10px;font-weight:700;color:#5E6AD2;margin-bottom:4px;"><i class="bi bi-info-circle me-1"></i>Art. 26 CCNL — Malattia</div>';
-  html += '<div style="margin-bottom:4px;"><strong style="color:#EDEDED;">1. Obblighi del lavoratore:</strong> In caso di malattia il lavoratore deve: ';
+  html += '<div class="mb-1"><strong class="c-text">1. Obblighi del lavoratore:</strong> In caso di malattia il lavoratore deve: ';
   html += 'a) avvertire tempestivamente il datore di lavoro; ';
   html += 'b) farsi fare un certificato medico entro il giorno successivo all\'inizio della malattia; ';
   html += 'c) se non convivente (o convivente assente o in ferie) consegnare o inviare a mezzo raccomandata il certificato medico entro 2 giorni dal rilascio. Per i conviventi che sono in casa non serve consegnare il certificato a meno che non venga richiesto dal datore di lavoro.</div>';
-  html += '<div style="margin-bottom:4px;"><strong style="color:#EDEDED;">2. Conservazione del posto:</strong> Al lavoratore spetta la conservazione del posto per: ';
+  html += '<div class="mb-1"><strong class="c-text">2. Conservazione del posto:</strong> Al lavoratore spetta la conservazione del posto per: ';
   html += 'a) anzianit\u00e0 fino a 6 mesi: 10 giorni di calendario; b) da pi\u00f9 di 6 mesi a 2 anni: 45 giorni; c) oltre 2 anni: 180 giorni. I periodi si calcolano nell\'anno solare (365 giorni dall\'evento).</div>';
-  html += '<div style="margin-bottom:4px;"><strong style="color:#EDEDED;">3. Preavviso e periodo di prova:</strong> In caso di malattia durante il periodo di prova o durante il preavviso, si sospende la decorrenza degli stessi.</div>';
-  html += '<div style="margin-bottom:0;"><strong style="color:#EDEDED;">4. Retribuzione malattia (' + d.max_giorni + ' giorni massimi nell\'anno):</strong> ';
+  html += '<div class="mb-1"><strong class="c-text">3. Preavviso e periodo di prova:</strong> In caso di malattia durante il periodo di prova o durante il preavviso, si sospende la decorrenza degli stessi.</div>';
+  html += '<div style="margin-bottom:0;"><strong class="c-text">4. Retribuzione malattia (' + d.max_giorni + ' giorni massimi nell\'anno):</strong> ';
   html += 'Fino al 3\u00ba giorno consecutivo: <strong style="color:#fbbf24;">50%</strong> della retribuzione globale di fatto. ';
   html += 'Dal 4\u00ba giorno in poi: <strong style="color:#34d399;">100%</strong>. ';
   html += 'Il conteggio si basa su tutti i giorni del certificato (comprese domeniche e non lavorativi). ';

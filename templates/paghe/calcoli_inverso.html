@@ -98,6 +98,14 @@
     display: block;
     margin-bottom: 4px;
 }
+.controls-card { background:rgba(255,255,255,0.02); border:1px solid #27282D; border-radius:10px; }
+.controls-text { font-size:11px; color:#8A8F98; }
+.section-label { font-size:9px; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:#5C5F66; }
+.card-warning-banner { display:none; padding:10px 14px; margin-bottom:12px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); border-radius:10px; color:#ef4444; font-size:12px; font-weight:600; }
+.skeleton-flex-child { flex:1; padding-top:4px; }
+.skeleton-row-flex { display:flex; gap:10px; }
+.empty-state-icon { color:#27282D; }
+.input-inline-sm { width:50px; background:#09090B; border:1px solid #27282D; color:#EDEDED; padding:4px 6px; border-radius:6px; font-size:12px; text-align:center; }
 </style>
 {% endblock %}
 
@@ -195,9 +203,9 @@
     </div>
 </div>
 
-<div class="p-2 mb-3" style="background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;display:none;" id="controlsContainer">
-    <div class="d-flex align-items-center flex-wrap gap-3" style="font-size:11px;color:#8A8F98;">
-        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Convivenza</span>
+<div class="p-2 mb-3 controls-card d-none" id="controlsContainer">
+    <div class="d-flex align-items-center flex-wrap gap-3 controls-text">
+        <span class="section-label">Convivenza</span>
         <span class="toggle-item">
             <span>Pranzo</span>
             <label class="toggle-switch">
@@ -221,13 +229,13 @@
         </span>
         <div class="d-flex align-items-center gap-1">
             <span>Giorni:</span>
-            <input type="number" id="giorniConv" value="26" min="1" max="31" onchange="calcolaInverso()" style="width:50px;background:#09090B;border:1px solid #27282D;color:#EDEDED;padding:4px 6px;border-radius:6px;font-size:12px;text-align:center;">
+            <input type="number" id="giorniConv" value="26" min="1" max="31" onchange="calcolaInverso()" class="input-inline-sm">
         </div>
-        <div id="convRiepilogo" style="font-size:10px;color:#5C5F66;font-style:italic;"></div>
+        <div id="convRiepilogo" class="c-muted fs-10" style="font-style:italic;"></div>
 
-        <span style="width:1px;height:20px;background:#27282D;"></span>
+        <span class="separator-v"></span>
 
-        <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;font-weight:700;color:#5C5F66;">Indennità</span>
+        <span class="section-label">Indennità</span>
         <span class="toggle-item">
             <span>Funzione</span>
             <label class="toggle-switch">
@@ -257,7 +265,7 @@
             </label>
         </span>
 
-        <span style="width:1px;height:20px;background:#27282D;"></span>
+        <span class="separator-v"></span>
 
         <span class="toggle-item">
             <span>Scatti Anzianità</span>
@@ -267,14 +275,14 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span style="color:#f87171;">TFR Separato</span>
+            <span class="c-danger">TFR Separato</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateoTfrSeparato" onchange="calcolaInverso();aggiornaTfrCalcoli()">
                 <span class="toggle-slider" style="border-color:#f8717166;"></span>
             </label>
         </span>
         <span class="toggle-item">
-            <span style="color:#fbbf24;">Anticipo 70%</span>
+            <span class="c-warning">Anticipo 70%</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateoAnticipo70" onchange="calcolaInverso()">
                 <span class="toggle-slider" style="border-color:#fbbf2466;"></span>
@@ -302,29 +310,29 @@
             </label>
         </span>
 
-        <span style="width:1px;height:20px;background:#27282D;"></span>
+        <span class="separator-v"></span>
 
         <span class="toggle-item">
-            <span style="color:#8A8F98;">Offusca dati</span>
+            <span class="c-muted">Offusca dati</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="offuscaToggle" onchange="calcolaInverso()">
                 <span class="toggle-slider"></span>
             </label>
         </span>
 
-        <button type="button" onclick="resetToggles()" title="Ripristina valori contratto" style="background:transparent;border:1px solid #5E6AD2;color:#5E6AD2;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;margin-left:auto;"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+        <button type="button" onclick="resetToggles()" class="btn btn-sm btn-ghost-primary" title="Ripristina valori contratto" style="padding:3px 10px;font-size:11px;margin-left:auto;"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
     </div>
 </div>
 
-<div id="resultContainer" style="display:none;">
-    <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
+<div id="resultContainer" class="d-none">
+    <div id="bustaEsistenteWarning" role="alert" class="card-warning-banner">
         <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
     </div>
-    <div id="resultLoading" class="py-4" style="display:none;">
+    <div id="resultLoading" class="py-4 d-none">
         <div class="skeleton-card">
             <div class="skeleton-row mb-3">
                 <div class="skeleton-avatar skeleton"></div>
-                <div style="flex:1;padding-top:4px;">
+                <div class="skeleton-flex-child">
                     <div class="skeleton skeleton-text" style="width:40%"></div>
                     <div class="skeleton skeleton-text-sm" style="width:25%"></div>
                 </div>
@@ -332,7 +340,7 @@
             <div class="skeleton skeleton-text"></div>
             <div class="skeleton skeleton-text" style="width:85%"></div>
             <div class="skeleton skeleton-text-sm" style="width:50%"></div>
-            <div class="mt-3" style="display:flex;gap:10px;">
+            <div class="mt-3 skeleton-row-flex">
                 <div class="skeleton skeleton-text" style="width:30%"></div>
                 <div class="skeleton skeleton-text" style="width:45%"></div>
             </div>
@@ -341,8 +349,8 @@
     <div id="resultContent"></div>
 </div>
 
-<div id="resultEmpty" class="text-center py-5" style="color:#5C5F66;">
-    <i class="bi bi-arrow-left-right fs-1 d-block mb-3" style="color:#27282D;"></i>
+<div id="resultEmpty" class="text-center py-5 c-muted">
+    <i class="bi bi-arrow-left-right fs-1 d-block mb-3 empty-state-icon"></i>
     <div>Seleziona un contratto e inserisci un valore per iniziare il calcolo.</div>
 </div>
 <!-- HELP MODAL -->
@@ -600,20 +608,20 @@ function renderRisultato(d) {
     html += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
     html += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:4px;"><i class="bi bi-arrow-left-right me-1"></i>Calcolo Inverso \u2014 ' + d.mese_nome + ' ' + d.anno + '</div>';
     html += '<div class="row g-2 mt-2">';
-    html += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Datore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.datore) + '</span></div>';
-    html += '<div class="col-md-6"><span style="font-size:10px;color:#8A8F98;display:block;">Lavoratore</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.lavoratore) + '</span></div>';
+    html += '<div class="col-md-6"><span class="label-info">Datore</span><span class="value-busta">' + esc(d.datore) + '</span></div>';
+    html += '<div class="col-md-6"><span class="label-info">Lavoratore</span><span class="value-busta">' + esc(d.lavoratore) + '</span></div>';
     var _cH = Math.floor(d.ore_mensili), _cM = Math.floor((d.ore_mensili - _cH) * 60), _cS = Math.floor(((d.ore_mensili - _cH) * 60 - _cM) * 60);
     var _oreCrono = _cH + 'h ' + String(_cM).padStart(2,'0') + 'm ' + String(_cS).padStart(2,'0') + 's';
     var _sA = Math.ceil(d.ore_settimanali);
-    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:2px;">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + d.ore_inps + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI ARROTONDATE</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">(INPS: ' + d.ore_inps + ' h)</span></div><div><span style="font-size:12px;font-weight:500;color:#8A8F98;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI DECIMALI</span></div><div><span style="font-size:12px;font-weight:600;color:#06b6d4;">' + _oreCrono + '</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI CRONOMETRO</span></div><div style="border-top:1px solid #27282D;margin:2px 0;"></div><div><span style="font-size:9px;color:#8A8F98;">Ore settimanali</span> <span style="font-size:13px;font-weight:600;color:#10b981;">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Settimane mensili</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga oraria</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h</span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
-    html += '<div class="col-md-3"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo contratto</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.tipo_contratto) + '</span></div>';
-    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Tipo calcolo</span><span style="font-size:13px;font-weight:600;color:#5E6AD2;">' + inputLabel + '</span></div>';
-    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Valore inserito</span><span style="font-size:13px;font-weight:600;color:#f59e0b;">' + inputValore + '</span></div>';
-    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;">Codice rapporto INPS</span><span style="font-size:13px;font-weight:600;color:#EDEDED;">' + esc(d.codice_rapporto_inps) + '</span></div>';
+    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:2px;">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + d.ore_inps + ' h</span><span class="label-ml">MENSILI ARROTONDATE</span><span class="label-ml">(INPS: ' + d.ore_inps + ' h)</span></div><div><span style="font-size:12px;font-weight:500;color:#8A8F98;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="label-ml">MENSILI DECIMALI</span></div><div><span style="font-size:12px;font-weight:600;color:#06b6d4;">' + _oreCrono + '</span><span class="label-ml">MENSILI CRONOMETRO</span></div><div style="border-top:1px solid #27282D;margin:2px 0;"></div><div><span style="font-size:9px;color:#8A8F98;">Ore settimanali</span> <span style="font-size:13px;font-weight:600;color:#10b981;">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
+    html += '<div class="col-md-3"><span class="label-info">Settimane mensili</span><span class="value-busta">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
+    html += '<div class="col-md-3"><span class="label-info">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
+    html += '<div class="col-md-3"><span class="label-info">Paga oraria</span><span class="value-busta">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h</span></div>';
+    html += '<div class="col-md-3"><span class="label-info">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
+    html += '<div class="col-md-3"><span class="label-info">Tipo contratto</span><span class="value-busta">' + esc(d.tipo_contratto) + '</span></div>';
+    html += '<div class="col-md-4"><span class="label-info">Tipo calcolo</span><span style="font-size:13px;font-weight:600;color:#5E6AD2;">' + inputLabel + '</span></div>';
+    html += '<div class="col-md-4"><span class="label-info">Valore inserito</span><span style="font-size:13px;font-weight:600;color:#f59e0b;">' + inputValore + '</span></div>';
+    html += '<div class="col-md-4"><span class="label-info">Codice rapporto INPS</span><span class="value-busta">' + esc(d.codice_rapporto_inps) + '</span></div>';
     html += '</div></div>';
 
     // Corpo: due colonne
@@ -623,26 +631,26 @@ function renderRisultato(d) {
     html += '<div class="col-md-6">';
     html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#34d399;font-weight:700;margin-bottom:8px;"><i class="bi bi-currency-euro me-1"></i>Retribuzione Lorda</div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">Paga base <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+    html += '<span class="value-busta-sm">Paga base <span class="c-11-m">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+    html += '<span class="value-busta">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
 
     for (var i = 0; i < d.indennita.length; i++) {
         var ind = d.indennita[i];
-        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-        html += '<span style="font-size:12px;color:#EDEDED;">' + esc(ind.label) + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
-        html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
+        html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+        html += '<span class="value-busta-sm">' + esc(ind.label) + ' <span class="c-11-m">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+        html += '<span class="value-busta">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
     }
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">Scatti anzianit\u00e0 <span style="color:#8A8F98;font-size:11px;">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+    html += '<span class="value-busta-sm">Scatti anzianit\u00e0 <span class="c-11-m">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span>';
+    html += '<span class="value-busta">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
 
     for (var i = 0; i < d.ratei_pagati.length; i++) {
         var rp = d.ratei_pagati[i];
-        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-        html += '<span style="font-size:12px;color:#EDEDED;">' + esc(rp.label) + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
-        html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
+        html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+        html += '<span class="value-busta-sm">' + esc(rp.label) + ' <span class="c-11-m">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+        html += '<span class="value-busta">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
 
     html += '<div class="d-flex justify-content-between align-items-center py-2 mt-2" style="border-top:2px solid rgba(52,211,153,0.3);">';
@@ -654,13 +662,13 @@ function renderRisultato(d) {
     html += '<div class="col-md-6">';
     html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;font-weight:700;margin-bottom:8px;"><i class="bi bi-shield me-1"></i>Contributi</div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">INPS <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+    html += '<span class="value-busta-sm">INPS <span class="c-11-m">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
+    html += '<span class="value-busta">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+    html += '<span class="value-busta-sm">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span class="c-11-m">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
+    html += '<span class="value-busta">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(245,158,11,0.3);">';
     html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">TOTALE CONTRIBUTI</span>';
@@ -670,16 +678,16 @@ function renderRisultato(d) {
 
     var convLabel = (d.tipo_calcolo === 'SOSTITUZIONE') ? 'Vitto e alloggio forfettario' : 'Convivenza';
     var convDett = (d.trattenute.convivenza.dettaglio && d.trattenute.convivenza.dettaglio.length > 0) ? d.trattenute.convivenza.dettaglio.join(', ') : '';
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">' + convLabel + ' <span style="color:#8A8F98;font-size:11px;">(' + esc(convDett) + ')</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+    html += '<span class="value-busta-sm">' + convLabel + ' <span class="c-11-m">(' + esc(convDett) + ')</span></span>';
+    html += '<span class="value-busta">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
 
     var accNomi = [];
     for (var ri = 0; ri < d.ratei_pagati.length; ri++) { if (!d.ratei_pagati[ri].incluso && d.ratei_pagati[ri].totale > 0) accNomi.push(d.ratei_pagati[ri].label); }
     var accNota = accNomi.length > 0 ? '(' + accNomi.join(', ') + ' non pagati)' : '';
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span>';
-    html += '<span style="font-size:13px;font-weight:600;color:#EDEDED;">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+    html += '<span class="value-busta-sm">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span>';
+    html += '<span class="value-busta">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(248,113,113,0.3);">';
     html += '<span style="font-size:13px;font-weight:700;color:#f87171;">TOTALE TRATTENUTE</span>';

@@ -60,6 +60,7 @@
   .toggle-ore .slider::before{content:'';position:absolute;left:2px;bottom:1px;width:16px;height:16px;background:#ccc;border-radius:50%;transition:transform 0.2s;display:block;}
   .toggle-ore input:checked+.slider{background:rgba(245,158,11,0.3);border-color:#f59e0b;}
   .toggle-ore input:checked+.slider::before{transform:translateX(16px);background:#f59e0b;}
+  .label-pm{font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
 </style>
 
 <div class="pm-page">
@@ -70,7 +71,7 @@
     <div class="p-4" class="class="card-dark" style="margin-bottom:20px;"">
       <div class="d-flex align-items-start gap-3">
         <div class="flex-grow-1">
-          <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" style="color:#10b981;"></i>Crea PAGOPA Manuale</h4>
+          <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" class="c-green2"></i>Crea PAGOPA Manuale</h4>
           <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto e un trimestre, copia i dati manualmente sul sito INPS e carica il PDF ottenuto.</p>
         </div>
         <div class="d-flex gap-2 align-items-center flex-shrink-0">
@@ -91,10 +92,10 @@
       <!-- CARD 1 — Selezione -->
       <div class="col-md-6">
         <div class="p-4" class="class="card-dark h-100"">
-          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-search me-2" style="color:#10b981;"></i>SELEZIONE CONTRATTO</h5>
+          <h5 class="h5-sezione"><i class="bi bi-search me-2" class="c-green2"></i>SELEZIONE CONTRATTO</h5>
           <div class="row g-3">
             <div class="col-12">
-              <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
+              <label class="label-pm" style="margin-bottom:6px;">Contratto</label>
               <div class="d-flex gap-2 align-items-center">
                 <button type="button" class="nav-arrow btn" onclick="navigaContratto(-1)" id="btnPrevContratto"><i class="bi bi-chevron-left"></i></button>
                 <select id="contrattoSelect" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
@@ -108,11 +109,11 @@
               </div>
             </div>
             <div class="col-md-4">
-              <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Anno</label>
+              <label class="label-pm" style="margin-bottom:6px;">Anno</label>
               <input type="number" id="annoInput" class="form-control" min="2020" max="2035" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;" value="{{ 'now'|date:'Y' }}">
             </div>
             <div class="col-12">
-              <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Trimestre</label>
+              <label class="label-pm" style="margin-bottom:8px;">Trimestre</label>
               <div class="d-flex gap-3 flex-wrap" id="trimestreRadioGroup">
                 <label class="radio-card" data-trimestre="Q1">
                   <input type="radio" name="trimestre" value="Q1">
@@ -147,7 +148,7 @@
       <!-- CARD 2 — Dati Anagrafici -->
       <div class="col-md-6">
         <div class="p-4" class="class="card-dark h-100"">
-          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-person me-2" style="color:#10b981;"></i>DATI ANAGRAFICI</h5>
+          <h5 class="h5-sezione"><i class="bi bi-person me-2" class="c-green2"></i>DATI ANAGRAFICI</h5>
           <div id="pmFields" style="display:none;">
             <div class="pm-mcrd" style="margin-bottom:0;padding:0;">
               <div class="row g-0">
@@ -180,7 +181,7 @@
     <div class="row g-3 mb-3">
       <div class="col-12">
         <div class="p-4" class="card-simple">
-          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-credit-card-2-front me-2" style="color:#10b981;"></i>PARAMETRI PAGOPA — <span id="pmTitleTrimestre">Q1 2026</span></h5>
+          <h5 class="h5-sezione"><i class="bi bi-credit-card-2-front me-2" class="c-green2"></i>PARAMETRI PAGOPA — <span id="pmTitleTrimestre">Q1 2026</span></h5>
           <div class="row g-3">
             <div class="col-md">
               <div class="pm-mcrd">
@@ -256,7 +257,7 @@
       <div class="col-12">
         <div id="pmUpload" class="p-4" style="background:#17181C;border:1px solid #27282D;border-radius:14px;display:none;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-            <h5 style="color:#EDEDED;font-size:13px;font-weight:700;margin:0;"><i class="bi bi-cloud-upload me-1" style="color:#10b981;"></i> DOCUMENTO PAGOPA MANUALE</h5>
+            <h5 style="color:#EDEDED;font-size:13px;font-weight:700;margin:0;"><i class="bi bi-cloud-upload me-1" class="c-green2"></i> DOCUMENTO PAGOPA MANUALE</h5>
             <span style="font-size:10px;color:#5C5F66;">Carica qui il PDF ottenuto dal sito INPS</span>
           </div>
 

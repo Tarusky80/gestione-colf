@@ -1,6 +1,6 @@
-{% extends 'mobile/base_mobile.html' %}{% load static %}
+﻿{% extends 'mobile/base_mobile.html' %}{% load static %}
 {% block m_title %}Contratti — Gestione Colf{% endblock %}
-{% block m_topbar_title %}Contratti{% endblock %}
+{% block m_topbar_title %}<span class="m-section-icon m-section-icon-contr"><i class="bi bi-file-earmark-text"></i></span> Contratti{% endblock %}
 {% block m_content %}
 <div class="m-search-wrap">
     <i class="bi bi-search"></i>
@@ -8,26 +8,32 @@
 </div>
 <div id="mobile-list">
 {% for c in contratti %}
-    <a class="m-card m-card-contr" href="/m/contratti/{{ c.pk }}/">
+<div class="m-swipe-wrap" data-pk="{{ c.pk }}">
+    <div class="m-swipe-actions">
+        <button class="m-swipe-btn m-swipe-btn-warning" onclick="location.href='/m/contratti/{{ c.pk }}/'"><i class="bi bi-eye" style="font-size:18px;"></i></button>
+    </div>
+    <div class="m-swipe-card m-card m-card-top-contr" onclick="location.href='/m/contratti/{{ c.pk }}/'">
         <div class="m-list-item">
             <div><i class="bi bi-file-earmark-text" style="font-size:20px;color:#ec4899;"></i></div>
             <div style="flex:1;min-width:0;">
                 <div class="m-list-title">{{ c.lavoratore.nome_cognome|default:"?" }}</div>
-                <div class="m-list-sub">{{ c.datore.nome_cognome|default:"?" }} — {{ c.ccnl|default:"" }}</div>
+                <div class="m-list-sub">{{ c.datore.nome_cognome|default:"?" }} &mdash; {{ c.parametri_minimi.descrizione_corta|default:"" }}</div>
             </div>
             <span class="m-badge m-badge-green">Attivo</span>
         </div>
-    </a>
+    </div>
+</div>
 {% empty %}
-    <div class="m-empty"><i class="bi bi-file-earmark-text"></i>Nessun contratto trovato</div>
+<div class="m-empty">
+    <i class="bi bi-file-earmark-text"></i>
+    <div class="m-empty-title">Nessun contratto</div>
+    <div class="m-empty-sub">Crea un nuovo contratto con il pulsante +</div>
+</div>
 {% endfor %}
 </div>
-<a class="m-fab" href="#" title="Nuovo contratto"><i class="bi bi-plus"></i></a>
+<div class="m-scroll-sentinel" id="scroll-sentinel"></div>
+<a class="m-fab" href="/contratti/?new=1" title="Nuovo contratto"><i class="bi bi-plus"></i></a>
 <script>
-function filterMobileList(q){
-    document.querySelectorAll('#mobile-list .m-card').forEach(function(c){
-        c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'block':'none';
-    });
-}
+{% include "mobile/_swipe_js.html" %}
 </script>
 {% endblock %}

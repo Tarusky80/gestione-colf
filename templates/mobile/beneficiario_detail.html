@@ -1,0 +1,40 @@
+{% extends 'mobile/base_mobile.html' %}{% load static %}
+{% block m_title %}{{ b.nome_cognome }} — Gestione Colf{% endblock %}
+{% block m_topbar_left %}<a href="/m/beneficiari/" class="m-topbar-back"><i class="bi bi-chevron-left"></i></a>{% endblock %}
+{% block m_topbar_title %}{{ b.nome_cognome }}{% endblock %}
+{% block m_content %}
+<div class="m-card">
+    <div class="m-detail-row"><span class="label">Codice Fiscale</span><span class="value">{{ b.codice_fiscale|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Residenza</span><span class="value">{{ b.comune|default:"—" }}{% if b.provincia %} ({{ b.provincia }}){% endif %}</span></div>
+    <div class="m-detail-row"><span class="label">Indirizzo</span><span class="value">{{ b.indirizzo|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">CAP</span><span class="value">{{ b.cap|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Telefono</span><span class="value">{{ b.telefono|default:"—" }}</span></div>
+    <div class="m-detail-row"><span class="label">Email</span><span class="value">{{ b.email|default:"—" }}</span></div>
+</div>
+
+<h3 style="font-size:14px;margin:14px 0 8px;color:#8A8F98;">Progetti</h3>
+{% for prog in progetti %}
+<a href="/m/progetti/{{ prog.pk }}/" class="m-card m-card-top-prog">
+    <div class="m-list-item">
+        <div><i class="bi bi-diagram-3" style="font-size:20px;color:#10b981;"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="m-list-title">{{ prog.tipo.nome|default:"?" }}</div>
+            <div class="m-list-sub">
+                {% if prog.data_inizio %}{{ prog.data_inizio|date:"d/m/Y" }}{% endif %}
+                {% if prog.data_fine %} — {{ prog.data_fine|date:"d/m/Y" }}{% endif %}
+                {% if prog.budget_mensile %} &middot; € {{ prog.budget_mensile|floatformat:2 }}/mese{% endif %}
+            </div>
+        </div>
+        <span style="padding:6px 10px;color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+    </div>
+</a>
+{% empty %}
+<div class="m-empty"><i class="bi bi-diagram-3"></i>Nessun progetto</div>
+{% endfor %}
+
+<div style="display:flex;gap:8px;margin-top:10px;">
+    <a class="m-btn m-btn-outline" href="/m/beneficiari/" style="flex:1;">← Elenco</a>
+    <a class="m-btn m-btn-primary" href="/m/beneficiari/{{ b.pk }}/modifica/" style="flex:1;font-size:12px;padding:10px;">Modifica</a>
+</div>
+<a class="m-btn m-btn-outline" href="/">Versione desktop →</a>
+{% endblock %}

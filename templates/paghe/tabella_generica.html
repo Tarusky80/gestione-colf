@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block content %}
+<style>.badge-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:500;white-space:nowrap}</style>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h1 class="h3 fw-bold mb-1">{{ titolo|upper }}
@@ -81,13 +82,13 @@
                         <td>
                             {% if f.name == 'livello' and val.type != 'none' %}
                                 {% with codice=val.value.codice|default:val.value %}
-                                {% with colore=colori_livelli|get_item:codice|default:'#5E6AD2' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
+                                {% with colore=colori_livelli|get_item:codice|default:'#5E6AD2' %}<span class="badge-tag" style="background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
                                 {% endwith %}
                             {% elif f.name == 'codice' and tipo_url == 'livelli' and val.type != 'none' %}
-                                {% with colore=obj.colore|default:'#5E6AD2' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
+                                {% with colore=obj.colore|default:'#5E6AD2' %}<span class="badge-tag" style="background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
                             {% elif f.name == 'anno' and val.value %}{{ val.value|floatformat:0 }}
                             {% elif f.name == 'nome' and tipo_url == 'tipi-progetto' and val.type != 'none' %}
-                                {% with colore=obj.colore|default:'#10b981' %}<span style="display:inline-block; padding:1px 6px; border-radius:4px; font-size:11px; font-weight:500; white-space:nowrap; background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
+                                {% with colore=obj.colore|default:'#10b981' %}<span class="badge-tag" style="background:rgba({{ colore|hex_to_rgb }},0.12); color:{{ colore }};">{{ val.value }}</span>{% endwith %}
                             {% elif val.type == 'bool' and val.value %}<i class="bi bi-check-circle-fill text-success"></i>
                             {% elif val.type == 'bool' and not val.value %}<i class="bi bi-x-circle-fill text-secondary"></i>
                             {% elif val.type == 'none' %}<span class="text-secondary small">—</span>
