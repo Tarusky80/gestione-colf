@@ -494,9 +494,10 @@
 
 /* --- Select scuri uniformi --- */
 select, select.form-control, select.form-select {
-    background-color: #09090B !important;
-    color: #EDEDED !important;
-    border-color: #27282D !important;
+    background-color: #09090B;
+    color: #EDEDED;
+    border-color: #27282D;
+    font-size: 13px;
 }
 select option { background: #09090B; color: #EDEDED; }
 
