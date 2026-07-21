@@ -127,7 +127,14 @@
 - ✅ **Swipe-to-action**: swipe sinistra nelle buste mostra pulsante PDF
 - ✅ **Link versione mobile nella sidebar** desktop (base.html)
 
-### 17. ✅ Loading skeletons per pagine lista
+### 17. ✅ Help/Aiuto unificati
+- ✅ Standardizzati tutti i ~44 modali Aiuto con struttura `modal-linear` + `help-section`
+- ✅ Contenuti completi riscritti (descrizione, come usare, parametri, scorciatoie)
+- ✅ CSS `.help-section` / `.help-section-title` in `utils.css`
+- ✅ `gestione_db.html` convertito da overlay custom a Bootstrap modal
+- ✅ Pushato su GitHub (`8640bd6`)
+
+### 18. ✅ Loading skeletons per pagine lista
 - ✅ `datori_list.html` — 5 scheletri su 8 colonne, fade-out 400ms
 - ✅ `lavoratori_list.html` — 5 scheletri su 6 colonne, fade-out 400ms
 - ✅ `contratti_list.html` — 5 scheletri su 13 colonne, fade-out 400ms
@@ -138,7 +145,7 @@
 - ✅ `alt="Codice captcha"` su captcha image
 - ✅ `aria-label` su 4 bottoni × in base.html
 - ✅ `aria-hidden="true"` su ~200 icone decorative (fix JS globale)
-- ⏳ Elementi `<div onclick>` non semantic (~55 da refactoring strutturale)
+- ✅ Elementi `<div onclick>` convertiti in `<button type="button">` o `role="button"` (~50 occorrenze in 19 file)
 
 ### 19. 🌐 Internazionalizzazione (i18n)
 - Tutte le stringhe hardcoded in italiano
@@ -171,9 +178,17 @@
 - `manage.py check` OK
 - **Commit**: prossimo
 
+## Session Log — 2026-07-21
+- **Help modali unificati**: ~44 pagine con struttura `help-section`, contenuti riscritti, CSS dedicato
+- **Style→classi**: ~1309 style= convertiti totali (-336 noi + -973 utente da casa)
+- **Div/Span onclick→button**: ~50 elementi convertiti in `<button type="button">` o `role="button"` (19 file)
+- **Mobile completata**: versioni desktop e mobile allineate, merge conflitti risolti
+- `manage.py check` — 0 errori
+- **Commit**: `8640bd6` (help), `659107a` (style+button), `cd81f77` (merge)
+
 ## Comandi utili
 ```powershell
-# Avviare il server
+# Avviare il server (usa il venv fuori progetto per compatibilità NAS)
 & "..\.venv_gestione_colf\Scripts\python.exe" manage.py runserver
 
 # Verificare errori Django
