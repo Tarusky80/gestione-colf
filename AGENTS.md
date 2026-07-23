@@ -202,6 +202,16 @@
 - 31/31 test OK
 - **Commit**: prossimo
 
+## Session Log — 2026-07-23 (II)
+- **✅ Grafici spostati su pagina /charts/ dedicata**:
+  - Rimossi 8 canvas chart + ~327 righe Chart.js JS da `dashboard.html`
+  - `chartLivello` sostituito con stat rows dei livelli
+  - Creata view `charts_view` in `_dashboard.py`
+  - Aggiunta route `/charts/` in `urls.py` (name: `charts_view`)
+  - Fix `{% extends %}` primo tag in `charts.html`
+  - Pulsante "Grafici" dalla sezione "Grafici e Report" in basso nella dashboard, ben visibile (`btn-ghost-primary`)
+- `manage.py check` — 0 errori
+
 ## Comandi utili
 ```powershell
 # Avviare il server (usa il venv fuori progetto per compatibilità NAS)

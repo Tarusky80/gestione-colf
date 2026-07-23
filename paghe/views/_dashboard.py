@@ -380,6 +380,25 @@ def _contributi_mensili_trend_anno(anno):
     return mesi
 
 
+@login_required
+def charts_view(request):
+    opzioni = get_opzioni()
+    contratti_attivi_qs = ContrattoAttivo.objects.filter(stato='ATTIVO').select_related('parametri_minimi__livello').prefetch_related('progetto')
+    totale_attivi = contratti_attivi_qs.count()
+    oggi = date.today()
+    stats = _build_dashboard_stats(opzioni, contratti_attivi_qs, oggi, totale_attivi)
+    charts = _build_checklist_grafici(contratti_attivi_qs, opzioni, oggi, totale_attivi, stats['tipi'])
+    context = dict(opzioni=opzioni, totale_attivi=totale_attivi)
+    context.update(stats)
+    context.update(charts)
+    context['documenti_per_tipo'] = list(DocumentoArchiviato.objects.values('tipo').annotate(count=__import__('django').db.models.Count('pk')).order_by('-count')[:8])
+    context['contributi_mensili'] = _contributi_mensili_trend()
+    from paghe.models import BustaPaga
+    anni_qs = BustaPaga.objects.values_list('anno', flat=True).distinct().order_by('-anno')
+    context['anni_disponibili'] = list(anni_qs) or [oggi.year]
+    context['anno_corrente'] = oggi.year
+    return render(request, 'paghe/charts.html', context)
+
 def ajax_contributi_trend(request):
     from django.http import JsonResponse
     from datetime import date

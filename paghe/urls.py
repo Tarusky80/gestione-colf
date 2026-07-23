@@ -6,6 +6,7 @@ urlpatterns = [
 
     # === DASHBOARD / ABOUT / SCORCIATOIE ===
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('charts/', views.charts_view, name='charts_view'),
     path('about/', views.about_page, name='about_page'),
     path('ajax/verifica-aggiornamenti/', views.ajax_verifica_aggiornamenti, name='ajax_verifica_aggiornamenti'),
     path('ajax/aggiorna-pacchetto/', views.ajax_aggiorna_pacchetto, name='ajax_aggiorna_pacchetto'),

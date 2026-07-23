@@ -1,0 +1,318 @@
+{% extends 'base.html' %}{% load static %}{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="m-0"><i class="bi bi-bar-chart-fill me-2"></i>Grafici</h3>
+        <a href="/dashboard/" class="btn btn-sm btn-ghost"><i class="bi bi-arrow-left me-1"></i>Torna alla Dashboard</a>
+    </div>
+
+    {% if mesi_labels %}
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="mini-card">
+                <h4><i class="bi bi-bar-chart me-1"></i> Assunzioni vs Cessazioni</h4>
+                <div class="chart-wrap chart-h-220"><canvas id="chartConfronto"></canvas></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="mini-card">
+                <h4><i class="bi bi-clock-history me-1"></i> Ore Lavorate / Mese</h4>
+                <div class="chart-wrap chart-h-180"><canvas id="chartOreMensili"></canvas></div>
+                {% if ore_per_tipo %}
+                <div class="section-title" style="margin-top:14px;">Ore per progetto</div>
+                <div class="chart-wrap" style="height:{{ ore_per_tipo|length|yesno:'120,0' }}px;">
+                    <canvas id="chartOrePerTipo"></canvas>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mini-card">
+                <h4><i class="bi bi-geo-alt me-1"></i> Distribuzione Geografica</h4>
+                <div class="chart-wrap chart-h-180"><canvas id="chartGeo"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="mini-card">
+                <h4><i class="bi bi-pie-chart me-1"></i> Livello</h4>
+                <div class="chart-wrap"><canvas id="chartLivello"></canvas></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mini-card">
+                <h4><i class="bi bi-cash-stack me-1"></i> Budget per progetto</h4>
+                {% if budget_per_tipo %}
+                <div class="chart-wrap"><canvas id="chartBudget"></canvas></div>
+                {% else %}
+                <div class="text-secondary small py-3">Nessun dato</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="mini-card">
+                <h4><i class="bi bi-file-earmark me-1"></i> Documenti per tipo</h4>
+                {% if documenti_per_tipo %}
+                <div class="chart-wrap chart-h-180"><canvas id="chartDocumentiTipo"></canvas></div>
+                {% else %}
+                <div class="text-secondary small py-3">Nessun dato</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="mini-card">
+                <h4><i class="bi bi-graph-up me-1"></i> Trend Contributi</h4>
+                <div class="d-flex gap-2 align-items-center mb-2">
+                    <select id="trendAnno" class="form-control" style="width:auto;min-width:90px;font-size:12px;padding:3px 8px;">
+                        {% for a in anni_disponibili %}
+                        <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-sm btn-ghost-primary" onclick="aggiornaTrendContributi()">Aggiorna</button>
+                </div>
+                <div class="chart-wrap chart-h-180"><canvas id="chartContributiTrend"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/chart.min.js' %}"></script>
+<script>
+// === CHART.JS ===
+document.addEventListener('DOMContentLoaded', function() {
+    // Doughnut: Livello
+    var ctx1 = document.getElementById('chartLivello');
+    if (ctx1 && typeof Chart !== 'undefined') {
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for l in livelli %}'{{ l.parametri_minimi__livello__codice }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for l in livelli %}{{ l.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [{% for l in livelli %}'{{ l.parametri_minimi__livello__colore|default:"#5E6AD2" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    borderWidth: 0, hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 10,
+                        callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.parsed + ' contratti'; } }
+                    }
+                }
+            }
+        });
+    }
+
+    // Chart.js: Budget per progetto
+    var ctx2 = document.getElementById('chartBudget');
+    if (ctx2 && typeof Chart !== 'undefined') {
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for b in budget_per_tipo %}'{{ b.tipo__nome }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for b in budget_per_tipo %}{{ b.totale }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [{% for b in budget_per_tipo %}'{{ b.tipo__colore|default:"#5E6AD2" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    borderWidth: 0, hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '55%',
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#a1a1aa', font: { size: 11 }, padding: 8, boxWidth: 12 } },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                }
+            }
+        });
+    }
+
+    // Line: Assunzioni vs Cessazioni
+    var ctxCf = document.getElementById('chartConfronto');
+    if (ctxCf && typeof Chart !== 'undefined') {
+        new Chart(ctxCf, {
+            type: 'line',
+            data: {
+                labels: [{% for l in mesi_labels %}'{{ l }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [
+                    { label: 'Assunzioni', data: [{% for c in mesi_counts %}{{ c }}{% if not forloop.last %},{% endif %}{% endfor %}], borderColor: '#5E6AD2', backgroundColor: 'rgba(94,106,210,0.1)', fill: true, tension: 0.35, pointBackgroundColor: '#5E6AD2', pointBorderColor: '#18181B', pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, borderWidth: 2 },
+                    { label: 'Cessazioni', data: [{% for c in cessazioni_counts %}{{ c }}{% if not forloop.last %},{% endif %}{% endfor %}], borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', fill: true, tension: 0.35, pointBackgroundColor: '#f87171', pointBorderColor: '#18181B', pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, borderWidth: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { color: '#a1a1aa', font: { size: 11 }, boxWidth: 12, padding: 10 } },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                },
+                scales: {
+                    x: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                    y: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Bar: Ore Lavorate / Mese
+    var ctxOreMensili = document.getElementById('chartOreMensili');
+    if (ctxOreMensili && typeof Chart !== 'undefined') {
+        new Chart(ctxOreMensili, {
+            type: 'bar',
+            data: {
+                labels: [{% for l in ore_mesi_labels %}'{{ l }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Ore', data: [{% for d in ore_mesi_data %}{{ d }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(16,185,129,0.6)', borderColor: '#10b981', borderWidth: 1, borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                },
+                scales: {
+                    x: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { display: false } },
+                    y: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Doughnut: Ore per progetto
+    var ctxOre = document.getElementById('chartOrePerTipo');
+    if (ctxOre && typeof Chart !== 'undefined') {
+        new Chart(ctxOre, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for o in ore_per_tipo %}'{{ o.nome }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for o in ore_per_tipo %}{{ o.ore }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: [{% for o in ore_per_tipo %}'{{ o.colore|default:"#5E6AD2" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                    borderWidth: 0, hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '55%',
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#a1a1aa', font: { size: 11 }, padding: 8, boxWidth: 12 } },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                }
+            }
+        });
+    }
+
+    // Horizontal Bar: Distribuzione Geografica
+    var ctxGeo = document.getElementById('chartGeo');
+    if (ctxGeo && typeof Chart !== 'undefined') {
+        new Chart(ctxGeo, {
+            type: 'bar',
+            data: {
+                labels: [{% for l in geo_labels %}'{{ l }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Contratti', data: [{% for d in geo_data %}{{ d }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: 'rgba(16,185,129,0.6)', borderColor: '#10b981', borderWidth: 1, borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                },
+                scales: {
+                    x: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true },
+                    y: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // Doughnut: Documenti per tipo
+    var ctxDoc = document.getElementById('chartDocumentiTipo');
+    if (ctxDoc && typeof Chart !== 'undefined') {
+        var docLabels = [{% for d in documenti_per_tipo %}'{{ d.tipo|default:"Altro" }}'{% if not forloop.last %},{% endif %}{% endfor %}];
+        var docData = [{% for d in documenti_per_tipo %}{{ d.count }}{% if not forloop.last %},{% endif %}{% endfor %}];
+        var docColors = ['#5E6AD2','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#6b7280'];
+        new Chart(ctxDoc, {
+            type: 'doughnut',
+            data: {
+                labels: docLabels,
+                datasets: [{
+                    data: docData, backgroundColor: docColors.slice(0, docLabels.length), borderWidth: 0, hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '55%',
+                plugins: {
+                    legend: { position: 'right', labels: { color: '#a1a1aa', font: { size: 11 }, padding: 8, boxWidth: 12 } },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                }
+            }
+        });
+    }
+
+    // Line: Trend contributi
+    window.creaGraficoLine = function(canvasId, labels, data, color, fill, label) {
+        var ctx = document.getElementById(canvasId);
+        if (!ctx || typeof Chart === 'undefined') return null;
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label || '', data: data, borderColor: color,
+                    backgroundColor: fill || color + '10', fill: !!fill,
+                    tension: 0.35, pointBackgroundColor: color, pointBorderColor: '#18181B',
+                    pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6, borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#18181B', titleColor: '#EDEDED', bodyColor: '#a1a1aa', borderColor: '#27282D', borderWidth: 1, cornerRadius: 8, padding: 8 }
+                },
+                scales: {
+                    x: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                    y: { ticks: { color: '#8A8F98', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+                }
+            }
+        });
+    };
+
+    window._chartContributi = window.creaGraficoLine('chartContributiTrend',
+        [{% for m in contributi_mensili %}'{{ m.mese }}/{{ m.anno }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+        [{% for m in contributi_mensili %}{{ m.totale }}{% if not forloop.last %},{% endif %}{% endfor %}],
+        '#10b981', 'rgba(16,185,129,0.1)', 'Contributi INPS');
+});
+
+function aggiornaTrendContributi() {
+    var anno = document.getElementById('trendAnno').value;
+    fetch('/ajax/contributi-trend/?anno=' + anno)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var labels = data.mesi.map(function(m) { return m.mese + '/' + m.anno; });
+            var values = data.mesi.map(function(m) { return m.totale; });
+            if (window._chartContributi) window._chartContributi.destroy();
+            window._chartContributi = window.creaGraficoLine('chartContributiTrend', labels, values, '#10b981', 'rgba(16,185,129,0.1)', 'Contributi INPS');
+        })
+        .catch(function() { mostraToast('Errore caricamento trend.', false); });
+}
+</script>
+{% endblock %}
