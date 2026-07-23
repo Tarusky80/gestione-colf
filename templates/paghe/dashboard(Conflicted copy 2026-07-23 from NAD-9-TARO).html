@@ -476,7 +476,15 @@
         </div>
         <div class="col-md-6">
             <div class="mini-card">
-                <h4><i class="bi bi-graph-up me-1"></i> Trend Contributi (12 mesi)</h4>
+                <h4><i class="bi bi-graph-up me-1"></i> Trend Contributi</h4>
+                <div class="d-flex gap-2 align-items-center mb-2">
+                    <select id="trendAnno" class="form-control" style="width:auto;min-width:90px;font-size:12px;padding:3px 8px;">
+                        {% for a in anni_disponibili %}
+                        <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="btn btn-sm btn-ghost-primary" onclick="aggiornaTrendContributi()">Aggiorna</button>
+                </div>
                 <div class="chart-wrap chart-h-180"><canvas id="chartContributiTrend"></canvas></div>
             </div>
         </div>
@@ -1112,8 +1120,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Helper per grafici line
     function creaGraficoLine(canvasId, labels, data, color, fill, label) {
         var ctx = document.getElementById(canvasId);
-        if (!ctx || typeof Chart === 'undefined') return null;
-        return new Chart(ctx, {
+        if (!ctx || typeof Chart === 'undefined') return;
+        new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
@@ -1378,26 +1386,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Line: Trend contributi 12 mesi
-    window._chartContributi = creaGraficoLine('chartContributiTrend',
+    creaGraficoLine('chartContributiTrend',
         [{% for m in contributi_mensili %}'{{ m.mese }}/{{ m.anno }}'{% if not forloop.last %},{% endif %}{% endfor %}],
         [{% for m in contributi_mensili %}{{ m.totale }}{% if not forloop.last %},{% endif %}{% endfor %}],
         '#10b981', 'rgba(16,185,129,0.1)', 'Contributi INPS');
 });
-
-function aggiornaTrendContributi() {
-    var anno = document.getElementById('trendAnno').value;
-    fetch('/ajax/contributi-trend/?anno=' + anno)
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            var labels = data.mesi.map(function(m) { return m.mese + '/' + m.anno; });
-            var values = data.mesi.map(function(m) { return m.totale; });
-            if (window._chartContributi) {
-                window._chartContributi.destroy();
-            }
-            window._chartContributi = creaGraficoLine('chartContributiTrend', labels, values, '#10b981', 'rgba(16,185,129,0.1)', 'Contributi INPS');
-        })
-        .catch(function() { mostraToast('Errore caricamento trend.', false); });
-}
 
 // === MAPPA BENEFICIARI ===
 var dashMapInit = false;

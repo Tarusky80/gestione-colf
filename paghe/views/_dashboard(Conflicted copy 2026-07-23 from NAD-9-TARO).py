@@ -345,35 +345,22 @@ def dashboard(request):
     context['voci_recenti'] = request.session.get('voci_recenti', [])
     context['documenti_per_tipo'] = list(DocumentoArchiviato.objects.values('tipo').annotate(count=__import__('django').db.models.Count('pk')).order_by('-count')[:8])
     context['contributi_mensili'] = _contributi_mensili_trend()
-    from paghe.models import BustaPaga
-    anni_qs = BustaPaga.objects.values_list('anno', flat=True).distinct().order_by('-anno')
-    context['anni_disponibili'] = list(anni_qs) or [oggi.year]
-    context['anno_corrente'] = oggi.year
     return render(request, 'paghe/dashboard.html', context)
 
 
-def _contributi_mensili_trend():
+def _contributi_mensili_trend(anno=None):
     from datetime import date
     from django.db.models import Sum
     from paghe.models import BustaPaga
-    oggi = date.today()
+    if anno is None:
+        oggi = date.today()
+        anno = oggi.year
+        mesi_list = range(1, 13)
+    else:
+        oggi = date(anno, 1, 1)
+        mesi_list = range(1, 13)
     mesi = []
-    for i in range(11, -1, -1):
-        m = oggi.month - i
-        a = oggi.year
-        while m < 1: m += 12; a -= 1
-        while m > 12: m -= 12; a += 1
-        qs = BustaPaga.objects.filter(mese=m, anno=a)
-        totale = qs.aggregate(tot=Sum('contributi_inps_totale'))['tot'] or 0
-        mesi.append({'mese': m, 'anno': a, 'totale': float(totale)})
-    return mesi
-
-
-def _contributi_mensili_trend_anno(anno):
-    from django.db.models import Sum
-    from paghe.models import BustaPaga
-    mesi = []
-    for m in range(1, 13):
+    for m in mesi_list:
         qs = BustaPaga.objects.filter(mese=m, anno=anno)
         totale = qs.aggregate(tot=Sum('contributi_inps_totale'))['tot'] or 0
         mesi.append({'mese': m, 'anno': anno, 'totale': float(totale)})
@@ -382,16 +369,16 @@ def _contributi_mensili_trend_anno(anno):
 
 def ajax_contributi_trend(request):
     from django.http import JsonResponse
-    from datetime import date
     anno = request.GET.get('anno')
     if anno:
         try:
             anno = int(anno)
         except (ValueError, TypeError):
             anno = None
+    from datetime import date
     if anno is None:
         anno = date.today().year
-    dati = _contributi_mensili_trend_anno(anno)
+    dati = _contributi_mensili_trend(anno)
     return JsonResponse({'anno': anno, 'mesi': dati})
 
 # --- global_search_view ---

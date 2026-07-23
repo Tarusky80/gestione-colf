@@ -292,7 +292,7 @@
         <span style="font-size:13px;font-weight:600;color:#a1a1aa;"><i class="bi bi-bar-chart-line me-2"></i> Grafici e Report</span>
         <span class="collapse-toggle" id="statsToggle"><i class="bi bi-chevron-down"></i></span>
     </div>
-    <div id="statsCollapse" class="collapse-content d-none">
+<div id="statsCollapse" class="collapse-content d-none">
     {% if totale_attivi %}
     {% with mc=contratti_per_comune.0.count|default:1 %}
     <div class="row g-4 mb-4 mt-3">
@@ -1112,8 +1112,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Helper per grafici line
     function creaGraficoLine(canvasId, labels, data, color, fill, label) {
         var ctx = document.getElementById(canvasId);
-        if (!ctx || typeof Chart === 'undefined') return null;
-        return new Chart(ctx, {
+        if (!ctx || typeof Chart === 'undefined') return;
+        new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
@@ -1378,26 +1378,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Line: Trend contributi 12 mesi
-    window._chartContributi = creaGraficoLine('chartContributiTrend',
+    creaGraficoLine('chartContributiTrend',
         [{% for m in contributi_mensili %}'{{ m.mese }}/{{ m.anno }}'{% if not forloop.last %},{% endif %}{% endfor %}],
         [{% for m in contributi_mensili %}{{ m.totale }}{% if not forloop.last %},{% endif %}{% endfor %}],
         '#10b981', 'rgba(16,185,129,0.1)', 'Contributi INPS');
 });
-
-function aggiornaTrendContributi() {
-    var anno = document.getElementById('trendAnno').value;
-    fetch('/ajax/contributi-trend/?anno=' + anno)
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            var labels = data.mesi.map(function(m) { return m.mese + '/' + m.anno; });
-            var values = data.mesi.map(function(m) { return m.totale; });
-            if (window._chartContributi) {
-                window._chartContributi.destroy();
-            }
-            window._chartContributi = creaGraficoLine('chartContributiTrend', labels, values, '#10b981', 'rgba(16,185,129,0.1)', 'Contributi INPS');
-        })
-        .catch(function() { mostraToast('Errore caricamento trend.', false); });
-}
 
 // === MAPPA BENEFICIARI ===
 var dashMapInit = false;
