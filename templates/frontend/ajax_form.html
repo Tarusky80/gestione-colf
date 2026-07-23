@@ -26,18 +26,18 @@
                 <span style="font-size:10px;color:#8A8F98;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;flex-shrink:0;">NAVIGAZIONE:</span>
                 <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
                 {% if tipo == 'datore' and datori_pks %}
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(-1, 'datore')" id="btnPrevDatore" title="Precedente" class="btn-nav-padding"><i class="bi bi-chevron-left"></i></button>
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(1, 'datore')" id="btnNextDatore" title="Successivo" class="btn-nav-padding"><i class="bi bi-chevron-right"></i></button>
+<button type="button" onclick="navEntity(-1, 'datore')" id="btnPrevDatore" title="Precedente" class="btn btn-sm btn-ghost btn-nav-padding"><i class="bi bi-chevron-left"></i></button>
+<button type="button" onclick="navEntity(1, 'datore')" id="btnNextDatore" title="Successivo" class="btn btn-sm btn-ghost btn-nav-padding"><i class="bi bi-chevron-right"></i></button>
                 <select id="navDatoreSelect" onchange="navEntityTo(this.value, 'datore')" class="select-nav"><option value="" class="c-muted fw-4">—</option></select>
                 {% endif %}
                 {% if tipo == 'lavoratore' and lavoratori_pks %}
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(-1, 'lavoratore')" id="btnPrevLavoratore" title="Precedente" class="btn-nav-padding"><i class="bi bi-chevron-left"></i></button>
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(1, 'lavoratore')" id="btnNextLavoratore" title="Successivo" class="btn-nav-padding"><i class="bi bi-chevron-right"></i></button>
+<button type="button" onclick="navEntity(-1, 'lavoratore')" id="btnPrevLavoratore" title="Precedente" class="btn btn-sm btn-ghost btn-nav-padding"><i class="bi bi-chevron-left"></i></button>
+<button type="button" onclick="navEntity(1, 'lavoratore')" id="btnNextLavoratore" title="Successivo" class="btn btn-sm btn-ghost btn-nav-padding"><i class="bi bi-chevron-right"></i></button>
                 <select id="navLavoratoreSelect" onchange="navEntityTo(this.value, 'lavoratore')" class="select-nav"><option value="" class="c-muted fw-4">—</option></select>
                 {% endif %}
                 {% if tipo == 'beneficiario' and beneficiari_pks %}
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(-1, 'beneficiario')" id="btnPrevBeneficiario" title="Precedente" class="btn-nav-padding"><i class="bi bi-chevron-left"></i></button>
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navEntity(1, 'beneficiario')" id="btnNextBeneficiario" title="Successivo" class="btn-nav-padding"><i class="bi bi-chevron-right"></i></button>
+<button type="button" onclick="navEntity(-1, 'beneficiario')" id="btnPrevBeneficiario" title="Precedente" class="btn btn-sm btn-ghost btn-nav-padding"><i class="bi bi-chevron-left"></i></button>
+<button type="button" onclick="navEntity(1, 'beneficiario')" id="btnNextBeneficiario" title="Successivo" class="btn btn-sm btn-ghost btn-nav-padding"><i class="bi bi-chevron-right"></i></button>
                 <select id="navBeneficiarioSelect" onchange="navEntityTo(this.value, 'beneficiario')" class="select-nav"><option value="" class="c-muted fw-4">—</option></select>
                 {% endif %}
                 </div>
@@ -48,7 +48,7 @@
         {# --- RIEPILOGO --- #}
         <div class="mb-4 card-simple" style="padding: 24px 28px;">
             <div class="fw-bold d-flex align-items-center" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A8F98; margin-bottom: 18px;">
-                <span><i class="bi bi-info-circle" class="me-1 c-accent"></i>Riepilogo</span>
+                <span><i class="bi bi-info-circle me-1 c-accent"></i>Riepilogo</span>
             </div>
             <div class="row g-3 align-items-center">
                 <div class="col-md-4 col-12">
@@ -115,7 +115,7 @@
             {% if field.name == 'nome_cognome' or field.name == 'nome' or field.name == 'cognome' %}
             {% elif field.name == 'codice_fiscale' %}
             <div class="mb-3">
-                <label class="mb-1 fw-bold" class="label-form-uppercase">{{ field.label }}</label>
+                <label class="mb-1 fw-bold label-form-uppercase">{{ field.label }}</label>
                 <div class="d-flex gap-2 align-items-center flex-wrap">
                     <div style="width: 200px; flex-shrink: 0;">
                         {{ field }}
@@ -133,7 +133,7 @@
                         style="width:60px;"
                         placeholder="PR" title="Provincia">
                 </div>
-                {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
             </div>
             {% endif %}
         {% endfor %}
@@ -141,14 +141,14 @@
         {# --- NOME + COGNOME (campi separati dal modello) --- #}
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
-                <label class="mb-1 fw-bold" class="label-form-uppercase">Nome</label>
+                <label class="mb-1 fw-bold label-form-uppercase">Nome</label>
                 {{ form.nome }}
-                {% for error in form.nome.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                {% for error in form.nome.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-md-6 col-12">
-                <label class="mb-1 fw-bold" class="label-form-uppercase">Cognome</label>
+                <label class="mb-1 fw-bold label-form-uppercase">Cognome</label>
                 {{ form.cognome }}
-                {% for error in form.cognome.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                {% for error in form.cognome.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
             </div>
         </div>
 
@@ -157,25 +157,25 @@
             {% for field in form %}
                 {% if field.name == 'indirizzo' %}
                 <div class="col-md-4 col-12">
-                    <label class="mb-1 fw-bold" class="label-form-uppercase">{{ field.label }}</label>
+                    <label class="mb-1 fw-bold label-form-uppercase">{{ field.label }}</label>
                     {{ field }}
-                    {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
                 </div>
                 {% elif field.name == 'comune' %}
                 <div class="col-md-3 col-12">
-                    <label class="mb-1 fw-bold" class="label-form-uppercase">Comune</label>
+                    <label class="mb-1 fw-bold label-form-uppercase">Comune</label>
                     {{ field }}
-                    {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
                 </div>
                     <div class="col-md-2 col-4">
-                        <label class="mb-1 fw-bold" class="label-form-uppercase">Provincia</label>
+                        <label class="mb-1 fw-bold label-form-uppercase">Provincia</label>
                         <input type="text" id="nc_provincia" name="provincia" class="form-control"
                             style="width:80px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;height:38px;"
                             placeholder="PR"
                             {% if 'provincia' in form.fields %}value="{{ form.provincia.value|default:'' }}"{% endif %}>
                     </div>
                     <div class="col-md-1 col-4">
-                        <label class="mb-1 fw-bold" class="label-form-uppercase">CAP</label>
+                        <label class="mb-1 fw-bold label-form-uppercase">CAP</label>
                         <input type="text" id="nc_cap" name="cap" class="form-control"
                             style="width:120px;background:#0a0a0c;border:1px solid #2a2a2e;color:#c0c0c0;font-size:13px;text-align:center;height:38px;"
                             placeholder="00000"
@@ -196,21 +196,21 @@
             {% for field in form %}
                 {% if field.name == 'email' %}
                 <div class="col-md-4 col-12">
-                    <label class="mb-1 fw-bold" class="label-form-uppercase">{{ field.label }}</label>
+                    <label class="mb-1 fw-bold label-form-uppercase">{{ field.label }}</label>
                     {{ field }}
-                    {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
                 </div>
                 {% elif field.name == 'telefono' %}
                 <div class="col-md-3 col-12">
-                    <label class="mb-1 fw-bold" class="label-form-uppercase">{{ field.label }}</label>
+                    <label class="mb-1 fw-bold label-form-uppercase">{{ field.label }}</label>
                     {{ field }}
-                    {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
                 </div>
                 {% elif field.name == 'pin_inps' and 'datore' in mn %}
                 <div class="col-md-2 col-12">
-                    <label class="mb-1 fw-bold" class="label-form-uppercase">{{ field.label }}</label>
+                    <label class="mb-1 fw-bold label-form-uppercase">{{ field.label }}</label>
                     {{ field }}
-                    {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
                 </div>
                 {% endif %}
             {% endfor %}
@@ -236,9 +236,9 @@
             {% for field in form %}
                 {% if field.name == 'ferie_pregresse' or field.name == 'scatti_anzianita_maturati' %}
                 <div class="col-md-6 col-12">
-                    <label class="mb-1 fw-bold" class="label-form-uppercase">{{ field.label }}</label>
+                    <label class="mb-1 fw-bold label-form-uppercase">{{ field.label }}</label>
                     {{ field }}
-                    {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
                 </div>
                 {% endif %}
             {% endfor %}
@@ -251,7 +251,7 @@
             {% for field in form %}
                 {% if field.name == 'visibile_a' %}
                 <div class="col-12">
-                    <label class="mb-1 fw-bold" class="label-form-uppercase">Visibile agli operatori</label>
+                    <label class="mb-1 fw-bold label-form-uppercase">Visibile agli operatori</label>
                     <div style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px;background:#09090B;border:1px solid #27282D;border-radius:8px;">
                         {% for choice in field %}
                         <label class="d-flex align-items-center gap-2" style="cursor:pointer;font-size:12px;color:#8A8F98;">
@@ -261,7 +261,7 @@
                         {% endfor %}
                     </div>
                     {% if field.help_text %}<div style="font-size:11px;color:#545;margin-top:4px;">{{ field.help_text }}</div>{% endif %}
-                    {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                    {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
                 </div>
                 {% endif %}
             {% endfor %}
@@ -272,7 +272,7 @@
         {% if contratti_collegati %}
         <div class="mb-4 card-simple" style="padding: 20px 24px;">
             <div class="fw-bold mb-3" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #EDEDED;">
-                <i class="bi bi-file-earmark-text" class="me-1 c-accent"></i>Contratti collegati
+                <i class="bi bi-file-earmark-text me-1 c-accent"></i>Contratti collegati
             </div>
             {% for c in contratti_collegati %}
             <div class="d-flex align-items-center justify-content-between" style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
@@ -308,11 +308,11 @@
         {% for field in form %}
             {% if field.name == 'note_datore' or field.name == 'note_lavoratore' or field.name == 'note_beneficiario' %}
             <div class="mb-3">
-                <label class="mb-1 fw-bold" class="label-form-uppercase">
-                    <i class="bi bi-sticky" class="me-1 c-accent"></i>{{ field.label }}
+                <label class="mb-1 fw-bold label-form-uppercase">
+                    <i class="bi bi-sticky me-1 c-accent"></i>{{ field.label }}
                 </label>
                 {{ field }}
-                {% for error in field.errors %}<div class="mt-1 fw-bold" class="c-rose fs-11">{{ error }}</div>{% endfor %}
+                {% for error in field.errors %}<div class="mt-1 fw-bold c-rose fs-11">{{ error }}</div>{% endfor %}
             </div>
             {% endif %}
         {% endfor %}

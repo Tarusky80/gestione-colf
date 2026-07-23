@@ -1,8 +1,8 @@
 {% load tabelle_tags %}
-<div class="p-3 mb-3" class="card-simple">
+<div class="p-3 mb-3 card-simple">
     <div class="row g-3 align-items-end">
         <div class="col-md-5">
-            <label class="mb-1 fw-bold" class="c-10-up">Contratto</label>
+<label class="mb-1 fw-bold c-10-up">Contratto</label>
             <select id="fContratto" class="form-control" onchange="selezionaContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#ffffff;font-size:13px;padding:8px 12px;border-radius:8px;">
                 <option value="">— Seleziona un contratto —</option>
                 {% for c in contratti %}
@@ -15,7 +15,7 @@
             <button type="button" class="btn btn-sm flex-fill btn-ghost" onclick="navContratto(1)" style="padding:8px;font-size:13px;display:flex;justify-content:flex-start;" disabled id="btnNext"><i class="bi bi-chevron-right"></i></button>
         </div>
         <div class="col-md-3">
-            <label class="mb-1 fw-bold" class="c-10-up">Mese</label>
+<label class="mb-1 fw-bold c-10-up">Mese</label>
             <select id="fMese" class="form-control" onchange="selezionaContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#ffffff;font-size:13px;padding:8px 12px;border-radius:8px;">
                 {% for m in mesi_range %}
                 <option value="{{ m|stringformat:'02d' }}" {% if m == mese %}selected{% endif %}>{{ m|stringformat:'02d' }}</option>
@@ -23,7 +23,7 @@
             </select>
         </div>
         <div class="col-md-2">
-            <label class="mb-1 fw-bold" class="c-10-up">Anno</label>
+<label class="mb-1 fw-bold c-10-up">Anno</label>
             <select id="fAnno" class="form-control" onchange="selezionaContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#ffffff;font-size:13px;padding:8px 12px;border-radius:8px;">
                 {% for a in anni_range %}
                 <option value="{{ a }}" {% if a == anno %}selected{% endif %}>{{ a }}</option>

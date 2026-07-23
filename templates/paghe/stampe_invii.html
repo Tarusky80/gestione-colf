@@ -99,7 +99,7 @@
         </div>
         <div class="row g-3 mt-1">
             <div class="col-md-6">
-                <label class="mb-1 fw-bold" class="c-10-up">Budget Annuale (&euro;)</label>
+<label class="mb-1 fw-bold c-10-up">Budget Annuale (&euro;)</label>
                 <div class="d-flex align-items-center gap-3">
                     <span id="bAnDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
                     <div style="flex:1; position:relative; height:40px;">
@@ -112,7 +112,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <label class="mb-1 fw-bold" class="c-10-up">Budget Mensile (&euro;)</label>
+<label class="mb-1 fw-bold c-10-up">Budget Mensile (&euro;)</label>
                 <div class="d-flex align-items-center gap-3">
                     <span id="bMenDaVal" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
                     <div style="flex:1; position:relative; height:40px;">
@@ -127,12 +127,12 @@
         </div>
         <div class="row g-3 mt-1">
             <div class="col-md-3">
-                <label class="mb-1 fw-bold" class="c-10-up">ORE da</label>
-                <input type="number" id="fOreDa" class="form-control" oninput="filteraContratti()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">ORE da</label>
+<input type="number" id="fOreDa" oninput="filteraContratti()" class="form-control bg-input">
             </div>
             <div class="col-md-3">
-                <label class="mb-1 fw-bold" class="c-10-up">ORE a</label>
-                <input type="number" id="fOreA" class="form-control" oninput="filteraContratti()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">ORE a</label>
+<input type="number" id="fOreA" oninput="filteraContratti()" class="form-control bg-input">
             </div>
             <div class="col-md-6 d-flex align-items-end justify-content-end">
                 <button type="button" onclick="svuotaFiltri()" style="background:rgba(255,255,255,0.05); color:#8A8F98; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:6px 14px; font-size:11px; cursor:pointer; transition:all 0.15s;">
@@ -223,7 +223,7 @@
 
 <!-- Tipo Documento -->
 <div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;">
-    <label class="mb-2 fw-bold" class="c-10-up">TIPO DOCUMENTO</label>
+<label class="mb-2 fw-bold c-10-up">TIPO DOCUMENTO</label>
     <div class="row g-2">
         {% for cat in categorie_documenti %}
         <div class="col-md-6">
@@ -246,7 +246,7 @@
 
 <!-- CATEGORIA COMPOSIZIONE -->
 <div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;border-left:3px solid #5E6AD2;--cat-color:#5E6AD2;">
-    <label class="mb-2 fw-bold" class="c-10-up">COMPOSIZIONE MULTIPLA</label>
+<label class="mb-2 fw-bold c-10-up">COMPOSIZIONE MULTIPLA</label>
     <div class="d-flex flex-wrap gap-1">
         <label class="doc-type-label" data-categoria="COMPOSIZIONE" data-tipo="COMPOSIZIONE" data-usa-periodo="false" data-usa-template="false" title="Composizione personalizzata di più tipi documento" style="display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;border:1px solid #5E6AD2;cursor:pointer;font-size:12px;color:#9ca3ff;transition:all .15s;background:rgba(94,106,210,0.08);">
             <input type="radio" name="tipoDocumento" value="COMPOSIZIONE" data-categoria="COMPOSIZIONE" class="d-none" onchange="onTipoDocChange(this)">
@@ -257,14 +257,14 @@
 </div>
 
 <!-- COMPOSITORE (hidden) -->
-<div id="compositorePanel" class="custom-table-container" class="card-hidden">
+<div id="compositorePanel" class="custom-table-container card-hidden">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <label class="fw-bold c-10-up">COMPONI DOCUMENTO</label>
         <div class="d-flex gap-2">
             <select id="selCaricaComposizione" class="form-control" style="background-color:#09090B;border:1px solid #27282D;color:#fff;font-size:12px;padding:4px 10px;border-radius:6px;width:220px;" onchange="onCaricaComposizione(this)">
                 <option value="">&mdash; Nuova composizione &mdash;</option>
             </select>
-            <button type="button" class="btn btn-sm btn-ghost-danger" onclick="eliminaComposizione()" title="Elimina composizione" class="d-none" id="btnEliminaComp"><i class="bi bi-trash3"></i></button>
+<button type="button" onclick="eliminaComposizione()" title="Elimina composizione" id="btnEliminaComp" class="btn btn-sm btn-ghost-danger d-none"><i class="bi bi-trash3"></i></button>
         </div>
     </div>
 
@@ -306,16 +306,16 @@
 
 
 <!-- Template selector (hidden per default) -->
-<div id="templateSelector" class="custom-table-container" class="card-hidden">
-    <label class="mb-2 fw-bold" class="c-10-up">Template</label>
-    <select id="selTemplate" class="form-control" class="bg-input" style="max-width:400px;">
+<div id="templateSelector" class="custom-table-container card-hidden">
+<label class="mb-2 fw-bold c-10-up">Template</label>
+<select id="selTemplate" style="max-width:400px;" class="form-control bg-input">
         <option value="">&mdash; Template predefinito &mdash;</option>
     </select>
 </div>
 
 <!-- Periodo -->
-<div id="periodoSelector" class="custom-table-container" class="card-hidden">
-    <label class="mb-2 fw-bold" class="c-10-up">PERIODO</label>
+<div id="periodoSelector" class="custom-table-container card-hidden">
+<label class="mb-2 fw-bold c-10-up">PERIODO</label>
     <div class="mb-2 d-flex gap-1">
         <button type="button" class="btn btn-sm periodo-tab active" data-periodo="singolo" onclick="setPeriodo('singolo')">Mese singolo</button>
         <button type="button" class="btn btn-sm periodo-tab" data-periodo="range" onclick="setPeriodo('range')">Range</button>
@@ -329,7 +329,7 @@
                 <option value="{{ num }}" {% if num == mese_corrente %}selected{% endif %}>{{ nome }}</option>
                 {% endfor %}
             </select>
-            <select id="perAnno" class="form-control" class="select-custom">
+<select id="perAnno" class="form-control select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
@@ -367,14 +367,14 @@
                 <option value="3">3&deg; Trimestre</option>
                 <option value="4">4&deg; Trimestre</option>
             </select>
-            <select id="perAnnoT" class="form-control" class="select-custom">
+<select id="perAnnoT" class="form-control select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="col-auto periodo-fields" id="periodoAnno" style="display:none;">
-            <select id="perAnnoSolo" class="form-control" class="select-custom">
+<select id="perAnnoSolo" class="form-control select-custom">
                 {% for a in anni %}
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
@@ -387,8 +387,8 @@
 <div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;margin-bottom:16px;">
     <div class="row g-2 align-items-center">
         <div class="col-md-3">
-            <label class="mb-1 fw-bold" class="c-10-up">Modello Email</label>
-            <select id="selModelloEmail" class="form-control" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Modello Email</label>
+<select id="selModelloEmail" class="form-control bg-input">
                 <option value="">&mdash; Nessuno &mdash;</option>
                 {% for m in modelli_email %}
                 <option value="{{ m.pk }}">{{ m.codice }}</option>
@@ -1119,7 +1119,7 @@ function elaboraRisultato(d, azione) {
     html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.totale_ok + '</div>';
     html += '<div class="small text-secondary">Documenti generati</div>';
     if (d.totale_errori > 0) {
-        html += '<div class="display-6 fw-bold mt-2" class="c-red2">' + d.totale_errori + '</div>';
+html += '<div class="display-6 fw-bold mt-2 c-red2">' + d.totale_errori + '</div>';
         html += '<div class="small text-secondary">Errori</div>';
     }
     html += '</div>';
@@ -1132,7 +1132,7 @@ function elaboraRisultato(d, azione) {
     if (d.dettaglio) {
         html += '<hr><div class="small" style="max-height:250px;overflow-y:auto;">';
         d.dettaglio.forEach(function(e) {
-            var icon = e.errore ? '<i class="bi bi-x-circle" class="c-red2"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
+var icon = e.errore ? '<i class="bi bi-x-circle c-red2"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
             var periodo = e.periodo ? ' (' + e.periodo + ')' : '';
             var tipoInfo = e.tipo ? ' <span class="text-secondary" style="font-size:9px;">[' + e.tipo + ']</span>' : '';
             html += '<div class="d-flex align-items-center gap-2 py-1">' + icon + ' <span>' + e.datore + ' &rarr; ' + e.lavoratore + periodo + tipoInfo;

@@ -99,9 +99,9 @@
                 <option value="{{ a }}" {% if a == anno_corrente %}selected{% endif %}>{{ a }}</option>
                 {% endfor %}
             </select>
-            <button type="button" id="btnPrev" class="btn btn-sm btn-ghost" onclick="naviga(-1)" title="Mese precedente" class="px-10"><i class="bi bi-chevron-left"></i></button>
-            <button type="button" id="btnNext" class="btn btn-sm btn-ghost" onclick="naviga(1)" title="Mese successivo" class="px-10"><i class="bi bi-chevron-right"></i></button>
-            <button type="button" class="btn btn-sm btn-ghost" onclick="resetTutto()" title="Reset" class="px-10"><i class="bi bi-arrow-counterclockwise"></i></button>
+            <button type="button" id="btnPrev" onclick="naviga(-1)" title="Mese precedente" class="btn btn-sm btn-ghost px-10"><i class="bi bi-chevron-left"></i></button>
+            <button type="button" id="btnNext" onclick="naviga(1)" title="Mese successivo" class="btn btn-sm btn-ghost px-10"><i class="bi bi-chevron-right"></i></button>
+            <button type="button" onclick="resetTutto()" title="Reset" class="btn btn-sm btn-ghost px-10"><i class="bi bi-arrow-counterclockwise"></i></button>
             <a href="{% url 'calcoli_malattia' %}?contratto={{ contratto_pk|default:'' }}&mese={{ mese_corrente }}&anno={{ anno_corrente }}" class="btn btn-sm btn-ghost-danger" style="padding:6px 14px;font-size:12px;"><i class="bi bi-heart-pulse me-1"></i> Malattia</a>
             <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
             <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">

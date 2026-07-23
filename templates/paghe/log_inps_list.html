@@ -27,7 +27,7 @@
     <form method="get" class="row g-3 align-items-end">
       <div class="col-md-3">
         <label class="c-11-mb mb-1">Contratto</label>
-        <select name="contratto_pk" class="form-select" class="inps-input">
+<select name="contratto_pk" class="form-select inps-input">
           <option value="">Tutti</option>
           {% for c in contratti %}
           <option value="{{ c.pk }}" {% if filtro_contratto_pk == c.pk|stringformat:'s' %}selected{% endif %}>{{ c|contratto_option }}</option>
@@ -37,7 +37,7 @@
       </div>
       <div class="col-md-3">
         <label class="c-11-mb mb-1">Tipo operazione</label>
-        <select name="tipo_op" class="form-select" class="inps-input">
+<select name="tipo_op" class="form-select inps-input">
           <option value="">Tutti</option>
           {% for k,v in tipi %}
           <option value="{{ k }}" {% if filtro_tipo_op == k %}selected{% endif %}>{{ v }}</option>
@@ -46,11 +46,11 @@
       </div>
       <div class="col-md-2">
         <label class="c-11-mb mb-1">Dal</label>
-        <input type="date" name="da_data" class="form-control" class="inps-input" value="{{ filtro_da_data }}">
+<input type="date" name="da_data" value="{{ filtro_da_data }}" class="form-control inps-input">
       </div>
       <div class="col-md-2">
         <label class="c-11-mb mb-1">Al</label>
-        <input type="date" name="a_data" class="form-control" class="inps-input" value="{{ filtro_a_data }}">
+<input type="date" name="a_data" value="{{ filtro_a_data }}" class="form-control inps-input">
       </div>
       <div class="col-md-2 d-flex gap-2">
         <button type="submit" class="btn btn-sm btn-ghost-primary" style="padding:6px 16px;font-size:12px;flex:1;"><i class="bi bi-search me-1"></i>Filtra</button>
@@ -219,11 +219,11 @@ function mostraDettaglioLog(pk) {
   var pdfBtn = pdfUrl ? '<a href="' + pdfUrl + '" target="_blank" class="btn btn-ghost-primary" style="padding:6px 16px;font-size:12px;text-decoration:none;margin-top:10px;"><i class="bi bi-filetype-pdf me-1"></i> Apri PDF</a>' : '';
   var content = document.getElementById('logDetailContent');
   content.innerHTML =
-    '<div class="row mb-2"><span class="col-4" class="c-muted fw-6">Data</span><span class="col-8">' + d.data + '</span></div>' +
-    '<div class="row mb-2"><span class="col-4" class="c-muted fw-6">Contratto</span><span class="col-8">' + d.contratto + '</span></div>' +
-    '<div class="row mb-2"><span class="col-4" class="c-muted fw-6">Operazione</span><span class="col-8"><span class="badge" style="font-size:11px;padding:3px 8px;' + getBadgeStyle(d.tipo_op) + '">' + d.operazione + '</span></span></div>' +
-    '<div class="row mb-2"><span class="col-4" class="c-muted fw-6">Dettaglio</span><span class="col-8" style="word-break:break-word;">' + escapeHtml(d.dettaglio) + '</span></div>' +
-    '<div class="row"><span class="col-4" class="c-muted fw-6">Utente</span><span class="col-8">' + d.utente + '</span></div>' +
+    '<div class="row mb-2"><span class="col-4 c-muted fw-6">Data</span><span class="col-8">' + d.data + '</span></div>' +
+    '<div class="row mb-2"><span class="col-4 c-muted fw-6">Contratto</span><span class="col-8">' + d.contratto + '</span></div>' +
+    '<div class="row mb-2"><span class="col-4 c-muted fw-6">Operazione</span><span class="col-8"><span class="badge" style="font-size:11px;padding:3px 8px;' + getBadgeStyle(d.tipo_op) + '">' + d.operazione + '</span></span></div>' +
+    '<div class="row mb-2"><span class="col-4 c-muted fw-6">Dettaglio</span><span class="col-8" style="word-break:break-word;">' + escapeHtml(d.dettaglio) + '</span></div>' +
+    '<div class="row"><span class="col-4 c-muted fw-6">Utente</span><span class="col-8">' + d.utente + '</span></div>' +
     pdfBtn;
   document.getElementById('logDetailFloating').style.display = 'block';
   _initLogDetailDrag();

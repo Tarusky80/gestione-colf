@@ -35,15 +35,15 @@
 <div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
     <div class="row g-3 align-items-end">
         <div class="col-md-6">
-            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+<label class="mb-1 fw-bold c-10-up">Ricerca</label>
             <div style="position: relative;">
                 <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
                 <input type="text" id="fTesto" class="form-control" placeholder="Datore, lavoratore, beneficiario..." oninput="filteraRighe()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
             </div>
         </div>
         <div class="col-md-2">
-            <label class="mb-1 fw-bold" class="c-10-up">Livello</label>
-            <select id="fLivello" class="form-control" onchange="filteraRighe()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Livello</label>
+<select id="fLivello" onchange="filteraRighe()" class="form-control bg-input">
                 <option value="">Tutti</option>
                 {% for l in livelli %}
                 <option value="{{ l.codice|upper }}">{{ l.codice }}</option>
@@ -51,8 +51,8 @@
             </select>
         </div>
         <div class="col-md-2">
-            <label class="mb-1 fw-bold" class="c-10-up">Comune</label>
-            <select id="fComune" class="form-control" onchange="filteraRighe()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Comune</label>
+<select id="fComune" onchange="filteraRighe()" class="form-control bg-input">
                 <option value="">Tutti</option>
                 {% for c in comuni %}
                 <option value="{{ c }}">{{ c }}</option>
@@ -60,8 +60,8 @@
             </select>
         </div>
         <div class="col-md-2">
-            <label class="mb-1 fw-bold" class="c-10-up">Progetto</label>
-            <select id="fProgetto" class="form-control" onchange="filteraRighe()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Progetto</label>
+<select id="fProgetto" onchange="filteraRighe()" class="form-control bg-input">
                 <option value="">Tutti</option>
                 {% for tp in tipi_progetto %}
                 <option value="{{ tp.nome|upper }}">{{ tp.nome }}</option>
@@ -74,12 +74,12 @@
 <div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
     <div class="row g-3 align-items-end">
         <div class="col-md-4">
-            <label class="mb-1 fw-bold" class="c-10-up">Data Rinnovo</label>
-            <input type="date" id="dataRinnovo" class="form-control" value="{{ oggi|date:'Y-m-d' }}" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Data Rinnovo</label>
+<input type="date" id="dataRinnovo" value="{{ oggi|date:'Y-m-d' }}" class="form-control bg-input">
         </div>
         <div class="col-md-4">
-            <label class="mb-1 fw-bold" class="c-10-up">Data Fine <span class="text-secondary" style="font-weight:400;">(vuota = indeterminato)</span></label>
-            <input type="date" id="dataFine" class="form-control" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Data Fine <span class="text-secondary" style="font-weight:400;">(vuota = indeterminato)</span></label>
+<input type="date" id="dataFine" class="form-control bg-input">
         </div>
         <div class="col-md-4 d-flex align-items-end gap-2">
             <button type="button" id="btnRinnova" onclick="confermaRinnovo()" class="btn btn-ghost-primary" style="padding:8px 20px; font-size:13px;">

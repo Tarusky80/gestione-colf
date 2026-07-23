@@ -66,10 +66,10 @@
 </div>
 
 <div class="d-flex gap-2 mb-3 flex-wrap">
-    <button type="button" class="btn btn-sm btn-ghost-primary agenda-filtro" data-filtro="tutti" onclick="filtraAgenda('tutti')" class="tab-filter">Tutti</button>
-    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-warning" data-filtro="SCADENZA" onclick="filtraAgenda('SCADENZA')" class="tab-filter">Scadenze</button>
-    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-primary" data-filtro="APPUNTAMENTO" onclick="filtraAgenda('APPUNTAMENTO')" class="tab-filter">Appuntamenti</button>
-    <button type="button" class="btn btn-sm agenda-filtro btn-ghost-success" data-filtro="PROMEMORIA" onclick="filtraAgenda('PROMEMORIA')" class="tab-filter">Promemoria</button>
+<button type="button" data-filtro="tutti" onclick="filtraAgenda('tutti')" class="btn btn-sm btn-ghost-primary agenda-filtro tab-filter">Tutti</button>
+<button type="button" data-filtro="SCADENZA" onclick="filtraAgenda('SCADENZA')" class="btn btn-sm agenda-filtro btn-ghost-warning tab-filter">Scadenze</button>
+<button type="button" data-filtro="APPUNTAMENTO" onclick="filtraAgenda('APPUNTAMENTO')" class="btn btn-sm agenda-filtro btn-ghost-primary tab-filter">Appuntamenti</button>
+<button type="button" data-filtro="PROMEMORIA" onclick="filtraAgenda('PROMEMORIA')" class="btn btn-sm agenda-filtro btn-ghost-success tab-filter">Promemoria</button>
 </div>
 
 {% if prossime_scadenze %}
@@ -212,7 +212,7 @@
     </div>
 </div>
 {% empty %}
-<div class="text-center py-5" class="card-simple">
+<div class="text-center py-5 card-simple">
     <i class="bi bi-calendar-check fs-1 mb-3 d-block text-muted"></i>
     <div class="text-secondary">Nessun appuntamento per questo mese.</div>
     <button type="button" class="btn btn-sm btn-ghost-primary mt-3" onclick="apriModalAgenda(null)">
@@ -232,35 +232,35 @@
       <div class="modal-body" style="padding:18px;">
         <input type="hidden" id="agendaPk" value="">
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-11-m">Data</label>
-            <input type="date" id="agendaData" class="form-control" value="{{ oggi|date:'Y-m-d' }}" class="filter-input">
+<label class="mb-1 fw-bold c-11-m">Data</label>
+<input type="date" id="agendaData" value="{{ oggi|date:'Y-m-d' }}" class="form-control filter-input">
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-11-m">Ora (opzionale)</label>
-            <input type="time" id="agendaOra" class="form-control" class="filter-input">
+<label class="mb-1 fw-bold c-11-m">Ora (opzionale)</label>
+<input type="time" id="agendaOra" class="form-control filter-input">
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-11-m">Titolo</label>
-            <input type="text" id="agendaTitolo" class="form-control" placeholder="Descrizione breve" class="filter-input">
+<label class="mb-1 fw-bold c-11-m">Titolo</label>
+<input type="text" id="agendaTitolo" placeholder="Descrizione breve" class="form-control filter-input">
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-11-m">Tipo</label>
-            <select id="agendaTipo" class="form-select" onchange="aggiornaColoreDaTipo()" class="filter-input">
+<label class="mb-1 fw-bold c-11-m">Tipo</label>
+<select id="agendaTipo" onchange="aggiornaColoreDaTipo()" class="form-select filter-input">
                 <option value="PROMEMORIA">Promemoria</option>
                 <option value="APPUNTAMENTO">Appuntamento</option>
                 <option value="SCADENZA">Scadenza</option>
             </select>
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-11-m">Colore</label>
+<label class="mb-1 fw-bold c-11-m">Colore</label>
             <div class="d-flex gap-2 flex-wrap">
                 <input type="color" id="agendaColore" class="form-control form-control-color ghost-bg" style="width:44px;height:36px;padding:2px;cursor:pointer;">
                 <button type="button" onclick="document.getElementById('agendaColore').value='';this.style.outline='2px solid #5E6AD2'" class="ghost-bg c-muted" style="border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">Nessuno</button>
             </div>
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-11-m">Ricorrenza</label>
-            <select id="agendaRicorrenza" class="form-select" class="filter-input">
+<label class="mb-1 fw-bold c-11-m">Ricorrenza</label>
+<select id="agendaRicorrenza" class="form-select filter-input">
                 <option value="NESSUNA">Nessuna</option>
                 <option value="SETTIMANALE">Settimanale</option>
                 <option value="MENSILE">Mensile</option>
@@ -268,8 +268,8 @@
             </select>
         </div>
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-11-m">Descrizione (opzionale)</label>
-            <textarea id="agendaDescrizione" class="form-control" rows="2" placeholder="Dettagli..." class="filter-input"></textarea>
+<label class="mb-1 fw-bold c-11-m">Descrizione (opzionale)</label>
+<textarea id="agendaDescrizione" rows="2" placeholder="Dettagli..." class="form-control filter-input"></textarea>
         </div>
       </div>
       <div class="modal-footer" style="border-top:1px solid #27282D;padding:14px 18px;">

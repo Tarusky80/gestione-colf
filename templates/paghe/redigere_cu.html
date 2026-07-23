@@ -77,10 +77,10 @@
 
 <div class="container-fluid p-4">
 
-  <div class="p-4" class="card-simple" class="mb-20">
+<div class="p-4 card-simple mb-20">
     <div class="d-flex align-items-start gap-3">
       <div class="flex-grow-1">
-        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-2" class="c-accent"></i>Certificazione Unica — Lavoro Domestico</h4>
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-2 c-accent"></i>Certificazione Unica — Lavoro Domestico</h4>
         <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Genera, salva e invia la Certificazione Unica annuale.</p>
       </div>
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
@@ -88,7 +88,7 @@
   </div>
 
   {# --- Modalità CU --- #}
-  <div class="p-4" class="card-simple" class="mb-20">
+<div class="p-4 card-simple mb-20">
     <div class="d-flex gap-2 align-items-center mb-3">
       <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Modalità:</span>
       <button type="button" class="btn-tab active" data-mode="1" onclick="setMode(1)"><i class="bi bi-magic me-1"></i> Automatica</button>
@@ -122,7 +122,7 @@
   </div>
 
   {# --- Stepper --- #}
-  <div class="p-3" class="card-simple" class="mb-20">
+<div class="p-3 card-simple mb-20">
     <div class="d-flex justify-content-between" id="cuStepper">
       <div class="stepper-step active" data-step="1">
         <span class="stepper-circle">1</span>
@@ -154,7 +154,7 @@
   </style>
 
   {# --- Toolbar batch fissa --- #}
-  <div class="p-3" class="card-simple" class="mb-20">
+<div class="p-3 card-simple mb-20">
     <div id="batchToolbar">
       <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-collection me-1"></i>Operazioni batch</span>
       <span id="badgeContrattoCorrente" class="badge-contratto" style="display:none;"></span>
@@ -187,8 +187,8 @@
 
   {# --- Riepilogo CU --- #}
   <div id="riepilogoContainer" style="display:none;">
-    <div class="p-4" class="card-simple" class="mb-20">
-      <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark-text me-2" class="c-accent"></i>RIEPILOGO ANNUALE</h5>
+<div class="p-4 card-simple mb-20">
+      <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark-text me-2 c-accent"></i>RIEPILOGO ANNUALE</h5>
 
       <div id="riepilogoBody" style="font-size:13px;color:#EDEDED;"></div>
 
@@ -210,7 +210,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content modal-linear">
             <div class="modal-header border-0 pb-0">
-              <h5 class="modal-title fw-bold" class="c-text"><i class="bi bi-search-check me-2" style="color:#f59e0b;"></i>Confronto Dettaglio</h5>
+<h5 class="modal-title fw-bold c-text"><i class="bi bi-search-check me-2" style="color:#f59e0b;"></i>Confronto Dettaglio</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body" id="modaleVerificaCuBody"></div>
@@ -228,13 +228,13 @@
 
       {# Azioni #}
       <div class="d-flex flex-wrap gap-3 align-items-center">
-        <button type="button" class="btn btn-ghost-primary" onclick="apriAnteprimaCuPdf()" id="btnGeneraPdf" class="btn-lg-padding">
+<button type="button" onclick="apriAnteprimaCuPdf()" id="btnGeneraPdf" class="btn btn-ghost-primary btn-lg-padding">
           <i class="bi bi-filetype-pdf me-1"></i> Anteprima PDF
         </button>
-        <button type="button" class="btn btn-ghost-success" onclick="generaCuPdf(true)" id="btnSalvaPdf" class="btn-lg-padding">
+<button type="button" onclick="generaCuPdf(true)" id="btnSalvaPdf" class="btn btn-ghost-success btn-lg-padding">
           <i class="bi bi-save me-1"></i> Salva PDF
         </button>
-        <button type="button" class="btn btn-ghost-info" onclick="inviaCuEmail()" id="btnInviaEmail" class="btn-lg-padding">
+<button type="button" onclick="inviaCuEmail()" id="btnInviaEmail" class="btn btn-ghost-info btn-lg-padding">
           <i class="bi bi-envelope me-1"></i> Invia Email
         </button>
         <select id="cuModelloEmail" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#8A8F98;font-size:12px;border-radius:8px;max-width:220px;">
@@ -262,7 +262,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
       <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title fw-bold" class="c-text">Invia CU via Email</h5>
+<h5 class="modal-title fw-bold c-text">Invia CU via Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" id="modaleInvioEmailCuBody">
@@ -276,7 +276,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
         <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold" class="c-text"><i class="bi bi-files me-2" class="c-accent"></i>Esito generazione batch</h5>
+<h5 class="modal-title fw-bold c-text"><i class="bi bi-files me-2 c-accent"></i>Esito generazione batch</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body" id="modaleBatchPdfBody"></div>
@@ -289,7 +289,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width:95vw;">
       <div class="modal-content card-dark" style="height:90vh;">
         <div class="modal-header border-0 pb-0" style="flex-shrink:0;">
-          <h5 class="modal-title fw-bold" class="c-text"><i class="bi bi-filetype-pdf me-2" class="c-accent"></i>Anteprima Certificazione Unica</h5>
+<h5 class="modal-title fw-bold c-text"><i class="bi bi-filetype-pdf me-2 c-accent"></i>Anteprima Certificazione Unica</h5>
           <div class="d-flex gap-2">
             <button type="button" class="btn btn-sm btn-ghost-success" onclick="salvaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-save me-1"></i> Salva</button>
             <button type="button" class="btn btn-sm btn-ghost-info" onclick="inviaDaAnteprima()" style="padding:6px 14px;font-size:12px;"><i class="bi bi-envelope me-1"></i> Invia</button>
@@ -308,7 +308,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
         <div class="modal-header border-0 pb-0">
-          <h5 class="modal-title fw-bold" class="c-text"><i class="bi bi-envelope-paper me-2" style="color:#2563eb;"></i>Esito invio massivo</h5>
+<h5 class="modal-title fw-bold c-text"><i class="bi bi-envelope-paper me-2" style="color:#2563eb;"></i>Esito invio massivo</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body" id="modaleMassivoEmailBody"></div>
@@ -364,7 +364,7 @@
   <div class="modal-dialog modal-fullscreen modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content" style="background:#1E1F23;border:1px solid #333;border-radius:0;">
       <div class="modal-header" style="border-bottom:1px solid #27282D;background:#17181C;flex-shrink:0;">
-        <h5 class="modal-title fw-bold" class="c-text"><i class="bi bi-pencil-square me-2" class="c-accent"></i>Modifica mensilità — <span id="semiautoTitle"></span></h5>
+<h5 class="modal-title fw-bold c-text"><i class="bi bi-pencil-square me-2 c-accent"></i>Modifica mensilità — <span id="semiautoTitle"></span></h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:20px;">

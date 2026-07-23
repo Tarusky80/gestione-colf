@@ -125,7 +125,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
           <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #27282D;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;background:rgba(255,255,255,0.03);">
             <div><i class="bi bi-calculator me-1"></i> Anteprima Busta Paga</div>
             <div style="display:flex;gap:14px;font-size:10px;font-weight:400;text-transform:none;">
-              <span>Budget: <span class="busta-budget" class="c-green fw-6">€ {{ b.budget_mensile|floatformat:2 }}</span></span>
+              <span>Budget: <span class="busta-budget c-green fw-6">€ {{ b.budget_mensile|floatformat:2 }}</span></span>
               <span>Ore: <span class="busta-ore" style="color:#5E6AD2;font-weight:600;">{{ b.ore_mensili }}h</span></span>
             </div>
           </div>
@@ -139,15 +139,15 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             </div>
             <div class="busta-riga">
               <span class="c-muted">Indennità</span>
-              <span class="busta-indennita-val" class="c-green fw-6">€ {{ b.totale_indennita|floatformat:2 }}</span>
+<span class="busta-indennita-val c-green fw-6">€ {{ b.totale_indennita|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
               <span class="c-muted">Scatti</span>
-              <span class="busta-scatti-val" class="c-amber fw-6">€ {{ b.scatti_anzianita.valore|floatformat:2 }}</span>
+<span class="busta-scatti-val c-amber fw-6">€ {{ b.scatti_anzianita.valore|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
               <span class="c-muted">Ratei pagati</span>
-              <span class="busta-ratei-val" class="c-green fw-6">€ {{ b.totale_ratei_pagati|floatformat:2 }}</span>
+<span class="busta-ratei-val c-green fw-6">€ {{ b.totale_ratei_pagati|floatformat:2 }}</span>
             </div>
             <div class="totale-row">
               <span class="c-white">TOTALE LORDO</span>
@@ -160,11 +160,11 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             <div class="label-sezione">Contributi</div>
             <div class="busta-riga">
               <span class="c-muted">INPS <span class="busta-inps-rate">(€ {{ b.contributi.inps.orario|floatformat:4 }}/h)</span></span>
-              <span class="busta-inps-val" class="c-red fw-6">€ {{ b.contributi.inps.totale|floatformat:2 }}</span>
+<span class="busta-inps-val c-red fw-6">€ {{ b.contributi.inps.totale|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
               <span class="c-muted">{{ b.contributi.cassa.nome|default:'Cassa' }} <span class="busta-cassa-rate">(€ {{ b.contributi.cassa.orario|floatformat:4 }}/h)</span></span>
-              <span class="busta-cassa-val" class="c-red fw-6">€ {{ b.contributi.cassa.totale|floatformat:2 }}</span>
+<span class="busta-cassa-val c-red fw-6">€ {{ b.contributi.cassa.totale|floatformat:2 }}</span>
             </div>
             <div class="totale-row">
               <span class="c-white">Totale contributi</span>
@@ -180,25 +180,25 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             <div class="busta-convivenza-section">
               <div class="busta-riga">
                 <span class="c-muted">Convivenza</span>
-                <span class="busta-convivenza-val" class="c-red fw-6">€ {{ b.trattenute.convivenza.totale|floatformat:2 }}</span>
+<span class="busta-convivenza-val c-red fw-6">€ {{ b.trattenute.convivenza.totale|floatformat:2 }}</span>
               </div>
               <div class="busta-conv-item" data-key="conv_pranzo">
-                <span class="busta-conv-icon" class="c-muted fs-10"><i class="bi bi-square"></i></span>
+<span class="busta-conv-icon c-muted fs-10"><i class="bi bi-square"></i></span>
                 Pranzo (<span class="busta-conv-rate">{{ conv_pranzo_rate|floatformat:4 }}</span> €/g)
               </div>
               <div class="busta-conv-item" data-key="conv_cena">
-                <span class="busta-conv-icon" class="c-muted fs-10"><i class="bi bi-square"></i></span>
+<span class="busta-conv-icon c-muted fs-10"><i class="bi bi-square"></i></span>
                 Cena (<span class="busta-conv-rate">{{ conv_cena_rate|floatformat:4 }}</span> €/g)
               </div>
               <div class="busta-conv-item" data-key="conv_alloggio">
-                <span class="busta-conv-icon" class="c-muted fs-10"><i class="bi bi-square"></i></span>
+<span class="busta-conv-icon c-muted fs-10"><i class="bi bi-square"></i></span>
                 Alloggio (<span class="busta-conv-rate">{{ conv_alloggio_rate|floatformat:4 }}</span> €/g)
               </div>
             </div>
 
             <div class="busta-riga" style="margin-top:4px;">
               <span class="c-muted">Ratei accantonati</span>
-              <span class="busta-ratei-accantonati-val" class="c-red fw-6">€ {{ b.trattenute.ratei_accantonati|floatformat:2 }}</span>
+<span class="busta-ratei-accantonati-val c-red fw-6">€ {{ b.trattenute.ratei_accantonati|floatformat:2 }}</span>
             </div>
             <div class="totale-row">
               <span class="c-white">Totale trattenute</span>
@@ -214,7 +214,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             </div>
             <div class="busta-riga" style="margin-top:4px;">
               <span class="c-muted">TFR accumulato</span>
-              <span class="busta-tfr-val" class="c-amber fw-6">€ {{ b.tfr_accumulato|floatformat:2 }}</span>
+<span class="busta-tfr-val c-amber fw-6">€ {{ b.tfr_accumulato|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
               <span class="c-muted">Differenza budget</span>
@@ -233,7 +233,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
               <i class="bi bi-arrow-up-circle"></i>
               Scatti di Anzianità
               <span style="margin-left:auto;font-size:11px;color:#5C5F66;font-weight:400;text-transform:none;">
-                <span class="ccnl-scatto-label" class="c-amber fw-6">€ {{ scatto_value|floatformat:4 }}/h</span> per biennio · <span class="c-muted">{{ bienni_accumulati }} bienni maturati</span>
+<span class="ccnl-scatto-label c-amber fw-6">€ {{ scatto_value|floatformat:4 }}/h</span> per biennio · <span class="c-muted">{{ bienni_accumulati }} bienni maturati</span>
               </span>
             </div>
             <div class="scatti-table-wrapper" style="padding:6px 14px;transition:opacity 0.2s;opacity:0.4;">
@@ -277,12 +277,12 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
         <div class="c-gray fs-16">+</div>
         <div>
           <span class="label-info">Voci Var.</span>
-          <div class="ccnl-sum-voci" class="c-green fw-6">€ {{ totale_toggleabili|floatformat:4 }}</div>
+<div class="ccnl-sum-voci c-green fw-6">€ {{ totale_toggleabili|floatformat:4 }}</div>
         </div>
         <div class="c-gray fs-16">+</div>
         <div>
           <span class="label-info">Scatti</span>
-          <div class="ccnl-sum-scatti" class="c-amber fw-6">€ 0.0000</div>
+<div class="ccnl-sum-scatti c-amber fw-6">€ 0.0000</div>
         </div>
         <div class="c-gray fs-16">=</div>
         <div>

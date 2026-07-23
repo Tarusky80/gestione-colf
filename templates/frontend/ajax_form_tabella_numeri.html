@@ -4,32 +4,32 @@
         {% if form.codice %}
         <div class="row g-2 mb-3">
             <div class="col-md-4">
-                <label class="mb-1 fw-bold" class="c-10-up">{{ form.codice.label }}</label>
+<label class="mb-1 fw-bold c-10-up">{{ form.codice.label }}</label>
                 {{ form.codice }}
             </div>
             <div class="col-md-8">
-                <label class="mb-1 fw-bold" class="c-10-up">{{ form.descrizione.label }}</label>
+<label class="mb-1 fw-bold c-10-up">{{ form.descrizione.label }}</label>
                 {{ form.descrizione }}
             </div>
         </div>
         {% else %}
         <div class="mb-3">
-            <label class="mb-1 fw-bold" class="c-10-up">{{ form.descrizione.label }}</label>
+<label class="mb-1 fw-bold c-10-up">{{ form.descrizione.label }}</label>
             {{ form.descrizione }}
         </div>
         {% endif %}
 
         <div class="row g-2 mb-3">
             <div class="col-md-4">
-                <label class="mb-1 fw-bold" class="c-10-up">{{ form.quota_datore.label }}</label>
+<label class="mb-1 fw-bold c-10-up">{{ form.quota_datore.label }}</label>
                 <input type="text" inputmode="decimal" name="quota_datore" id="id_quota_datore" step="0.0001" value="{{ form.quota_datore.value|default:0|stringformat:'.4f' }}" oninput="calcTotale()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px; border-radius:8px; width:100%;">
             </div>
             <div class="col-md-4">
-                <label class="mb-1 fw-bold" class="c-10-up">{{ form.quota_lavoratore.label }}</label>
+<label class="mb-1 fw-bold c-10-up">{{ form.quota_lavoratore.label }}</label>
                 <input type="text" inputmode="decimal" name="quota_lavoratore" id="id_quota_lavoratore" step="0.0001" value="{{ form.quota_lavoratore.value|default:0|stringformat:'.4f' }}" oninput="calcTotale()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px; border-radius:8px; width:100%;">
             </div>
             <div class="col-md-4">
-                <label class="mb-1 fw-bold" class="c-10-up">{{ form.totale.label }}</label>
+<label class="mb-1 fw-bold c-10-up">{{ form.totale.label }}</label>
                 <input type="text" inputmode="decimal" name="totale" id="id_totale" step="0.0001" value="{{ form.totale.value|default:0|stringformat:'.4f' }}" readonly style="background-color:#09090B; border:1px solid #9ca3ff; color:#9ca3ff; font-size:13px; font-weight:700; padding:8px 12px; border-radius:8px; width:100%;">
             </div>
         </div>

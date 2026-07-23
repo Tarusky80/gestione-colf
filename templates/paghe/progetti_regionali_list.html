@@ -21,7 +21,7 @@
     </div>
     <div class="d-flex gap-2 align-items-center">
         <span id="fCount" style="display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.12);color:#fbbf24;font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid rgba(245,158,11,0.2);vertical-align:middle;"><i class="bi bi-list-ul"></i> <span id="fCountVal"></span></span>
-        <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" class="class="btn-xlsx""><i class="bi bi-download me-1"></i> Export XLSX</a>
+<a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}"btn-xlsx"" class="btn btn-sm class="><i class="bi bi-download me-1"></i> Export XLSX</a>
         <button type="button" class="btn btn-sm btn-ghost-success" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="padding:5px 12px;font-size:11px;"><i class="bi bi-upload me-1"></i> Importa</button>
         <button type="button" class="btn btn-sm btn-ghost-primary" onclick="loadAjaxForm('/ajax/nuovo-tabella/progetti-regionali/', 'Nuovo {{ titolo }}')">
             <i class="bi bi-plus-lg me-1"></i> Nuovo
@@ -32,7 +32,7 @@
 <div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
     <div class="row g-3 align-items-end">
         <div class="col-md-6">
-            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+<label class="mb-1 fw-bold c-10-up">Ricerca</label>
             <div style="position: relative;">
                 <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
                 <input type="text" id="fTesto" class="form-control" placeholder="Beneficiario, tipo..." oninput="filteraProgetti()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
@@ -49,8 +49,8 @@
     <div id="filtriAvanzati" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid #27282D;">
         <div class="row g-3">
             <div class="col-md-4">
-                <label class="mb-1 fw-bold" class="c-10-up">Tipo Progetto</label>
-                <select id="fTipo" class="form-control" onchange="filteraProgetti()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Tipo Progetto</label>
+<select id="fTipo" onchange="filteraProgetti()" class="form-control bg-input">
                     <option value="">Tutti</option>
                     {% for t in tipi %}
                     <option value="{{ t.nome|upper }}">{{ t.nome }}</option>
@@ -58,17 +58,17 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <label class="mb-1 fw-bold" class="c-10-up">Data Inizio dal</label>
-                <input type="date" id="fInizioDa" class="form-control" oninput="filteraProgetti()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Data Inizio dal</label>
+<input type="date" id="fInizioDa" oninput="filteraProgetti()" class="form-control bg-input">
             </div>
             <div class="col-md-4">
-                <label class="mb-1 fw-bold" class="c-10-up">Data Inizio al</label>
-                <input type="date" id="fInizioA" class="form-control" oninput="filteraProgetti()" class="bg-input">
+<label class="mb-1 fw-bold c-10-up">Data Inizio al</label>
+<input type="date" id="fInizioA" oninput="filteraProgetti()" class="form-control bg-input">
             </div>
         </div>
         <div class="row g-3 mt-1">
             <div class="col-md-12">
-                <label class="mb-1 fw-bold" class="c-10-up">Budget Mensile (€)</label>
+<label class="mb-1 fw-bold c-10-up">Budget Mensile (€)</label>
                 <div class="d-flex align-items-center gap-3">
                     <span id="rangeValDa" style="font-size:12px; font-weight:600; color:#9ca3ff; min-width:50px; text-align:right;">0</span>
                     <div style="flex:1; position:relative; height:40px;">

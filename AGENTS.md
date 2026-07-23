@@ -193,6 +193,15 @@
 - `manage.py check` OK, 31/31 test OK
 - **Commit**: `3e9c4b8` (fix d-none), `e9cb52a` (select scuri), `152426a` (font-size select, rimossi !important)
 
+## Session Log — 2026-07-23
+- **✅ JS estratto da base.html in 2 file separati** (`templates/js/app_main.html` ~2535 righe, `templates/js/app_documents.html` ~1441 righe)
+  - `base.html`: 4511→533 righe, 303KB→59KB (-80%)
+  - `app_main.html`: event delegation, keyboard shortcuts, ricerca globale, initForm AJAX, calcoli (conviventi/non conviventi/TFR/malattia/notturno/inverso/sostituzione), tabelle resize/drag, agenda, toggle cronologia
+  - `app_documents.html`: PDF preview flottante, documenti template (trascina/ridimensiona/ricerca), TinyMCE init, form template composizione, email preview, ModelliDocumentale
+  - Inclusione via `{% include %}` — supporta variabili Django (`{{ }}`, `{% url %}`)
+- 31/31 test OK
+- **Commit**: prossimo
+
 ## Comandi utili
 ```powershell
 # Avviare il server (usa il venv fuori progetto per compatibilità NAS)

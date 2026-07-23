@@ -627,24 +627,24 @@ function renderRisultato(d) {
     html += '<div class="col-md-6">';
     html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#34d399;font-weight:700;margin-bottom:8px;"><i class="bi bi-currency-euro me-1"></i>Retribuzione Lorda</div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
     html += '<span class="value-busta-sm">Paga base <span class="c-11-m">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
 
     for (var i = 0; i < d.indennita.length; i++) {
         var ind = d.indennita[i];
-        html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
         html += '<span class="value-busta-sm">' + esc(ind.label) + ' <span class="c-11-m">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
         html += '<span class="value-busta">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
     }
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
     html += '<span class="value-busta-sm">Scatti anzianit\u00e0 <span class="c-11-m">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
 
     for (var i = 0; i < d.ratei_pagati.length; i++) {
         var rp = d.ratei_pagati[i];
-        html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
         html += '<span class="value-busta-sm">' + esc(rp.label) + ' <span class="c-11-m">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
         html += '<span class="value-busta">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
@@ -658,11 +658,11 @@ function renderRisultato(d) {
     html += '<div class="col-md-6">';
     html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;font-weight:700;margin-bottom:8px;"><i class="bi bi-shield me-1"></i>Contributi</div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
     html += '<span class="value-busta-sm">INPS <span class="c-11-m">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
     html += '<span class="value-busta-sm">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span class="c-11-m">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
 
@@ -674,14 +674,14 @@ function renderRisultato(d) {
 
     var convLabel = (d.tipo_calcolo === 'SOSTITUZIONE') ? 'Vitto e alloggio forfettario' : 'Convivenza';
     var convDett = (d.trattenute.convivenza.dettaglio && d.trattenute.convivenza.dettaglio.length > 0) ? d.trattenute.convivenza.dettaglio.join(', ') : '';
-    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
     html += '<span class="value-busta-sm">' + convLabel + ' <span class="c-11-m">(' + esc(convDett) + ')</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
 
     var accNomi = [];
     for (var ri = 0; ri < d.ratei_pagati.length; ri++) { if (!d.ratei_pagati[ri].incluso && d.ratei_pagati[ri].totale > 0) accNomi.push(d.ratei_pagati[ri].label); }
     var accNota = accNomi.length > 0 ? '(' + accNomi.join(', ') + ' non pagati)' : '';
-    html += '<div class="d-flex justify-content-between align-items-center py-1" class="cell-border-bottom">';
+html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
     html += '<span class="value-busta-sm">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
 

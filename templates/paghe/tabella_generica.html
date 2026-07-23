@@ -23,7 +23,7 @@
     </div>
     <div class="d-flex gap-2">
         {% if tipo_url == 'progetti-regionali' %}
-        <a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}" class="btn btn-sm" class="class="btn-xlsx""><i class="bi bi-download me-1"></i> Export XLSX</a>
+<a href="{% url 'ajax_esporta_xlsx' 'progetti-regionali' %}"btn-xlsx"" class="btn btn-sm class="><i class="bi bi-download me-1"></i> Export XLSX</a>
         <button type="button" class="btn btn-sm" onclick="event.stopPropagation();new bootstrap.Modal(document.getElementById('importModalProgetti')).show();" style="background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.15);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;"><i class="bi bi-upload me-1"></i> Importa</button>
         {% endif %}
         <button type="button" class="btn btn-sm btn-ghost-primary" onclick="loadAjaxForm('/ajax/nuovo-tabella/{{ tipo_url }}/', 'Nuovo {{ titolo }}')">
@@ -38,7 +38,7 @@
 <div class="p-3 mb-3" style="background: #17181C; border: 1px solid #27282D; border-radius: 14px;">
     <div class="row g-3 align-items-end">
         <div class="col-md-{% if years %}5{% else %}8{% endif %}">
-            <label class="mb-1 fw-bold" class="c-10-up">Ricerca</label>
+<label class="mb-1 fw-bold c-10-up">Ricerca</label>
             <div style="position: relative;">
                 <i class="bi bi-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #5C5F66; font-size: 13px;"></i>
                 <input type="text" id="fTesto" class="form-control" placeholder="Cerca in tutte le colonne..." oninput="filteraTabella()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; padding:8px 12px 8px 34px; border-radius:8px;">
@@ -46,7 +46,7 @@
         </div>
         {% if years %}
         <div class="col-md-3">
-            <label class="mb-1 fw-bold" class="c-10-up">Filtra anno</label>
+<label class="mb-1 fw-bold c-10-up">Filtra anno</label>
             <select id="fAnno" class="form-select" onchange="filteraTabella()" style="background-color:#09090B; border:1px solid #27282D; color:#ffffff; font-size:13px; border-radius:8px;">
                 <option value="">Tutti gli anni</option>
                 {% for y in years %}

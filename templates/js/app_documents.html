@@ -1,0 +1,1441 @@
+    var deleteUrl = '';
+
+    /* --- Floating PDF preview (shared) --- */
+    window._ultimoPdfUrl = null;
+    window._pdfPreviewPk = null;
+    window._pdfPreviewDragInit = false;
+
+    window.apriNelPannello = function(url, pk) {
+        _ultimoPdfUrl = url;
+        _pdfPreviewPk = pk || null;
+        var panel = document.getElementById('pdfPreviewFloating');
+        var frame = document.getElementById('pdfPreviewFrame');
+        var btnPrint = document.getElementById('btnStampaPannello');
+        var btnSalva = document.getElementById('btnSalvaPannello');
+        if (!panel || !frame) return;
+        panel.style.display = 'flex';
+        frame.src = url;
+        if (btnPrint) {
+            btnPrint.style.display = pk ? 'inline-flex' : 'none';
+        }
+        if (btnSalva) {
+            btnSalva.style.display = pk ? 'none' : 'inline-flex';
+        }
+        _initPdfPreviewDrag();
+    };
+
+    function _initPdfPreviewDrag() {
+        if (_pdfPreviewDragInit) return;
+        var header = document.getElementById('pdfPreviewHeader');
+        var panel = document.getElementById('pdfPreviewFloating');
+        if (!header || !panel) return;
+        var offX, offY, isDown = false;
+        header.addEventListener('mousedown', function(e) {
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+            isDown = true;
+            var rect = panel.getBoundingClientRect();
+            offX = e.clientX - rect.left;
+            offY = e.clientY - rect.top;
+            panel.style.cursor = 'grabbing';
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!isDown) return;
+            panel.style.left = (e.clientX - offX) + 'px';
+            panel.style.top = (e.clientY - offY) + 'px';
+            panel.style.right = 'auto';
+        });
+        document.addEventListener('mouseup', function() {
+            isDown = false;
+            panel.style.cursor = '';
+        });
+        _pdfPreviewDragInit = true;
+    }
+
+    window._stampaPdfPreview = function() {
+        var pk = _pdfPreviewPk;
+        if (!pk) { _stampaToast('Nessun documento da stampare.', false); return; }
+        var btn = document.getElementById('btnStampaPannello');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+        fetch('/ajax/stampa-documento/' + pk + '/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': _csrfToken()}
+        }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.ok) { _stampaToast('Documento inviato alla stampante.', true); }
+            else { _stampaToast(d.errore || 'Errore di stampa', false); }
+        }).catch(function() {
+            _stampaToast('Errore di rete durante la stampa.', false);
+        }).finally(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-printer me-1"></i>STAMPA'; }
+        });
+    };
+
+    window._scaricaPdfDaPreview = function() {
+        if (_ultimoPdfUrl) window.open(_ultimoPdfUrl, '_blank');
+    };
+
+    window._salvaPdfPreview = function() {
+        if (_pdfPreviewPk && _pdfPreviewPk > 0) {
+            _stampaToast('Documento gi\u00e0 presente in archivio.', true);
+            return;
+        }
+        var btn = document.getElementById('btnSalvaPannello');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+
+        // Usa _ultimaPreviewData se disponibile (documentale), altrimenti dati minimi
+        var bodyData = window._ultimaPreviewData || {tipo: 'ALTRO', titolo: '', corpo_testo: '', contratto_pk: null};
+
+        fetch('/ajax/salva-pdf-anteprima/', {
+            method:'POST',
+            headers:{'Content-Type':'application/json','X-CSRFToken': typeof window._csrfToken === 'function' ? _csrfToken() : '{{ csrf_token|escapejs }}'},
+            body: JSON.stringify(bodyData)
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+            if (data.ok) {
+                _pdfPreviewPk = data.pk;
+                _stampaToast('Documento salvato in archivio.', true);
+                var btnSalva = document.getElementById('btnSalvaPannello');
+                var btnPrint = document.getElementById('btnStampaPannello');
+                if (btnSalva) btnSalva.style.display = 'none';
+                if (btnPrint) btnPrint.style.display = 'inline-flex';
+            } else {
+                _stampaToast(data.errore || 'Errore salvataggio.', false);
+            }
+        })
+        .catch(function(err){ _stampaToast('Errore di rete: '+err, false); })
+        .finally(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-archive me-1"></i>SALVA IN ARCHIVIO'; }
+        });
+    };
+
+    window._chiudiPdfPreview = function() {
+        var panel = document.getElementById('pdfPreviewFloating');
+        var frame = document.getElementById('pdfPreviewFrame');
+        if (panel) panel.style.display = 'none';
+        if (frame) frame.src = 'about:blank';
+    };
+
+    /* --- Genera PDF da template (link diretti) --- */
+    window.generaPdfTemplateAjax = function(contrattoPk, modelloPk) {
+        fetch('/genera-pdf-da-template/' + contrattoPk + '/' + modelloPk + '/?format=json', {
+            headers: {'X-CSRFToken': _csrfToken()}
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+            if (data.ok) {
+                apriNelPannello(data.url, data.pk);
+            } else {
+                _stampaToast(data.errore || 'Errore generazione PDF', false);
+            }
+        })
+        .catch(function(err){ _stampaToast('Errore: '+err, false); });
+    };
+
+    window.stampaDocumento = function(pk, btn) {
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+        fetch('/ajax/stampa-documento/' + pk + '/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': _csrfToken()}
+        }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.ok) {
+                _stampaToast('Documento inviato alla stampante.', true);
+                // Aggiorna icona stato
+                var badge = document.querySelector('.stampa-badge[data-pk="' + pk + '"]');
+                if (badge) { badge.className = 'stampa-badge bi bi-printer-fill'; badge.style.color = '#ffc107'; badge.setAttribute('title', 'Stampato'); }
+            } else {
+                _stampaToast(d.errore || 'Errore di stampa', false);
+            }
+        }).catch(function() {
+            _stampaToast('Errore di rete durante la stampa.', false);
+        }).finally(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = btn.getAttribute('data-label') || 'Stampa'; }
+        });
+    };
+
+    window.stampaBusta = function(pk, btn) {
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>'; }
+        fetch('/ajax/stampa-busta/' + pk + '/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': _csrfToken()}
+        }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.ok) {
+                _stampaToast('Busta paga inviata alla stampante.', true);
+                var badge = document.querySelector('.stampa-badge[data-pk="' + pk + '"]');
+                if (badge) { badge.className = 'stampa-badge bi bi-printer-fill'; badge.style.color = '#ffc107'; badge.setAttribute('title', 'Stampato'); }
+            } else {
+                _stampaToast(d.errore || 'Errore di stampa', false);
+            }
+        }).catch(function() {
+            _stampaToast('Errore di rete durante la stampa.', false);
+        }).finally(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = btn.getAttribute('data-label') || 'STAMPA BUSTA'; }
+        });
+    };
+
+    window.stampaDocumentoMassiva = function() {
+        var checks = document.querySelectorAll('.docCheck:checked');
+        var pks = Array.from(checks).map(function(c) { return c.value; });
+        if (pks.length === 0) { mostraToast('Nessun documento selezionato.', false); return; }
+        var btn = document.getElementById('btnStampaMassiva');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Invio...'; }
+        fetch('/ajax/stampa-documento-massiva/', {
+            method: 'POST',
+            headers: {'X-CSRFToken': _csrfToken(), 'Content-Type': 'application/json'},
+            body: JSON.stringify({pks: pks})
+        }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.ok) {
+                _stampaToast(d.stampati + ' di ' + d.totale + ' documenti inviati alla stampante.', true);
+                d.risultati.forEach(function(r) {
+                    if (r.ok) {
+                        var badge = document.querySelector('.stampa-badge[data-pk="' + r.pk + '"]');
+                        if (badge) { badge.className = 'stampa-badge bi bi-printer-fill'; badge.style.color = '#ffc107'; badge.setAttribute('title', 'Stampato'); }
+                    }
+                });
+            } else {
+                _stampaToast('Errore durante la stampa massiva.', false);
+            }
+        }).catch(function() {
+            _stampaToast('Errore di rete.', false);
+        }).finally(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-printer"></i> Stampa selezionati'; }
+        });
+    };
+
+    window._inviaPdfPreview = function() {
+        _chiudiPdfPreview();
+        if (_pdfPreviewPk && typeof apriInvioDocumento === 'function') {
+            apriInvioDocumento(_pdfPreviewPk);
+        } else if (typeof inviaEmailPagopa === 'function') {
+            inviaEmailPagopa();
+        } else {
+            // Fallback: recupera ultimo documento salvato dalla sessione
+            fetch('/ajax/ultimo-documento-pk/')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.doc_pk) {
+                        apriInvioDocumento(data.doc_pk);
+                    } else {
+                        // Ultimo tentativo: mail-datore senza allegato
+                        var m = _ultimoPdfUrl && _ultimoPdfUrl.match(/\/ajax\/[^/]+\/(\d+)\//);
+                        if (m && typeof apriMailDatore === 'function') {
+                            apriMailDatore(parseInt(m[1]));
+                        }
+                    }
+                })
+                .catch(function() { /* silent */ });
+        }
+    };
+
+    window.apriInvioDocumento = function(pk) {
+        var el = document.getElementById('modaleInvioDocumento');
+        var body = document.getElementById('modaleInvioDocumentoBody');
+        if (!el || !body) return;
+        var m = new bootstrap.Modal(el);
+        body.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-light"></div></div>';
+        m.show();
+        fetch('/ajax/invia-documento-email/' + pk + '/', { method:'GET' })
+            .then(function(r) { return r.text(); })
+            .then(function(html) { body.innerHTML = html; })
+            .catch(function() { body.innerHTML = '<div class="p-4 text-danger">Errore nel caricamento del form.</div>'; });
+    };
+
+    window.anteprimaEmail = function(pk) {
+        var modelloPk = (document.getElementById('modelloMail')||{}).value;
+        if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+        var frame = document.getElementById('emailPreviewFrame');
+        if (frame) { frame.parentElement.removeChild(frame); }
+        frame = document.createElement('div');
+        frame.id = 'emailPreviewFrame';
+        frame.innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:space-between;background:#18181B;padding:12px 16px;border-radius:12px 12px 0 0;border-bottom:1px solid #27282D;cursor:grab;user-select:none;">' +
+                '<span class="value-busta"><i class="bi bi-envelope-paper" style="margin-right:8px;color:#5E6AD2;"></i>Anteprima Email</span>' +
+                '<button type="button" onclick="this.parentElement.parentElement.style.display=\'none\'" style="background:none;border:none;color:#8A8F98;font-size:18px;cursor:pointer;padding:0;line-height:1;">\u00d7</button>' +
+            '</div>' +
+            '<div id="emailPreviewSubject" style="padding:12px 16px;background:#121214;border-bottom:1px solid #27282D;font-size:13px;font-weight:600;color:#fafafa;"></div>' +
+            '<div id="emailPreviewBody" style="padding:16px;overflow-y:auto;max-height:65vh;background:#09090B;border-radius:0 0 12px 12px;font-size:13px;color:#d4d4d8;line-height:1.6;"></div>';
+        frame.style.cssText = 'position:fixed;top:80px;right:24px;width:560px;background:#18181B;border:1px solid #27282D;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:10050;display:block;font-family:inherit;';
+        document.body.appendChild(frame);
+        (function(f) {
+            var dragObj = null;
+            f.querySelector('div').addEventListener('mousedown', function(e) {
+                if (e.target.tagName === 'BUTTON') return;
+                var r = f.getBoundingClientRect();
+                dragObj = { offsetX: e.clientX - r.left, offsetY: e.clientY - r.top };
+                e.preventDefault();
+            });
+            document.addEventListener('mousemove', function(e) {
+                if (!dragObj) return;
+                f.style.left = (e.clientX - dragObj.offsetX) + 'px';
+                f.style.top = (e.clientY - dragObj.offsetY) + 'px';
+                f.style.right = 'auto';
+            });
+            document.addEventListener('mouseup', function() { dragObj = null; });
+        })(frame);
+        document.getElementById('emailPreviewSubject').textContent = 'Caricamento...';
+        document.getElementById('emailPreviewBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border text-light"></div></div>';
+        fetch('/ajax/anteprima-email/' + pk + '/?modello_mail_pk=' + modelloPk)
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                if (d.error) { mostraToast(d.error, false); return; }
+                document.getElementById('emailPreviewSubject').textContent = d.oggetto || '';
+                document.getElementById('emailPreviewBody').innerHTML = d.corpo || '';
+            })
+            .catch(function() { document.getElementById('emailPreviewBody').innerHTML = '<div class="text-danger">Errore caricamento anteprima.</div>'; mostraToast('Errore caricamento anteprima.', false); });
+    };
+
+    window.inviaSingolo = function(event, pk) {
+        event.preventDefault();
+        var dest = document.getElementById('emailDestinatario')?.value;
+        var modelloPk = document.getElementById('modelloMail')?.value;
+        if (!dest) { mostraToast('Inserisci un destinatario.', false); return; }
+        if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+        fetch('/ajax/invia-documento-email/' + pk + '/', {
+            method:'POST',
+            headers:{'X-CSRFToken': getCSRFToken(), 'Content-Type':'application/json'},
+            body:JSON.stringify({destinatario:dest, modello_mail_pk:modelloPk})
+        }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.ok) {
+                var modal = document.getElementById('modaleInvioDocumento');
+                if (modal && bootstrap.Modal.getInstance(modal)) { bootstrap.Modal.getInstance(modal).hide(); }
+                var frame = document.getElementById('previewFrame');
+                if (frame && frame.style.display !== 'none' && typeof closePreviewFrame === 'function') { closePreviewFrame(); }
+                mostraToast(d.msg || 'Email inviata.', true);
+            } else { mostraToast(d.error, false); }
+        }).catch(function() { mostraToast('Errore di rete durante l\'invio.', false); });
+    };
+
+    window._cercaInvioHandler = function(q) {
+        var container = document.getElementById('cercaEmailInvioResults');
+        if (!container) return;
+        if (q.length < 2) { container.innerHTML = ''; return; }
+        fetch('/ajax/cerca-email/?q=' + encodeURIComponent(q))
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                container.innerHTML = '';
+                (d.results || []).forEach(function(r) {
+                    var div = document.createElement('div');
+                    div.setAttribute('data-ei', r.email);
+                    div.style.cssText = 'padding:8px 12px;cursor:pointer;border-bottom:1px solid #27272a;font-size:13px;color:#EDEDED;background:#09090b;';
+                    div.onmouseover = function(){this.style.background='#1C1C1F';};
+                    div.onmouseout = function(){this.style.background='#09090b';};
+                    div.onclick = function(){
+                        var inp = document.getElementById('emailDestinatario');
+                        if (inp) inp.value = r.email;
+                        container.innerHTML = '';
+                    };
+                    div.textContent = r.label + ' <' + r.email + '>';
+                    container.appendChild(div);
+                });
+            })
+            .catch(function() {});
+    };
+
+
+
+    function toggleAnticipiTFR(el, pk) {
+      var section = document.getElementById('anticipiTfrSection');
+      if (!section) return;
+      var vis = section.style.display !== 'none';
+      section.style.display = vis ? 'none' : 'block';
+      var chevron = el.querySelector('.bi-chevron-down');
+      if (chevron) chevron.style.transform = vis ? '' : 'rotate(180deg)';
+      if (!vis) caricaAnticipiTFR(pk);
+    }
+    function caricaAnticipiTFR(pk) {
+      if (!pk) { var inp = document.getElementById('dynamicForm'); if (inp) pk = inp.getAttribute('data-contratto-pk'); }
+      if (!pk) { var m = document.querySelector('[data-contratto-pk]'); if (m) pk = m.getAttribute('data-contratto-pk'); }
+      if (!pk) return;
+      fetch('/ajax/lista-anticipi-tfr/' + pk + '/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (!d.success) return;
+          var list = document.getElementById('anticipiTfrList');
+          if (!list) return;
+          var html = '';
+          if (d.items.length === 0) {
+            html = '<div style="font-size:11px;color:#666;padding:4px 0;">Nessun anticipo TFR registrato.</div>';
+          } else {
+            html = '<div style="font-size:10px;color:#8A8F98;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Storico anticipi</div>';
+            for (var i = 0; i < d.items.length; i++) {
+              var a = d.items[i];
+              html += '<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:11px;">';
+              html += '<span style="font-weight:600;color:#f59e0b;">\u20ac ' + a.importo + '</span>';
+              html += '<span style="color:#8A8F98;">' + a.data + '</span>';
+              if (a.note) html += '<span style="color:#666;font-size:10px;">(' + a.note + ')</span>';
+              html += '<span class="ml-auto"><button type="button" onclick="eliminaAnticipoTFR(' + a.pk + ')" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:6px;color:#f87171;cursor:pointer;font-size:11px;font-weight:600;padding:4px 10px;"><i class="bi bi-x-circle me-1"></i>Elimina</button></span>';
+              html += '</div>';
+            }
+            html += '<div style="font-size:11px;font-weight:600;color:#EDEDED;padding:4px 6px;">Totale: \u20ac ' + d.totale + '</div>';
+          }
+          list.innerHTML = html;
+          var cnt = document.getElementById('anticipiTfrCount');
+          if (cnt) cnt.textContent = '(' + d.items.length + ')';
+        });
+    }
+    function salvaAnticipoTFR(contrattoPk) {
+      var importo = document.getElementById('anticipoImporto');
+      var data = document.getElementById('anticipoData');
+      var note = document.getElementById('anticipoNote');
+      if (!importo || !importo.value) { mostraToast('Inserire un importo.', false); return; }
+      var csrfSalva = document.querySelector('[name=csrfmiddlewaretoken]');
+      var tokenSalva = csrfSalva ? csrfSalva.value : '';
+      fetch('/ajax/salva-anticipo-tfr/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': tokenSalva, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contratto_pk: contrattoPk, importo: importo.value, data: data ? data.value : '', note: note ? note.value : '' })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) {
+          mostraToast('Anticipo TFR salvato.', true);
+          if (importo) importo.value = '';
+          if (note) note.value = '';
+          if (data) data.value = '';
+          caricaAnticipiTFR(contrattoPk);
+        } else {
+          mostraToast('Errore: ' + (d.error || 'Salvataggio fallito.'), false);
+        }
+      })
+      .catch(function(err) { mostraToast('Errore di rete: ' + err.message, false); });
+    }
+    function eliminaAnticipoTFR(pk) {
+      if (!confirm('Eliminare questo anticipo TFR?')) return;
+      var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+      var token = csrf ? csrf.value : '';
+      fetch('/ajax/elimina-anticipo-tfr/' + pk + '/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': token }
+      })
+      .then(function(r) {
+        var ct = r.headers.get('content-type') || '';
+        if (ct.indexOf('application/json') === -1 && ct.indexOf('text/json') === -1) {
+          throw new Error('Risposta non valida dal server');
+        }
+        return r.json();
+      })
+      .then(function(d) {
+        if (d.success) { mostraToast('Anticipo eliminato.', true); caricaAnticipiTFR(null); }
+        else { mostraToast('Errore: ' + (d.error || 'Eliminazione fallita.'), false); }
+      })
+      .catch(function(err) { mostraToast('Errore di rete: ' + err.message, false); });
+    }
+
+    function toggleProspettoTfr(el, pk) {
+      var section = document.getElementById('prospettoTfrSection');
+      if (!section) return;
+      var vis = section.style.display !== 'none';
+      section.style.display = vis ? 'none' : 'block';
+      var chevron = el.querySelector('.bi-chevron-down');
+      if (chevron) chevron.style.transform = vis ? '' : 'rotate(180deg)';
+      if (!vis) caricaProspettoTfr(pk);
+    }
+
+    window.caricaProspettoTfr = function(pk) {
+      var content = document.getElementById('prospettoTfrContent');
+      var table = document.getElementById('prospettoTfrTabella');
+      var riassunto = document.getElementById('prospettoTfrRiassunto');
+      var count = document.getElementById('prospettoTfrCount');
+      if (!pk || !table) return;
+      content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#8A8F98;"><i class="bi bi-hourglass-split me-1"></i> Caricamento...</div>';
+      fetch('/ajax/prospetto-tfr/' + pk + '/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.errore) { content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;"></div>'; content.firstChild.textContent = d.errore; return; }
+          if (!d.prospetto || d.prospetto.length === 0) {
+            content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#545;">Nessun dato TFR (contratto INCLUSO o senza data inizio TFR).</div>';
+            return;
+          }
+          content.style.display = 'none';
+          table.style.display = 'block';
+          if (count) count.textContent = '(' + d.prospetto.length + ')';
+          var h = '<table style="width:100%;border-collapse:collapse;font-size:11px;">';
+          h += '<thead><tr style="background:rgba(255,255,255,0.03);">';
+          h += '<th style="padding:6px 8px;text-align:left;color:#8A8F98;">Anno</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Mesi</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Accantonato</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Rivalutazione</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Totale</th></tr></thead><tbody>';
+          d.prospetto.forEach(function(r) {
+            var rivClass = d.applica_rivalutazione && r.rivalutazione > 0 ? 'style="color:#a78bfa;"' : '';
+            h += '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+            h += '<td style="padding:5px 8px;">' + r.anno + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;">' + r.mesi + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;">€ ' + r.accantonato.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;" ' + rivClass + '>€ ' + r.rivalutazione.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;font-weight:600;">€ ' + r.totale_progressivo.toFixed(2) + '</td>';
+            h += '</tr>';
+          });
+          h += '</tbody></table>';
+          table.innerHTML = h;
+          riassunto.style.display = 'block';
+          var label = d.applica_rivalutazione ? ' (con rivalutazione)' : ' (senza rivalutazione)';
+          riassunto.innerHTML = '<div style="display:flex;gap:16px;flex-wrap:wrap;">' +
+            '<span><span style="color:#8A8F98;">Accantonato:</span> <strong>€ ' + d.solo_accantonato.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Rivalutazione:</span> <strong style="color:#a78bfa;">€ ' + d.rivalutazione_totale.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Totale' + label + ':</span> <strong class="c-green">€ ' + d.totale.toFixed(2) + '</strong></span></div>';
+        })
+        .catch(function(err) {
+          content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;">Errore di caricamento: ' + err.message + '</div>';
+        });
+    };
+
+    function toggleStoricoModifiche(el, pk) {
+      var section = document.getElementById('storicoModificheSection');
+      if (!section) return;
+      var vis = section.style.display !== 'none';
+      section.style.display = vis ? 'none' : 'block';
+      var chevron = el.querySelector('.bi-chevron-down');
+      if (chevron) chevron.style.transform = vis ? '' : 'rotate(180deg)';
+      if (!vis) caricaStoricoModifiche(pk);
+    }
+    function caricaStoricoModifiche(pk) {
+      var list = document.getElementById('storicoModificheList');
+      if (!list) return;
+      if (!pk) return;
+      list.innerHTML = '<div style="color:#8A8F98;">Caricamento...</div>';
+      fetch('/ajax/storico-modifiche-contratto/' + pk + '/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (!d.success) { list.innerHTML = '<div class="c-red">' + (d.error || 'Errore') + '</div>'; return; }
+          list.innerHTML = d.html;
+          var cnt = document.getElementById('storicoModificheCount');
+          if (cnt) cnt.textContent = '(' + d.count + ')';
+        })
+        .catch(function(err) { list.innerHTML = '<div class="c-red">Errore: ' + err.message + '</div>'; });
+    }
+
+
+
+    /* --- Toggle History (sessione) --- */
+    document.addEventListener('change', function(e) {
+      var toggle = e.target.closest('.toggle-switch input[type="checkbox"]');
+      if (toggle) {
+        var id = toggle.id;
+        var label = '';
+        var parentLabel = toggle.closest('.toggle-switch');
+        if (parentLabel) {
+          var textEl = parentLabel.previousElementSibling || parentLabel.parentElement.querySelector('.toggle-label');
+          label = textEl ? (textEl.textContent || '').trim() : '';
+        }
+        if (!label) label = id || 'toggle';
+        window.toggleChange(id || label, label, toggle.checked);
+      }
+    });
+    window._toggleHistory = [];
+    window._toggleHistory = [];
+    window.toggleChange = function(id, label, valore) {
+      if (!id) return;
+      _toggleHistory = _toggleHistory.filter(function(t) { return t.id !== id; });
+      _toggleHistory.push({ id: id, label: label, valore: valore, ora: new Date().toLocaleTimeString() });
+      if (_toggleHistory.length > 50) _toggleHistory.shift();
+      aggiornaToggleHistoryBadge();
+    };
+    window.mostraToggleHistory = function() {
+      if (_toggleHistory.length === 0) { mostraToast('Nessuna modifica in questa sessione.', false); return; }
+      var h = '<div style="max-height:400px;overflow-y:auto;">';
+      _toggleHistory.slice().reverse().forEach(function(t) {
+        var icona = t.valore ? 'bi-toggle-on text-success' : 'bi-toggle-off text-muted';
+        h += '<div style="display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid #27282D;font-size:12px;">';
+        h += '<i class="bi ' + icona + '" style="font-size:16px;"></i>';
+        h += '<span style="flex:1;color:#EDEDED;">' + (t.label || t.id) + '</span>';
+        h += '<span style="color:#8A8F98;font-size:10px;">' + t.ora + '</span></div>';
+      });
+      h += '</div>';
+      var m = document.createElement('div');
+      m.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#17181C;border:1px solid #27282D;border-radius:14px;padding:20px;z-index:99999;min-width:320px;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.5);';
+      m.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><span style="font-weight:700;color:#EDEDED;font-size:14px;"><i class="bi bi-clock-history me-2"></i>Cronologia Toggles</span><button type="button" onclick="this.parentElement.parentElement.remove()" aria-label="Chiudi cronologia" style="background:none;border:none;color:#888;font-size:20px;cursor:pointer;">&times;</button></div>' + h +
+        '<div style="margin-top:12px;text-align:center;"><button type="button" class="btn btn-sm btn-ghost-danger" onclick="window._toggleHistory=[];this.parentElement.parentElement.remove();mostraToast(\'Cronologia cancellata\',true);">Cancella cronologia</button></div>';
+      document.body.appendChild(m);
+    };
+    function aggiornaToggleHistoryBadge() {
+      var badge = document.getElementById('toggleHistoryBadge');
+      if (!badge) return;
+      badge.textContent = _toggleHistory.length || '';
+      badge.style.display = _toggleHistory.length > 0 ? 'inline' : 'none';
+    }
+    window.apriCcnlOcchio = function() {
+        window.apriCcnlOcchioPopup();
+    };
+    window.apriCcnlOcchioPopup = function(pk, anno) {
+        if (!pk) { var _btn = document.getElementById('btnCcnlOcchio'); if (_btn) pk = _btn.dataset.pk; }
+        if (!anno) { var _ann = document.getElementById('fAnno'); if (_ann) anno = _ann.value; }
+        if (!pk) { mostraToast('Seleziona un contratto.', false); return; }
+        if (!anno) anno = new Date().getFullYear();
+        window.open('/ccnl-occhio/popup/?contratto_pk=' + pk + '&anno=' + anno, '_blank', 'width=900,height=1000,scrollbars=yes');
+    };
+    window.rigeneraDocumentiCessazione = function(btn) {
+      var pk = btn.dataset.pk;
+      if (!pk) { mostraToast('Errore: pk mancante', false); return; }
+      if (!confirm('Rigenerare i documenti di cessazione? Verranno create una nuova ultima busta paga e una nuova liquidazione TFR.')) return;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Rigenerazione...';
+      fetch('/ajax/rigenera-documenti-cessazione/' + pk + '/', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCSRFToken() },
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) {
+          mostraToast('Documenti cessazione rigenerati!', true);
+        } else {
+          mostraToast(d.errore || 'Errore rigenerazione', false);
+        }
+        btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Rigenera documenti cessazione';
+        btn.disabled = false;
+      }).catch(function(e) {
+        mostraToast('Errore di rete', false);
+        btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Rigenera documenti cessazione';
+        btn.disabled = false;
+      });
+    };
+    document.addEventListener('click', function(e) {
+        var el = e.target.closest('.btn-duplica');
+        if (el) {
+            e.preventDefault();
+            loadAjaxForm(el.getAttribute('data-url'), 'Duplica ' + (el.getAttribute('data-titolo') || ''));
+            return;
+        }
+        el = e.target.closest('.btn-elimina');
+        if (el) {
+            e.preventDefault();
+            deleteUrl = el.getAttribute('data-url');
+            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+            return;
+        }
+    });
+    /* --- Draggable anteprima / generatore documenti frame --- */
+    window.anteprimaContrattoPk = null;
+    window._modelloSelezionatoPk = null;
+    window.apriMailDatore = function(pk) {
+        var frame = document.getElementById('previewFrame');
+        var content = document.getElementById('previewFrameContent');
+        var pdfBtn = document.getElementById('previewFramePdfBtn');
+        var backBtn = document.getElementById('previewFrameBackBtn');
+        var titleText = document.getElementById('previewFrameTitleText');
+        if (!frame || !content) return;
+        frame.style.display = 'flex';
+        pdfBtn.style.display = 'none';
+        backBtn.style.display = 'none';
+        titleText.textContent = 'Invia email al datore';
+        content.innerHTML = '<div class="empty-state"><div class="spinner-border c-accent"></div><p class="mt-3 small">Caricamento...</p></div>';
+        fetch('/ajax/mail-datore/' + pk + '/')
+            .then(function(r) { return r.text(); })
+            .then(function(html) { content.innerHTML = html; })
+.catch(function() { content.innerHTML = '<div class="p-4 c-red">Errore di caricamento.</div>'; });
+    };
+
+    window.inviaMailDatore = function(event, pk) {
+        event.preventDefault();
+        var dest = document.getElementById('emailDestinatario');
+        var sel = document.getElementById('modelloMail');
+        if (!dest || !sel) return;
+        var modelloPk = sel.value;
+        if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+        var btn = event.target.querySelector('button[type="submit"]');
+        if (btn) { btn.disabled = true; btn.textContent = 'Invio...'; }
+        fetch('/ajax/mail-datore/' + pk + '/', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRFToken': getCSRFToken()},
+            body: JSON.stringify({destinatario: dest.value, modello_mail_pk: modelloPk})
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.ok) { closeActionPanel(); if (window.closePreviewFrame) window.closePreviewFrame(); mostraToast(data.msg, false); }
+            else { mostraToast(data.error || 'Errore invio.', false); }
+        })
+        .catch(function() { mostraToast('Errore di rete.', false); })
+        .finally(function() { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-send"></i> Invia'; } });
+    };
+
+    window.apriInvioBusta = function(pk, mese, anno) {
+        var frame = document.getElementById('previewFrame');
+        var content = document.getElementById('previewFrameContent');
+        var backBtn = document.getElementById('previewFrameBackBtn');
+        var titleText = document.getElementById('previewFrameTitleText');
+        if (!frame || !content) return;
+        frame.style.display = 'flex';
+        backBtn.style.display = 'none';
+        titleText.textContent = 'Generazione busta paga...';
+        content.innerHTML = '<div class="empty-state"><div class="spinner-border c-accent"></div><p class="mt-3 small">Generazione busta paga in corso...</p></div>';
+        fetch('/ajax/genera-busta-per-email/' + pk + '/', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRFToken': getCSRFToken()},
+            body: JSON.stringify({mese: mese || (new Date().getMonth() + 1), anno: anno || new Date().getFullYear()})
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d.ok && d.doc_pk) {
+                titleText.textContent = 'Invia busta paga via email';
+                content.innerHTML = '<div class="empty-state"><div class="spinner-border c-accent"></div><p class="mt-3 small">Caricamento form...</p></div>';
+                return fetch('/ajax/invia-documento-email/' + d.doc_pk + '/').then(function(r) { return r.text(); }).then(function(html) { content.innerHTML = html; });
+            } else {
+                content.innerHTML = '<div class="p-4" style="color:#f87171;text-align:center;"><i class="bi bi-exclamation-triangle fs-2"></i><p class="mt-2">' + (d.error || 'Errore generazione busta paga.') + '</p></div>';
+            }
+        })
+        .catch(function() {
+            content.innerHTML = '<div class="p-4" style="color:#f87171;text-align:center;">Errore di rete.</div>';
+        });
+    };
+
+    window.anteprimaEmailDatore = function(pk) {
+        var sel = document.getElementById('modelloMail');
+        if (!sel) return;
+        var modelloPk = sel.value;
+        if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+        var oldBox = document.getElementById('emailPreviewDatoreFrame');
+        if (oldBox) { oldBox.parentElement.removeChild(oldBox); }
+        fetch('/ajax/anteprima-email-datore/' + pk + '/', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRFToken': getCSRFToken()},
+            body: JSON.stringify({modello_mail_pk: modelloPk})
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) { mostraToast(data.error, false); return; }
+            var box = document.createElement('div');
+            box.id = 'emailPreviewDatoreFrame';
+            box.style.cssText = 'position:fixed;top:80px;right:24px;width:560px;background:#17181C;border:1px solid #27282D;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:10050;font-family:inherit;';
+            box.innerHTML =
+                '<div style="display:flex;align-items:center;justify-content:space-between;background:#17181C;padding:12px 16px;border-radius:12px 12px 0 0;border-bottom:1px solid #27282D;">' +
+                    '<span class="value-busta"><i class="bi bi-envelope-paper" style="margin-right:8px;color:#5E6AD2;"></i>Anteprima Email Datore</span>' +
+                    '<button type="button" onclick="this.parentElement.parentElement.style.display=\'none\'" style="background:none;border:none;color:#8A8F98;font-size:18px;cursor:pointer;padding:0;line-height:1;">\u00d7</button>' +
+                '</div>' +
+                '<div style="padding:12px 16px;background:#0E0F11;border-bottom:1px solid #27282D;font-size:13px;font-weight:600;color:#fafafa;">' + (data.oggetto || '') + '</div>' +
+                '<div style="padding:16px;overflow-y:auto;max-height:65vh;background:#09090B;border-radius:0 0 12px 12px;font-size:13px;color:#d4d4d8;line-height:1.6;">' + (data.corpo || '') + '</div>';
+            document.body.appendChild(box);
+        })
+        .catch(function() { mostraToast('Errore caricamento anteprima.', false); });
+    };
+
+    window.apriGeneraDocumento = function(pk) {
+        window.anteprimaContrattoPk = pk;
+        window._modelloSelezionatoPk = null;
+        var frame = document.getElementById('previewFrame');
+        var content = document.getElementById('previewFrameContent');
+        var pdfBtn = document.getElementById('previewFramePdfBtn');
+        var backBtn = document.getElementById('previewFrameBackBtn');
+        var titleText = document.getElementById('previewFrameTitleText');
+        if (!frame || !content || !pdfBtn || !backBtn || !titleText) return;
+        frame.style.display = 'flex';
+        pdfBtn.style.display = 'none';
+        backBtn.style.display = 'none';
+        titleText.textContent = 'Genera documento';
+        content.innerHTML = '<div class="empty-state"><div class="spinner-border c-accent"></div><p class="mt-3 small">Caricamento modelli...</p></div>';
+        fetch('/ajax/template-selector/' + pk + '/')
+            .then(function(r) { if (!r.ok) throw new Error('Errore ' + r.status); return r.text(); })
+            .then(function(html) { content.innerHTML = html; setTimeout(function() { var inp = document.getElementById('tplSearch'); if (inp) inp.focus(); }, 100); })
+            .catch(function(e) { content.innerHTML = '<div style="padding:40px;color:#ff6b6b;text-align:center;"><i class="bi bi-exclamation-triangle fs-2"></i><p class="mt-2">Errore: ' + e.message + '</p></div>'; });
+        /* Init drag once */
+        if (!window._dragInit) {
+            window._dragInit = true;
+            var dragObj = null;
+            var titleBar = document.getElementById('previewFrameTitle');
+            if (titleBar) {
+                titleBar.addEventListener('mousedown', function(e) {
+                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+                    var r = frame.getBoundingClientRect();
+                    dragObj = { offsetX: e.clientX - r.left, offsetY: e.clientY - r.top };
+                    e.preventDefault();
+                });
+            }
+            document.addEventListener('mousemove', function(e) {
+                if (!dragObj) return;
+                var newLeft = e.clientX - dragObj.offsetX;
+                var newTop = e.clientY - dragObj.offsetY;
+                newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - frame.offsetWidth));
+                newTop = Math.max(0, Math.min(newTop, window.innerHeight - frame.offsetHeight));
+                frame.style.left = newLeft + 'px';
+                frame.style.top = newTop + 'px';
+                frame.style.right = 'auto';
+                frame.style.bottom = 'auto';
+            });
+            document.addEventListener('mouseup', function() { dragObj = null; });
+        }
+    };
+    window.selezionaTemplate = function(contrattoPk, modelloPk) {
+        window._modelloSelezionatoPk = modelloPk;
+        var content = document.getElementById('previewFrameContent');
+        var pdfBtn = document.getElementById('previewFramePdfBtn');
+        var backBtn = document.getElementById('previewFrameBackBtn');
+        var titleText = document.getElementById('previewFrameTitleText');
+        if (!content || !pdfBtn || !backBtn || !titleText) return;
+        content.innerHTML = '<div class="empty-state"><div class="spinner-border c-accent"></div><p class="mt-3 small">Caricamento anteprima...</p></div>';
+        pdfBtn.style.display = 'none';
+        backBtn.style.display = 'inline-flex';
+        titleText.textContent = 'Anteprima documento';
+        fetch('/ajax/anteprima-documento/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+            body: JSON.stringify({contratto_pk: contrattoPk, modello_pk: modelloPk})
+        })
+            .then(function(r) { if (!r.ok) throw new Error('Errore ' + r.status); return r.json(); })
+            .then(function(data) {
+                titleText.textContent = data.oggetto || 'Documento';
+                var bodyHtml = (data.corpo || '').replace(/\n/g, '<br>');
+                var h = '<div style="padding:24px 28px;">';
+                h += '<div style="font-size:13px;font-weight:600;color:#EDEDED;margin-bottom:12px;">' + $esc(data.oggetto || '') + '</div>';
+                h += '<hr style="border:none;border-top:1px solid #27282D;margin:12px 0;">';
+                h += '<div style="font-size:12px;color:#8A8F98;line-height:1.7;">' + bodyHtml + '</div>';
+                h += '</div>';
+                content.innerHTML = h;
+                pdfBtn.style.display = 'inline-flex';
+                pdfBtn.onclick = function(e) {
+                    e.preventDefault();
+                    var btn = this;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                    btn.style.pointerEvents = 'none';
+                    fetch('/genera-pdf-da-template/' + contrattoPk + '/' + modelloPk + '/?format=json', {
+                        method: 'GET',
+                        headers: {'X-CSRFToken': _csrfToken()}
+                    })
+                    .then(function(r){ return r.json(); })
+                    .then(function(data){
+                        if (data.ok) {
+                            apriNelPannello(data.url, data.pk);
+                            aggiornaConteggioDocumento(contrattoPk);
+                        } else {
+                            _stampaToast(data.errore || 'Errore generazione PDF', false);
+                        }
+                    })
+                    .catch(function(err){ _stampaToast('Errore: '+err, false); })
+                    .finally(function(){
+                        btn.innerHTML = '<i class="bi bi-file-pdf"></i> Salva PDF';
+                        btn.style.pointerEvents = '';
+                    });
+                };
+            })
+            .catch(function(e) { content.innerHTML = '<div style="padding:40px;color:#ff6b6b;text-align:center;"><i class="bi bi-exclamation-triangle fs-2"></i><p class="mt-2">Errore: ' + e.message + '</p></div>'; });
+    };
+    window.tornaSelettoreTemplate = function() {
+        var pk = window.anteprimaContrattoPk;
+        if (!pk) { chiudiAnteprimaContratto(); return; }
+        window._modelloSelezionatoPk = null;
+        var content = document.getElementById('previewFrameContent');
+        var pdfBtn = document.getElementById('previewFramePdfBtn');
+        var backBtn = document.getElementById('previewFrameBackBtn');
+        var titleText = document.getElementById('previewFrameTitleText');
+        if (content) content.innerHTML = '<div class="empty-state"><div class="spinner-border c-accent"></div><p class="mt-3 small">Caricamento modelli...</p></div>';
+        if (pdfBtn) pdfBtn.style.display = 'none';
+        if (backBtn) backBtn.style.display = 'none';
+        if (titleText) titleText.textContent = 'Genera documento';
+        fetch('/ajax/template-selector/' + pk + '/')
+            .then(function(r) { if (!r.ok) throw new Error('Errore ' + r.status); return r.text(); })
+            .then(function(html) { if (content) { content.innerHTML = html; setTimeout(function() { var inp = document.getElementById('tplSearch'); if (inp) inp.focus(); }, 100); } })
+            .catch(function(e) { if (content) content.innerHTML = '<div style="padding:40px;color:#ff6b6b;text-align:center;"><i class="bi bi-exclamation-triangle fs-2"></i><p class="mt-2">Errore: ' + e.message + '</p></div>'; });
+    };
+    window.chiudiAnteprimaContratto = function() {
+        document.getElementById('previewFrame').style.display = 'none';
+        window.anteprimaContrattoPk = null;
+        window._modelloSelezionatoPk = null;
+    };
+    window.$esc = function(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    };
+    window.aggiornaConteggioDocumento = function(pk) {
+        var el = document.getElementById('docCount-' + pk);
+        if (!el) return;
+        fetch('/ajax/documenti-contratto/' + pk + '/')
+            .then(function(r) { return r.json(); })
+            .then(function(d) { el.textContent = d.totale || 0; })
+            .catch(function() {});
+    };
+    window.filtraTemplate = function(q) {
+        q = (q || '').toLowerCase().trim();
+        document.querySelectorAll('#tplList .tpl-group').forEach(function(g) {
+            var visibili = 0;
+            g.querySelectorAll('.tpl-item').forEach(function(it) {
+                var match = !q || (it.getAttribute('data-search') || '').indexOf(q) !== -1;
+                it.classList.toggle('tpl-hidden', !match);
+                if (match) visibili++;
+            });
+            g.classList.toggle('tpl-hidden', visibili === 0);
+        });
+    };
+
+    // ===== GLOBAL renderBusta (same logic as calcoli_list.html) =====
+    window.renderBusta = function(d, targetId) {
+        targetId = targetId || 'bustaPreviewContent';
+        var el = document.getElementById(targetId);
+        if (!el) return;
+        var sogliaLabel = d.sopra_soglia ? 'PI\u00D9 DI ' + Math.floor(Number(d.soglia_ore)) + ' ORE SETTIMANALI' : 'MENO DI ' + Math.floor(Number(d.soglia_ore)) + ' ORE SETTIMANALI';
+        var sogliaBadgeBg = d.sopra_soglia ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)';
+        var sogliaBadgeColor = d.sopra_soglia ? '#34d399' : '#f87171';
+        var sabatiStr = '';
+        for (var si = 0; si < d.num_sabati; si++) sabatiStr += '\u2713';
+        function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+        function h2r(hex) { var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16); return r+','+g+','+b; }
+        var h = '<div style="background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;font-size:12px;">';
+        h += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
+        h += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-1"></i>Busta Paga \u2014 ' + esc(d.mese_nome) + ' ' + d.anno + '</div>';
+        h += '<div class="row g-2 mt-2">';
+        h += '<div class="col-md-6"><span class="label-info">Datore</span><span class="value-busta">' + esc(d.datore) + '</span><span class="c-11-m" style="display:block;">' + esc(d.datore_indirizzo) + (d.datore_comune ? ' - ' + esc(d.datore_comune) : '') + '</span></div>';
+        h += '<div class="col-md-6"><span class="label-info">Lavoratore</span><span class="value-busta">' + esc(d.lavoratore) + '</span><span class="c-11-m" style="display:block;">' + esc(d.lavoratore_indirizzo) + (d.lavoratore_comune ? ' - ' + esc(d.lavoratore_comune) : '') + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Data inizio</span><span class="value-busta">' + esc(d.data_assunzione) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Tipo contratto</span><span class="value-busta">' + esc(d.tipo_contratto) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Ore settimanali</span><span style="font-size:13px;font-weight:600;color:#10b981;">' + Math.ceil(d.ore_settimanali) + ' h</span> <span style="display:inline-block;margin-top:2px;padding:1px 8px;border-radius:4px;font-size:10px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Settimane mensili</span><span class="value-busta">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Ore mese</span><span style="font-size:13px;font-weight:600;color:#10b981;">' + d.ore_mensili + ' h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(INPS: ' + d.ore_inps + ' h)</span></span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span class="c-11-m" style="display:block;">' + esc(d.descrizione_corta) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Codice Rapporto</span><span class="value-busta-md">' + esc(d.codice_rapporto_inps) + '</span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Paga effettiva INPS</span><span class="value-busta-md">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
+        h += '<div class="col-md-3"><span class="label-info">Paga applicata</span><span class="value-busta-md">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_applicata_mensile.toFixed(2) + '/mese)</span></span></div>';
+        if (d.progetti && d.progetti.length > 0) {
+            h += '<div class="col-12 mt-1"><span class="label-info" style="margin-bottom:4px;">Progetti collegati</span>';
+            for (var pi = 0; pi < d.progetti.length; pi++) {
+                var pr = d.progetti[pi];
+                h += '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:600;margin-right:6px;margin-bottom:4px;border:1px solid ' + esc(pr.colore) + ';background:rgba(' + h2r(pr.colore) + ',0.1);color:' + esc(pr.colore) + ';">' + esc(pr.nome) + '</span>';
+            }
+            h += '</div>';
+        }
+        h += '</div></div>';
+        h += '<div style="padding:20px 24px;"><div class="row g-4">';
+        h += '<div class="col-md-6"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#34d399;font-weight:700;margin-bottom:8px;"><i class="bi bi-currency-euro me-1"></i>Retribuzione Lorda</div>';
+        h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">Paga base <span class="c-11-m">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span><span class="value-busta">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
+        for (var i = 0; i < d.indennita.length; i++) {
+            var ind = d.indennita[i];
+            h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">' + esc(ind.label) + ' <span class="c-11-m">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span><span class="value-busta">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
+        }
+        if (d.scatti_anzianita.valore > 0) {
+            h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">Scatti anzianit\u00e0 <span class="c-11-m">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span><span class="value-busta">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
+        }
+        for (var i = 0; i < d.ratei_pagati.length; i++) {
+            var rp = d.ratei_pagati[i];
+            var calcNote = rp.incluso ? 'Incluso nel lordo mensile' : (rp.totale > 0 ? 'Da corrispondere a fine rapporto' : '');
+            var calcLabel = calcNote ? '<br><span style="font-size:10px;color:#8A8F98;font-style:italic;">' + calcNote + '</span>' : '';
+            h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">' + esc(rp.label) + (rp.incluso ? ' (*)' : '') + ' <span class="c-11-m">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h = \u20AC' + (rp.orario * d.ore_mensili).toFixed(2) + ')</span>' + calcLabel + '</span><span class="value-busta">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
+        }
+        var totalIndennitaRatei = 0;
+        for (var iri = 0; iri < d.indennita.length; iri++) totalIndennitaRatei += d.indennita[iri].totale;
+        for (var irr = 0; irr < d.ratei_pagati.length; irr++) { if (d.ratei_pagati[irr].incluso) totalIndennitaRatei += d.ratei_pagati[irr].orario * d.ore_mensili; }
+        h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:11px;color:#8A8F98;font-style:italic;">Indennit\u00e0 e Ratei pagati</span><span class="value-busta-md">\u20AC ' + totalIndennitaRatei.toFixed(2) + '</span></div>';
+        h += '<div class="d-flex justify-content-between align-items-center py-2 mt-2" style="border-top:2px solid rgba(52,211,153,0.3);"><span style="font-size:13px;font-weight:700;color:#34d399;">TOTALE LORDO</span><span style="font-size:15px;font-weight:800;color:#34d399;">\u20AC ' + d.totale_lordo.toFixed(2) + '</span></div>';
+        h += '</div>';
+        h += '<div class="col-md-6"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;font-weight:700;margin-bottom:8px;"><i class="bi bi-shield me-1"></i>Contributi</div>';
+        h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">INPS <span class="c-11-m">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h \u2014 ' + d.contributi.inps.fascia + ' soglia)</span></span><span class="value-busta">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
+        h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span class="c-11-m">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span><span class="value-busta">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
+        h += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(245,158,11,0.3);"><span style="font-size:13px;font-weight:700;color:#f59e0b;">TOTALE CONTRIBUTI</span><span style="font-size:15px;font-weight:800;color:#f59e0b;">\u20AC ' + d.contributi.totale.toFixed(2) + '</span></div>';
+        h += '<div class="d-flex justify-content-between align-items-center py-1" style="margin-top:4px;"><span style="font-size:11px;color:#8A8F98;">Stima contributi trimestrali</span><span class="value-busta">\u20AC ' + d.contributi.trimestrale_stima.toFixed(2) + '</span></div>';
+        h += '<div style="margin-top:24px;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f87171;font-weight:700;margin-bottom:8px;"><i class="bi bi-dash-circle me-1"></i>Trattenute</div>';
+        if (d.trattenute.convivenza.totale > 0) {
+            h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">Convivenza <span class="c-11-m">(' + esc(d.trattenute.convivenza.dettaglio.join(', ')) + ')</span></span><span class="value-busta">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
+        }
+        if (d.trattenute.ratei_accantonati > 0) {
+            var accNomi = [];
+            for (var ri = 0; ri < d.ratei_pagati.length; ri++) { if (!d.ratei_pagati[ri].incluso && d.ratei_pagati[ri].totale > 0) accNomi.push(d.ratei_pagati[ri].label); }
+            var accNota = accNomi.length > 0 ? '(' + accNomi.join(', ') + ' non pagati)' : '';
+            h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#EDEDED;">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span><span class="value-busta">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
+        }
+        // Riga informativa: valore ratei inclusi nel lordo
+        var totInclusi = 0, nomiInclusi = [];
+        for (var ri = 0; ri < d.ratei_pagati.length; ri++) {
+            if (d.ratei_pagati[ri].incluso) { totInclusi += d.ratei_pagati[ri].orario * d.ore_mensili; nomiInclusi.push(d.ratei_pagati[ri].label); }
+        }
+        if (totInclusi > 0) {
+            h += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);"><span style="font-size:12px;color:#8A8F98;font-style:italic;">di cui ratei gi\u00e0 inclusi nel lordo <span style="font-size:11px;">(' + nomiInclusi.join(', ') + ')</span></span><span style="font-size:12px;font-weight:600;color:#8A8F98;">\u20AC ' + totInclusi.toFixed(2) + '</span></div>';
+        }
+        if (d.trattenute.totale > 0) {
+            h += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(248,113,113,0.3);"><span style="font-size:13px;font-weight:700;color:#f87171;">TOTALE TRATTENUTE</span><span style="font-size:15px;font-weight:800;color:#f87171;">\u20AC ' + d.trattenute.totale.toFixed(2) + '</span></div>';
+        }
+        h += '<div style="margin-top:20px;padding:16px 0;">';
+        h += '<div class="d-flex justify-content-between align-items-center py-1"><span style="font-size:13px;color:#EDEDED;">Budget mensile</span><span style="font-size:14px;font-weight:600;color:#EDEDED;">\u20AC ' + d.budget_mensile.toFixed(2) + '</span></div>';
+        var budget = d.budget_mensile || 1;
+        var usato = budget - d.verifica_copertura;
+        var perc = Math.min(Math.max((usato / budget) * 100, 0), 100);
+        var isOk = d.verifica_copertura >= 0;
+        var barColor = isOk ? '#34d399' : '#f87171';
+        var labelClass = Math.abs(d.verifica_copertura) < 0.01 ? 'zero' : (isOk ? 'positive' : 'negative');
+        var labelText = Math.abs(d.verifica_copertura) < 0.01 ? '\u2713 100%' : (perc.toFixed(0) + '%');
+        h += '<div class="budget-progress">';
+        h += '<span style="font-size:11px;color:#8A8F98;font-style:italic;min-width:70px;">Copertura</span>';
+        h += '<div class="budget-progress-bar-wrap"><div class="budget-progress-bar-fill" style="width:' + perc + '%;background:' + barColor + ';"></div></div>';
+        h += '<span class="budget-progress-label ' + labelClass + '">' + labelText + '</span>';
+        h += '</div>';
+        h += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:1.5px solid #2c5282;margin-top:4px;padding-top:8px;"><span style="font-size:16px;font-weight:800;color:#2c5282;">NETTO IN BUSTA</span><span style="font-size:20px;font-weight:800;color:#2c5282;">\u20AC ' + d.netto.toFixed(2) + '</span></div>';
+        h += '</div></div></div></div>';
+        h += '<div style="padding:16px 24px;border-top:1px solid #27282D;">';
+        if (d.note_datore) {
+            h += '<div style="margin-bottom:10px;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;font-weight:700;display:block;">NOTE DATORE</span><div style="height:4px;"></div><span style="font-size:12px;color:#8A8F98;">' + esc(d.note_datore) + '</span></div><div style="margin-top:10px;padding-top:0;border-top:1px solid #27282D;"></div>';
+        }
+        h += '<div style="margin-top:14px;font-size:11px;color:#8A8F98;line-height:1.6;">Firma del collaboratore familiare <span style="color:#EDEDED;font-weight:600;">' + esc(d.lavoratore) + '</span> per ricevuta e conferma delle ore lavorate e retribuite e quietanza dell\'importo indicato.<div style="margin-top:28px;font-size:11px;color:#8A8F98;line-height:1.6;">Il collaboratore familiare <span style="color:#EDEDED;font-weight:600;">' + esc(d.lavoratore) + '</span> <span style="text-decoration:none;border-bottom:1px solid #8A8F98;display:inline-block;width:360px;">&nbsp;</span></div></div>';
+        h += '<div style="margin-top:8px;margin-bottom:4px;border-top:1px solid #27282D;"></div>';
+        var studioParts = [];
+        if (d.dati_studio) studioParts.push(esc(d.dati_studio));
+        if (d.telefono_studio) studioParts.push('Tel: ' + esc(d.telefono_studio));
+        if (d.email_studio) studioParts.push('Mail: ' + esc(d.email_studio));
+        if (studioParts.length > 0) {
+            h += '<div style="margin-top:14px;padding-top:10px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;"><span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">DATI STUDIO</span><div style="height:4px;"></div>';
+            if (d.logo_buste_paga_url) h += '<img src="' + esc(d.logo_buste_paga_url) + '" style="max-height:50px;max-width:180px;display:block;margin-bottom:4px;" alt="Logo studio">';
+            h += '<span class="label-info">' + studioParts.join(' | ') + '</span></div>';
+        }
+        if (d.alert_contributi_studio) {
+            h += '<div style="margin-top:6px;padding-top:6px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;"><span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">SCADENZE</span><div style="height:4px;"></div><span class="label-info">' + d.alert_contributi_studio + '</span></div>';
+        }
+        if (d.note_avvertenze) {
+            h += '<div style="margin-top:6px;padding-top:6px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;"><span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">NOTE AGGIUNTIVE / AVVERTENZE</span><div style="height:4px;"></div><span class="label-info">' + d.note_avvertenze + '</span></div>';
+        }
+        h += '<div style="margin-top:18px;padding-top:10px;border-top:1.5px solid #27282D;font-size:8px;color:#5C5F66;text-align:center;">Tutti i diritti riservati: \u00e8 vietata la riproduzione, anche parziale, dei contenuti. | Stampata il ' + new Date().toLocaleDateString('it-IT') + '</div>';
+        h += '</div></div>';
+        if (d.progetti_data && d.progetti_data.righe && d.progetti_data.righe.length > 0) {
+            h += '<div style="margin-top:24px;background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;"><div style="padding:16px 24px;"><div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #2c5282;padding-bottom:6px;margin-bottom:12px;"><span style="font-size:15px;font-weight:800;color:#2c5282;">Dettaglio Progetti</span><span style="font-size:11px;color:#8A8F98;">' + esc(d.mese_nome) + ' ' + d.anno + '</span></div><div style="display:table;width:100%;">';
+            h += '<div style="display:table-row;background:rgba(255,255,255,0.04);font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;font-weight:700;"><div style="display:table-cell;padding:6px 4px;">Progetto</div><div class="cell-right">Lordo Progetto</div><div class="cell-right">Unit\u00e0 (Paga/h)</div><div style="display:table-cell;padding:6px 4px;text-align:center;">Ore</div><div class="cell-right">Contrib. Totali</div><div class="cell-right">Ratei ed Indennit\u00e0</div><div class="cell-right">Netto</div></div>';
+            var pd = d.progetti_data;
+            for (var ri = 0; ri < pd.righe.length; ri++) {
+                var rr = pd.righe[ri];
+                h += '<div style="display:table-row;border-bottom:1px solid rgba(255,255,255,0.04);"><div style="display:table-cell;padding:5px 4px;font-size:11px;color:#8A8F98;">' + esc(rr.nome) + '</div><div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.lordo_progetto.toFixed(2) + '</div><div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.paga_oraria.toFixed(4) + '</div><div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:center;">' + rr.ore.toFixed(2) + '</div><div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.contrib.toFixed(2) + '</div><div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.ratei_ind.toFixed(2) + '</div><div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;font-weight:700;">\u20AC ' + rr.netto.toFixed(2) + '</div></div>';
+            }
+            var t = pd.totali;
+            h += '<div style="display:table-row;border-top:2px solid #2c5282;font-size:12px;font-weight:700;color:#2c5282;"><div style="display:table-cell;padding:6px 4px;">TOTALE</div><div class="cell-right">\u20AC ' + t.lordo_progetto.toFixed(2) + '</div><div style="display:table-cell;padding:6px 4px;"></div><div style="display:table-cell;padding:6px 4px;text-align:center;">' + t.ore.toFixed(2) + '</div><div class="cell-right">\u20AC ' + t.contrib.toFixed(2) + '</div><div class="cell-right">\u20AC ' + t.ratei_ind.toFixed(2) + '</div><div class="cell-right"></div></div>';
+            h += '<div style="display:table-row;font-size:14px;font-weight:800;color:#2c5282;"><div class="cell-right" colspan="6">NETTO</div><div class="cell-right">\u20AC ' + t.netto.toFixed(2) + '</div></div>';
+            h += '<div style="margin-top:10px;padding-top:8px;border-top:1px solid #27282D;font-size:11px;color:#8A8F98;">';
+            var riep_parts = [];
+            if (d.indennita && d.indennita.length > 0) {
+                var indItems = [];
+                for (var ii = 0; ii < d.indennita.length; ii++) {
+                    indItems.push(d.indennita[ii].label + ' \u20AC' + d.indennita[ii].totale.toFixed(2));
+                }
+                riep_parts.push('Ind.: ' + indItems.join(' + ') + ' = \u20AC' + d.totale_indennita.toFixed(2) + ' (' + d.indennita.length + ')');
+            }
+            if (d.ratei_pagati && d.ratei_pagati.length > 0) {
+                var rateiInclTot = 0, rateiAccTot = 0, countIncl = 0, countAcc = 0;
+                var inclLabels = [], accLabels = [];
+                for (var ir = 0; ir < d.ratei_pagati.length; ir++) {
+                    var r_ = d.ratei_pagati[ir];
+                    if (r_.incluso) { countIncl++; rateiInclTot += (r_.valore_effettivo || 0); inclLabels.push(r_.label); }
+                    else { countAcc++; rateiAccTot += (r_.valore_effettivo || r_.totale || 0); accLabels.push(r_.label); }
+                }
+                var rateiPart = 'Ratei:';
+                if (countIncl > 0) { rateiPart += ' +\u20AC' + rateiInclTot.toFixed(2) + ' (' + inclLabels.join(',') + ' \u2014 ' + countIncl + ' INCLUSI)'; }
+                if (countAcc > 0) { rateiPart += ' +\u20AC' + rateiAccTot.toFixed(2) + ' (' + accLabels.join(',') + ' \u2014 ' + countAcc + ' NON INCLUSO' + (countAcc > 1 ? ' E ACCANTONATI' : ' E ACCANTONATO') + ')'; }
+                riep_parts.push(rateiPart);
+            }
+            if (d.trattenute && d.trattenute.convivenza) {
+                if (d.trattenute.convivenza.totale > 0) {
+                    riep_parts.push('Conv.: INCLUSA \u20AC' + d.trattenute.convivenza.totale.toFixed(2));
+                } else {
+                    riep_parts.push('Conv.: NON INCLUSA');
+                }
+            }
+            if (d.scatti_anzianita) {
+                if (d.scatti_anzianita.dettaglio && d.scatti_anzianita.dettaglio !== 'NON INCLUSI') {
+                    riep_parts.push('Scatti: ' + d.scatti_anzianita.dettaglio + ' = \u20AC' + d.scatti_anzianita.valore.toFixed(2));
+                } else {
+                    riep_parts.push('Scatti: NON INCLUSI');
+                }
+            }
+            h += riep_parts.join(' &nbsp;|&nbsp; ');
+            h += '</div>';
+            h += '</div></div></div>';
+        }
+        el.innerHTML = h;
+    };
+
+    // ===== BUSTA PAGA PREVIEW (draggable, full calcolo via backend) =====
+    window.anteprimaBustaPaga = function() {
+        var frame = document.getElementById('bustaPreviewFrame');
+        if (!frame) {
+            frame = document.createElement('div');
+            frame.id = 'bustaPreviewFrame';
+            frame.innerHTML =
+                '<div id="bustaPreviewTitle" style="cursor:grab;display:flex;align-items:center;justify-content:space-between;background:#17181C;padding:12px 16px;border-radius:12px 12px 0 0;border-bottom:1px solid #27282D;user-select:none;">' +
+                    '<span class="value-busta"><i class="bi bi-receipt" style="margin-right:8px;color:#06b6d4;"></i>Anteprima Busta Paga</span>' +
+                    '<div style="display:flex;align-items:center;gap:6px;">' +
+                        '<button type="button" id="bustaPdfBtn" onclick="window._downloadBustaPdf()" style="display:none;background:rgba(94,106,210,0.15);border:1px solid rgba(94,106,210,0.25);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:600;color:#5E6AD2;cursor:pointer;"><i class="bi bi-file-pdf"></i> PDF</button>' +
+                        '<button type="button" onclick="document.getElementById(\'bustaPreviewFrame\').style.display=\'none\'" style="background:none;border:none;color:#8A8F98;font-size:18px;cursor:pointer;padding:0;line-height:1;">\u00d7</button>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="padding:8px 16px;background:#09090B;border-bottom:1px solid #27282D;display:flex;gap:8px;align-items:center;">' +
+                    '<select id="bustaMese" style="flex:1;background:#09090B;border:1px solid #27282D;border-radius:6px;color:#EDEDED;font-size:12px;padding:5px 8px;">' +
+                        '<option value="01">Gen</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">Mag</option><option value="06">Giu</option>' +
+                        '<option value="07">Lug</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Ott</option><option value="11">Nov</option><option value="12">Dic</option>' +
+                    '</select>' +
+                    '<select id="bustaAnno" style="flex:1;background:#09090B;border:1px solid #27282D;border-radius:6px;color:#EDEDED;font-size:12px;padding:5px 8px;">' +
+                        (function(){var y=(new Date).getFullYear(),s='';for(var i=y-2;i<=y+2;i++)s+='<option value="'+i+'">'+i+'</option>';return s;})() +
+                    '</select>' +
+                '</div>' +
+                '<div id="bustaPreviewLoading" class="py-4" style="display:none;background:#09090B;">' +
+                    '<div class="skeleton-card" style="background:none;border:none;">' +
+                        '<div class="skeleton skeleton-text" style="width:40%"></div>' +
+                        '<div class="skeleton skeleton-text" style="width:85%"></div>' +
+                        '<div class="skeleton skeleton-text-sm" style="width:55%"></div>' +
+                        '<div class="mt-3" style="display:flex;gap:10px;">' +
+                            '<div class="skeleton skeleton-text" style="width:30%"></div>' +
+                            '<div class="skeleton skeleton-text" style="width:45%"></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div id="bustaPreviewContent" style="padding:0;overflow-y:auto;max-height:520px;background:#09090B;border-radius:0 0 12px 12px;"></div>';
+            frame.style.cssText = 'position:fixed;top:80px;right:24px;width:640px;background:#17181C;border:1px solid #27282D;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:10050;display:none;font-family:inherit;';
+            document.body.appendChild(frame);
+            window._bustaLastPk = null;
+            window._downloadBustaPdf = function() {
+                if (window._bustaLastPk) {
+                    var m = document.getElementById('bustaMese').value;
+                    var a = document.getElementById('bustaAnno').value;
+                    window.open('/ajax/busta-pdf/' + window._bustaLastPk + '/?mese=' + m + '&anno=' + a, '_blank');
+                }
+            };
+            var titleBar = document.getElementById('bustaPreviewTitle');
+            if (titleBar) {
+                var dragObj = null;
+                titleBar.addEventListener('mousedown', function(e) {
+                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SELECT') return;
+                    var r = frame.getBoundingClientRect();
+                    dragObj = { offsetX: e.clientX - r.left, offsetY: e.clientY - r.top };
+                    e.preventDefault();
+                });
+                document.addEventListener('mousemove', function(e) {
+                    if (!dragObj) return;
+                    var newLeft = e.clientX - dragObj.offsetX;
+                    var newTop = e.clientY - dragObj.offsetY;
+                    newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - frame.offsetWidth));
+                    newTop = Math.max(0, Math.min(newTop, window.innerHeight - frame.offsetHeight));
+                    frame.style.left = newLeft + 'px';
+                    frame.style.top = newTop + 'px';
+                    frame.style.right = 'auto';
+                    frame.style.bottom = 'auto';
+                });
+                document.addEventListener('mouseup', function() { dragObj = null; });
+            }
+            document.getElementById('bustaMese').value = String(new Date().getMonth() + 1).padStart(2, '0');
+            document.getElementById('bustaAnno').value = String(new Date().getFullYear());
+        }
+        var form = document.getElementById('dynamicForm');
+        if (!form) return;
+        var content = document.getElementById('bustaPreviewContent');
+        var loading = document.getElementById('bustaPreviewLoading');
+        var pdfBtn = document.getElementById('bustaPdfBtn');
+        if (!content || !loading) return;
+        content.innerHTML = '';
+        loading.style.display = 'block';
+        if (pdfBtn) pdfBtn.style.display = 'none';
+        frame.style.display = 'flex';
+        frame.style.flexDirection = 'column';
+        window._bustaLastPk = null;
+        // Extract pk from URL if editing
+        var pk = null;
+        var m = currentAjaxUrl && currentAjaxUrl.match(/\/modifica-contratto\/(\d+)\//);
+        if (m) pk = m[1];
+        // NEW: save first with ?preview=1
+        if (!pk) {
+            var formData = new FormData(form);
+            var saveUrl = currentAjaxUrl + (currentAjaxUrl.indexOf('?') === -1 ? '?' : '&') + 'preview=1';
+            fetch(saveUrl, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.success && data.pk) {
+                        window._bustaLastPk = data.pk;
+                        currentAjaxUrl = '/ajax/modifica-contratto/' + data.pk + '/';
+                        fetchBusta(data.pk);
+                    } else {
+                        loading.style.display = 'none';
+content.innerHTML = '<div class="p-4 text-center c-red">Errore: impossibile salvare il contratto per l\'anteprima.</div>';
+                    }
+                })
+                .catch(function(e) {
+                    loading.style.display = 'none';
+content.innerHTML = '<div class="p-4 text-center c-red">Errore di connessione: ' + e.message + '</div>';
+                });
+        } else {
+            window._bustaLastPk = pk;
+            fetchBusta(pk);
+        }
+        function fetchBusta(pk) {
+            var mese = document.getElementById('bustaMese').value;
+            var anno = document.getElementById('bustaAnno').value;
+            fetch('/ajax/calcola-busta/' + pk + '/?mese=' + mese + '&anno=' + anno, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function(r) { if (!r.ok) throw new Error('Errore server: ' + r.status); return r.json(); })
+            .then(function(d) {
+                loading.style.display = 'none';
+                if (d.errore) {
+                    content.innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i><span></span></div>'; content.querySelector('span').textContent = d.errore;
+                    if (pdfBtn) pdfBtn.style.display = 'none';
+                    return;
+                }
+                window.renderBusta(d, 'bustaPreviewContent');
+                if (pdfBtn) pdfBtn.style.display = '';
+            })
+            .catch(function(e) {
+                loading.style.display = 'none';
+content.innerHTML = '<div class="p-4 text-center c-red">Errore: ' + e.message + '</div>';
+            });
+        }
+    };
+
+    // ===== PREVISIONE BUSTA PAGA STEP 4 (LIVE) =====
+    window.caricaPrevisioneBustaStep4 = function() {
+        var content = document.getElementById('bustaStepContent');
+        var loading = document.getElementById('bustaStepLoading');
+        var badge = document.getElementById('bustaStepBadge');
+        var meseSel = document.getElementById('bustaStepMese');
+        var annoSel = document.getElementById('bustaStepAnno');
+        if (!content || !loading) return;
+        if (meseSel) meseSel.value = String(new Date().getMonth() + 1).padStart(2, '0');
+        if (annoSel) annoSel.value = String(new Date().getFullYear());
+        var mese = meseSel ? meseSel.value : String(new Date().getMonth() + 1).padStart(2, '0');
+        var anno = annoSel ? annoSel.value : String(new Date().getFullYear());
+        var form = document.getElementById('dynamicForm');
+        if (!form) { content.innerHTML = '<div class="error-state">Form non trovato.</div>'; return; }
+        content.innerHTML = '';
+        loading.style.display = 'block';
+        if (badge) badge.style.display = 'none';
+        var doFetchPreview = function(pkVal) {
+            fetch('/ajax/calcola-busta/' + pkVal + '/?mese=' + mese + '&anno=' + anno)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    loading.style.display = 'none';
+                    if (data.error) { content.innerHTML = '<div class="error-state">' + data.error + '</div>'; return; }
+                    window.renderBusta(data, 'bustaStepContent');
+                    if (badge) { badge.style.display = ''; badge.textContent = 'Aggiornato'; }
+                })
+                .catch(function(e) {
+                    loading.style.display = 'none';
+                    content.innerHTML = '<div class="error-state">Errore: ' + e.message + '</div>';
+                });
+        };
+        // Always auto-save first, then fetch preview
+        var formData = new FormData(form);
+        var saveUrl = currentAjaxUrl + (currentAjaxUrl.indexOf('?') === -1 ? '?' : '&') + 'preview=1';
+        fetch(saveUrl, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success && data.pk) {
+                    currentAjaxUrl = '/ajax/modifica-contratto/' + data.pk + '/';
+                    doFetchPreview(data.pk);
+                } else if (data.success && currentAjaxUrl.match(/\/modifica-contratto\/(\d+)\//)) {
+                    var m2 = currentAjaxUrl.match(/\/modifica-contratto\/(\d+)\//);
+                    if (m2) doFetchPreview(m2[1]);
+                } else {
+                    loading.style.display = 'none';
+                    content.innerHTML = '<div class="error-state">Errore: impossibile salvare per l\'anteprima.</div>';
+                }
+            })
+            .catch(function(e) {
+                loading.style.display = 'none';
+                content.innerHTML = '<div class="error-state">Errore di connessione: ' + e.message + '</div>';
+            });
+    };
+
+    // ===== MULTI-STEP FORM (contratto) — lightweight init =====
+    window.initStepForm = function(container) {
+        var form = container.querySelector('#dynamicForm');
+        if (!form) return;
+        if (form.hasAttribute('data-step-init')) return;
+        if (typeof currentAjaxUrl === 'string' && currentAjaxUrl.indexOf('/modifica-contratto/') !== -1) { initDescrizioni(form); return; }
+        form.setAttribute('data-step-init', '1');
+
+        // If the new template with inline step-dots is detected, just set defaults
+        if (form.querySelector('.step-dot')) {
+            setDefaultSelections(form);
+            initDescrizioni(form);
+            window.vaiAStep(1);
+            initProgettiFilter();
+            return;
+        }
+
+        var stepEls = form.querySelectorAll('[data-step]');
+        if (!stepEls.length) return;
+
+        var totalSteps = 4;
+        var stepLabels = ['Anagrafiche', 'Dettagli', 'Opzioni', 'Note'];
+        var currentStep = 1;
+        var scrollArea = form.querySelector('div[style*="overflow-y: auto"]');
+        if (!scrollArea) return;
+
+        // --- Step indicator (circles + labels combined) ---
+        var indicator = document.createElement('div');
+        indicator.style.cssText = 'display:flex;align-items:center;justify-content:center;margin-bottom:14px;padding:12px 0;flex-shrink:0;';
+        var inner = '<div style="display:flex;width:100%;max-width:400px;">';
+        for (var i = 1; i <= totalSteps; i++) {
+            inner += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;">' +
+                '<div class="step-circle" data-s="' + i + '" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;background:#27282D;border:2px solid #333;transition:all 0.3s;cursor:default;">' + i + '</div>' +
+                '<span class="step-label" style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:#8A8F98;font-weight:600;margin-top:4px;text-align:center;">' + stepLabels[i - 1] + '</span>' +
+                '</div>';
+            if (i < totalSteps) {
+                inner += '<div style="flex:0 0 12px;display:flex;align-items:center;justify-content:center;"><div class="step-line" style="width:100%;height:2px;background:#27282D;transition:background 0.3s;"></div></div>';
+            }
+        }
+        inner += '</div>';
+        indicator.innerHTML = inner;
+        scrollArea.insertBefore(indicator, scrollArea.firstChild);
+
+        // --- Enhance Progetti section ---
+        enhanceProgettiSelection(form);
+
+        // --- Integrate Opzioni Summary into header riepilogo ---
+        integraRiepilogoOpzioni(form);
+
+        // --- Replace footer buttons ---
+        var footer = form.querySelector('div.d-flex.justify-content-end.gap-2');
+        if (footer) {
+            footer.innerHTML =
+                '<div class="step-nav" style="display:flex;gap:10px;align-items:center;width:100%;">' +
+                    '<button type="button" class="btn btn-ghost" id="stepPrevBtn" style="padding:10px 18px;font-size:13px;display:none;"><i class="bi bi-chevron-left"></i> Indietro</button>' +
+                    '<div style="flex:1;"></div>' +
+                    '<button type="button" class="btn btn-ghost-primary" id="stepNextBtn">Avanti <i class="bi bi-chevron-right"></i></button>' +
+                    '<button type="submit" class="btn btn-ghost-primary" id="btnSalvaForm" style="display:none;"><i class="bi bi-check2"></i> Salva Contratto</button>' +
+                    '<button type="button" class="btn btn-ghost" data-bs-dismiss="offcanvas">Annulla</button>' +
+                '</div>';
+        }
+
+        var nextBtn = document.getElementById('stepNextBtn');
+        var prevBtn = document.getElementById('stepPrevBtn');
+        var salvaBtn = document.getElementById('btnSalvaForm');
+
+        function showStep(n) {
+            currentStep = n;
+            for (var i = 0; i < stepEls.length; i++) {
+                var el = stepEls[i];
+                el.style.display = (parseInt(el.dataset.step) === n) ? '' : 'none';
+            }
+            // Update circles
+            var circles = indicator.querySelectorAll('.step-circle');
+            var lines = indicator.querySelectorAll('.step-line');
+            for (var j = 0; j < circles.length; j++) {
+                var s = parseInt(circles[j].dataset.s);
+                circles[j].style.background = s === n ? '#5E6AD2' : s < n ? '#34d399' : '#27282D';
+                circles[j].style.borderColor = s <= n ? 'transparent' : '#333';
+            }
+            for (var k = 0; k < lines.length; k++) {
+                lines[k].style.background = (k + 1 < n) ? '#34d399' : '#27282D';
+            }
+            // Update labels
+            var labels = indicator.querySelectorAll('.step-label');
+            for (var m = 0; m < labels.length; m++) {
+                labels[m].style.color = (m + 1 <= n) ? '#EDEDED' : '#8A8F98';
+                labels[m].style.fontWeight = (m + 1 === n) ? '700' : '600';
+            }
+            // Buttons
+            if (prevBtn) prevBtn.style.display = (n === 1) ? 'none' : '';
+            if (nextBtn) nextBtn.style.display = (n === totalSteps) ? 'none' : '';
+            if (salvaBtn) salvaBtn.style.display = (n === totalSteps) ? '' : 'none';
+            // Scroll to top
+            if (scrollArea) scrollArea.scrollTop = 0;
+            // Update riepilogo opzioni if switching to step 3 or away
+            if (window.aggiornaValoriOpzioni) {
+                setTimeout(function() { window.aggiornaValoriOpzioni(); }, 50);
+            }
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() { if (currentStep < totalSteps) showStep(currentStep + 1); });
+        }
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() { if (currentStep > 1) showStep(currentStep - 1); });
+        }
+
+        // Set defaults
+        setDefaultSelections(form);
+
+        showStep(1);
+    };
+
+    // ===== PROGETTI DRAG&DROP INIT (sostituisce il vecchio search panel) =====
+    function enhanceProgettiSelection(form) {
+        if (form.hasAttribute('data-progetti-enhanced')) return;
+        form.setAttribute('data-progetti-enhanced', '1');
+        setTimeout(function() { if (window.initProgettiDragDrop) window.initProgettiDragDrop(); }, 100);
+    }
+
+    // ===== PROGETTI SEARCH PANEL (offcanvas) =====
+    // ===== PROGETTI FILTER (delegato a initProgettiDragDrop) =====
+    function initProgettiFilter() {
+        setTimeout(function() { if (window.initProgettiDragDrop) window.initProgettiDragDrop(); }, 100);
+    }
+    // Auto-init on form load (se ancora presenti gli old filtri)
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() { if (window.initProgettiDragDrop) window.initProgettiDragDrop(); }, 500);
+    });
+
+    // ===== INTEGRAZIONE RIEPILOGO OPZIONI =====
+    function integraRiepilogoOpzioni(form) {
+        var riepilogoOpzioni = form.querySelector('#riepilogoOpzioni');
+        if (!riepilogoOpzioni) return;
+        // Make riepilogoOpzioni show a richer summary
+        // It will be updated by the patched aggiornaValoriOpzioni
+    }
+
+    // Patch aggiornaValoriOpzioni to update badge progetti & riepilogo opzioni
+    var _baseAggiorna = window.aggiornaValoriOpzioni;
+    window.aggiornaValoriOpzioni = function() {
+        if (typeof _baseAggiorna === 'function') _baseAggiorna.apply(this, arguments);
+        var form = document.querySelector('#dynamicForm');
+        if (form) {
+            // Copy opzioni summary content into riepilogo header
+            var summary = form.querySelector('#opzioniSummary');
+            var riepilogoOpzioni = form.querySelector('#riepilogoOpzioni');
+            if (summary && riepilogoOpzioni) {
+                var summaryList = summary.querySelector('#opzioniSummaryList');
+                var summaryTotale = summary.querySelector('#opzioniSummaryTotale');
+                if (summaryList && summaryList.innerHTML.trim()) {
+                    riepilogoOpzioni.innerHTML = summaryList.innerHTML;
+                    if (summaryTotale) {
+                        riepilogoOpzioni.innerHTML += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:4px;font-size:12px;font-weight:700;color:#34d399;">Totale: ' + summaryTotale.textContent + '</div>';
+                    }
+                } else {
+                    riepilogoOpzioni.textContent = '—';
+                }
+            }
+            // Ensure opzioni summary is visible when step 3 is shown
+            var step3Summary = form.querySelector('[data-step="3"] #opzioniSummary');
+            if (step3Summary) step3Summary.style.display = 'block';
+        }
+    };
+
+    // ===== DEFAULT SELECTIONS =====
+    function setDefaultSelections(form) {
+        // Ente bilaterale: cerca codice F (FONDOCOLF), fallback primo
+        var enteSelect = form.querySelector('select[name="ente_bilaterale"]');
+        if (enteSelect) {
+            var found = -1;
+            for (var i = 0; i < enteSelect.options.length; i++) {
+                if (enteSelect.options[i].value === 'F') { found = i; break; }
+            }
+            if (found >= 0) {
+                enteSelect.selectedIndex = found;
+            } else if (enteSelect.options.length > 1) {
+                enteSelect.selectedIndex = 1;
+            }
+            if (found >= 0 || enteSelect.options.length > 1) {
+                enteSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+        // Parametri minimi: cerca CS nel testo, fallback primo
+        var paramSelect = form.querySelector('select[name="parametri_minimi"]');
+        if (paramSelect) {
+            var found = -1;
+            for (var i = 0; i < paramSelect.options.length; i++) {
+                var txt = paramSelect.options[i].textContent || paramSelect.options[i].innerText;
+                if (txt.indexOf('CS') !== -1) { found = i; break; }
+            }
+            if (found >= 0) {
+                paramSelect.selectedIndex = found;
+            } else if (paramSelect.options.length > 1) {
+                paramSelect.selectedIndex = 1;
+            }
+            if (found >= 0 || paramSelect.options.length > 1) {
+                paramSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+        // Default checkboxes: solo TREDICESIMA, FESTIVI, FERIE
+        var uncheckFields = ['applica_scatti', 'paga_tfr'];
+        for (var i = 0; i < uncheckFields.length; i++) {
+            var cb = form.querySelector('input[name="' + uncheckFields[i] + '"][type="checkbox"]');
+            if (cb) {
+                cb.checked = false;
+                cb.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+        // Trigger riepilogo update
+        if (window.aggiornaValoriOpzioni) setTimeout(function() { window.aggiornaValoriOpzioni(); }, 200);
+    }
+    window.initDescrizioni = function initDescrizioni(form) {
+        form.querySelectorAll('.desc-select').forEach(function(sel) {
+            var descId = sel.getAttribute('data-desc-id');
+            var descEl = descId ? document.getElementById(descId) : null;
+            if (!descEl) return;
+            var opt = sel.options[sel.selectedIndex];
+            descEl.textContent = opt ? (opt.getAttribute('data-desc') || '') : '';
+        });
+    };

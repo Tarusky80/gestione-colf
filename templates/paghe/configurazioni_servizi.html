@@ -11,14 +11,14 @@
 {% block content %}
 {% block search_bar %}{% endblock %}
 <div class="container-fluid p-4">
-  <h4 class="mb-4" class="c-text"><i class="bi bi-gear-wide-connected me-2"></i>Configurazioni Servizi Web
+<h4 class="mb-4 c-text"><i class="bi bi-gear-wide-connected me-2"></i>Configurazioni Servizi Web
     <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
   </h4>
 
   <div class="row g-4">
     <!-- Chromedriver -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-browser-chrome me-2"></i>Chromedriver</h6>
         <form method="post" class="mb-3">
           {% csrf_token %}
@@ -55,7 +55,7 @@
 
     <!-- Chrome Browser -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-google me-2"></i>Google Chrome</h6>
         {% if chrome_version %}
         <div class="c-muted fs-12 mb-6">
@@ -75,7 +75,7 @@
 
     <!-- Selenium -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-box-seam me-2"></i>Selenium</h6>
         {% if selenium_versione %}
         <div class="c-muted fs-12 mb-6">
@@ -96,7 +96,7 @@
 
     <!-- Playwright -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-mask me-2"></i>Playwright</h6>
         {% if playwright_versione %}
         <div class="c-muted fs-12 mb-6">
@@ -125,7 +125,7 @@
 
     <!-- Collegamenti INPS -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-link-45deg me-2"></i>Collegamenti INPS</h6>
         <div class="c-muted fs-12 mb-6">
           Iscrizione:
@@ -164,7 +164,7 @@
   <div class="row g-4 mt-2">
     <!-- Automazione (Selenium / Playwright) -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-robot me-2"></i>Automazione</h6>
         <form method="post" action="{% url 'configurazioni_servizi' %}" class="mb-2">
           {% csrf_token %}
@@ -213,7 +213,7 @@
 
     <!-- Collegamento Cessazione -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-link me-2"></i>Link Cessazione INPS</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
           {{ web_config.link_inps_cessazione|default:"—" }}
@@ -233,7 +233,7 @@
 
     <!-- Collegamento PagoPA -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-credit-card-2-front me-2"></i>Link PagoPA INPS</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:6px;word-break:break-all;">
           {{ web_config.link_inps_pagopa|default:"—" }}
@@ -253,7 +253,7 @@
 
     <!-- Cartelle Documenti -->
     <div class="col-md-6">
-      <div class="p-3" class="card-alt-12">
+<div class="p-3 card-alt-12">
         <h6 class="h3-sezione"><i class="bi bi-folder2-open me-2"></i>Cartelle Documenti</h6>
         <div style="font-size:12px;color:#8A8F98;margin-bottom:8px;">
           Documenti (PagoPA, buste, TFR):

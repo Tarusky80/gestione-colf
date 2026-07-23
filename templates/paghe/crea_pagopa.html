@@ -80,7 +80,7 @@ function inviaEmailPagopa() {
   <div class="p-4 card-simple" style="margin-bottom:20px;">
     <div class="d-flex align-items-start gap-3">
       <div class="flex-grow-1">
-        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2" class="c-accent"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2 c-accent"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
         <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto attivo e il trimestre per generare il riepilogo contributivo o avviare l'automazione sul sito INPS.</p>
       </div>
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
@@ -92,8 +92,8 @@ function inviaEmailPagopa() {
 
     <!-- CARD 1 — Selezione Contratto -->
     <div class="col-md-6">
-      <div class="p-4" class="class="card-dark h-100"">
-        <h5 class="h5-sezione"><i class="bi bi-search me-2" class="c-accent"></i>SELEZIONE CONTRATTO</h5>
+<divcard-dark h-100"" class="p-4 class=">
+        <h5 class="h5-sezione"><i class="bi bi-search me-2 c-accent"></i>SELEZIONE CONTRATTO</h5>
         <div class="row g-3">
           <div class="col-12">
             <label class="label-form-up" style="margin-bottom:6px;">Contratto</label>
@@ -152,7 +152,7 @@ function inviaEmailPagopa() {
 
     <!-- CARD 4 — Automazione INPS -->
     <div class="col-md-6">
-      <div class="p-4" class="class="card-dark h-100"">
+<divcard-dark h-100"" class="p-4 class=">
         <div class="d-flex align-items-start gap-3 mb-3">
           <h5 style="color:#EDEDED;font-size:14px;margin-bottom:0;"><i class="bi bi-robot me-2" style="color:#10b981;"></i>AUTOMAZIONE INPS</h5>
           <span id="ctrlInvioBadge" style="display:none;margin-left:auto;color:#f87171;font-size:11px;font-weight:700;background:rgba(248,113,113,0.12);padding:6px 12px;border-radius:8px;border:1px solid rgba(248,113,113,0.25);white-space:nowrap;">
@@ -168,22 +168,22 @@ function inviaEmailPagopa() {
           </button>
         </div>
         <div class="d-flex flex-wrap gap-3 align-items-center mb-3">
-          <label class="toggle-ore" class="ms-0">
+<label class="toggle-ore ms-0">
             <input type="checkbox" id="toggleAutoClose" onchange="localStorage.setItem('pagopa_auto_close', this.checked?'1':'0')" title="Chiude automaticamente Chromium/Playwright quando il PDF PagoPA viene creato">
             <span class="slider"></span>
             <span class="c-muted fs-10 text-nowrap">CHIUDI BROWSER</span>
           </label>
-          <label class="toggle-ore" class="ms-0">
+<label class="toggle-ore ms-0">
             <input type="checkbox" id="toggleAutoShowPdf" onchange="localStorage.setItem('pagopa_auto_show_pdf', this.checked?'1':'0')" title="Mostra automaticamente l'anteprima PDF a fine automazione">
             <span class="slider"></span>
             <span class="c-muted fs-10 text-nowrap">MOSTRA PDF</span>
           </label>
-          <label class="toggle-ore" class="ms-0">
+<label class="toggle-ore ms-0">
             <input type="checkbox" id="toggleBackgroundMode" onchange="if(this.checked){var nc=document.getElementById('toggleNascondiChromium');if(nc){nc.checked=false;localStorage.setItem('pagopa_nascondi_chromium','0')}}localStorage.setItem('pagopa_background_mode', this.checked?'1':'0')" title="Avvia browser minimizzato (visibile ma in secondo piano) e mostra il CAPTCHA nel CRUD">
             <span class="slider"></span>
             <span class="c-muted fs-10 text-nowrap">SFONDO</span>
           </label>
-          <label class="toggle-ore" class="ms-0">
+<label class="toggle-ore ms-0">
             <input type="checkbox" id="toggleNascondiChromium" onchange="var me=this;if(me.checked){var sf=document.getElementById('toggleBackgroundMode');if(sf){sf.checked=false;localStorage.setItem('pagopa_background_mode','0')}var ac=document.getElementById('toggleAutoClose');if(ac){ac.checked=true;localStorage.setItem('pagopa_auto_close','1')}var ap=document.getElementById('toggleAutoShowPdf');if(ap){ap.checked=true;localStorage.setItem('pagopa_auto_show_pdf','1')}}localStorage.setItem('pagopa_nascondi_chromium', me.checked?'1':'0')" title="Esegue Playwright in modalità headless (nessuna finestra), CAPTCHA inline nel CRUD. Forza CHIUDI BROWSER e MOSTRA PDF">
             <span class="slider"></span>
             <span class="c-muted fs-10 text-nowrap">RIDUCI CHROMIUM</span>
@@ -242,8 +242,8 @@ function inviaEmailPagopa() {
   <div class="row g-3 mb-3">
     <div class="col-12">
       <div id="riepilogoContainer" class="d-none">
-        <div class="p-4" class="card-simple">
-          <h5 class="h5-sezione"><i class="bi bi-file-text me-2" class="c-accent"></i>RIEPILOGO CONTRATTUALE</h5>
+<div class="p-4 card-simple">
+          <h5 class="h5-sezione"><i class="bi bi-file-text me-2 c-accent"></i>RIEPILOGO CONTRATTUALE</h5>
           <div class="row g-3" id="riepilogoBody" style="font-size:13px;color:#EDEDED;"></div>
         </div>
       </div>
@@ -253,8 +253,8 @@ function inviaEmailPagopa() {
   <!-- RIGA 3: DOCUMENTI (sx) + MODIFICA ORE (dx) -->
   <div class="row g-3 mb-3">
     <div class="col-md-6">
-      <div class="p-4" class="class="card-dark h-100"">
-        <h5 class="h5-sezione"><i class="bi bi-file-earmark me-2" class="c-accent"></i>DOCUMENTI</h5>
+<divcard-dark h-100"" class="p-4 class=">
+        <h5 class="h5-sezione"><i class="bi bi-file-earmark me-2 c-accent"></i>DOCUMENTI</h5>
         <div class="d-flex flex-wrap gap-2">
           <button type="button" class="btn btn-ghost-primary" onclick="scaricaPdfPagopa()" id="btnScaricaPdf">
             <i class="bi bi-filetype-pdf me-1"></i> Scarica riepilogo PDF
@@ -300,8 +300,8 @@ function inviaEmailPagopa() {
   <div class="row g-3">
     <div class="col-12">
       <div id="storicoContainer" class="d-none">
-        <div class="p-4" class="card-simple">
-          <h5 class="h5-sezione"><i class="bi bi-clock-history me-2" class="c-accent"></i>STORICO PAGOPA</h5>
+<div class="p-4 card-simple">
+          <h5 class="h5-sezione"><i class="bi bi-clock-history me-2 c-accent"></i>STORICO PAGOPA</h5>
           <div id="storicoBody" style="overflow-x:auto;">
             <div style="font-size:13px;color:#8A8F98;text-align:center;padding:20px;">Carica i dati del contratto per visualizzare lo storico.</div>
           </div>
@@ -532,7 +532,7 @@ function renderRiepilogo(d) {
     html += '<div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="r_l_data_assunzione">' + escapeHtml(d.data_assunzione || '—') + '</span><button type="button" class="pm-cb" data-copy="r_l_data_assunzione">COPIA</button></div>';
     html += '</div></div></div></div>';
 
-    html += '<div class="col-12" style="margin-bottom:16px;"><div class="p-4" class="card-simple">';
+    html += '<div class="col-12" style="margin-bottom:16px;"><div class="p-4 card-simple">';
     html += '<div class="row g-3">';
 
     html += '<div class="col-md-6"><div class="pm-mcrd">';
