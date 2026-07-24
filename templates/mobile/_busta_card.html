@@ -7,10 +7,10 @@
     </div>
     <div class="m-swipe-card m-card m-card-top-busta" href="#" onclick="apriDettaglioBusta(this, {{ b.pk }})">
         <div style="display:flex;justify-content:space-between;align-items:start;">
-            <div style="flex:1;min-width:0;">
-                <div style="font-size:12px;color:#8A8F98;">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
+            <div class="flex-fill-min">
+                <div class="fs-12 c-muted">{{ b.contratto.datore.nome_cognome|default:"?" }}</div>
                 <div class="m-list-title" style="margin:2px 0;">{{ b.contratto.lavoratore.nome_cognome|default:"?" }}</div>
-                <div style="font-size:12px;color:#8A8F98;">{{ b.mese|stringformat:"02d" }}/{{ b.anno }} &middot; {{ b.tipo_calcolo|default:"Standard" }}</div>
+                <div class="fs-12 c-muted">{{ b.mese|stringformat:"02d" }}/{{ b.anno }} &middot; {{ b.tipo_calcolo|default:"Standard" }}</div>
             </div>
             <span class="m-badge {% if b.stato == 'APPROVATA' %}m-badge-green{% else %}m-badge-gray{% endif %}">{{ b.stato }}</span>
         </div>

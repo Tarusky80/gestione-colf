@@ -26,7 +26,7 @@
         <i class="bi bi-file-earmark-text" style="color:#5E6AD2; margin-right:10px;"></i> CCNL Lavoro Domestico
     </h2>
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'ccnl_pdf' %}', 0)" class="btn btn-ghost-primary" style="text-decoration:none;">
+        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'ccnl_pdf' %}', 0)"  class="btn btn-ghost-primary text-decoration-none">
             <i class="bi bi-download"></i> Scarica PDF
         </a>
         <button type="button" class="btn btn-ghost-success" onclick="apriModaleInvioCCNL()">
@@ -35,7 +35,7 @@
     </div>
 </div>
 
-<div style="margin-bottom:20px;">
+<div class="mb-20">
     <input type="text" id="ccnlSearch" class="ccnl-search" placeholder="Cerca negli articoli del CCNL... (parola o numero articolo)" autocomplete="off">
     <div class="ccnl-contatore" id="ccnlContatore">Mostrati 0 / 0 articoli</div>
 </div>

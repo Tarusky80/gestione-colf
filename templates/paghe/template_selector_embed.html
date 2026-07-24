@@ -16,7 +16,7 @@
     <div style="font-size:11px;color:#8A8F98;margin-bottom:12px;">
         Contratto: <strong style="color:#EDEDED;">{{ contratto.datore.nome_cognome }} - {{ contratto.lavoratore.nome_cognome }}{% for p in contratto.progetto.all %}<br> - {{ p.beneficiario.nome_cognome }} [{{ p.tipo.nome }}]{% endfor %}</strong>
     </div>
-    <div style="margin-bottom:8px;">
+    <div class="mb-8">
         <a href="{% url 'documentale_list' 'contratto' %}" target="_blank" style="color:#9ca3ff;font-size:11px;text-decoration:none;">
             <i class="bi bi-file-earmark-code"></i> Gestione Documentale
         </a>

@@ -65,7 +65,7 @@
         </div>
         {% endfor %}
     </div>
-    <div id="benContent" style="display:none;">
+    <div id="benContent" class="d-none-custom">
     <table class="table custom-table sortable" id="benTable">
         <thead>
             <tr>
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </div>
 
-<div id="mappaView" style="display:none;">
+<div id="mappaView" class="d-none-custom">
     <div class="mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
         <div class="d-flex gap-2 align-items-center">
             <select id="mapComuneFiltro" class="form-control" style="width:auto;background:#09090B;border:1px solid #27282D;color:#fff;font-size:13px;padding:6px 12px;border-radius:8px;">
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div id="mappaContainerBen" style="height:calc(100vh - 280px);border-radius:12px;border:1px solid #27282D;overflow:hidden;"></div>
     <div id="mappaPlaceholderBen" class="text-center py-5" style="color:#545;background:#17181C;border:1px solid #27282D;border-radius:12px;">
         <i class="bi bi-map" style="font-size:48px;display:block;margin-bottom:12px;"></i>
-        <div style="font-size:14px;">Clicca "Carica mappa" per visualizzare i beneficiari sulla mappa</div>
+        <div class="fs-14">Clicca "Carica mappa" per visualizzare i beneficiari sulla mappa</div>
     </div>
 </div>
 
@@ -247,7 +247,7 @@ function caricaMappaBen() {
         data.forEach(function(b) {
             if (b.lat && b.lng) {
                 var marker = L.marker([b.lat, b.lng]).bindPopup(
-                    '<div style="font-size:13px;font-weight:600;">' + escapeHtml(b.nome) + '</div>' +
+                    '<div class="fs-13 fw-6">' + escapeHtml(b.nome) + '</div>' +
                     '<div style="font-size:11px;color:#666;">' + escapeHtml(b.indirizzo) + '</div>' +
                     '<div style="font-size:11px;color:#666;">' + escapeHtml(b.comune) + '</div>' +
                     '<a href="/beneficiari/" style="font-size:11px;color:#5E6AD2;font-weight:600;text-decoration:none;">Apri scheda &rarr;</a>'

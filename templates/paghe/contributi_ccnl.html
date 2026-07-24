@@ -6,7 +6,7 @@
   <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
     <div>
       <h2 class="mb-1" style="color:#EDEDED;"><i class="bi bi-percent"></i> Contributi INPS CCNL</h2>
-      <p class="small mb-0" style="color:#8A8F98;">Aliquote contributive {{ dati.anno }} — Con quota assegni familiari</p>
+      <p  class="small mb-0 c-muted">Aliquote contributive {{ dati.anno }} — Con quota assegni familiari</p>
     </div>
     <div class="d-flex gap-2">
       <button type="button" class="btn btn-ghost-primary" onclick="apriNelPannello('{% url 'contributi_ccnl_pdf' %}')">
@@ -40,7 +40,7 @@
 
   {{ html_formattato|safe }}
 
-  <div class="small mt-3" style="color:#8A8F98;">
+  <div  class="small mt-3 c-muted">
     <i class="bi bi-info-circle"></i> La paga effettiva INPS = paga base oraria + tredicesima oraria.
     Soglie configurabili in <strong>Opzioni Software</strong>.
   </div>

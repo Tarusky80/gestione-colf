@@ -2,14 +2,14 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content card-alt">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-envelope me-2" style="color:#5E6AD2;"></i>Invia Guida via Email
+        <h5  class="modal-title fs-15-bold">
+          <i  class="bi bi-envelope me-2 c-accent"></i>Invia Guida via Email
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;">
         <div class="mb-3">
-          <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Seleziona i destinatari</label>
+          <label  class="mb-1 fw-bold fs-11 c-muted">Seleziona i destinatari</label>
           <div id="listaDatoriGuida{{ guide_id }}" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:10px;">
             {% for datore in datori %}
             <label class="d-flex align-items-center gap-2" style="cursor:pointer;padding:4px 6px;border-radius:6px;font-size:12px;color:#C0C4CC;">
@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="mb-3">
-          <label class="mb-1 fw-bold" style="font-size:11px;color:#8A8F98;">Oppure inserisci email manualmente</label>
+          <label  class="mb-1 fw-bold fs-11 c-muted">Oppure inserisci email manualmente</label>
           <input type="text" id="guidaEmailManuale{{ guide_id }}" class="form-control" placeholder="email1@esempio.it, email2@esempio.it" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#EDEDED;padding:8px 12px;font-size:12px;">
         </div>
       </div>

@@ -2,12 +2,12 @@
 <div class="text-center py-3">
   {% if inviato %}
   <div style="font-size:48px;color:#10b981;margin-bottom:12px;"><i class="bi bi-check-circle-fill"></i></div>
-  <h6 style="color:#EDEDED;font-weight:600;">Email inviata con successo</h6>
+  <h6 class="c-text fw-6">Email inviata con successo</h6>
   <p style="color:#8A8F98;font-size:12px;margin-bottom:4px;">Destinatario: {{ destinatari }}</p>
-  <p style="color:#8A8F98;font-size:11px;">{{ nome_file }}</p>
+  <p class="c-11-m">{{ nome_file }}</p>
   {% else %}
   <div style="font-size:48px;color:#f59e0b;margin-bottom:12px;"><i class="bi bi-exclamation-triangle-fill"></i></div>
-  <h6 style="color:#EDEDED;font-weight:600;">Invio email non disponibile</h6>
+  <h6 class="c-text fw-6">Invio email non disponibile</h6>
   {% if errore %}
   <p style="color:#f87171;font-size:12px;">{{ errore }}</p>
   {% endif %}
@@ -27,7 +27,7 @@
 {% else %}
 <div class="text-center py-4">
   <div style="font-size:48px;color:#f87171;margin-bottom:12px;"><i class="bi bi-x-circle-fill"></i></div>
-  <h6 style="color:#EDEDED;font-weight:600;">Errore</h6>
+  <h6 class="c-text fw-6">Errore</h6>
   <p style="color:#f87171;font-size:13px;">{{ error }}</p>
 </div>
 {% endif %}

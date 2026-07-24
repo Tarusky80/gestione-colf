@@ -66,7 +66,7 @@
         </select>
         <div class="d-flex align-items-center gap-2 mt-2">
             <label class="tb-toggle" style="position:relative;display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
-                <input type="checkbox" id="chkApriTB" checked style="display:none;">
+                <input type="checkbox" id="chkApriTB" checked class="d-none-custom">
                 <span class="tb-track" style="position:relative;width:36px;height:20px;background:#27282D;border-radius:10px;transition:background .2s;flex-shrink:0;">
                     <span class="tb-knob" style="position:absolute;top:2px;left:2px;width:16px;height:16px;background:#8A8F98;border-radius:50%;transition:transform .2s,background .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);"></span>
                 </span>
@@ -79,7 +79,7 @@
         .tb-toggle input:checked ~ .tb-label { color:#5E6AD2 !important; font-weight:600; }
         </style>
     </div>
-    <div class="d-flex flex-wrap gap-2 justify-content-end" style="margin-top:8px;">
+    <div  class="d-flex flex-wrap gap-2 justify-content-end mt-8">
         <button type="button" class="btn btn-ghost-primary btn-sm" onclick="generaPDF()" id="btnGenera">
             <i class="bi bi-file-pdf me-1"></i> Solo PDF
         </button>
@@ -164,10 +164,10 @@
             <div class="modal-body c-text" id="resultBody" style="max-height:60vh;overflow-y:auto;"></div>
             <div class="modal-footer border-0" id="resultFooter">
                 <button type="button" class="btn btn-sm btn-ghost" data-bs-dismiss="modal">Chiudi</button>
-                <button type="button" class="btn btn-ghost-primary btn-sm" id="btnInvioEmail" style="display:none;" onclick="inviaEmail()">
+                <button type="button" class="btn btn-ghost-primary btn-sm" id="btnInvioEmail" class="d-none-custom" onclick="inviaEmail()">
                     <i class="bi bi-envelope me-1"></i> Apri nel client
                 </button>
-                <a id="btnScaricaZip" class="btn btn-ghost-success btn-sm" style="display:none;" target="_blank">
+                <a id="btnScaricaZip"  class="btn btn-ghost-success btn-sm d-none-custom" target="_blank">
                     <i class="bi bi-download me-1"></i> Scarica ZIP
                 </a>
             </div>
@@ -251,7 +251,7 @@ function elaboraRisultatoGenerazione(d) {
     riepilogoPk = d.riepilogo_pk;
     ultimoRisultato = d;
     var html = '<div class="text-center mb-3">';
-    html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.totale_ok + '</div>';
+    html += '<div  class="display-6 fw-bold c-green2">' + d.totale_ok + '</div>';
     html += '<div class="small text-secondary">PDF generati</div>';
     if (d.totale_errori > 0) {
         html += '<div class="display-6 fw-bold mt-2" style="color:#dc2626;">' + d.totale_errori + '</div>';
@@ -269,7 +269,7 @@ function elaboraRisultatoGenerazione(d) {
     if (d.dettaglio) {
         html += '<hr><div class="small" style="max-height:250px;overflow-y:auto;">';
         d.dettaglio.forEach(function(e) {
-            var icon = e.errore ? '<i class="bi bi-x-circle" style="color:#dc2626;"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
+            var icon = e.errore ? '<i class="bi bi-x-circle" style="color:#dc2626;"></i>' : '<i  class="bi bi-check-circle c-green2"></i>';
             html += '<div class="d-flex align-items-center gap-2 py-1">' + icon;
             html += ' <span class="flex-grow-1">' + e.datore + ' — ' + e.lavoratore + '</span>';
             if (!e.errore && e.documento_pk) {
@@ -357,7 +357,7 @@ function inviaEmail() {
         riepilogoPk = null;
         var html = '<div class="text-center mb-3">';
         if (d.thunderbird_aperto > 0) {
-            html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.thunderbird_aperto + '</div>';
+            html += '<div  class="display-6 fw-bold c-green2">' + d.thunderbird_aperto + '</div>';
             html += '<div class="small text-secondary">Finestre Thunderbird aperte</div>';
         } else {
             html += '<div class="small text-secondary">Link mailto pronti per ' + (d.mailto_links ? d.mailto_links.filter(function(x){return x;}).length : 0) + ' destinatari</div>';

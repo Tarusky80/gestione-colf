@@ -28,7 +28,7 @@
         <i class="bi bi-layers" style="color:#5E6AD2; margin-right:10px;"></i> Inquadramento Lavoro Domestico
     </h2>
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'inquadramento_pdf' %}', 0)" class="btn btn-ghost-primary" style="text-decoration:none;">
+        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'inquadramento_pdf' %}', 0)"  class="btn btn-ghost-primary text-decoration-none">
             <i class="bi bi-download"></i> Scarica PDF
         </a>
         <button type="button" class="btn btn-ghost-success" onclick="apriModaleInvioInquadramento()">
@@ -37,7 +37,7 @@
     </div>
 </div>
 
-<div style="margin-bottom:20px;">
+<div class="mb-20">
     <input type="text" id="inqSearch" class="inq-search" placeholder="Cerca nei livelli di inquadramento... (parola o codice livello)" autocomplete="off">
     <div class="inq-contatore" id="inqContatore">Mostrati 0 / {{ livelli|length }} livelli</div>
 </div>

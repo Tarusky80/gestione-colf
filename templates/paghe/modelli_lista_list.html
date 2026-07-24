@@ -215,7 +215,7 @@ function renderizzaCampiDisponibili() {
             html += '<button type="button" class="field-item" onclick="aggiungiColonna(\'' + c.field_path + '\', \'' + c.label.replace(/'/g, "\\'") + '\', \'' + c.tipo + '\')" style="padding:5px 8px; border-radius:6px; border:1px solid transparent; font-size:11px; color:#cccccc;">';
             html += '<span class="me-2" style="color:#5C5F66; font-size:9px;">' + iconaTipo(c.tipo) + '</span>';
             html += c.label;
-            html += ' <span class="text-secondary ms-1" style="font-size:9px;">(' + c.field_path + ')</span>';
+            html += ' <span  class="text-secondary ms-1 fs-9">(' + c.field_path + ')</span>';
             html += '</button>';
         });
     });
@@ -276,7 +276,7 @@ function renderizzaColonneSelezionate() {
         html += '<div class="column-item" data-index="' + idx + '" style="background:rgba(255,255,255,0.03); border:1px solid #27282D; border-radius:8px; padding:8px 10px;">';
         html += '<div class="d-flex align-items-center gap-2">';
         html += '<span class="drag-handle" style="font-size:14px; line-height:1;">â ¿</span>';
-        html += '<div style="flex:1;">';
+        html += '<div class="flex-1">';
         html += '<div class="d-flex align-items-center gap-2 mb-1">';
         html += '<input type="text" value="' + col.label.replace(/"/g, '&quot;') + '" onchange="COLONNE_ATTUALI[' + idx + '].label = this.value" style="flex:1; background:#09090B; border:1px solid #27282D; color:#ffffff; border-radius:4px; padding:3px 6px; font-size:11px; font-weight:500;">';
         html += '<button type="button" onclick="rimuoviColonna(' + idx + ')" style="background:transparent; border:none; color:#ef4444; font-size:12px; padding:2px 4px; cursor:pointer;"><i class="bi bi-x-lg"></i></button>';

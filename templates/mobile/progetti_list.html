@@ -15,7 +15,7 @@
     <div class="m-swipe-card m-card m-card-top-prog" onclick="location.href='/m/progetti/{{ p.pk }}/'">
         <div class="m-list-item">
             <div><i class="bi bi-diagram-3" style="font-size:20px;color:#10b981;"></i></div>
-            <div style="flex:1;min-width:0;">
+            <div class="flex-fill-min">
                 <div class="m-list-title">{{ p.beneficiario.nome_cognome|default:"?" }}</div>
                 <div class="m-list-sub">
                     {{ p.tipo.nome|default:"" }}

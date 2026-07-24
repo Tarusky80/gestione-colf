@@ -10,7 +10,7 @@
       </div>
       <div class="modal-body" style="padding:24px;">
         <p style="color:#8A8F98; font-size:14px; margin-bottom:16px;">Seleziona i datori a cui inviare il PDF delle tabelle retributive:</p>
-        <div style="margin-bottom:12px;">
+        <div class="mb-12">
           <input type="text" id="tabFiltraDatori" class="form-control" placeholder="Filtra datori..." style="background:#0E0F11; border:1px solid #27282D; color:#EDEDED; border-radius:8px; font-size:13px;">
         </div>
         <div id="tabListaDatori" style="max-height:300px; overflow-y:auto;">
@@ -25,7 +25,7 @@
           {% empty %}
           <div style="color:#545; text-align:center; padding:30px 0;">
             <i class="bi bi-people" style="font-size:24px; display:block; margin-bottom:8px;"></i>
-            <div style="font-size:13px;">Nessun datore presente</div>
+            <div class="fs-13">Nessun datore presente</div>
           </div>
           {% endfor %}
         </div>

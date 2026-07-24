@@ -19,7 +19,7 @@
 <a href="/m/contratti/{{ c.pk }}/" class="m-card m-card-top-contr">
     <div class="m-list-item">
         <div><i class="bi bi-file-earmark-text" style="font-size:20px;color:#ec4899;"></i></div>
-        <div style="flex:1;min-width:0;">
+        <div class="flex-fill-min">
             <div class="m-list-title">{{ c.lavoratore.nome_cognome|default:"?" }}</div>
             <div class="m-list-sub">{{ c.datore.nome_cognome|default:"?" }} — {{ c.parametri_minimi.descrizione_corta|default:"" }}</div>
         </div>
@@ -29,7 +29,7 @@
 {% endif %}
 
 <div style="display:flex;gap:8px;margin-top:10px;">
-    <a class="m-btn m-btn-outline" href="/m/progetti/" style="flex:1;">← Elenco</a>
+    <a class="m-btn m-btn-outline" href="/m/progetti/" class="flex-1">← Elenco</a>
     <a class="m-btn m-btn-primary" href="/m/progetti/{{ p.pk }}/modifica/" style="flex:1;font-size:12px;padding:10px;">Modifica</a>
 </div>
 <a class="m-btn m-btn-outline" href="/">Versione desktop →</a>

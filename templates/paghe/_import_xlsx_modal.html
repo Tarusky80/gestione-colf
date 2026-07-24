@@ -2,13 +2,13 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="background:#17181C;border:1px solid #27282D;">
       <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-upload me-2" style="color:#5E6AD2;"></i>Importa {{ tipo }}</h5>
+        <h5  class="modal-title fs-15-bold"><i  class="bi bi-upload me-2 c-accent"></i>Importa {{ tipo }}</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="color:#8A8F98;font-size:13px;">
         <p class="mb-3">Seleziona un file XLSX con intestazioni in italiano. Le righe con Codice Fiscale già esistente verranno aggiornate.</p>
 <input type="file" id="fileXlsx{{ modal_suffix|default:tipo|capfirst }}" accept=".xlsx" class="form-control bg-input">
-        <div id="importMsg{{ modal_suffix|default:tipo|capfirst }}" class="mt-3 small" style="display:none;"></div>
+        <div id="importMsg{{ modal_suffix|default:tipo|capfirst }}"  class="mt-3 small d-none-custom"></div>
       </div>
       <div class="modal-footer border-0 pt-0">
         <button type="button" class="btn btn-sm" style="background:transparent;border:1px solid #333;color:#8A8F98;border-radius:8px;padding:6px 16px;font-size:12px;" data-bs-dismiss="modal">Annulla</button>

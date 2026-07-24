@@ -26,7 +26,7 @@
         </svg>
         <h1 style="font-size:20px;font-weight:800;margin:0;letter-spacing:-0.3px;">Gestionale COLF</h1>
       </div>
-      <p class="date-sub" style="margin:4px 0 0 46px;"><i class="far fa-calendar" style="margin-right:6px;"></i>{% now "l, d F Y" %}</p>
+      <p class="date-sub" style="margin:4px 0 0 46px;"><i  class="far fa-calendar mr-6"></i>{% now "l, d F Y" %}</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <a href="/dashboard/" class="btn-dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a>
@@ -39,19 +39,19 @@
 
   <div class="stat-row">
     <div class="stat-card anim-card">
-      <div class="stat-icon" style="color:#5E6AD2;"><i class="fas fa-file-signature"></i></div>
+      <div  class="stat-icon c-accent"><i class="fas fa-file-signature"></i></div>
       <div><div class="stat-value">{{ total_attivi }}</div><div class="stat-label">Contratti Attivi</div><span class="stat-tip">In corso</span></div>
     </div>
     <div class="stat-card anim-card">
-      <div class="stat-icon" style="color:#06b6d4;"><i class="fas fa-user-tie"></i></div>
+      <div  class="stat-icon c-cyan"><i class="fas fa-user-tie"></i></div>
       <div><div class="stat-value">{{ datori_count }}</div><div class="stat-label">Datori</div><span class="stat-tip">{{ datori_count }} registrati</span></div>
     </div>
     <div class="stat-card anim-card">
-      <div class="stat-icon" style="color:#10b981;"><i class="fas fa-users"></i></div>
+      <div  class="stat-icon c-green2"><i class="fas fa-users"></i></div>
       <div><div class="stat-value">{{ lavoratori_count }}</div><div class="stat-label">Lavoratori</div><span class="stat-tip">{{ lavoratori_count }} registrati</span></div>
     </div>
     <div class="stat-card anim-card">
-      <div class="stat-icon" style="color:#f59e0b;"><i class="fas fa-user-heart"></i></div>
+      <div  class="stat-icon c-amber"><i class="fas fa-user-heart"></i></div>
       <div><div class="stat-value">{{ beneficiari_count }}</div><div class="stat-label">Beneficiari</div><span class="stat-tip">{{ beneficiari_count }} registrati</span></div>
     </div>
   </div>
@@ -140,7 +140,7 @@
         <a href="{% url 'admin:paghe_contrattoattivo_changelist' %}" style="font-size:10px;font-weight:600;text-transform:none;letter-spacing:0;color:#5E6AD2;text-decoration:none;">Vedi tutti &rarr;</a>
       </h3>
       {% for c in ultimi_contratti %}
-      <a href="{% url 'admin:paghe_contrattoattivo_change' c.pk %}" class="contratto-row" style="text-decoration:none;">
+      <a href="{% url 'admin:paghe_contrattoattivo_change' c.pk %}"  class="contratto-row text-decoration-none">
         <div>
           <div class="nome">{{ c.datore.nome_cognome|truncatechars:22 }} &rarr; {{ c.lavoratore.nome_cognome|truncatechars:22 }}</div>
           <div class="sub">{{ c.get_tipo_contratto_display|default:c.tipo_contratto }} &middot; {{ c.data_assunzione|date:"d/m/Y" }}</div>
@@ -159,8 +159,8 @@
       {% if admin_log %}
       {% for entry in admin_log %}
       <div class="log-row">
-        {% if entry.is_addition %}<i class="fas fa-plus-circle" style="color:#10b981;"></i>
-        {% elif entry.is_change %}<i class="fas fa-pen" style="color:#06b6d4;"></i>
+        {% if entry.is_addition %}<i  class="fas fa-plus-circle c-green2"></i>
+        {% elif entry.is_change %}<i  class="fas fa-pen c-cyan"></i>
         {% elif entry.is_deletion %}<i class="fas fa-trash-can" style="color:#ef4444;"></i>{% endif %}
         <div class="log-content">
           <div class="log-action">

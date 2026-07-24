@@ -22,7 +22,7 @@
                 <h4><i class="bi bi-clock-history me-1"></i> Ore Lavorate / Mese</h4>
                 <div class="chart-wrap chart-h-180"><canvas id="chartOreMensili"></canvas></div>
                 {% if ore_per_tipo %}
-                <div class="section-title" style="margin-top:14px;">Ore per progetto</div>
+                <div  class="section-title mt-14">Ore per progetto</div>
                 <div class="chart-wrap" style="height:{{ ore_per_tipo|length|yesno:'120,0' }}px;">
                     <canvas id="chartOrePerTipo"></canvas>
                 </div>

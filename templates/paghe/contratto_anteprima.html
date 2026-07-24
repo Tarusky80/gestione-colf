@@ -44,7 +44,7 @@
 </div>
 
 <div id="anteprimaContainer">
-    <div id="anteprimaContent" class="class="card-dark" style="overflow:hidden;"">
+    <div id="anteprimaContent" class=" class="card-dark overflow-hidden"">
         <div style="padding:24px 28px;">
 
             <div style="text-align:center;margin-bottom:4px;">
@@ -63,12 +63,12 @@
                 Luogo e data, {{ contratto.datore.comune|default:'_______________' }}, {% now "d/m/Y" %}
             </div>
             <div style="margin-top:20px;display:flex;justify-content:space-between;font-size:11px;color:#8A8F98;line-height:1.6;">
-                <div style="text-align:center;">
+                <div class="text-center">
                     <div style="font-size:12px;color:#EDEDED;margin-bottom:4px;">FIRMA DEL DATORE DI LAVORO</div>
                     <span style="border-bottom:1px solid #8A8F98;display:inline-block;width:220px;">&nbsp;</span>
                     <div style="font-size:10px;color:#5C5F66;margin-top:4px;">({{ contratto.datore.nome_cognome }})</div>
                 </div>
-                <div style="text-align:center;">
+                <div class="text-center">
                     <div style="font-size:12px;color:#EDEDED;margin-bottom:4px;">FIRMA DEL LAVORATORE</div>
                     <span style="border-bottom:1px solid #8A8F98;display:inline-block;width:220px;">&nbsp;</span>
                     <div style="font-size:10px;color:#5C5F66;margin-top:4px;">({{ contratto.lavoratore.nome_cognome }})</div>
@@ -77,7 +77,7 @@
 
             <div style="margin-top:24px;">
                 {% if opzioni and opzioni.logo_buste_paga %}
-                <div style="margin-bottom:4px;">
+                <div class="mb-4">
                     <img src="{{ opzioni.logo_buste_paga.url }}" style="max-height:30px;max-width:120px;" alt="Logo studio">
                 </div>
                 {% endif %}

@@ -4,7 +4,7 @@
 {% block m_topbar_title %}{{ titolo }}{% endblock %}
 {% block m_content %}
 
-<form method="post" action="{{ action_url }}" style="margin-top:4px;">
+<form method="post" action="{{ action_url }}" class="mt-4">
     {% csrf_token %}
     <div id="m-form-fields">
     {% for field in form %}
@@ -18,8 +18,8 @@
     </div>
 
     <div style="display:flex;gap:8px;margin-top:16px;">
-        <a class="m-btn m-btn-outline" href="{{ back_url }}" style="flex:1;">Annulla</a>
-        <button type="submit" class="m-btn m-btn-primary" style="flex:1;">Salva</button>
+        <a class="m-btn m-btn-outline" href="{{ back_url }}" class="flex-1">Annulla</a>
+        <button type="submit"  class="m-btn m-btn-primary flex-1">Salva</button>
     </div>
 </form>
 

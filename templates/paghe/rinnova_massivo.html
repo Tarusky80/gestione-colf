@@ -180,7 +180,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content card-simple">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-arrow-repeat me-2" style="color:#5E6AD2;"></i>Conferma Rinnovo</h5>
+        <h5  class="modal-title fs-15-bold"><i  class="bi bi-arrow-repeat me-2 c-accent"></i>Conferma Rinnovo</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;color:#8A8F98;font-size:13px;" id="confermaBody">
@@ -202,7 +202,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content card-simple">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-clipboard-check me-2" style="color:#10b981;"></i>Risultato Rinnovo</h5>
+        <h5  class="modal-title fs-15-bold"><i  class="bi bi-clipboard-check me-2 c-green2"></i>Risultato Rinnovo</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;color:#8A8F98;font-size:13px;" id="risultatoBody"></div>
@@ -324,9 +324,9 @@ function eseguiRinnovo() {
     .then(function(d) {
         var body = document.getElementById('risultatoBody');
         if (d.success) {
-            var html = '<div style="text-align:center;"><i class="bi bi-check-circle" style="font-size:48px;color:#10b981;display:block;margin-bottom:12px;"></i>';
+            var html = '<div class="text-center"><i class="bi bi-check-circle" style="font-size:48px;color:#10b981;display:block;margin-bottom:12px;"></i>';
             html += '<p style="color:#EDEDED;font-weight:600;font-size:15px;">Rinnovo completato</p>';
-            html += '<p><strong style="color:#10b981;">' + d.successi + '</strong> contratti rinnovati con successo.</p>';
+            html += '<p><strong class="c-green2">' + d.successi + '</strong> contratti rinnovati con successo.</p>';
             if (d.fallimenti && d.fallimenti.length > 0) {
                 html += '<hr style="border-color:#27282D;"><p style="color:#f59e0b;font-weight:600;">' + d.fallimenti.length + ' fallimento(i):</p><ul style="text-align:left;font-size:12px;">';
                 d.fallimenti.forEach(function(f) { html += '<li>PK ' + f.pk + ': ' + f.motivo + '</li>'; });
@@ -335,7 +335,7 @@ function eseguiRinnovo() {
             html += '</div>';
             body.innerHTML = html;
         } else {
-            body.innerHTML = '<div style="text-align:center;"><i class="bi bi-x-circle" style="font-size:48px;color:#dc2626;display:block;margin-bottom:12px;"></i><p style="color:#EDEDED;font-weight:600;">' + (d.error || 'Errore durante il rinnovo.') + '</p></div>';
+            body.innerHTML = '<div class="text-center"><i class="bi bi-x-circle" style="font-size:48px;color:#dc2626;display:block;margin-bottom:12px;"></i><p class="c-text fw-6">' + (d.error || 'Errore durante il rinnovo.') + '</p></div>';
         }
         var modal = new bootstrap.Modal(document.getElementById('modaleRisultato'));
         modal.show();

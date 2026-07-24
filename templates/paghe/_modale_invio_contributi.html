@@ -23,11 +23,11 @@
             {% empty %}
             <div style="color:#545; text-align:center; padding:30px 0;">
               <i class="bi bi-people" style="font-size:24px; display:block; margin-bottom:8px;"></i>
-              <div style="font-size:13px;">Nessun datore con email valida</div>
+              <div class="fs-13">Nessun datore con email valida</div>
             </div>
             {% endfor %}
           </div>
-          <div id="esitoContributi" class="mt-2 small" style="color:#8A8F98;"></div>
+          <div id="esitoContributi"  class="mt-2 small c-muted"></div>
         </div>
         <div class="modal-footer" style="border-top:1px solid #27282D; padding:16px 24px; gap:8px;">
           <button type="button" class="btn btn-ghost" data-bs-dismiss="modal" style="padding:8px 20px; font-size:13px;">Annulla</button>
@@ -48,7 +48,7 @@ function inviaContributiEmail(e) {
   var csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
   var checkboxes = document.querySelectorAll('#formInvioContributi input[name=destinatari]:checked');
   var destinatari = Array.from(checkboxes).map(function(cb) { return cb.value; });
-  if (destinatari.length === 0) { esito.innerHTML = '<span style="color:#fbbf24;">Seleziona almeno un destinatario.</span>'; return false; }
+  if (destinatari.length === 0) { esito.innerHTML = '<span class="c-amber">Seleziona almeno un destinatario.</span>'; return false; }
   btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Invio...';
   fetch('{% url "ajax_contributi_ccnl_invia_email" %}', {
     method: 'POST', headers: {'X-CSRFToken': csrf, 'Content-Type': 'application/json'},
@@ -57,7 +57,7 @@ function inviaContributiEmail(e) {
     if (data.ok) {
       var ok = data.risultati.filter(function(r) { return r.ok; }).length;
       var ko = data.risultati.filter(function(r) { return !r.ok; }).length;
-      esito.innerHTML = '<span style="color:#10b981;">Invio completato: ' + ok + ' OK' + (ko ? ', ' + ko + ' falliti' : '') + '.</span>';
+      esito.innerHTML = '<span class="c-green2">Invio completato: ' + ok + ' OK' + (ko ? ', ' + ko + ' falliti' : '') + '.</span>';
     } else { esito.innerHTML = '<span style="color:#ff6b6b;">Errore: ' + (data.errore || 'sconosciuto') + '</span>'; }
   }).catch(function(err) {
     esito.innerHTML = '<span style="color:#ff6b6b;">Errore di rete: ' + err.message + '</span>';

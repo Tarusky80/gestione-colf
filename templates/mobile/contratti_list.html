@@ -15,7 +15,7 @@
     <div class="m-swipe-card m-card m-card-top-contr" onclick="location.href='/m/contratti/{{ c.pk }}/'">
         <div class="m-list-item">
             <div><i class="bi bi-file-earmark-text" style="font-size:20px;color:#ec4899;"></i></div>
-            <div style="flex:1;min-width:0;">
+            <div class="flex-fill-min">
                 <div class="m-list-title">{{ c.lavoratore.nome_cognome|default:"?" }}</div>
                 <div class="m-list-sub">{{ c.datore.nome_cognome|default:"?" }} &mdash; {{ c.parametri_minimi.descrizione_corta|default:"" }}</div>
             </div>

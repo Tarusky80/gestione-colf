@@ -15,7 +15,7 @@
     <div class="m-swipe-card m-card m-card-top-lav" onclick="location.href='/m/lavoratori/{{ l.pk }}/'">
         <div class="m-list-item">
             <div><i class="bi bi-person" style="font-size:20px;color:#10b981;"></i></div>
-            <div style="flex:1;min-width:0;">
+            <div class="flex-fill-min">
                 <div class="m-list-title">{{ l.nome_cognome }}</div>
                 <div class="m-list-sub">{{ l.comune|default:"" }}{% if l.codice_fiscale %} &middot; {{ l.codice_fiscale }}{% endif %}</div>
             </div>

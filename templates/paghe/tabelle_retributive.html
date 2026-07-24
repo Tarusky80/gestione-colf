@@ -25,13 +25,13 @@
         <i class="bi bi-table" style="color:#2c5282; margin-right:10px;"></i> Tabelle Retributive
     </h2>
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'tabelle_retributive_pdf' %}', 0)" class="btn btn-ghost-primary" style="text-decoration:none;">
+        <a href="#" onclick="event.preventDefault();apriNelPannello('{% url 'tabelle_retributive_pdf' %}', 0)"  class="btn btn-ghost-primary text-decoration-none">
             <i class="bi bi-download"></i> Scarica PDF
         </a>
         <button type="button" class="btn btn-ghost-success" onclick="apriModaleInvioTabelle()">
             <i class="bi bi-envelope"></i> Invia Email
         </button>
-        <a href="{% url 'verifica_ccnl' %}" class="btn btn-ghost-primary" style="text-decoration:none;">
+        <a href="{% url 'verifica_ccnl' %}"  class="btn btn-ghost-primary text-decoration-none">
             <i class="bi bi-search"></i> Verifica con CCNL
         </a>
     </div>

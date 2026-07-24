@@ -8,7 +8,7 @@
 </style>
 <div class="container-fluid py-3 px-4">
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-    <h5 style="color:#EDEDED;font-weight:700;margin:0;"><i class="bi bi-inbox me-2" style="color:#5E6AD2;"></i> Richieste Modifica Datori
+    <h5 style="color:#EDEDED;font-weight:700;margin:0;"><i  class="bi bi-inbox me-2 c-accent"></i> Richieste Modifica Datori
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </h5>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -22,7 +22,7 @@
   </div>
 
   <div class="table-responsive" style="background:#131316;border:1px solid #27282D;border-radius:12px;">
-    <table class="table table-dark table-hover align-middle mb-0" style="font-size:13px;">
+    <table  class="table table-dark table-hover align-middle mb-0 fs-13">
       <thead>
         <tr>
           <th>Data</th>
@@ -38,7 +38,7 @@
       <tbody>
         {% for r in richieste %}
         <tr class="clickable-row{% if r.eliminata %} richiesta-eliminata{% endif %}" data-pk="{{ r.pk }}" data-eliminata="{{ r.eliminata|yesno:'true,false' }}" data-tipo="{{ r.get_tipo_display }}" data-campo="{{ r.campo }}" data-etichetta="{{ r.etichetta_campo }}" data-attuale="{{ r.valore_attuale }}" data-richiesto="{{ r.valore_richiesto }}" data-nota="{{ r.nota_datore }}" data-notaadmin="{{ r.nota_admin }}" data-stato="{{ r.stato }}" data-datore="{{ r.datore.nome_cognome }}" data-contratto="{% if r.contratto %}{{ r.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}" onclick="apriDettaglioRichiesta(this)">
-          <td style="white-space:nowrap;">{{ r.creato_il|date:"d/m/Y H:i" }}</td>
+          <td class="nowrap">{{ r.creato_il|date:"d/m/Y H:i" }}</td>
           <td><span class="badge" style="background:rgba(94,106,210,0.12);color:#5E6AD2;">{{ r.get_tipo_display }}</span></td>
           <td>{{ r.datore.nome_cognome }}</td>
           <td>{% if r.contratto %}{{ r.contratto.lavoratore.nome_cognome }}{% else %}-{% endif %}</td>
@@ -76,14 +76,14 @@
   <div class="modal-dialog modal-dialog-centered" style="max-width:560px;">
     <div class="modal-content card-alt">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-inbox me-2" style="color:#5E6AD2;"></i> Dettaglio Richiesta
+        <h5  class="modal-title fs-15-bold">
+          <i  class="bi bi-inbox me-2 c-accent"></i> Dettaglio Richiesta
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;">
         <div id="richiestaDettaglioContent"></div>
-        <div style="margin-top:14px;">
+        <div class="mt-14">
           <label style="font-size:12px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;">Risposta amministratore</label>
           <textarea id="richiestaNotaAdmin" style="width:100%;background:#09090B;border:1px solid #27282D;color:#EDEDED;border-radius:8px;padding:10px 14px;font-size:13px;min-height:60px;resize:vertical;" placeholder="Scrivi una nota di risposta..."></textarea>
         </div>
@@ -120,10 +120,10 @@ function apriDettaglioRichiesta(el) {
     var datoreNome = tr.getAttribute('data-datore');
     var contrattoNome = tr.getAttribute('data-contratto');
 
-    var html = '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Tipo:</span> <span style="color:#EDEDED;font-weight:600;">' + tipo + '</span></div>';
-    html += '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Datore:</span> <span style="color:#EDEDED;">' + datoreNome + '</span></div>';
-    html += '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Contratto:</span> <span style="color:#EDEDED;">' + contrattoNome + '</span></div>';
-    html += '<div style="margin-bottom:10px;"><span style="color:#5C5F66;">Campo:</span> <span style="color:#EDEDED;">' + etichetta + '</span></div>';
+    var html = '<div class="mb-10"><span class="c-gray">Tipo:</span> <span class="c-text fw-6">' + tipo + '</span></div>';
+    html += '<div class="mb-10"><span class="c-gray">Datore:</span> <span style="color:#EDEDED;">' + datoreNome + '</span></div>';
+    html += '<div class="mb-10"><span class="c-gray">Contratto:</span> <span style="color:#EDEDED;">' + contrattoNome + '</span></div>';
+    html += '<div class="mb-10"><span class="c-gray">Campo:</span> <span style="color:#EDEDED;">' + etichetta + '</span></div>';
 
     if (attuale) {
         html += '<div style="margin-bottom:10px;padding:8px 10px;background:#09090B;border:1px solid #27282D;border-radius:8px;">';
