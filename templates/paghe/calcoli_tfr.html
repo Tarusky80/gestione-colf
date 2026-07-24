@@ -66,14 +66,14 @@
         <div class="col-md-5">
           <label class="label-tfr"><i class="bi bi-person-vcard me-1"></i>Contratto</label>
           <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9664;</button>
+            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" class="btn-tag-sm">&#9664;</button>
             <select id="fContratto" class="form-control" onchange="onCambioContratto()" style="background-color:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:13px;padding:8px 10px;border-radius:8px;width:100%;">
               <option value="">— Seleziona contratto —</option>
               {% for c in contratti %}
               <option value="{{ c.pk }}" {% if c.pk == contratto_pk %}selected{% endif %}>{{ c|contratto_option }}</option>
               {% endfor %}
             </select>
-            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" style="padding:4px 8px;font-size:13px;line-height:1;">&#9654;</button>
+            <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" class="btn-tag-sm">&#9654;</button>
           </div>
         </div>
         <div class="col-md-4">
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <div id="resultContainer" style="display:none;">
+    <div id="resultContainer" class="d-none-custom">
       <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
         <i class="bi bi-exclamation-triangle-fill me-2"></i> Liquidazione TFR già salvata per questo periodo. Clicca <strong>LIQUIDA TFR</strong> per sovrascriverla.
       </div>

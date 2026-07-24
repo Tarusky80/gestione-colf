@@ -61,7 +61,7 @@
         </div>
         {% endfor %}
     </div>
-    <div id="datoriContent" style="display:none;">
+    <div id="datoriContent" class="d-none-custom">
     <table class="table custom-table sortable" id="datoriTable">
         <thead>
             <tr>
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div id="accStatoAttuale" class="bg-090 b-1-2728 br-8 fs-12" style="margin-bottom:16px;padding:8px 12px;"></div>
         <div class="mb-12">
           <label style="font-size:12px;font-weight:600;color:#8A8F98;display:block;margin-bottom:4px;">Nuova password</label>
-          <div style="position:relative;">
+          <div class="position-relative">
             <input type="password" id="accPassword" class="input-dark w-100" style="padding:10px 40px 10px 14px;" placeholder="Inserisci password (min 4 caratteri)" autocomplete="new-password">
             <button type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#5C5F66;cursor:pointer;font-size:16px;padding:0;" onclick="var p=document.getElementById('accPassword');var i=this.querySelector('i');if(p.type==='password'){p.type='text';i.className='bi bi-eye-fill'}else{p.type='password';i.className='bi bi-eye-slash-fill'}"><i class="bi bi-eye-slash-fill"></i></button>
           </div>

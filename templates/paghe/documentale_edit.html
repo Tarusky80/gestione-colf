@@ -116,7 +116,7 @@ select.form-control option { background:#09090b; color:#e2e8f0; }
           <span style="color:#8A8F98;font-size:10px;flex:1;">per inserire la variabile nel testo</span>
           <input type="text" id="varSearch" placeholder="Cerca..." style="background:#09090b;color:#e2e8f0;border:1px solid #27282d;border-radius:6px;padding:4px 8px;font-size:11px;width:140px;outline:none;" oninput="filtraVariabili(this.value)">
         </div>
-        <div style="display:flex;flex-direction:column;gap:2px;" id="varsContainer">
+        <div class="flex-col-gap" id="varsContainer">
 {% for gruppo in variabili %}
           <div class="var-gruppo" data-categoria="{{ gruppo.categoria|lower }}">
             <button type="button" class="var-header" onclick="toggleCategoria(this)" style="display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:6px;cursor:pointer;user-select:none;transition:background 0.12s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
@@ -144,7 +144,7 @@ select.form-control option { background:#09090b; color:#e2e8f0; }
       <label class="form-label small fw-bold text-secondary">CORPO TESTO</label>
       <div id="editorWrapper" style="display:none;flex:1;"></div>
       <div id="editorStatus" style="font-size:12px;color:#8A8F98;margin-top:4px;"></div>
-      <textarea id="editorInitialContent" style="display:none;">{{ modello.corpo_testo|safe }}</textarea>
+      <textarea id="editorInitialContent" class="d-none-custom">{{ modello.corpo_testo|safe }}</textarea>
     </div>
     <div class="col-5" style="display:flex;flex-direction:column;">
       <label class="form-label small fw-bold text-secondary" style="display:flex;align-items:center;justify-content:space-between;width:100%;">
@@ -160,7 +160,7 @@ select.form-control option { background:#09090b; color:#e2e8f0; }
     </div>
   </div>
 
-  <div class="mb-3" style="margin-top:12px;">
+  <div  class="mb-3 mt-12">
     <label class="form-label small fw-bold text-secondary">NOTE INTERNE</label>
     <textarea class="form-control" id="modelloNote" rows="2" placeholder="Note interne..." style="resize:vertical;">{{ modello.note_interne|default:'' }}</textarea>
   </div>

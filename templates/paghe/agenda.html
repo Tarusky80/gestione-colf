@@ -75,7 +75,7 @@
 {% if prossime_scadenze %}
 <div id="agenda-allerta-scadenze" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px;">
     <i class="bi bi-exclamation-triangle-fill c-amber" style="font-size:16px;flex-shrink:0;margin-top:2px;"></i>
-    <div style="flex:1;">
+    <div class="flex-1">
         <div class="c-amber" style="font-size:12px;font-weight:700;margin-bottom:4px;">
             Hai {{ prossime_scadenze|length }} scadenza{{ prossime_scadenze|pluralize:'e' }} nei prossimi 3 giorni
         </div>
@@ -192,7 +192,7 @@
         <span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:600;background:rgba(167,139,250,0.1);color:#a78bfa;margin-left:4px;vertical-align:middle;">{{ app.get_ricorrenza_display|slice:':3' }}</span>
         {% endif %}
     </div>
-    <div style="flex:1;min-width:0;">
+    <div class="flex-fill-min">
         <div style="font-size:13px;font-weight:600;color:{% if app.completato %}#3A3B40{% else %}#EDEDED{% endif %};{% if app.completato %}text-decoration:line-through;{% endif %}">{{ app.titolo }}</div>
         {% if app.descrizione %}
         <div class="fs-11 c-muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ app.descrizione }}</div>
@@ -226,7 +226,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content card-alt">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;" id="modalAgendaTitle">Nuovo Appuntamento</h5>
+        <h5  class="modal-title fs-15-bold" id="modalAgendaTitle">Nuovo Appuntamento</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;">

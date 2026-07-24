@@ -99,7 +99,7 @@
       <div class="col-md-8">
         <label style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Contratto</label>
         <div class="d-flex gap-2 align-items-center">
-          <button type="button" class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrev" style="padding:8px 14px;font-size:16px;line-height:1;">
+          <button type="button" class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrev" class="btn-icon-md">
             <i class="bi bi-chevron-left"></i>
           </button>
           <select id="selContratto" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
@@ -108,7 +108,7 @@
             </option>
             {% endfor %}
           </select>
-          <button type="button" class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNext" style="padding:8px 14px;font-size:16px;line-height:1;">
+          <button type="button" class="btn btn-ghost" onclick="navigaContratto(1)" id="btnNext" class="btn-icon-md">
             <i class="bi bi-chevron-right"></i>
           </button>
           <span id="contrattoCounter" style="font-size:11px;color:#5C5F66;white-space:nowrap;min-width:50px;text-align:center;"></span>
@@ -157,8 +157,8 @@
 <div class="p-3 card-simple mb-20">
     <div id="batchToolbar">
       <span style="font-size:11px;color:#8A8F98;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-collection me-1"></i>Operazioni batch</span>
-      <span id="badgeContrattoCorrente" class="badge-contratto" style="display:none;"></span>
-      <div style="flex:1;"></div>
+      <span id="badgeContrattoCorrente"  class="badge-contratto d-none-custom"></span>
+      <div class="flex-1"></div>
       <button type="button" onclick="generaBatchPdf()" id="btnBatchPdf" disabled class="btn btn-sm btn-ghost-primary" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-files me-1"></i> Genera PDF selezionati (0)</button>
       <button type="button" onclick="inviaMassivoCu()" id="btnBatchEmail" disabled class="btn btn-sm btn-ghost-info" style="padding:8px 16px;font-size:12px;opacity:0.4;"><i class="bi bi-envelope-paper me-1"></i> Invia email selezionati (0)</button>
       <button type="button" onclick="toggleBatchTable()" style="background:transparent;border:1px solid #27282D;color:#8A8F98;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;"><i class="bi bi-list-ul"></i></button>
@@ -186,7 +186,7 @@
   </div>
 
   {# --- Riepilogo CU --- #}
-  <div id="riepilogoContainer" style="display:none;">
+  <div id="riepilogoContainer" class="d-none-custom">
 <div class="p-4 card-simple mb-20">
       <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark-text me-2 c-accent"></i>RIEPILOGO ANNUALE</h5>
 
@@ -219,7 +219,7 @@
       </div>
 
       {# Dettaglio mensile #}
-      <div id="dettaglioMensileContainer" style="margin-top:12px;"></div>
+      <div id="dettaglioMensileContainer" class="mt-12"></div>
 
       {# Riepilogo somme #}
       <div id="riepilogoSomme" style="margin-top:16px;background:rgba(255,255,255,0.02);border:1px solid #27282D;border-radius:10px;padding:16px;"></div>
@@ -260,7 +260,7 @@
 {# Modale invio email CU #}
 <div class="modal fade" id="modaleInvioEmailCu" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div  class="modal-content card-dark shadow-heavy">
       <div class="modal-header border-0 pb-0">
 <h5 class="modal-title fw-bold c-text">Invia CU via Email</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -274,7 +274,7 @@
   {# Modale esito batch PDF #}
   <div class="modal fade" id="modaleBatchPdf" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div  class="modal-content card-dark shadow-heavy">
         <div class="modal-header border-0 pb-0">
 <h5 class="modal-title fw-bold c-text"><i class="bi bi-files me-2 c-accent"></i>Esito generazione batch</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
@@ -306,7 +306,7 @@
   {# Modale esito invio massivo #}
   <div class="modal fade" id="modaleMassivoEmail" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content card-dark" style="box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div  class="modal-content card-dark shadow-heavy">
         <div class="modal-header border-0 pb-0">
 <h5 class="modal-title fw-bold c-text"><i class="bi bi-envelope-paper me-2" style="color:#2563eb;"></i>Esito invio massivo</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>

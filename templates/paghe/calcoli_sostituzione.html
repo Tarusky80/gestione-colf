@@ -129,7 +129,7 @@
     </div>
 
     <!-- STEP 2: Malattia Parameters + Costo -->
-    <div id="step2Panel" class="no-print" style="display:none;">
+    <div id="step2Panel"  class="no-print d-none-custom">
         <div class="card-simple" style="padding:18px 22px;margin-bottom:20px;">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div>
@@ -195,7 +195,7 @@
     </div>
 
     <!-- STEP 3: Sostituto -->
-    <div id="step3Panel" class="no-print" style="display:none;">
+    <div id="step3Panel"  class="no-print d-none-custom">
         <div style="background:#17181C;border:1px solid #27282D;border-radius:14px;padding:18px 22px;margin-bottom:20px;">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div>
@@ -652,7 +652,7 @@ function calcolaBustaSostituto() {
 }
 
 function renderBustaSostituto(d) {
-    var h = '<div class="class="card-dark" style="padding:20px 24px;"">';
+    var h = '<div class=" class="card-dark px-24 py-20"">';
     // Header
     h += '<div class="d-flex justify-content-between align-items-center mb-3">';
     h += '<div><span class="c-10-up">' + d.mese_nome + ' ' + d.anno + '</span>';

@@ -310,8 +310,8 @@
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
     <div class="modal-content card-alt">
       <div class="modal-header" style="border-bottom:1px solid #27282D;padding:14px 18px;">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;">
-          <i class="bi bi-cloud-arrow-up me-2" style="color:#5E6AD2;"></i><span id="agg-modal-title">Aggiornamento in corso...</span>
+        <h5  class="modal-title fs-15-bold">
+          <i  class="bi bi-cloud-arrow-up me-2 c-accent"></i><span id="agg-modal-title">Aggiornamento in corso...</span>
         </h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
@@ -395,7 +395,7 @@ function verificaAggiornamenti() {
       var pkg = data.pacchetti || {};
       var keys = Object.keys(pkg);
       if (keys.length === 0) {
-        lista.innerHTML = '<div class="text-center py-3" style="color:#8A8F98;">Nessun pacchetto trovato.</div>';
+        lista.innerHTML = '<div  class="text-center py-3 c-muted">Nessun pacchetto trovato.</div>';
         badge.textContent = '\u26A0 Errore';
         badge.style.background = '#dc2626';
         return;
@@ -431,7 +431,7 @@ function verificaAggiornamenti() {
         html += '<tr style="border-bottom:1px solid #1c1c1f;">';
         html += '<td style="padding:10px 10px 10px 0;"><span style="color:' + colore + ';margin-right:6px;">' + icon + '</span><span style="color:white;font-weight:500;">' + nome + '</span></td>';
         html += '<td style="padding:10px;text-align:center;color:#8A8F98;font-family:monospace;">' + installata + '</td>';
-        html += '<td style="padding:10px;text-align:center;' + (stato === 'update' ? 'color:#f59e0b;font-weight:600;' : 'color:#8A8F98;') + 'font-family:monospace;">' + disponibile + (stato === 'update' ? ' <span style="font-size:10px;">\uD83D\uDDC5</span>' : '') + '</td>';
+        html += '<td style="padding:10px;text-align:center;' + (stato === 'update' ? 'color:#f59e0b;font-weight:600;' : 'color:#8A8F98;') + 'font-family:monospace;">' + disponibile + (stato === 'update' ? ' <span class="fs-10">\uD83D\uDDC5</span>' : '') + '</td>';
         html += '</tr>';
       });
 
@@ -468,7 +468,7 @@ function aggiornaRequirements() {
   var closeBtn = document.getElementById('agg-modal-close');
 
   modalTitle.textContent = 'Aggiornamento requirements.txt...';
-  modalStatus.innerHTML = '<i class="bi bi-arrow-repeat me-1" style="color:#f59e0b;"></i>Controllo versioni PyPI in corso...';
+  modalStatus.innerHTML = '<i  class="bi bi-arrow-repeat me-1 c-amber"></i>Controllo versioni PyPI in corso...';
   modalConsole.textContent = '';
   closeBtn.disabled = true;
 
@@ -486,7 +486,7 @@ function aggiornaRequirements() {
   .then(function(data) {
     if (data.modificati && data.modificati.length > 0) {
       modalConsole.textContent = data.modificati.join('\n');
-      modalStatus.innerHTML = '<i class="bi bi-check-circle me-1" style="color:#22c55e;"></i>' + data.totale + ' pacchetto/i aggiornato/i in requirements.txt<br><span style="font-size:11px;color:#8A8F98;">Riavvia con GESTIONE.bat per installare gli aggiornamenti.</span>';
+      modalStatus.innerHTML = '<i class="bi bi-check-circle me-1" style="color:#22c55e;"></i>' + data.totale + ' pacchetto/i aggiornato/i in requirements.txt<br><span class="fs-11 c-muted">Riavvia con GESTIONE.bat per installare gli aggiornamenti.</span>';
       modalTitle.textContent = '\u2705 requirements.txt aggiornato';
     } else {
       modalConsole.textContent = 'Nessun aggiornamento disponibile.';

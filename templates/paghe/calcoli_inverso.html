@@ -199,7 +199,7 @@
     </div>
 </div>
 
-<div class="p-2 mb-3 controls-card" id="controlsContainer" style="display:none;">
+<div class="p-2 mb-3 controls-card" id="controlsContainer" class="d-none-custom">
     <div class="d-flex align-items-center flex-wrap gap-3 controls-text">
         <span class="section-label">Convivenza</span>
         <span class="toggle-item">
@@ -274,14 +274,14 @@
             <span class="c-danger">TFR Separato</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateoTfrSeparato" onchange="calcolaInverso();aggiornaTfrCalcoli()">
-                <span class="toggle-slider" style="border-color:#f8717166;"></span>
+                <span  class="toggle-slider border-red-dim"></span>
             </label>
         </span>
         <span class="toggle-item">
             <span class="c-warning">Anticipo 70%</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateoAnticipo70" onchange="calcolaInverso()">
-                <span class="toggle-slider" style="border-color:#fbbf2466;"></span>
+                <span  class="toggle-slider border-amber-dim"></span>
             </label>
         </span>
         <span class="toggle-item">
@@ -320,11 +320,11 @@
     </div>
 </div>
 
-<div id="resultContainer" style="display:none;">
+<div id="resultContainer" class="d-none-custom">
     <div id="bustaEsistenteWarning" role="alert" class="card-warning-banner">
         <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
     </div>
-    <div id="resultLoading" class="py-4" style="display:none;">
+    <div id="resultLoading"  class="py-4 d-none-custom">
         <div class="skeleton-card">
             <div class="skeleton-row mb-3">
                 <div class="skeleton-avatar skeleton"></div>
@@ -609,7 +609,7 @@ function renderRisultato(d) {
     var _cH = Math.floor(d.ore_mensili), _cM = Math.floor((d.ore_mensili - _cH) * 60), _cS = Math.floor(((d.ore_mensili - _cH) * 60 - _cM) * 60);
     var _oreCrono = _cH + 'h ' + String(_cM).padStart(2,'0') + 'm ' + String(_cS).padStart(2,'0') + 's';
     var _sA = Math.ceil(d.ore_settimanali);
-    html += '<div class="col-md-4"><span class="label-info mb-2">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span class="fs-13 fw-6 c-cyan">' + d.ore_inps + ' h</span><span class="label-ml">MENSILI ARROTONDATE</span><span class="label-ml">(INPS: ' + d.ore_inps + ' h)</span></div><div><span class="fs-12 fw-5 c-muted">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="label-ml">MENSILI DECIMALI</span></div><div><span class="fs-12 fw-6 c-cyan">' + _oreCrono + '</span><span class="label-ml">MENSILI CRONOMETRO</span></div><div class="border-top-dark my-1"></div><div><span class="fs-9 c-muted">Ore settimanali</span> <span class="fs-13 fw-6 c-green2">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
+    html += '<div class="col-md-4"><span class="label-info mb-2">Ore</span><div class="flex-col-gap"><div><span class="fs-13 fw-6 c-cyan">' + d.ore_inps + ' h</span><span class="label-ml">MENSILI ARROTONDATE</span><span class="label-ml">(INPS: ' + d.ore_inps + ' h)</span></div><div><span class="fs-12 fw-5 c-muted">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="label-ml">MENSILI DECIMALI</span></div><div><span class="fs-12 fw-6 c-cyan">' + _oreCrono + '</span><span class="label-ml">MENSILI CRONOMETRO</span></div><div class="border-top-dark my-1"></div><div><span class="fs-9 c-muted">Ore settimanali</span> <span class="fs-13 fw-6 c-green2">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
     html += '<div class="col-md-3"><span class="label-info">Settimane mensili</span><span class="value-busta">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
     html += '<div class="col-md-3"><span class="label-info">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span class="fs-11 c-muted d-block">' + esc(d.descrizione_corta) + '</span></div>';
     html += '<div class="col-md-3"><span class="label-info">Paga oraria</span><span class="value-busta">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h</span></div>';
@@ -621,7 +621,7 @@ function renderRisultato(d) {
     html += '</div></div>';
 
     // Corpo: due colonne
-    html += '<div style="padding:20px 24px;">';
+    html += '<div class="px-24 py-20">';
     html += '<div class="row g-4">';
     // Colonna sinistra: Retribuzione
     html += '<div class="col-md-6">';
@@ -649,9 +649,9 @@ html += '<div class="d-flex justify-content-between align-items-center py-1 cell
         html += '<span class="value-busta">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
 
-    html += '<div class="d-flex justify-content-between align-items-center py-2 mt-2" style="border-top:2px solid rgba(52,211,153,0.3);">';
-    html += '<span style="font-size:13px;font-weight:700;color:#34d399;">TOTALE LORDO</span>';
-    html += '<span style="font-size:15px;font-weight:800;color:#34d399;">\u20AC ' + d.totale_lordo.toFixed(2) + '</span></div>';
+    html += '<div  class="d-flex justify-content-between align-items-center py-2 mt-2 border-top-green-glass">';
+    html += '<span class="fs-13 fw-7 c-green">TOTALE LORDO</span>';
+    html += '<span class="fs-15 fw-8 c-green">\u20AC ' + d.totale_lordo.toFixed(2) + '</span></div>';
     html += '</div>'; // fine colonna sinistra
 
     // Colonna destra: Contributi + Trattenute
@@ -686,8 +686,8 @@ html += '<div class="d-flex justify-content-between align-items-center py-1 cell
     html += '<span class="value-busta">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(248,113,113,0.3);">';
-    html += '<span style="font-size:13px;font-weight:700;color:#f87171;">TOTALE TRATTENUTE</span>';
-    html += '<span style="font-size:15px;font-weight:800;color:#f87171;">\u20AC ' + d.trattenute.totale.toFixed(2) + '</span></div>';
+    html += '<span class="fs-13 fw-7 c-red">TOTALE TRATTENUTE</span>';
+    html += '<span class="fs-15 fw-8 c-red">\u20AC ' + d.trattenute.totale.toFixed(2) + '</span></div>';
 
     // Riepilogo
     html += '<div style="margin-top:20px;padding:16px 0;">';
@@ -698,7 +698,7 @@ html += '<div class="d-flex justify-content-between align-items-center py-1 cell
     }
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:1.5px solid #2c5282;padding-top:8px;">';
     html += '<span style="font-size:16px;font-weight:800;color:#2c5282;">NETTO IN BUSTA</span>';
-    html += '<span style="font-size:20px;font-weight:800;color:#2c5282;">\u20AC ' + d.netto.toFixed(2) + '</span></div>';
+    html += '<span class="fs-20 fw-8 c-blue">\u20AC ' + d.netto.toFixed(2) + '</span></div>';
     html += '</div>';
 
     // Input riepilogo (cosa abbiamo calcolato)

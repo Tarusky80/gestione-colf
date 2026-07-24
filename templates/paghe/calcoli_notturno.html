@@ -113,7 +113,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         </label>
       </div>
     </div>
-    <div class="col-md-4" id="oreNotturneContainer" style="display:none;">
+    <div class="col-md-4" id="oreNotturneContainer" class="d-none-custom">
 <label class="mb-1 fw-bold c-10-up">Ore Notturne: <input type="number" id="oreNotturneInput" min="0" max="200" step="0.5" value="0" onchange="daInputOre()" style="width:65px;background:#09090B;border:1px solid #27282D;color:#818cf8;font-weight:600;font-size:13px;padding:2px 6px;border-radius:6px;text-align:center;"> h</label>
       <input type="range" id="fOreNotturne" min="0" max="200" step="0.5" value="0" oninput="daSliderOre();calcola()" style="background-color:#09090B;">
       <div class="d-flex justify-content-between" style="font-size:9px;color:#5C5F66;margin-top:2px;"><span>0 h</span><span>200 h</span>      </div>
@@ -125,14 +125,14 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
           <span style="color:#f87171;font-weight:600;">TFR Separato</span>
           <label class="toggle-switch">
             <input type="checkbox" id="rateoTfrSeparato" checked onchange="calcola();aggiornaTfrCalcoli()">
-            <span class="toggle-slider" style="border-color:#f8717166;"></span>
+            <span  class="toggle-slider border-red-dim"></span>
           </label>
         </span>
         <span class="toggle-item">
           <span style="color:#fbbf24;font-weight:600;">Anticipo 70%</span>
           <label class="toggle-switch">
             <input type="checkbox" id="rateoAnticipo70" onchange="calcola()">
-            <span class="toggle-slider" style="border-color:#fbbf2466;"></span>
+            <span  class="toggle-slider border-amber-dim"></span>
           </label>
         </span>
         <span class="toggle-item">
@@ -180,11 +180,11 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   </div>
 </div>
 
-<div id="resultContainer" style="display:none;">
+<div id="resultContainer" class="d-none-custom">
   <div id="bustaEsistenteWarning" role="alert" style="display:none;padding:10px 14px;margin-bottom:12px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#ef4444;font-size:12px;font-weight:600;">
     <i class="bi bi-exclamation-triangle-fill me-2"></i> Busta paga già salvata per questo periodo. Clicca <strong>SALVA BUSTA</strong> per sovrascriverla.
   </div>
-  <div id="resultLoading" class="py-4" style="display:none;">
+  <div id="resultLoading"  class="py-4 d-none-custom">
     <div class="skeleton-card">
       <div class="skeleton-row mb-3">
         <div class="skeleton-avatar skeleton"></div>
@@ -436,7 +436,7 @@ function renderNotturno(d) {
   html += '<div class="col-md-4"><span class="label-info">Datore</span><span class="c-13-b">' + esc(d.datore) + '</span></div>';
   html += '<div class="col-md-4"><span class="label-info">Lavoratore</span><span class="c-13-b">' + esc(d.lavoratore) + '</span></div>';
   html += '<div class="col-md-2"><span class="label-info">Livello</span><span style="display:inline-block;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;background:rgba(' + rgb + ',0.2);color:' + lc + ';">' + esc(d.livello) + '</span></div>';
-  html += '<div class="col-md-2"><span class="label-info">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
+  html += '<div class="col-md-2"><span class="label-info">Tipo</span><span class="fs-13 fw-6 c-muted">' + esc(d.tipo_contratto) + '</span></div>';
   html += '<div class="col-md-3 mt-2"><span class="label-info">Ore mensili</span><span class="fs-13 fw-6 c-cyan">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + Number(d.ore_settimanali).toFixed(2) + ' h/sett)</span></div>';
   html += '<div class="col-md-3 mt-2"><span class="label-info">Paga base oraria</span><span class="c-13-b">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
   html += '<div class="col-md-6 mt-2"><span style="font-size:12px;font-weight:700;color:#818cf8;">' + esc(d.label_tipo) + '</span>';
@@ -444,7 +444,7 @@ function renderNotturno(d) {
   html += '</div></div></div>';
 
   // Dettaglio calcolo
-  html += '<div style="padding:16px 24px;">';
+  html += '<div class="px-24 py-16">';
   html += '<table style="width:100%;border-collapse:collapse;" id="resultNotturno">';
   html += '<tr><th style="text-align:left;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Componente</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Aliquota</th><th style="text-align:right;color:#8A8F98;font-size:10px;text-transform:uppercase;border-bottom:1px solid #27282D;">Importo</th></tr>';
   html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#EDEDED;">' + esc(d.label_tipo) + ' <span class="c-11-m">(importo mensile)</span></td><td style="text-align:right;color:#8A8F98;font-size:11px;border-bottom:1px solid rgba(255,255,255,0.04);"></td><td style="text-align:right;font-weight:600;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + Number(d.importo_mensile).toFixed(2) + '</td></tr>';

@@ -101,7 +101,7 @@
 
 {% include 'paghe/partials/_calcoli_filtri.html' %}
 
-<div class="p-2 mb-3 controls-card" style="display:none;" id="controlsContainer">
+<div  class="p-2 mb-3 controls-card d-none-custom" id="controlsContainer">
     <div class="d-flex align-items-center flex-wrap gap-3 c-11-m">
         <!-- FT/PT -->
         <span class="c-9-up-fw c-section-label">Orario</span>
@@ -153,14 +153,14 @@
             <span class="c-red">TFR Separato</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateoTfrSeparato" onchange="selezionaContratto();aggiornaTfrCalcoli()">
-                <span class="toggle-slider" style="border-color:#f8717166;"></span>
+                <span  class="toggle-slider border-red-dim"></span>
             </label>
         </span>
         <span class="toggle-item">
             <span class="c-amber">Anticipo 70%</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="rateoAnticipo70" onchange="selezionaContratto()">
-                <span class="toggle-slider" style="border-color:#fbbf2466;"></span>
+                <span  class="toggle-slider border-amber-dim"></span>
             </label>
         </span>
         <span class="toggle-item">
@@ -435,7 +435,7 @@ function renderBustaConviventiCCNL(d) {
     var _cH = Math.floor(d.ore_mensili), _cM = Math.floor((d.ore_mensili - _cH) * 60), _cS = Math.floor(((d.ore_mensili - _cH) * 60 - _cM) * 60);
     var _oreCrono = _cH + 'h ' + String(_cM).padStart(2,'0') + 'm ' + String(_cS).padStart(2,'0') + 's';
     var _sA = Math.ceil(d.ore_settimanali);
-    html += '<div class="col-md-4"><span class="label-info mb-2">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span class="fs-13 fw-6 c-cyan">' + d.ore_inps + ' h</span><span class="fs-9 c-muted ml-3">MENSILI ARROTONDATE</span><span class="fs-9 c-muted ml-3">(INPS: ' + d.ore_inps + ' h)</span></div><div><span class="fs-12 fw-5 c-muted">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="fs-9 c-muted ml-3">MENSILI DECIMALI</span></div><div><span class="fs-12 fw-6 c-cyan">' + _oreCrono + '</span><span class="fs-9 c-muted ml-3">MENSILI CRONOMETRO</span></div><div class="border-top-dark my-1"></div><div><span class="fs-9 c-muted">Ore settimanali</span> <span class="fs-13 fw-6 c-green2">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
+    html += '<div class="col-md-4"><span class="label-info mb-2">Ore</span><div class="flex-col-gap"><div><span class="fs-13 fw-6 c-cyan">' + d.ore_inps + ' h</span><span class="fs-9 c-muted ml-3">MENSILI ARROTONDATE</span><span class="fs-9 c-muted ml-3">(INPS: ' + d.ore_inps + ' h)</span></div><div><span class="fs-12 fw-5 c-muted">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="fs-9 c-muted ml-3">MENSILI DECIMALI</span></div><div><span class="fs-12 fw-6 c-cyan">' + _oreCrono + '</span><span class="fs-9 c-muted ml-3">MENSILI CRONOMETRO</span></div><div class="border-top-dark my-1"></div><div><span class="fs-9 c-muted">Ore settimanali</span> <span class="fs-13 fw-6 c-green2">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
     html += '<div class="col-md-3"><span class="label-busta">Settimane mensili</span><span class="value-busta">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
     html += '<div class="col-md-3"><span class="label-busta">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span class="fs-11 c-muted d-block">' + esc(d.descrizione_corta) + '</span></div>';
     html += '<div class="col-md-3"><span class="label-busta">Codice Rapporto</span><span class="value-busta-md">' + esc(d.codice_rapporto_inps) + '</span></div>';
@@ -444,7 +444,7 @@ function renderBustaConviventiCCNL(d) {
 
     // Progetti collegati
     if (d.progetti && d.progetti.length > 0) {
-        html += '<div class="col-12 mt-1"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:4px;">Progetti collegati</span>';
+        html += '<div class="col-12 mt-1"><span class="label-info">Progetti collegati</span>';
         for (var pi = 0; pi < d.progetti.length; pi++) {
             var pr = d.progetti[pi];
             html += '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:600;margin-right:6px;margin-bottom:4px;border:1px solid ' + esc(pr.colore) + ';background:rgba(' + hexToRgb(pr.colore) + ',0.1);color:' + esc(pr.colore) + ';">' + esc(pr.nome) + '</span>';
@@ -455,7 +455,7 @@ function renderBustaConviventiCCNL(d) {
     html += '</div></div>';
 
     // Corpo
-    html += '<div style="padding:20px 24px;">';
+    html += '<div class="px-24 py-20">';
     html += '<div class="row g-4">';
 
     // Colonna sinistra: Retribuzione Lorda
@@ -491,7 +491,7 @@ function renderBustaConviventiCCNL(d) {
     for (var i = 0; i < d.ratei_pagati.length; i++) {
         var rp = d.ratei_pagati[i];
         var calcNote = rp.incluso ? 'Incluso nel lordo mensile' : (rp.totale > 0 ? 'Da corrispondere a fine rapporto' : '');
-        var calcLabel = calcNote ? '<br><span style="font-size:10px;color:#8A8F98;font-style:italic;">' + calcNote + '</span>' : '';
+        var calcLabel = calcNote ? '<br><span class="fs-10 c-muted italic">' + calcNote + '</span>' : '';
         html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
         html += '<span class="c-12">' + esc(rp.label) + (rp.incluso ? ' (*)' : '') + ' <span class="c-11-m">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h = \u20AC' + (rp.orario * d.ore_mensili).toFixed(2) + ')</span>' + calcLabel + '</span>';
         html += '<span class="value-busta">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
@@ -504,9 +504,9 @@ function renderBustaConviventiCCNL(d) {
     html += '<span class="value-busta-md">\u20AC ' + totalIndennitaRatei.toFixed(2) + '</span></div>';
 
     // Totale lordo
-    html += '<div class="d-flex justify-content-between align-items-center py-2 mt-2" style="border-top:2px solid rgba(52,211,153,0.3);">';
-    html += '<span style="font-size:13px;font-weight:700;color:#34d399;">TOTALE LORDO CCNL</span>';
-    html += '<span style="font-size:15px;font-weight:800;color:#34d399;">\u20AC ' + d.totale_lordo.toFixed(2) + '</span></div>';
+    html += '<div  class="d-flex justify-content-between align-items-center py-2 mt-2 border-top-green-glass">';
+    html += '<span class="fs-13 fw-7 c-green">TOTALE LORDO CCNL</span>';
+    html += '<span class="fs-15 fw-8 c-green">\u20AC ' + d.totale_lordo.toFixed(2) + '</span></div>';
 
     html += '</div>'; // fine colonna sinistra
 
@@ -527,7 +527,7 @@ function renderBustaConviventiCCNL(d) {
     html += '<span class="fs-13 fw-7 c-amber">TOTALE CONTRIBUTI</span>';
     html += '<span style="font-size:15px;font-weight:800;color:#f59e0b;">\u20AC ' + d.contributi.totale.toFixed(2) + '</span></div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="margin-top:4px;">';
+    html += '<div  class="d-flex justify-content-between align-items-center py-1 mt-4">';
     html += '<span class="fs-11 c-muted">Stima contributi trimestrali</span>';
     html += '<span class="value-busta">\u20AC ' + d.contributi.trimestrale_stima.toFixed(2) + '</span></div>';
 
@@ -559,8 +559,8 @@ function renderBustaConviventiCCNL(d) {
 
     if (d.trattenute.totale > 0) {
         html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(248,113,113,0.3);">';
-        html += '<span style="font-size:13px;font-weight:700;color:#f87171;">TOTALE TRATTENUTE</span>';
-        html += '<span style="font-size:15px;font-weight:800;color:#f87171;">\u20AC ' + d.trattenute.totale.toFixed(2) + '</span></div>';
+        html += '<span class="fs-13 fw-7 c-red">TOTALE TRATTENUTE</span>';
+        html += '<span class="fs-15 fw-8 c-red">\u20AC ' + d.trattenute.totale.toFixed(2) + '</span></div>';
     }
 
     // Riepilogo finale
@@ -581,20 +581,20 @@ function renderBustaConviventiCCNL(d) {
         html += '<span style="font-size:11px;color:#f59e0b;font-weight:600;">TFR accumulato</span>';
         html += '<span class="fs-13 fw-7 c-amber">\u20AC ' + Number(d.tfr_accantonato_cumulativo || 0).toFixed(2) + '</span></div>';
     }
-    html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:1.5px solid #2c5282;margin-top:4px;padding-top:8px;">';
+    html += '<div  class="d-flex justify-content-between align-items-center py-2 border-top-blue mt-4 pt-8">';
     html += '<span style="font-size:16px;font-weight:800;color:#2c5282;">NETTO IN BUSTA</span>';
-    html += '<span style="font-size:20px;font-weight:800;color:#2c5282;">\u20AC ' + d.netto.toFixed(2) + '</span></div>';
+    html += '<span class="fs-20 fw-8 c-blue">\u20AC ' + d.netto.toFixed(2) + '</span></div>';
 
     html += '</div></div></div></div>';
 
     // Footer
-    html += '<div style="padding:16px 24px;border-top:1px solid #27282D;">';
+    html += '<div class="px-24 py-16 border-top-dark">';
 
     if (d.note_datore) {
-        html += '<div style="margin-bottom:10px;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;font-weight:700;display:block;">NOTE DATORE</span>';
+        html += '<div class="mb-10"><span class="label-uppercase-muted">NOTE DATORE</span>';
         html += '<div class="h-4"></div>';
         html += '<span class="fs-12 c-muted">' + esc(d.note_datore) + '</span></div>';
-        html += '<div style="margin-top:10px;padding-top:0;border-top:1px solid #27282D;"></div>';
+        html += '<div class="mt-10 pt-0 border-top-dark"></div>';
     }
 
     html += '<div style="margin-top:14px;font-size:11px;color:#8A8F98;line-height:1.6;">';
@@ -643,7 +643,7 @@ function renderBustaConviventiCCNL(d) {
     // â”€â”€ Dettaglio Progetti (se presenti) â”€â”€
     if (d.progetti_data && d.progetti_data.righe && d.progetti_data.righe.length > 0) {
         html += '<div style="margin-top:24px;background:#17181C;border:1px solid #27282D;border-radius:14px;overflow:hidden;">';
-        html += '<div style="padding:16px 24px;">';
+        html += '<div class="px-24 py-16">';
         html += '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #2c5282;padding-bottom:6px;margin-bottom:12px;">';
         html += '<span style="font-size:15px;font-weight:800;color:#2c5282;">Dettaglio Progetti</span>';
         html += '<span class="fs-11 c-muted">' + esc(d.mese_nome) + ' ' + d.anno + '</span>';

@@ -49,8 +49,8 @@
             <div style="margin-left:auto;display:flex;gap:4px;align-items:center;">
                 {% if instance.pk %}
                 <span class="fs-10 c-muted mr-2">NAVIGAZIONE:</span>
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" id="btnPrevContratto" title="Contratto precedente" style="padding:4px 8px;font-size:13px;line-height:1;"><i class="bi bi-chevron-left"></i></button>
-                <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" id="btnNextContratto" title="Contratto successivo" style="padding:4px 8px;font-size:13px;line-height:1;"><i class="bi bi-chevron-right"></i></button>
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(-1)" id="btnPrevContratto" title="Contratto precedente" class="btn-tag-sm"><i class="bi bi-chevron-left"></i></button>
+                <button type="button" class="btn btn-sm btn-ghost" onclick="navContratto(1)" id="btnNextContratto" title="Contratto successivo" class="btn-tag-sm"><i class="bi bi-chevron-right"></i></button>
                 <select id="navContrattoSelect" onchange="navContrattoTo(this.value)" style="background:rgba(255,255,255,0.05);border:1px solid #27282D;border-radius:6px;color:#facc15;font-size:12px;font-weight:700;padding:2px 8px;width:calc(340px + 5cm);flex-shrink:0;cursor:pointer;"><option value="" style="color:#8A8F98;font-weight:400;">—</option></select>
                 <span class="fs-10 c-gray">|</span>
                 {% endif %}
@@ -117,7 +117,7 @@
                 <div class="label-riepilogo"><i class="bi bi-cash-stack mr-3"></i>TFR orario</div>
                 <div id="riepilogoPagaTfr"class="fs-13 fw-6">—</div>
             </div>
-            <div class="col-md-3 col-6" id="riepilogoAccantonatoTfrCol" style="display:none;">
+            <div class="col-md-3 col-6" id="riepilogoAccantonatoTfrCol" class="d-none-custom">
                 <div class="label-riepilogo"><i class="bi bi-piggy-bank mr-3"></i>TFR accumulato</div>
                 <div id="riepilogoTfrAccumulato" style="font-size: 13px; font-weight: 600; color:#fbbf24;">€ 0.00</div>
             </div>
@@ -148,8 +148,8 @@
                 </div>
             </div>
             <div class="col-md-3 col-6">
-                <div class="label-riepilogo"><i class="bi bi-stopwatch" style="margin-right:3px;"></i>Ore</div>
-                <div style="display:flex;flex-direction:column;gap:2px;">
+                <div class="label-riepilogo"><i  class="bi bi-stopwatch mr-3"></i>Ore</div>
+                <div class="flex-col-gap">
                     <div><span id="riepilogoOre"class="fs-13 fw-6 c-cyan">—</span><span class="fs-9 c-muted ml-3">MENSILI ARROTONDATE</span><span class="fs-9 c-muted ml-3">(INPS: <span id="riepilogoOreInps">—</span> h)</span></div>
                     <div><span id="riepilogoOreDet"class="fs-12 fw-5 c-muted">—</span><span class="fs-9 c-muted ml-3">MENSILI DECIMALI</span></div>
                     <div><span id="riepilogoOreCrono"class="fs-12 fw-6 c-cyan">—</span><span class="fs-9 c-muted ml-3">MENSILI CRONOMETRO</span></div>
@@ -393,7 +393,7 @@
                 {% if field.name == 'progetto' %}
                 {% with progetti_qs=field.field.queryset.all %}
                 {# --- CHECKBOX NASCOSTE per submit form --- #}
-                <div id="progettiCheckboxes" style="display:none;">
+                <div id="progettiCheckboxes" class="d-none-custom">
                     {% for obj in progetti_qs %}
                     {% with colore=obj.tipo.colore|default:'#10b981' %}
                     <input type="checkbox" name="{{ field.name }}" value="{{ obj.pk }}" {% if obj.pk in field.value %}checked{% endif %} class="progetto-checkbox" data-colore="{{ colore }}" data-tipo="{{ obj.tipo.nome|default:'Altro' }}" data-label="{{ obj.beneficiario.nome_cognome|default:'' }}" data-beneficiario="{{ obj.beneficiario.nome_cognome|default:'' }}" data-budget="{{ obj.budget_mensile|default:0 }}" data-data-fine="{{ obj.data_fine|date:'Y-m-d'|default:'' }}">
@@ -437,7 +437,7 @@
     </div>
 
     {# === STEP 2 — PARAMETRI + NOTE === #}
-    <div class="step-content" data-step="2" style="display:none;">
+    <div class="step-content" data-step="2" class="d-none-custom">
 
         {# --- RIGA CODICI + DATE --- #}
         <div class="section-card">
@@ -453,7 +453,7 @@
                             {{ field.label }}
                         </label>
                         <div style="display:flex;gap:6px;align-items:center;">
-                            <div style="flex:1;min-width:0;">{{ field }}</div>
+                            <div class="flex-fill-min">{{ field }}</div>
                             {% if field.name == 'data_inizio_tfr' %}
                                 <button type="button" onclick="copiaDataAssunzione()" style="white-space:nowrap;background:rgba(94,106,210,0.15);border:1px solid rgba(94,106,210,0.3);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#b0b8ff;cursor:pointer;transition:all 0.15s;box-shadow:0 1px 4px rgba(94,106,210,0.15);" onmouseover="this.style.background='rgba(94,106,210,0.25)'" onmouseout="this.style.background='rgba(94,106,210,0.15)'">
                                     <i class="bi bi-arrow-up-circle me-1"></i>Copia
@@ -542,13 +542,13 @@
     </div>
 
     {# === STEP 3 — OPZIONI === #}
-    <div class="step-content" data-step="3" style="display:none;">
+    <div class="step-content" data-step="3" class="d-none-custom">
 
         {# --- STATO + TIPO CONTRATTO --- #}
         <div class="section-card" style="padding:14px 20px;display:flex;align-items:center;flex-wrap:wrap;gap:20px;">
             <div class="d-flex align-items-center gap-3">
                 <div class="fw-bold c-10-up">Stato</div>
-                <select name="stato" id="id_stato" style="display:none;">
+                <select name="stato" id="id_stato" class="d-none-custom">
                     <option value="ATTIVO" {% if s == 'ATTIVO' %}selected{% endif %}>Attivo</option>
                     <option value="CESSATO" {% if s == 'CESSATO' %}selected{% endif %}>Cessato</option>
                 </select>
@@ -560,10 +560,10 @@
                     {% if s == 'ATTIVO' %}&#9679; Attivo{% else %}&#9679; Cessato{% endif %}
                 </span>
             </div>
-            <div class="vr-d" style="height:24px;"></div>
+            <div  class="vr-d h-6"></div>
             <div class="d-flex align-items-center gap-3">
                 <div class="fw-bold c-10-up">Tipo</div>
-                <select name="tipo_contratto" id="id_tipo_contratto" style="display:none;">
+                <select name="tipo_contratto" id="id_tipo_contratto" class="d-none-custom">
                     <option value="INDETERMINATO" {% if tc == 'INDETERMINATO' %}selected{% endif %}>Indeterminato</option>
                     <option value="DETERMINATO" {% if tc == 'DETERMINATO' %}selected{% endif %}>Determinato</option>
                 </select>
@@ -573,7 +573,7 @@
                 </label>
                 <span id="tipoLabel" style="font-size: 10px; font-weight: 600; color: #EDEDED;">{% if tc == 'INDETERMINATO' %}Indeterminato{% else %}Determinato{% endif %}</span>
             </div>
-            <div class="vr-d" style="height:24px;"></div>
+            <div  class="vr-d h-6"></div>
             <div class="d-flex align-items-center gap-3">
                 <div class="fw-bold c-10-up">Scatti</div>
                 <label class="toggle-switch">
@@ -583,7 +583,7 @@
                 <span id="scattiLabel" style="font-size:10px; font-weight:600; color:#f59e0b;">{% if form.applica_scatti.value %}&#9679; Sì{% else %}&#9675; No{% endif %}</span>
                 <span id="scattiInfo" style="font-size:11px; color:#8A8F98; padding-left:4px; max-width:350px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></span>
             </div>
-            <div class="vr-d" style="height:24px;"></div>
+            <div  class="vr-d h-6"></div>
             <div class="d-flex align-items-center gap-3">
                 <div class="fw-bold c-10-up">Riv. TFR</div>
                 <label class="toggle-switch">
@@ -611,8 +611,8 @@
             </div>
             <div class="row g-2">
                 {% with mt=form.modalita_tfr.value|default:'INCLUSO' %}
-                <div class="col-md-4 col-6"><label class="toggle-switch toggle-danger"><input type="hidden" name="paga_tfr" value="false"><input type="checkbox" name="paga_tfr" value="true"{% if mt != 'INCLUSO' %}checked{% endif %} onchange="aggiornaTfrToggle()" id="tfr_separato"><span class="toggle-slider" style="border-color:#f8717166;"></span><span class="toggle-label c-red">TFR Separato</span></label></div>
-                <div class="col-md-4 col-6"><label class="toggle-switch toggle-warning"><input type="hidden" value="false"><input type="checkbox"{% if mt == 'SEPARATO_70' %}checked{% endif %}{% if mt == 'INCLUSO' %} disabled{% endif %} onchange="aggiornaTfrToggle()" id="anticipo_70"><span class="toggle-slider" style="border-color:#fbbf2466;"></span><span class="toggle-label c-amber">Anticipo 70%</span></label></div>
+                <div class="col-md-4 col-6"><label class="toggle-switch toggle-danger"><input type="hidden" name="paga_tfr" value="false"><input type="checkbox" name="paga_tfr" value="true"{% if mt != 'INCLUSO' %}checked{% endif %} onchange="aggiornaTfrToggle()" id="tfr_separato"><span  class="toggle-slider border-red-dim"></span><span class="toggle-label c-red">TFR Separato</span></label></div>
+                <div class="col-md-4 col-6"><label class="toggle-switch toggle-warning"><input type="hidden" value="false"><input type="checkbox"{% if mt == 'SEPARATO_70' %}checked{% endif %}{% if mt == 'INCLUSO' %} disabled{% endif %} onchange="aggiornaTfrToggle()" id="anticipo_70"><span  class="toggle-slider border-amber-dim"></span><span class="toggle-label c-amber">Anticipo 70%</span></label></div>
                 {% endwith %}
                 {% with f=form.paga_13ma %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_13ma' in parametri_map_keys %}<span class="toggle-value" data-field="paga_13ma"class="label-info">€ —</span>{% endif %}</label></div>{% endwith %}
                 {% with f=form.paga_ferie %}<div class="col-md-4 col-6"><label class="toggle-switch"><input type="hidden" name="{{ f.html_name }}" value="false"><input type="checkbox" name="{{ f.html_name }}" value="true" {% if f.value %}checked{% endif %} onchange="aggiornaValoriOpzioni()"><span class="toggle-slider"></span><span class="toggle-label">{{ f.label }}</span>{% if 'paga_ferie' in parametri_map_keys %}<span class="toggle-value" data-field="paga_ferie"class="label-info">€ —</span>{% endif %}</label></div>{% endwith %}
@@ -764,7 +764,7 @@
 
     {% if instance.pk and modelli_precompilati %}
     <div style="border-top:1px solid #27282D;padding-top:10px;margin-top:10px;flex-shrink:0;">
-        <div style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'flex':'none'">
+        <div class="fs-11-muted mb-6 cursor-pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'flex':'none'">
             <i class="bi bi-file-earmark-text me-1"></i> Documenti precompilati <i class="bi bi-chevron-down fs-10"></i>
         </div>
         <div style="display:none;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
@@ -778,11 +778,11 @@
     {% endif %}
 
     {% if instance.pk %}
-    <div class="section-sep" style="flex-shrink:0;padding-top:10px;">
-        <div style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="toggleAnticipiTFR(this, {{ instance.pk }})">
+    <div  class="section-sep flex-shrink-0 pt-10">
+        <div class="fs-11-muted mb-6 cursor-pointer" onclick="toggleAnticipiTFR(this, {{ instance.pk }})">
             <i class="bi bi-cash-stack me-1"></i> Anticipi TFR <span id="anticipiTfrCount"class="c-amber"></span> <i class="bi bi-chevron-down fs-10"></i>
         </div>
-        <div id="anticipiTfrSection" style="display:none;">
+        <div id="anticipiTfrSection" class="d-none-custom">
             <div id="anticipiTfrList"></div>
             <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
                 <input type="number" id="anticipoImporto" step="0.01" min="0" placeholder="Importo" style="width:100px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 8px;color:#EDEDED;font-size:11px;">
@@ -792,11 +792,11 @@
             </div>
         </div>
     </div>
-    <div class="section-sep" style="flex-shrink:0;padding-top:10px;">
-        <div style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;" onclick="toggleStoricoModifiche(this, {{ instance.pk }})">
+    <div  class="section-sep flex-shrink-0 pt-10">
+        <div class="fs-11-muted mb-6 cursor-pointer" onclick="toggleStoricoModifiche(this, {{ instance.pk }})">
             <i class="bi bi-clock-history me-1"></i> Storico variazioni <span id="storicoModificheCount"class="c-purple"></span> <i class="bi bi-chevron-down fs-10"></i>
         </div>
-        <div id="storicoModificheSection" style="display:none;">
+        <div id="storicoModificheSection" class="d-none-custom">
             <div id="storicoModificheList"class="fs-12 c-muted"></div>
         </div>
     </div>
@@ -804,8 +804,8 @@
 
     {# --- PROSPETTO TFR (accordion) --- #}
     {% if instance.pk and instance.modalita_tfr != 'INCLUSO' %}
-    <div class="section-sep" style="flex-shrink:0;padding-top:10px;">
-        <div style="font-size:11px;color:#8A8F98;margin-bottom:6px;cursor:pointer;"
+    <div  class="section-sep flex-shrink-0 pt-10">
+        <div class="fs-11-muted mb-6 cursor-pointer"
              onclick="toggleProspettoTfr(this, {{ instance.pk }})">
             <i class="bi bi-graph-up me-1"></i> Prospetto TFR
             <span id="prospettoTfrCount"class="c-purple"></span>

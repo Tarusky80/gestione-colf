@@ -173,7 +173,7 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
 <span class="text-muted fs-12">—</span>
                     {% endif %}
                 </td>
-                <td class="text-center" style="white-space:nowrap;">
+                <td  class="text-center nowrap">
                     {% if b.documento %}
                     <i class="stampa-badge bi {% if b.documento.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ b.pk }}" title="{% if b.documento.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
                     {% else %}
