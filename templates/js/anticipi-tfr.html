@@ -1,0 +1,87 @@
+    function toggleAnticipiTFR(el, pk) {
+      var section = document.getElementById('anticipiTfrSection');
+      if (!section) return;
+      var vis = section.style.display !== 'none';
+      section.style.display = vis ? 'none' : 'block';
+      var chevron = el.querySelector('.bi-chevron-down');
+      if (chevron) chevron.style.transform = vis ? '' : 'rotate(180deg)';
+      if (!vis) caricaAnticipiTFR(pk);
+    }
+    function caricaAnticipiTFR(pk) {
+      if (!pk) { var inp = document.getElementById('dynamicForm'); if (inp) pk = inp.getAttribute('data-contratto-pk'); }
+      if (!pk) { var m = document.querySelector('[data-contratto-pk]'); if (m) pk = m.getAttribute('data-contratto-pk'); }
+      if (!pk) return;
+      fetch('/ajax/lista-anticipi-tfr/' + pk + '/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (!d.success) return;
+          var list = document.getElementById('anticipiTfrList');
+          if (!list) return;
+          var html = '';
+          if (d.items.length === 0) {
+            html = '<div style="font-size:11px;color:#666;padding:4px 0;">Nessun anticipo TFR registrato.</div>';
+          } else {
+            html = '<div style="font-size:10px;color:#8A8F98;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Storico anticipi</div>';
+            for (var i = 0; i < d.items.length; i++) {
+              var a = d.items[i];
+              html += '<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:11px;">';
+              html += '<span style="font-weight:600;color:#f59e0b;">\u20ac ' + a.importo + '</span>';
+              html += '<span style="color:#8A8F98;">' + a.data + '</span>';
+              if (a.note) html += '<span style="color:#666;font-size:10px;">(' + a.note + ')</span>';
+              html += '<span class="ml-auto"><button type="button" onclick="eliminaAnticipoTFR(' + a.pk + ')" style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:6px;color:#f87171;cursor:pointer;font-size:11px;font-weight:600;padding:4px 10px;"><i class="bi bi-x-circle me-1"></i>Elimina</button></span>';
+              html += '</div>';
+            }
+            html += '<div style="font-size:11px;font-weight:600;color:#EDEDED;padding:4px 6px;">Totale: \u20ac ' + d.totale + '</div>';
+          }
+          list.innerHTML = html;
+          var cnt = document.getElementById('anticipiTfrCount');
+          if (cnt) cnt.textContent = '(' + d.items.length + ')';
+        });
+    }
+    function salvaAnticipoTFR(contrattoPk) {
+      var importo = document.getElementById('anticipoImporto');
+      var data = document.getElementById('anticipoData');
+      var note = document.getElementById('anticipoNote');
+      if (!importo || !importo.value) { mostraToast('Inserire un importo.', false); return; }
+      var csrfSalva = document.querySelector('[name=csrfmiddlewaretoken]');
+      var tokenSalva = csrfSalva ? csrfSalva.value : '';
+      fetch('/ajax/salva-anticipo-tfr/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': tokenSalva, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contratto_pk: contrattoPk, importo: importo.value, data: data ? data.value : '', note: note ? note.value : '' })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success) {
+          mostraToast('Anticipo TFR salvato.', true);
+          if (importo) importo.value = '';
+          if (note) note.value = '';
+          if (data) data.value = '';
+          caricaAnticipiTFR(contrattoPk);
+        } else {
+          mostraToast('Errore: ' + (d.error || 'Salvataggio fallito.'), false);
+        }
+      })
+      .catch(function(err) { mostraToast('Errore di rete: ' + err.message, false); });
+    }
+    function eliminaAnticipoTFR(pk) {
+      if (!confirm('Eliminare questo anticipo TFR?')) return;
+      var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+      var token = csrf ? csrf.value : '';
+      fetch('/ajax/elimina-anticipo-tfr/' + pk + '/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': token }
+      })
+      .then(function(r) {
+        var ct = r.headers.get('content-type') || '';
+        if (ct.indexOf('application/json') === -1 && ct.indexOf('text/json') === -1) {
+          throw new Error('Risposta non valida dal server');
+        }
+        return r.json();
+      })
+      .then(function(d) {
+        if (d.success) { mostraToast('Anticipo eliminato.', true); caricaAnticipiTFR(null); }
+        else { mostraToast('Errore: ' + (d.error || 'Eliminazione fallita.'), false); }
+      })
+      .catch(function(err) { mostraToast('Errore di rete: ' + err.message, false); });
+    }

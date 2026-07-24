@@ -1,0 +1,29 @@
+    function aggiornaBadgeRichieste() {
+        fetch('/ajax/conta-richieste-pendenti/')
+            .then(function(r){ return r.json(); })
+            .then(function(data){
+                var badge = document.getElementById('badgeRichiestePendenti');
+                if (badge) {
+                    if (data.count > 0) {
+                        badge.textContent = data.count;
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } else if (data.count > 0) {
+                    var link = document.getElementById('nav_richieste_modifica');
+                    if (link) {
+                        var nuovo = document.createElement('span');
+                        nuovo.className = 'shortcut-badge';
+                        nuovo.id = 'badgeRichiestePendenti';
+                        nuovo.style.cssText = 'margin-left:auto;background:rgba(245,158,11,0.2);color:#f59e0b;border-color:rgba(245,158,11,0.3);';
+                        nuovo.textContent = data.count;
+                        link.appendChild(nuovo);
+                    }
+                }
+            })
+            .catch(function(){});
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        aggiornaBadgeRichieste();
+        setInterval(aggiornaBadgeRichieste, 60000);

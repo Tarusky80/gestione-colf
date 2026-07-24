@@ -1,0 +1,24 @@
+    function toggleStoricoModifiche(el, pk) {
+      var section = document.getElementById('storicoModificheSection');
+      if (!section) return;
+      var vis = section.style.display !== 'none';
+      section.style.display = vis ? 'none' : 'block';
+      var chevron = el.querySelector('.bi-chevron-down');
+      if (chevron) chevron.style.transform = vis ? '' : 'rotate(180deg)';
+      if (!vis) caricaStoricoModifiche(pk);
+    }
+    function caricaStoricoModifiche(pk) {
+      var list = document.getElementById('storicoModificheList');
+      if (!list) return;
+      if (!pk) return;
+      list.innerHTML = '<div style="color:#8A8F98;">Caricamento...</div>';
+      fetch('/ajax/storico-modifiche-contratto/' + pk + '/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (!d.success) { list.innerHTML = '<div class="c-red">' + (d.error || 'Errore') + '</div>'; return; }
+          list.innerHTML = d.html;
+          var cnt = document.getElementById('storicoModificheCount');
+          if (cnt) cnt.textContent = '(' + d.count + ')';
+        })
+        .catch(function(err) { list.innerHTML = '<div class="c-red">Errore: ' + err.message + '</div>'; });
+    }

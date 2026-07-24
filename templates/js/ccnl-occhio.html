@@ -1,0 +1,9 @@
+    window.apriCcnlOcchio = function() {
+        window.apriCcnlOcchioPopup();
+    };
+    window.apriCcnlOcchioPopup = function(pk, anno) {
+        if (!pk) { var _btn = document.getElementById('btnCcnlOcchio'); if (_btn) pk = _btn.dataset.pk; }
+        if (!anno) { var _ann = document.getElementById('fAnno'); if (_ann) anno = _ann.value; }
+        if (!pk) { mostraToast('Seleziona un contratto.', false); return; }
+        if (!anno) anno = new Date().getFullYear();
+        window.open('/ccnl-occhio/popup/?contratto_pk=' + pk + '&anno=' + anno, '_blank', 'width=900,height=1000,scrollbars=yes');

@@ -1,0 +1,116 @@
+    window.chiudiAnagraficaSearch = function() {
+        var panel = document.getElementById('searchAnagraficaPanel');
+        if (panel) {
+            var bsOffcanvas = bootstrap.Offcanvas.getInstance(panel);
+            if (bsOffcanvas) bsOffcanvas.hide();
+        }
+    };
+
+    window.openAnagraficaSearch = function(tipo, targetField) {
+        var panelId = 'searchAnagraficaPanel';
+        var panel = document.getElementById(panelId);
+        if (!panel) {
+            panel = document.createElement('div');
+            panel.className = 'offcanvas offcanvas-end';
+            panel.id = panelId;
+            panel.setAttribute('tabindex', '-1');
+            panel.style.width = '440px';
+            panel.style.background = '#0E0F11';
+            panel.style.borderLeft = '1px solid #27282D';
+            panel.innerHTML = '<div class="offcanvas-header" style="background: #17181C; border-bottom: 1px solid #27282D; padding: 20px 24px;">' +
+                '<h5 class="text-white fw-bold mb-0" id="searchAnagraficaLabel">Cerca</h5>' +
+                '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Chiudi"></button>' +
+                '</div>' +
+                '<div class="offcanvas-body" id="searchAnagraficaBody" style="padding: 20px 24px;"></div>';
+            document.body.appendChild(panel);
+        }
+        var label = tipo === 'tutti' ? 'Tutte le anagrafiche' : tipo.charAt(0).toUpperCase() + tipo.slice(1);
+        document.getElementById('searchAnagraficaLabel').textContent = 'Cerca: ' + label;
+        var body = document.getElementById('searchAnagraficaBody');
+        body.innerHTML = '<div style="padding: 10px 0;">' +
+            '<div style="position: relative; margin-bottom: 20px;">' +
+            '<i class="bi bi-search" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8A8F98; font-size: 14px; z-index: 5;"></i>' +
+            '<input type="text" id="anagraficaSearchInput" class="search-input-main" placeholder="Cerca per nome, CF o paese..." autofocus style="padding: 12px 14px 12px 40px; border-radius: 10px; width: 100%;" data-tipo="' + tipo + '" data-target="' + (targetField || tipo) + '">' +
+            '</div>' +
+            '<div id="anagraficaSearchResults" style="max-height: 50vh; overflow-y: auto;">' +
+            '<div class="text-center small py-5" style="color:#8A8F98;"><i class="bi bi-search fs-2 d-block mb-3 c-gray"></i>Digita per cercare</div>' +
+            '</div></div>';
+        var bsOffcanvas = new bootstrap.Offcanvas(panel);
+        bsOffcanvas.show();
+        var input = document.getElementById('anagraficaSearchInput');
+        if (input) {
+            input.removeEventListener('input', anagraficaSearchHandler);
+            input.addEventListener('input', anagraficaSearchHandler);
+            setTimeout(function() { input.focus(); }, 300);
+        }
+    };
+
+    window.anagraficaSearchHandler = function() {
+        var input = document.getElementById('anagraficaSearchInput');
+        var results = document.getElementById('anagraficaSearchResults');
+        if (!input || !results) return;
+        var tipo = input.dataset.tipo;
+        var q = input.value.trim();
+        if (q.length < 1) {
+            results.innerHTML = '<div class="text-center small py-5" style="color:#8A8F98;"><i class="bi bi-search fs-2 d-block mb-3 c-gray"></i>Digita per cercare</div>';
+            return;
+        }
+        results.innerHTML = '<div class="text-center py-4"><div class="spinner-border spinner-border-sm" style="color: #5E6AD2;"></div></div>';
+        fetch('/ajax/cerca-anagrafica-json/' + tipo + '/?q=' + encodeURIComponent(q))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data.results || data.results.length === 0) {
+                    results.innerHTML = '<div class="text-center small py-5" style="color:#8A8F98;"><i class="bi bi-inbox fs-2 d-block mb-3 c-gray"></i>Nessun risultato</div>';
+                    return;
+                }
+                var html = '';
+                data.results.forEach(function(item) {
+                    var badge = '';
+                    if (item.tipo) {
+                        var badgeColors = { datore: '#5E6AD2', lavoratore: '#10b981', beneficiario: '#f59e0b' };
+                        var color = badgeColors[item.tipo] || '#8A8F98';
+                        badge = '<span style="display:inline-block; background:' + color + '20; color:' + color + '; padding:1px 8px; border-radius:4px; font-size:10px; font-weight:600; margin-right:8px;">' + item.tipo.charAt(0).toUpperCase() + item.tipo.slice(1) + '</span>';
+                    }
+                    html += '<div class="anagrafica-result-item" data-pk="' + item.pk + '" data-tipo="' + (item.tipo || tipo) + '" data-nome="' + item.nome.replace(/"/g, '&quot;') + '" style="padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; border-radius: 8px; margin: 2px 0; transition: background 0.2s;">';
+                    html += '<div style="font-size: 14px; font-weight: 700; color: #EDEDED;">' + badge + item.nome + '</div>';
+                    html += '<div style="font-size: 12px; color: #8A8F98; padding-left: ' + (badge ? '0' : '0') + ';">' + (item.codice_fiscale || '') + (item.comune ? ' &middot; ' + item.comune : '') + '</div>';
+                    html += '</div>';
+                });
+                results.innerHTML = html;
+            });
+    };
+
+    // Event delegation per click sui risultati
+    document.addEventListener('click', function(e) {
+        var item = e.target.closest('.anagrafica-result-item');
+        if (!item) return;
+        var pk = item.dataset.pk;
+        var nome = item.dataset.nome;
+        var searchInput = document.getElementById('anagraficaSearchInput');
+        var targetField = searchInput ? searchInput.dataset.target : '';
+        if (!targetField) return;
+        var offcanvas = document.getElementById('panelNuovo');
+        var form = offcanvas ? offcanvas.querySelector('#dynamicForm') : null;
+        if (form) {
+            var select = form.querySelector('select[name="' + targetField + '"]');
+            if (select) {
+                var found = false;
+                for (var i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value == pk) {
+                        select.value = pk;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    var opt = document.createElement('option');
+                    opt.value = pk;
+                    opt.text = nome;
+                    select.add(opt);
+                    select.value = pk;
+                }
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+        chiudiAnagraficaSearch();
+    });

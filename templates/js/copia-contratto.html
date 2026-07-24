@@ -1,0 +1,188 @@
+    // ===== COPIA DA CONTRATTO ESISTENTE =====
+    window.apriCopiaContratto = function() {
+        var panelId = 'copiaContrattoPanel';
+        var panel = document.getElementById(panelId);
+        if (!panel) {
+            panel = document.createElement('div');
+            panel.className = 'offcanvas offcanvas-end';
+            panel.id = panelId;
+            panel.setAttribute('tabindex', '-1');
+            panel.style.width = '520px';
+            panel.style.background = '#0E0F11';
+            panel.style.borderLeft = '1px solid #27282D';
+            panel.innerHTML =
+                '<div class="offcanvas-header" style="background:#17181C;border-bottom:1px solid #27282D;padding:20px 24px;">' +
+                    '<h5 class="text-white fw-bold mb-0"><i class="bi bi-copy me-2 c-green"></i>Copia da contratto</h5>' +
+                    '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Chiudi"></button>' +
+                '</div>' +
+                '<div class="offcanvas-body" style="padding:20px 24px;display:flex;flex-direction:column;height:100%;">' +
+                    '<div style="position:relative;margin-bottom:16px;">' +
+                        '<i class="bi bi-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#8A8F98;font-size:14px;z-index:5;"></i>' +
+                        '<input type="text" id="copiaContrattoInput" placeholder="Cerca per datore, lavoratore o codice INPS..." autofocus style="width:100%;padding:12px 14px 12px 40px;border-radius:10px;background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:14px;">' +
+                    '</div>' +
+                    '<div id="copiaContrattoList" style="flex:1;overflow-y:auto;min-height:0;">' +
+                        '<div class="text-center small py-5" style="color:#8A8F98;"><i class="bi bi-search fs-2 d-block mb-3 c-gray"></i>Digita per cercare</div>' +
+                    '</div>' +
+                    '<div id="copiaContrattoDetail" style="display:none;border-top:1px solid #27282D;padding-top:14px;margin-top:14px;"></div>' +
+                    '<div style="border-top:1px solid #27282D;padding-top:12px;margin-top:12px;display:flex;gap:8px;">' +
+                        '<button type="button" class="btn btn-ghost" data-bs-dismiss="offcanvas" style="flex:1;padding:9px 18px;font-size:13px;">Annulla</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(panel);
+        }
+        var list = document.getElementById('copiaContrattoList');
+        list.innerHTML = '<div class="text-center small py-5" style="color:#8A8F98;"><i class="bi bi-search fs-2 d-block mb-3 c-gray"></i>Digita per cercare</div>';
+        document.getElementById('copiaContrattoDetail').style.display = 'none';
+        var input = document.getElementById('copiaContrattoInput');
+        if (input) {
+            input.value = '';
+            input.oninput = function() { cercaContrattiCopia(input.value); };
+            setTimeout(function() { input.focus(); }, 300);
+        }
+        var bsOffcanvas = new bootstrap.Offcanvas(panel);
+        bsOffcanvas.show();
+    };
+
+    window.cercaContrattiCopia = function(q) {
+        var list = document.getElementById('copiaContrattoList');
+        if (!list) return;
+        if (q.trim().length < 2) {
+            list.innerHTML = '<div class="text-center small py-5" style="color:#8A8F98;"><i class="bi bi-search fs-2 d-block mb-3 c-gray"></i>Digita almeno 2 caratteri</div>';
+            return;
+        }
+        list.innerHTML = '<div class="text-center py-4"><div class="spinner-border spinner-border-sm c-accent"></div></div>';
+        fetch('/ajax/cerca-contratti-copia/?q=' + encodeURIComponent(q))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (!data.results || data.results.length === 0) {
+                    list.innerHTML = '<div class="text-center small py-5" style="color:#8A8F98;"><i class="bi bi-inbox fs-2 d-block mb-3 c-gray"></i>Nessun contratto trovato</div>';
+                    return;
+                }
+                var html = '';
+                data.results.forEach(function(item) {
+                    html += '<div class="copia-contratto-item" data-pk="' + item.pk + '" style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;border-radius:8px;margin:2px 0;transition:background 0.2s;">' +
+                        '<div style="font-size:13px;font-weight:700;color:#EDEDED;">' + item.datore + ' &rarr; ' + item.lavoratore + '</div>' +
+                        '<div style="font-size:11px;color:#8A8F98;margin-top:2px;">' +
+                            (item.beneficiario ? '<i class="bi bi-person-heart me-1"></i>' + item.beneficiario + ' &middot; ' : '') +
+                            item.tipo_contratto +
+                            (item.data_assunzione ? ' &middot; ' + item.data_assunzione : '') +
+                            (item.codice_inps ? ' &middot; <span class="c-accent">' + item.codice_inps + '</span>' : '') +
+                        '</div>' +
+                    '</div>';
+                });
+                list.innerHTML = html;
+                list.querySelectorAll('.copia-contratto-item').forEach(function(el) {
+                    el.addEventListener('click', function() { caricaDettaglioContratto(this.dataset.pk); });
+                });
+            });
+    };
+
+    window.apriRinnovoContratto = function(pk) {
+        loadAjaxForm('/ajax/rinnova-contratto/' + pk + '/', 'Nuovo Contratto (Rinnovo)');
+    };
+
+    window.caricaDettaglioContratto = function(pk) {
+        var detail = document.getElementById('copiaContrattoDetail');
+        var list = document.getElementById('copiaContrattoList');
+        if (!detail) return;
+        detail.innerHTML = '<div class="text-center py-3"><div class="spinner-border spinner-border-sm c-accent"></div></div>';
+        detail.style.display = 'block';
+        fetch('/ajax/dettaglio-contratto-copia/' + pk + '/')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var progettiNomi = [];
+                var form = document.querySelector('#dynamicForm');
+                if (form) {
+                    form.querySelectorAll('.progetto-checkbox:checked').forEach(function(cb) {
+                        var lblText = cb.getAttribute('data-label') || '#' + cb.value;
+                        progettiNomi.push(lblText);
+                    });
+                }
+                detail.innerHTML =
+                    '<div style="margin-bottom:10px;">' +
+                        '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#8A8F98;margin-bottom:8px;"><i class="bi bi-file-text me-1"></i>Riepilogo contratto origine</div>' +
+                        '<div class="row g-1" style="font-size:11px;color:#EDEDED;">' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Datore:</span> ' + (data.datore ? document.querySelector('select[name="datore"] option[value="' + data.datore + '"]')?.textContent || '#' + data.datore : '—') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Lavoratore:</span> ' + (data.lavoratore ? document.querySelector('select[name="lavoratore"] option[value="' + data.lavoratore + '"]')?.textContent || '#' + data.lavoratore : '—') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Stato:</span> ' + (data.stato === 'ATTIVO' ? '<span class="c-green">Attivo</span>' : '<span class="c-red">Cessato</span>') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Tipo:</span> ' + (data.tipo_contratto === 'INDETERMINATO' ? 'Indeterminato' : 'Determinato') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Data ass.:</span> ' + (data.data_assunzione || '—') + '</div>' +
+                            '<div class="col-6"><span style="color:#8A8F98;">Cod. INPS:</span> ' + (data.codice_rapporto_inps || '—') + '</div>' +
+                            (data.parametri_minimi ? '<div class="col-6"><span style="color:#8A8F98;">Parametri:</span> ' + (document.querySelector('select[name="parametri_minimi"] option[value="' + data.parametri_minimi + '"]')?.textContent || '#' + data.parametri_minimi) + '</div>' : '') +
+                            (data.progetto && data.progetto.length ? '<div class="col-12"><span style="color:#8A8F98;">Progetti:</span> ' + data.progetto.length + ' selezionati</div>' : '') +
+                        '</div>' +
+                    '</div>' +
+                    '<button type="button" class="btn btn-ghost-primary" onclick="confermaCopiaContratto(' + pk + ')" style="width:100%;"><i class="bi bi-check2 me-2"></i>Conferma copia</button>';
+            });
+    };
+
+    window.confermaCopiaContratto = function(pk) {
+        fetch('/ajax/dettaglio-contratto-copia/' + pk + '/')
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var form = document.querySelector('#dynamicForm');
+                if (!form) return;
+                // Set select fields
+                var selectFields = ['datore', 'lavoratore', 'parametri_minimi', 'ente_bilaterale'];
+                selectFields.forEach(function(name) {
+                    if (data[name]) {
+                        var sel = form.querySelector('select[name="' + name + '"]');
+                        if (sel) {
+                            sel.value = data[name];
+                            sel.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    }
+                });
+                // Set date/input fields
+                var dateFields = ['data_assunzione', 'data_inizio_tfr', 'codice_rapporto_inps', 'ore_mav_custom', 'note_post_it'];
+                dateFields.forEach(function(name) {
+                    if (data[name] !== undefined && data[name] !== null && data[name] !== '') {
+                        var inp = form.querySelector('input[name="' + name + '"], textarea[name="' + name + '"]');
+                        if (inp) {
+                            inp.value = data[name];
+                            inp.dispatchEvent(new Event('change', { bubbles: true }));
+                            inp.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                    }
+                });
+                // Set boolean toggles
+                var boolFields = ['paga_tfr', 'paga_13ma', 'paga_ferie', 'paga_festivi', 'paga_notturno_tfr', 'paga_notturno_13ma', 'paga_notturno_festivi', 'paga_notturno_ferie', 'paga_pranzo', 'paga_cena', 'paga_alloggio', 'applica_scatti', 'applica_rivalutazione_tfr', 'applica_notturno_assistenza', 'applica_notturno_presenza', 'applica_notturno_base', 'applica_notturno_20', 'ind_certificazione_qualita', 'ind_piu_persone_non_conv', 'ind_minori_non_conv', 'ind_piu_persone_qualita', 'ind_minori_qualita', 'ind_assistenza_piu_persone_ft', 'ind_assistenza_piu_persone_pt', 'ind_minori_6_anni_ft', 'ind_funzione_conviventi', 'ind_conviventi_ft_54h', 'ind_conviventi_pt_30h'];
+                boolFields.forEach(function(name) {
+                    var cb = form.querySelector('input[name="' + name + '"][type="checkbox"]');
+                    if (cb && data[name] !== undefined) {
+                        cb.checked = data[name] === true || data[name] === 'true' || data[name] === 'True';
+                        cb.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                });
+                // Set progetti checkboxes
+                if (data.progetto && Array.isArray(data.progetto)) {
+                    form.querySelectorAll('.progetto-checkbox').forEach(function(cb) {
+                        var shouldCheck = data.progetto.indexOf(parseInt(cb.value)) !== -1 || data.progetto.indexOf(cb.value) !== -1;
+                        if (cb.checked !== shouldCheck) {
+                            cb.checked = shouldCheck;
+                            cb.dispatchEvent(new Event('change', { bubbles: true }));
+                        }
+                    });
+                }
+                // Stato & Tipo toggles
+                var statoToggle = document.getElementById('statoToggle');
+                if (statoToggle && data.stato) {
+                    statoToggle.checked = (data.stato === 'ATTIVO');
+                    statoToggle.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                var tipoToggle = document.getElementById('tipoContrattoToggle');
+                if (tipoToggle && data.tipo_contratto) {
+                    tipoToggle.checked = (data.tipo_contratto === 'INDETERMINATO');
+                    tipoToggle.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                // Update riepilogo and valori
+                if (window.updateRiepilogo) setTimeout(function() { window.updateRiepilogo(); }, 100);
+                if (window.aggiornaValoriOpzioni) setTimeout(function() { window.aggiornaValoriOpzioni(); }, 200);
+                // Close panel
+                var panel = document.getElementById('copiaContrattoPanel');
+                if (panel) {
+                    var bsOffcanvas = bootstrap.Offcanvas.getInstance(panel);
+                    if (bsOffcanvas) bsOffcanvas.hide();
+                }
+            });
+    };

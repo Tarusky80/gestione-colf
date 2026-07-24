@@ -1,0 +1,40 @@
+    window.apriMailDatore = function(pk) {
+        var frame = document.getElementById('previewFrame');
+        var content = document.getElementById('previewFrameContent');
+        var pdfBtn = document.getElementById('previewFramePdfBtn');
+        var backBtn = document.getElementById('previewFrameBackBtn');
+        var titleText = document.getElementById('previewFrameTitleText');
+        if (!frame || !content) return;
+        frame.style.display = 'flex';
+        pdfBtn.style.display = 'none';
+        backBtn.style.display = 'none';
+        titleText.textContent = 'Invia email al datore';
+        content.innerHTML = '<div class="empty-state"><div class="spinner-border c-accent"></div><p class="mt-3 small">Caricamento...</p></div>';
+        fetch('/ajax/mail-datore/' + pk + '/')
+            .then(function(r) { return r.text(); })
+            .then(function(html) { content.innerHTML = html; })
+.catch(function() { content.innerHTML = '<div class="p-4 c-red">Errore di caricamento.</div>'; });
+    };
+
+    window.inviaMailDatore = function(event, pk) {
+        event.preventDefault();
+        var dest = document.getElementById('emailDestinatario');
+        var sel = document.getElementById('modelloMail');
+        if (!dest || !sel) return;
+        var modelloPk = sel.value;
+        if (!modelloPk) { mostraToast('Seleziona un modello email.', false); return; }
+        var btn = event.target.querySelector('button[type="submit"]');
+        if (btn) { btn.disabled = true; btn.textContent = 'Invio...'; }
+        fetch('/ajax/mail-datore/' + pk + '/', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-CSRFToken': getCSRFToken()},
+            body: JSON.stringify({destinatario: dest.value, modello_mail_pk: modelloPk})
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.ok) { closeActionPanel(); if (window.closePreviewFrame) window.closePreviewFrame(); mostraToast(data.msg, false); }
+            else { mostraToast(data.error || 'Errore invio.', false); }
+        })
+        .catch(function() { mostraToast('Errore di rete.', false); })
+        .finally(function() { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-send"></i> Invia'; } });
+    };

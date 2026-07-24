@@ -1,0 +1,59 @@
+    window.syncStato = function syncStato() {
+        var cb = document.getElementById('statoToggle');
+        var sel = document.getElementById('id_stato');
+        var lbl = document.getElementById('statoLabel');
+        if (!cb || !sel || !lbl) return;
+        var attivo = cb.checked;
+        sel.value = attivo ? 'ATTIVO' : 'CESSATO';
+        lbl.innerHTML = attivo ? '\u25cf Attivo' : '\u25cf Cessato';
+        lbl.style.color = attivo ? '#34d399' : '#f87171';
+        var rs = document.getElementById('riepilogoStato');
+        if (rs) {
+            rs.textContent = attivo ? '\u25cf ATTIVO' : '\u25cf CESSATO';
+            rs.style.background = attivo ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)';
+            rs.style.color = attivo ? '#34d399' : '#f87171';
+        }
+    }
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'statoToggle') syncStato();
+    });
+
+    // Sync tipo_contratto toggle with hidden select
+    window.syncTipo = function syncTipo() {
+        var cb = document.getElementById('tipoContrattoToggle');
+        var sel = document.getElementById('id_tipo_contratto');
+        var lbl = document.getElementById('tipoLabel');
+        if (!cb || !sel || !lbl) return;
+        if (cb.checked) {
+            sel.value = 'INDETERMINATO';
+            lbl.textContent = 'Indeterminato';
+        } else {
+            sel.value = 'DETERMINATO';
+            lbl.textContent = 'Determinato';
+        }
+    }
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'tipoContrattoToggle') syncTipo();
+    });
+
+    // Sync scatti toggle with label
+    window.syncScatti = function syncScatti() {
+        var cb = document.getElementById('scattiToggle');
+        var lbl = document.getElementById('scattiLabel');
+        if (!cb || !lbl) return;
+        lbl.textContent = cb.checked ? '\u25cf S\u00ec' : '\u25cb No';
+        if (window.aggiornaInfoScatti) window.aggiornaInfoScatti();
+    }
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'scattiToggle') syncScatti();
+    });
+
+    window.syncRivalutazioneTfr = function syncRivalutazioneTfr() {
+        var cb = document.getElementById('rivalutazioneTfrToggle');
+        var lbl = document.getElementById('rivalutazioneTfrLabel');
+        if (!cb || !lbl) return;
+        lbl.textContent = cb.checked ? '\u25cf S\u00ec' : '\u25cb No';
+    }
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'rivalutazioneTfrToggle') syncRivalutazioneTfr();
+    });

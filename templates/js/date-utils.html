@@ -1,0 +1,100 @@
+    window.apriMappe = function(btn) {
+        var ind = document.querySelector('input[name="indirizzo"]');
+        var com = document.querySelector('input[name="comune"]');
+        var prov = document.getElementById('nc_provincia');
+        var cap = document.getElementById('nc_cap');
+        var parts = [ind && ind.value, com && com.value, prov && prov.value, cap && cap.value].filter(Boolean);
+        if (parts.length) {
+            window.open('https://www.google.com/maps?q=' + encodeURIComponent(parts.join(', ')), 'maps', 'width=900,height=600');
+        }
+    };
+
+    window.copiaDataAssunzione = function() {
+        var src = document.querySelector('input[name="data_assunzione"]');
+        var dst = document.querySelector('input[name="data_inizio_tfr"]');
+        if (src && dst) { dst.value = src.value; if (window.updateRiepilogo) window.updateRiepilogo(); }
+    };
+
+    window.impostaFineAnno = function() {
+        var input = document.querySelector('[name="data_fine"]');
+        if (!input) return;
+        input.value = new Date().getFullYear() + '-12-31';
+        if (window.verificaDataFineContratto) window.verificaDataFineContratto();
+        if (window.verificaDataFineProgetto) window.verificaDataFineProgetto();
+    };
+
+    window.copiaDataFineDalProgetto = function() {
+        var checked = document.querySelectorAll('.progetto-checkbox:checked');
+        if (checked.length === 0) { mostraToast('Seleziona prima un progetto regionale.', false); return; }
+        var progPk = checked[0].value;
+        var form = document.getElementById('dynamicForm');
+        var contrattoPk = form ? form.getAttribute('data-contratto-pk') : '';
+        if (!contrattoPk || contrattoPk === '0') { mostraToast('Salva prima il contratto.', false); return; }
+        fetch('/ajax/copia-data-fine/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+            body: JSON.stringify({direzione: 'progetto_to_contratto', contratto_pk: contrattoPk, progetto_pk: progPk})
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if (d.ok) {
+                var df = document.querySelector('[name="data_fine"]');
+                if (df && d.data_fine) df.value = d.data_fine;
+                mostraToast(d.messaggio, true);
+            } else { mostraToast(d.errore || 'Errore', false); }
+        })
+        .catch(function(){ mostraToast('Errore di rete', false); });
+    };
+
+    window.copiaDataFineAiContratti = function() {
+        var df = document.querySelector('[name="data_fine"]');
+        if (!df || !df.value) { mostraToast('Imposta prima la data fine.', false); return; }
+        if (!confirm('Copiare la data fine ' + df.value + ' a tutti i contratti collegati a questo progetto?')) return;
+        var m = currentAjaxUrl ? currentAjaxUrl.match(/\/modifica-tabella\/[^\/]+\/(\d+)\//) : null;
+        var pk = m ? m[1] : '0';
+        fetch('/ajax/copia-data-fine/', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+            body: JSON.stringify({direzione: 'progetto_a_tutti_contratti', progetto_pk: pk})
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+            if (d.ok) { mostraToast(d.messaggio, true); }
+            else { mostraToast(d.errore || 'Errore', false); }
+        })
+        .catch(function(){ mostraToast('Errore di rete', false); });
+    };
+
+    window.verificaDataFineContratto = function() {
+        var warn = document.getElementById('dataFineWarningContratto');
+        if (!warn) return;
+        var df = document.querySelector('[name="data_fine"]');
+        if (!df || !df.value) { warn.style.display = 'none'; return; }
+        var checked = document.querySelectorAll('.progetto-checkbox:checked');
+        var diverse = false;
+        checked.forEach(function(cb) {
+            var progDf = cb.getAttribute('data-data-fine');
+            if (progDf && progDf !== df.value) diverse = true;
+        });
+        warn.style.display = diverse ? 'block' : 'none';
+    };
+
+    window.verificaDataFineProgetto = function() {
+        var warn = document.getElementById('dataFineWarningProgetto');
+        var testo = document.getElementById('dataFineWarningProgettoTesto');
+        if (!warn || !testo) return;
+        var df = document.querySelector('[name="data_fine"]');
+        if (!df || !df.value) { warn.style.display = 'none'; return; }
+        var links = document.querySelectorAll('.contratto-link');
+        var count = 0;
+        links.forEach(function(a) {
+            var cdf = a.getAttribute('data-data-fine');
+            if (cdf && cdf !== df.value) count++;
+        });
+        if (count > 0) {
+            testo.textContent = count + ' contratto/i hanno data fine diversa';
+            warn.style.display = 'block';
+        } else {
+            warn.style.display = 'none';
+        }
+    };

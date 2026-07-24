@@ -1,0 +1,24 @@
+    window.rigeneraDocumentiCessazione = function(btn) {
+      var pk = btn.dataset.pk;
+      if (!pk) { mostraToast('Errore: pk mancante', false); return; }
+      if (!confirm('Rigenerare i documenti di cessazione? Verranno create una nuova ultima busta paga e una nuova liquidazione TFR.')) return;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Rigenerazione...';
+      fetch('/ajax/rigenera-documenti-cessazione/' + pk + '/', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCSRFToken() },
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.ok) {
+          mostraToast('Documenti cessazione rigenerati!', true);
+        } else {
+          mostraToast(d.errore || 'Errore rigenerazione', false);
+        }
+        btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Rigenera documenti cessazione';
+        btn.disabled = false;
+      }).catch(function(e) {
+        mostraToast('Errore di rete', false);
+        btn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i> Rigenera documenti cessazione';
+        btn.disabled = false;
+      });
+    };

@@ -1,0 +1,45 @@
+    window.decodaCF = function(cf) {
+        if (!cf || cf.length !== 16) return null;
+        cf = cf.toUpperCase();
+        var mesi = {A:'01',B:'02',C:'03',D:'04',E:'05',H:'06',L:'07',M:'08',P:'09',R:'10',S:'11',T:'12'};
+        var yy = cf.substr(6,2);
+        var mm = mesi[cf[8]] || '??';
+        var dd = parseInt(cf.substr(9,2), 10);
+        if (isNaN(dd)) return null;
+        var sesso = dd > 40 ? 'FEMMINA' : 'MASCHIO';
+        var gg = dd > 40 ? dd - 40 : dd;
+        var anno = parseInt(yy, 10) > 25 ? '19' + yy : '20' + yy;
+        return { data: String(gg).padStart(2,'0') + '/' + mm + '/' + anno, sesso: sesso };
+    };
+
+    // Decode CF completo via AJAX (con luogo nascita)
+    window._cfController = null;
+    window.decodificaCFAsync = function(cf, callback) {
+        if (window._cfController) window._cfController.abort();
+        if (!cf || cf.length !== 16) { if (callback) callback(null); return; }
+        var controller = new AbortController();
+        window._cfController = controller;
+        fetch('/ajax/decodifica-cf/?cf=' + encodeURIComponent(cf.toUpperCase()), {
+            signal: controller.signal,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) { if (callback) callback(data); })
+        .catch(function(err) { if (err.name !== 'AbortError' && callback) callback(null); });
+    };
+
+    // Decode comune di residenza → provincia + CAP
+    window._comuneController = null;
+    window.decodificaComuneAsync = function(q, callback) {
+        if (window._comuneController) window._comuneController.abort();
+        if (!q || !q.trim()) { if (callback) callback(null); return; }
+        var controller = new AbortController();
+        window._comuneController = controller;
+        fetch('/ajax/cerca-comune/?q=' + encodeURIComponent(q.trim()), {
+            signal: controller.signal,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) { if (callback) callback(data); })
+        .catch(function(err) { if (err.name !== 'AbortError' && callback) callback(null); });
+    };

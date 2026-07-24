@@ -1,0 +1,53 @@
+    // Aggiorna info scatti (bienni, valore, lorda stimata)
+    window.aggiornaInfoScatti = function aggiornaInfoScatti() {
+        var infoEl = document.getElementById('scattiInfo');
+        if (!infoEl) return;
+        var cb = document.getElementById('scattiToggle');
+        if (!cb || !cb.checked) { infoEl.textContent = ''; return; }
+        var form = document.getElementById('dynamicForm');
+        if (!form) return;
+        // Data assunzione -> bienni
+        var dataAss = document.querySelector('input[name="data_assunzione"]');
+        if (!dataAss || !dataAss.value) { infoEl.textContent = ''; return; }
+        var parts = dataAss.value.split('-');
+        if (parts.length !== 3) { infoEl.textContent = ''; return; }
+        var data = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        var oggi = new Date();
+        var anni = oggi.getFullYear() - data.getFullYear();
+        var m = oggi.getMonth() - data.getMonth();
+        if (m < 0 || (m === 0 && oggi.getDate() < data.getDate())) anni--;
+        var bienni = Math.min(Math.floor(anni / 2), 7);
+        // Parametri -> paga_base + valore_scatto
+        var paramSel = form.querySelector('select[name="parametri_minimi"]');
+        if (!paramSel) { infoEl.textContent = ''; return; }
+        var pk = paramSel.value;
+        if (!pk) { infoEl.textContent = ''; return; }
+        var pd = window._parametriData;
+        if (!pd || !pd[pk]) { infoEl.textContent = ''; return; }
+        var p = pd[pk];
+        var pagaBase = parseFloat(p.paga_base) || 0;
+        var valScatto = parseFloat(p.valore_scatto) || 0;
+        var scattoMensile = bienni * valScatto;
+        var lordaConScatti = pagaBase + scattoMensile;
+        // Ore mensili (budget / paga_oraria_totale)
+        var ore = 0;
+        var budgetInput = form.querySelector('input[name="budget_di_partenza"]');
+        var budget = budgetInput ? parseFloat(budgetInput.value) || 0 : 0;
+        // Calcola paga_oraria_totale dagli opzioni check
+        var pagaTot = pagaBase;
+        var checkboxFields = ['paga_tfr','paga_13ma','paga_ferie','paga_festivi',
+            'ind_certificazione_qualita','ind_piu_persone_non_conv','ind_minori_non_conv',
+            'ind_piu_persone_qualita','ind_minori_qualita','ind_assistenza_piu_persone_ft',
+            'ind_assistenza_piu_persone_pt','ind_minori_6_anni_ft','ind_funzione_conviventi',
+            'ind_conviventi_ft_54h','ind_conviventi_pt_30h'];
+        for (var i = 0; i < checkboxFields.length; i++) {
+            var fCb = form.querySelector('input[name="' + checkboxFields[i] + '"]');
+            if (fCb && fCb.type === 'checkbox' && fCb.checked) {
+                pagaTot += parseFloat(p[checkboxFields[i]]) || 0;
+            }
+        }
+        if (budget > 0 && pagaTot > 0) ore = Math.ceil(budget / pagaTot);
+        var lordaMensile = lordaConScatti * ore;
+        var partiBiennio = bienni > 0 ? bienni + (anni % 2 === 0 ? '' : '+') : '';
+        infoEl.textContent = bienni + ' bienni × €' + valScatto.toFixed(4) + ' = €' + scattoMensile.toFixed(4) + '/h · Lorda €' + lordaConScatti.toFixed(4) + '/h × ' + ore + 'h = €' + lordaMensile.toFixed(2);
+    };

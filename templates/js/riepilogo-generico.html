@@ -1,0 +1,64 @@
+    window.updateRiepilogoGenerico = function() {
+        var no = document.querySelector('input[name="nome"]');
+        var co = document.querySelector('input[name="cognome"]');
+        var cf = document.querySelector('input[name="codice_fiscale"]');
+        var tel = document.querySelector('input[name="telefono"]');
+        var em = document.querySelector('input[name="email"]');
+        var ind = document.querySelector('input[name="indirizzo"]');
+        var comuneField = document.querySelector('input[name="comune"]');
+        var provField = document.getElementById('nc_provincia');
+        var capField = document.getElementById('nc_cap');
+        var elNome = document.getElementById('r_nome');
+        var elCf = document.getElementById('r_cf');
+        var elData = document.getElementById('r_data_nascita');
+        var elSesso = document.getElementById('r_sesso');
+        var elComuneNasc = document.getElementById('r_comune_nascita');
+        var elProvNasc = document.getElementById('r_provincia_nascita');
+        var elTel = document.getElementById('r_telefono');
+        var elEmail = document.getElementById('r_email');
+        var elInd = document.getElementById('r_indirizzo');
+        var elComuneRes = document.getElementById('r_comune');
+        var elProvRes = document.getElementById('r_provincia');
+        var elCapRes = document.getElementById('r_cap');
+        if (no && co && elNome) elNome.textContent = (no.value + ' ' + co.value).trim() || '—';
+        if (tel && elTel) elTel.textContent = tel.value || '—';
+        if (em && elEmail) elEmail.textContent = em.value || '—';
+        if (ind && elInd) elInd.textContent = ind.value || '—';
+        if (elComuneRes) elComuneRes.textContent = comuneField ? (comuneField.value || '—') : '—';
+        if (elProvRes) elProvRes.textContent = provField ? (provField.value || '—') : '—';
+        if (elCapRes) elCapRes.textContent = capField ? (capField.value || '—') : '—';
+        if (cf) {
+            if (elCf) elCf.textContent = cf.value.toUpperCase() || '—';
+            var decoded = window.decodaCF(cf.value);
+            if (decoded) {
+                if (elData) elData.textContent = decoded.data;
+                if (elSesso) elSesso.textContent = decoded.sesso;
+                var inpD = document.getElementById('cf_data_nascita');
+                var inpS = document.getElementById('cf_sesso');
+                if (inpD) inpD.value = decoded.data;
+                if (inpS) inpS.value = decoded.sesso;
+            } else {
+                if (elData) elData.textContent = '—';
+                if (elSesso) elSesso.textContent = '—';
+            }
+            // Async per comune/provincia
+            window.decodificaCFAsync(cf.value, function(full) {
+                if (full) {
+                    if (elComuneNasc) elComuneNasc.textContent = full.comune_nascita || '—';
+                    if (elProvNasc) elProvNasc.textContent = full.provincia_nascita || '—';
+                    var inpC = document.getElementById('cf_comune_nascita');
+                    var inpP = document.getElementById('cf_provincia');
+                    if (inpC) inpC.value = full.comune_nascita || '';
+                    if (inpP) inpP.value = full.provincia_nascita || '';
+                }
+            });
+        }
+        // Carica provincia + CAP dal comune di residenza (solo se ancora vuoti)
+        if (comuneField && comuneField.value && provField) {
+            window.decodificaComuneAsync(comuneField.value, function(data) {
+                if (provField && !provField.value) provField.value = (data && data.found) ? data.sigla : '';
+                if (capField && !capField.value) capField.value = (data && data.found) ? data.cap : '';
+                if (window.updateRiepilogoGenerico) window.updateRiepilogoGenerico();
+            });
+        }
+    };

@@ -96,13 +96,12 @@
 - ✅ `liste.html`, `popup_ccnl_occhio.html`, `stampe_invii.html`, `crea_pagopa.html`: sostituiti con mostraToast
 
 ### 14. 📦 Estrarre JS inline da base.html
-- ✅ `sort-table.js` — ordinamento tabelle (57 righe)
-- ✅ `nav-layout.js` — sidebar/topbar toggle + nav gruppi collassabili (60 righe)
-- ✅ `csrf-utils.js` — getCookie, _csrfToken, getCSRFToken (11 righe)
-- ✅ `toast.js` — mostraToast, _stampaToast (23 righe)
-- ✅ `table-filters.js` — filterTable, filtraPerComune, aggiornaConteggio (47 righe)
-- ⏳ Blocco principale app (~2546 righe) + blocco documenti (~1476 righe) — troppo interconnesso, da pianificare con più calma
-- Vantaggi: caching HTTP, manutenibilità, separazione responsabilità
+- ✅ Piccoli blocchi: `sort-table.js`, `nav-layout.js`, `csrf-utils.js`, `toast.js`, `table-filters.js`
+- ✅ **Fase 1 completata**: 18 nuovi partial files, ~1110 righe rimosse
+  - Da `app_main.html` (2535→1717 righe, -32%): `anagrafica-search.html`, `copia-contratto.html`, `duplica-elimina.html`, `sync-toggles.html`, `scatti-info.html`, `codice-fiscale.html`, `riepilogo-generico.html`, `date-utils.html`, `progetti-budget.html`, `badge-richieste.html`
+  - Da `app_documents.html` (1441→1149 righe, -20%): `anticipi-tfr.html`, `prospetto-tfr.html`, `storico-modifiche.html`, `ccnl-occhio.html`, `rigenera-cessazione.html`, `mail-datore.html`, `invio-busta.html`, `email-datore.html`
+- ⏳ **Fase 2**: rifattorizzare monkey-patch di `aggiornaValoriOpzioni()`, estrarre Editor/TinyMCE, Ricerca Globale, Progetti Drag&Drop
+- ⏳ **Fase 3**: estrarre `loadAjaxForm()`, `renderBusta()`, `initStepForm()` (blocchi core)
 
 ### 15. 🎨 Ridurre style=inline → classi CSS
 - ✅ Aggiunte nuove classi utility in `utils.css`: `.ml-auto`, `.fw-8`, `.fs-16/18/20/22`, `.empty-state`, `.error-state`, `.label-info`, `.label-info-12`, `.mt-2/4`

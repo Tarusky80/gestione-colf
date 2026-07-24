@@ -1,0 +1,58 @@
+    function toggleProspettoTfr(el, pk) {
+      var section = document.getElementById('prospettoTfrSection');
+      if (!section) return;
+      var vis = section.style.display !== 'none';
+      section.style.display = vis ? 'none' : 'block';
+      var chevron = el.querySelector('.bi-chevron-down');
+      if (chevron) chevron.style.transform = vis ? '' : 'rotate(180deg)';
+      if (!vis) caricaProspettoTfr(pk);
+    }
+
+    window.caricaProspettoTfr = function(pk) {
+      var content = document.getElementById('prospettoTfrContent');
+      var table = document.getElementById('prospettoTfrTabella');
+      var riassunto = document.getElementById('prospettoTfrRiassunto');
+      var count = document.getElementById('prospettoTfrCount');
+      if (!pk || !table) return;
+      content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#8A8F98;"><i class="bi bi-hourglass-split me-1"></i> Caricamento...</div>';
+      fetch('/ajax/prospetto-tfr/' + pk + '/')
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.errore) { content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;"></div>'; content.firstChild.textContent = d.errore; return; }
+          if (!d.prospetto || d.prospetto.length === 0) {
+            content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#545;">Nessun dato TFR (contratto INCLUSO o senza data inizio TFR).</div>';
+            return;
+          }
+          content.style.display = 'none';
+          table.style.display = 'block';
+          if (count) count.textContent = '(' + d.prospetto.length + ')';
+          var h = '<table style="width:100%;border-collapse:collapse;font-size:11px;">';
+          h += '<thead><tr style="background:rgba(255,255,255,0.03);">';
+          h += '<th style="padding:6px 8px;text-align:left;color:#8A8F98;">Anno</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Mesi</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Accantonato</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Rivalutazione</th>';
+          h += '<th style="padding:6px 8px;text-align:right;color:#8A8F98;">Totale</th></tr></thead><tbody>';
+          d.prospetto.forEach(function(r) {
+            var rivClass = d.applica_rivalutazione && r.rivalutazione > 0 ? 'style="color:#a78bfa;"' : '';
+            h += '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">';
+            h += '<td style="padding:5px 8px;">' + r.anno + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;">' + r.mesi + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;">€ ' + r.accantonato.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;" ' + rivClass + '>€ ' + r.rivalutazione.toFixed(2) + '</td>';
+            h += '<td style="padding:5px 8px;text-align:right;font-weight:600;">€ ' + r.totale_progressivo.toFixed(2) + '</td>';
+            h += '</tr>';
+          });
+          h += '</tbody></table>';
+          table.innerHTML = h;
+          riassunto.style.display = 'block';
+          var label = d.applica_rivalutazione ? ' (con rivalutazione)' : ' (senza rivalutazione)';
+          riassunto.innerHTML = '<div style="display:flex;gap:16px;flex-wrap:wrap;">' +
+            '<span><span style="color:#8A8F98;">Accantonato:</span> <strong>€ ' + d.solo_accantonato.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Rivalutazione:</span> <strong style="color:#a78bfa;">€ ' + d.rivalutazione_totale.toFixed(2) + '</strong></span>' +
+            '<span><span style="color:#8A8F98;">Totale' + label + ':</span> <strong class="c-green">€ ' + d.totale.toFixed(2) + '</strong></span></div>';
+        })
+        .catch(function(err) {
+          content.innerHTML = '<div style="text-align:center;padding:10px 0;color:#f87171;">Errore di caricamento: ' + err.message + '</div>';
+        });
+    };

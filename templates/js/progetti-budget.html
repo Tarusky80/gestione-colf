@@ -1,0 +1,135 @@
+    window.updateRiepilogoProgetto = function() {
+        function txt(id, val) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = val || '—';
+        }
+        var ben = document.querySelector('select[name="beneficiario"]');
+        var ba = document.querySelector('input[name="budget_annuale"]');
+        var bm = document.querySelector('input[name="budget_mensile"]');
+        var di = document.querySelector('input[name="data_inizio"]');
+        var df = document.querySelector('input[name="data_fine"]');
+        var me = document.querySelector('input[name="mesi"]');
+        var tp = document.querySelector('select[name="tipo"]');
+
+        txt('r_beneficiario', ben && ben.options[ben.selectedIndex] ? ben.options[ben.selectedIndex].text : '—');
+        txt('r_budget_annuale', ba && ba.value ? '€ ' + parseFloat(ba.value).toFixed(2) : '—');
+        txt('r_budget_mensile', bm && bm.value ? '€ ' + parseFloat(bm.value).toFixed(2) : '—');
+        txt('r_data_inizio', di && di.value ? new Date(di.value + 'T00:00:00').toLocaleDateString('it-IT') : '—');
+        txt('r_data_fine', df && df.value ? new Date(df.value + 'T00:00:00').toLocaleDateString('it-IT') : '—');
+
+        var mesiVal = me ? parseInt(me.value) || 0 : 0;
+        txt('r_mesi', mesiVal ? mesiVal + ' mesi' : '—');
+
+        // Durata: calcola mesi tra data_inizio e data_fine
+        if (di && di.value && df && df.value) {
+            var d1 = new Date(di.value + 'T00:00:00');
+            var d2 = new Date(df.value + 'T00:00:00');
+            if (!isNaN(d1) && !isNaN(d2) && d2 > d1) {
+                var diffMesi = (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
+                txt('r_durata', diffMesi + ' mesi');
+            } else { txt('r_durata', '—'); }
+        } else { txt('r_durata', '—'); }
+
+        txt('r_tipo', tp && tp.options[tp.selectedIndex] ? tp.options[tp.selectedIndex].text : '—');
+
+        var countEl = document.querySelectorAll('#dynamicForm .contratto-link').length;
+        txt('r_contratti_count', countEl ? countEl + ' contratti' : '—');
+    };
+
+    window.calcolaBudgetDaAnnuale = function() {
+        if (window._aggiornamentoBudget) return;
+        window._aggiornamentoBudget = true;
+        var ba = document.querySelector('input[name="budget_annuale"]');
+        var me = document.querySelector('input[name="mesi"]');
+        var bm = document.querySelector('input[name="budget_mensile"]');
+        if (ba && me && bm) {
+            var annuale = parseFloat(ba.value) || 0;
+            var mesi = parseInt(me.value) || 1;
+            bm.value = (annuale / mesi).toFixed(2);
+        }
+        window.updateRiepilogoProgetto();
+        window._aggiornamentoBudget = false;
+    };
+
+    window.calcolaBudgetDaMensile = function() {
+        if (window._aggiornamentoBudget) return;
+        window._aggiornamentoBudget = true;
+        var ba = document.querySelector('input[name="budget_annuale"]');
+        var me = document.querySelector('input[name="mesi"]');
+        var bm = document.querySelector('input[name="budget_mensile"]');
+        if (ba && me && bm) {
+            var mensile = parseFloat(bm.value) || 0;
+            var mesi = parseInt(me.value) || 1;
+            ba.value = (mensile * mesi).toFixed(2);
+        }
+        window.updateRiepilogoProgetto();
+        window._aggiornamentoBudget = false;
+    };
+
+    window.aggiornaBeneficiarioCard = function() {
+        var sel = document.getElementById('id_beneficiario');
+        var card = document.getElementById('beneficiarioCard');
+        if (!sel || !card) return;
+        var opt = sel.options[sel.selectedIndex];
+        if (!opt || !opt.value) { card.style.display = 'none'; return; }
+        card.style.display = '';
+        var el;
+        el = document.getElementById('ben_cf'); if (el) el.textContent = opt.dataset.cf || '—';
+        el = document.getElementById('ben_indirizzo'); if (el) el.textContent = opt.dataset.indirizzo || '—';
+        el = document.getElementById('ben_comune'); if (el) el.textContent = opt.dataset.comune || '—';
+        el = document.getElementById('ben_provincia'); if (el) el.textContent = opt.dataset.provincia || '—';
+        el = document.getElementById('ben_cap'); if (el) el.textContent = opt.dataset.cap || '—';
+    };
+
+    window.aggiornaTipoDesc = function() {
+        var sel = document.getElementById('id_tipo');
+        var desc = document.getElementById('tipoDesc');
+        if (!sel || !desc) return;
+        var opt = sel.options[sel.selectedIndex];
+        if (opt && opt.value && opt.dataset.desc) {
+            desc.textContent = opt.dataset.desc;
+            desc.style.display = '';
+        } else {
+            desc.style.display = 'none';
+        }
+    };
+
+    document.addEventListener('change', function(e) {
+        if (e.target.closest('#dynamicForm')) {
+            if (e.target.matches('select[name="beneficiario"], input[name="data_inizio"], input[name="data_fine"], select[name="tipo"]')) {
+                window.updateRiepilogoProgetto();
+            }
+            if (e.target.id === 'id_beneficiario') { window.aggiornaBeneficiarioCard(); window.updateRiepilogoProgetto(); }
+            if (e.target.id === 'id_tipo') window.aggiornaTipoDesc();
+        }
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('#dynamicForm')) {
+            if (e.target.matches('input[name="budget_annuale"], input[name="mesi"]')) {
+                window.calcolaBudgetDaAnnuale();
+            }
+            if (e.target.matches('input[name="budget_mensile"]')) {
+                window.calcolaBudgetDaMensile();
+            }
+            if (e.target.matches('input[name="data_inizio"], input[name="data_fine"], input[name="budget_annuale"], input[name="budget_mensile"], input[name="mesi"]')) {
+                window.updateRiepilogoProgetto();
+            }
+        }
+    });
+    document.addEventListener('click', function(e) {
+        if (e.target.id === 'copiaDataBtn' || (e.target.closest && e.target.closest('#copiaDataBtn'))) {
+            var links = document.querySelectorAll('#dynamicForm .contratto-link');
+            if (links.length === 0) { mostraToast('Nessun contratto collegato da cui copiare la data.', false); return; }
+            var dataInput = document.querySelector('input[name="data_inizio"]');
+            if (!dataInput) return;
+            var dataAttr = links[0].getAttribute('data-data-inizio');
+            if (dataAttr) { dataInput.value = dataAttr; window.updateRiepilogoProgetto(); }
+        }
+        if (e.target.id === 'fineAnnoBtn' || (e.target.closest && e.target.closest('#fineAnnoBtn'))) {
+            var input = document.querySelector('input[name="data_fine"]');
+            if (!input) return;
+            var oggi = new Date();
+            input.value = oggi.getFullYear() + '-12-31';
+            if (window.updateRiepilogoProgetto) window.updateRiepilogoProgetto();
+        }
+    });
