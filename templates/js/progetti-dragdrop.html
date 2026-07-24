@@ -1,0 +1,178 @@
+    // --- Modal Modifica/Duplica Progetto ---
+    window.apriProgettoModal = function(url, titolo) {
+        var modalEl = document.getElementById('progettoModal');
+        var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        document.getElementById('progettoModalTitle').textContent = titolo;
+        document.getElementById('progettoModalBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border c-accent"></div></div>';
+        modal.show();
+        fetch(url).then(function(r) { return r.json(); }).then(function(data) {
+            if (!data.success) return;
+            document.getElementById('progettoModalBody').innerHTML = data.html;
+            var annulla = document.querySelector('#progettoModal .btn[data-bs-dismiss="offcanvas"]');
+            if (annulla) { annulla.removeAttribute('data-bs-dismiss'); annulla.onclick = function() { modal.hide(); }; }
+            document.querySelector('#progettoModal #dynamicForm').addEventListener('submit', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                var btn = e.target.querySelector('[type="submit"]');
+                if (btn) btn.disabled = true;
+                var fd = new FormData(e.target);
+                fetch(url, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(function(r) { return r.json(); })
+                    .then(function(resp) {
+                        if (resp.success) {
+                            modal.hide();
+                            if (window.initProgettiDragDrop) setTimeout(function() { window.initProgettiDragDrop(); }, 200);
+                        } else {
+                            document.getElementById('progettoModalBody').innerHTML = resp.html;
+                        }
+                    });
+            });
+        });
+    };
+
+    window._syncGuard = 0;
+    window.syncProgettiFromCheckboxes = function() {
+        if (window._syncGuard > 0) return;
+        window._syncGuard++;
+        try {
+        var avail = document.getElementById('progettiAvailable');
+        var sel = document.getElementById('progettiSelected');
+        if (!avail || !sel) return;
+        window.PROG_CHECKED = {};
+        document.querySelectorAll('#progettiCheckboxes .progetto-checkbox').forEach(function(cb) {
+            window.PROG_CHECKED[cb.value] = cb.checked;
+        });
+        if (window._progAvailRender) window._progAvailRender('');
+        if (window._progSelRender) window._progSelRender();
+        var cnt = Object.values(window.PROG_CHECKED).filter(Boolean).length;
+        document.getElementById('progSelCount').textContent = '(' + cnt + ')';
+        if (window.aggiornaValoriOpzioni) window.aggiornaValoriOpzioni();
+        } finally { window._syncGuard--; }
+    };
+
+    window._progAvailRender = null;
+    window._progSelRender = null;
+
+    window.initProgettiDragDrop = function() {
+        var dd = document.getElementById('progettiDragDrop');
+        if (!dd) { return; }
+        if (dd.hasAttribute('data-dnd-init')) { return; }
+        dd.setAttribute('data-dnd-init', '1');
+
+        var cbs = document.querySelectorAll('#progettiCheckboxes .progetto-checkbox');
+        window.PROG_DATA = {};
+        window.PROG_CHECKED = {};
+        cbs.forEach(function(cb) {
+            var pk = cb.value;
+            window.PROG_DATA[pk] = {
+                pk: pk,
+                label: cb.getAttribute('data-label') || '#' + pk,
+                colore: cb.getAttribute('data-colore') || '#10b981',
+                tipo: cb.getAttribute('data-tipo') || 'Altro',
+                beneficiario: cb.getAttribute('data-beneficiario') || ''
+            };
+            window.PROG_CHECKED[pk] = cb.checked;
+        });
+
+        function _rgb(h) {
+            if (!h || h.length < 7) return '16,185,129';
+            return parseInt(h.slice(1,3),16) + ',' + parseInt(h.slice(3,5),16) + ',' + parseInt(h.slice(5,7),16);
+        }
+
+        window._progAvailRender = function(filtro) {
+            var c = document.getElementById('progettiAvailable');
+            if (!c) return;
+            var html = '';
+            var q = (filtro || '').toLowerCase().trim();
+            Object.keys(window.PROG_DATA).forEach(function(pk) {
+                if (window.PROG_CHECKED[pk]) return;
+                var d = window.PROG_DATA[pk];
+                if (q && d.label.toLowerCase().indexOf(q) === -1 && d.tipo.toLowerCase().indexOf(q) === -1) return;
+                html += '<div class="prog-item" data-pk="' + pk + '" style="padding:12px 14px;border-radius:8px;border:1px solid transparent;font-size:13px;color:#cccccc;cursor:grab;background:rgba(' + _rgb(d.colore) + ',0.04);transition:background 0.12s;box-sizing:border-box;">' +
+                            '<span class="drag-handle" style="cursor:grab;font-size:14px;line-height:1;color:#5C5F66;margin-right:8px;">&#x283F;</span>' +
+                            '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + d.colore + ';flex-shrink:0;margin-right:8px;"></span>' +
+                            d.label +
+                            '<span style="margin-left:8px;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(' + _rgb(d.colore) + ',0.15);color:' + d.colore + ';white-space:nowrap;">' + d.tipo + '</span>' +
+                        '</div>';
+            });
+            c.innerHTML = html || '<div class="text-center text-secondary py-4" style="font-size:11px;color:#5C5F66;"><i class="bi bi-arrow-left-square fs-4 d-block mb-2"></i>Nessun progetto disponibile</div>';
+        };
+
+        window._progSelRender = function(order) {
+            var c = document.getElementById('progettiSelected');
+            if (!c) return;
+            var html = '';
+            var keys = order || Object.keys(window.PROG_CHECKED);
+            keys.forEach(function(pk) {
+                if (!window.PROG_CHECKED[pk]) return;
+                var d = window.PROG_DATA[pk];
+                if (!d) return;
+                html += '<div class="prog-item" data-pk="' + pk + '" style="padding:12px 14px;border-radius:8px;border:1px solid #27282D;font-size:13px;color:#EDEDED;cursor:grab;background:rgba(' + _rgb(d.colore) + ',0.08);box-sizing:border-box;">' +
+                            '<span class="drag-handle" style="cursor:grab;font-size:14px;line-height:1;color:#5C5F66;margin-right:8px;">&#x283F;</span>' +
+                            '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + d.colore + ';flex-shrink:0;margin-right:8px;"></span>' +
+                            d.label +
+                            '<span style="margin-left:8px;font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(' + _rgb(d.colore) + ',0.15);color:' + d.colore + ';white-space:nowrap;">' + d.tipo + '</span>' +
+                        '</div>';
+            });
+            c.innerHTML = html || '<div class="text-center text-secondary py-4" style="font-size:11px;color:#5C5F66;"><i class="bi bi-check2-square fs-4 d-block mb-2"></i>Trascina progetti qui</div>';
+            setTimeout(function() { _initSortable(); }, 50);
+        };
+
+        var availEl = document.getElementById('progettiAvailable');
+        var selEl = document.getElementById('progettiSelected');
+        if (!availEl || !selEl) return;
+
+        function _initSortable() {
+            if (window._sortableAvail) window._sortableAvail.destroy();
+            if (window._sortableSel) window._sortableSel.destroy();
+            window._sortableAvail = new Sortable(availEl, {
+                group: { name: 'progetti', pull: true, put: true },
+                sort: false,
+                animation: 150,
+                onEnd: _sync
+            });
+            window._sortableSel = new Sortable(selEl, {
+                group: { name: 'progetti', pull: true, put: true },
+                sort: true,
+                animation: 150,
+                onEnd: _sync
+            });
+        }
+
+        function _sync() {
+            if (window._syncGuard > 0) return;
+            window._syncGuard++;
+            try {
+            var selectedPks = [];
+            selEl.querySelectorAll('.prog-item').forEach(function(el) {
+                selectedPks.push(el.getAttribute('data-pk'));
+            });
+            Object.keys(window.PROG_CHECKED).forEach(function(pk) {
+                window.PROG_CHECKED[pk] = selectedPks.indexOf(pk) !== -1;
+            });
+            Object.keys(window.PROG_CHECKED).forEach(function(pk) {
+                var cb = document.querySelector('#progettiCheckboxes .progetto-checkbox[value="' + pk + '"]');
+                if (cb) cb.checked = window.PROG_CHECKED[pk];
+            });
+            var cnt = selectedPks.length;
+            document.getElementById('progSelCount').textContent = '(' + cnt + ')';
+            var filtroEl = document.getElementById('progFiltro');
+            window._progAvailRender(filtroEl ? filtroEl.value : '');
+            window._progSelRender(selectedPks);
+            if (window.aggiornaValoriOpzioni) window.aggiornaValoriOpzioni();
+            } finally { window._syncGuard--; }
+        }
+
+        window._progAvailRender('');
+        window._progSelRender();
+
+        var filtroEl = document.getElementById('progFiltro');
+        if (filtroEl) {
+            filtroEl.addEventListener('input', function() {
+                window._progAvailRender(this.value);
+            });
+        }
+
+        var cnt = Object.values(window.PROG_CHECKED).filter(Boolean).length;
+        document.getElementById('progSelCount').textContent = '(' + cnt + ')';
+    };

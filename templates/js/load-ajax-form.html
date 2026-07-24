@@ -1,0 +1,392 @@
+    let formDirty = false;
+    document.addEventListener('change', function(e) {
+        if (e.target.closest('#dynamicForm')) formDirty = true;
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.closest('#dynamicForm')) formDirty = true;
+    });
+
+    var panelNuovo = document.getElementById('panelNuovo');
+    if (panelNuovo) {
+        panelNuovo.addEventListener('hide.bs.offcanvas', function(e) {
+            if (!formDirty) return;
+            e.preventDefault();
+            var modal = new bootstrap.Modal(document.getElementById('confirmCloseModal'));
+            modal.show();
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        var target = e.target;
+        if (!target) return;
+        if (target.id === 'confirmSaveBtn') {
+            var confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmCloseModal'));
+            if (confirmModal) confirmModal.hide();
+            var btn = document.getElementById('btnSalvaForm');
+            if (btn) setTimeout(function() { btn.click(); }, 100);
+        } else if (target.id === 'confirmDiscardBtn') {
+            formDirty = false;
+            var confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmCloseModal'));
+            if (confirmModal) confirmModal.hide();
+            var offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('panelNuovo'));
+            if (offcanvas) offcanvas.hide();
+        } else if (target.closest && target.closest('[data-delete-btn]')) {
+            var delBtn = target.closest('[data-delete-btn]');
+            e.preventDefault();
+            closeActionPanel();
+            window.deleteUrl = delBtn.getAttribute('data-delete-url') || '';
+            var dm = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            document.getElementById('deleteEntityType').textContent = delBtn.getAttribute('data-delete-tipo') || '';
+            document.getElementById('deleteEntityName').textContent = delBtn.getAttribute('data-delete-nome') || '';
+            document.getElementById('deleteImpact').textContent = delBtn.getAttribute('data-delete-impatto') || '';
+            window.deleteUrl = window.deleteUrl || '';
+            dm.show();
+            return;
+        } else if (target.id === 'confirmDeleteBtn') {
+            var pk = target.getAttribute('data-delete-pk');
+            var url = pk ? '/ajax/elimina-contratto/' + pk + '/' : (window.deleteUrl || '');
+            if (!url) return;
+            target.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Eliminazione...';
+            target.disabled = true;
+            fetch(url, { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCSRFToken() } })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        var deleteModal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+                        if (deleteModal) deleteModal.hide();
+                        mostraToast('Elemento eliminato.', true);
+                        setTimeout(function() { location.reload(); }, 500);
+                    } else {
+                        mostraToast('Errore: ' + (data.errore || data.message || 'Operazione fallita'), false);
+                    }
+                    target.innerHTML = '<i class="bi bi-trash3 me-1"></i> Elimina';
+                    target.disabled = false;
+                })
+                .catch(function() {
+                    mostraToast('Errore di rete', false);
+                    target.innerHTML = '<i class="bi bi-trash3 me-1"></i> Elimina';
+                    target.disabled = false;
+                });
+            window.deleteUrl = '';
+        }
+    });
+
+    // Load AJAX form function and related listeners
+    let currentAjaxUrl = '';
+    function loadAjaxForm(url, title, subtitle) {
+        formDirty = false;
+        currentAjaxUrl = url;
+        const offcanvasEl = document.getElementById('panelNuovo');
+        const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl) || new bootstrap.Offcanvas(offcanvasEl);
+        document.getElementById('offcanvas-title').innerText = title;
+        document.getElementById('offcanvas-subtitle').innerText = subtitle || 'Inserisci i dati richiesti';
+        const container = document.getElementById('offcanvas-form-container');
+        container.innerHTML = `<div class="text-center mt-5"><div class="spinner-border" style="color: #5E6AD2;"></div><p class="text-secondary mt-3 small">Recupero dati...</p></div>`;
+        bsOffcanvas.show();
+        // Mostra link archivio documenti, stampe e procedure nel footer
+        var footer = document.getElementById('offcanvas-footer');
+        var link = document.getElementById('offcanvasArchivioLink');
+        var sLink = document.getElementById('offcanvasStampeLink');
+        var aLink = document.getElementById('offcanvasAssunzioneLink');
+        var cLink = document.getElementById('offcanvasCessazioneLink');
+        var bLink = document.getElementById('offcanvasBusteLink');
+        var m = url.match(/\/ajax\/modifica-(datore|lavoratore|beneficiario|contratto)\/(\d+)\//);
+        var hideAll = function() {
+            sLink.style.display = 'none';
+            aLink.style.display = 'none';
+            cLink.style.display = 'none';
+            bLink.style.display = 'none';
+        };
+        var showContrattoLinks = function(pk) {
+            sLink.href = '/stampe-invii/?contratto_pk=' + pk;
+            sLink.style.display = 'inline-flex';
+            aLink.href = '/procedure/iscrizione-inps/?contratto_pk=' + pk;
+            aLink.style.display = 'inline-flex';
+            cLink.href = '/procedure/cessazione-inps/?contratto_pk=' + pk;
+            cLink.style.display = 'inline-flex';
+            bLink.href = '/buste-archivio/?contratto=' + pk;
+            bLink.style.display = 'inline-flex';
+            var onClick = function(e) {
+                if (formDirty && !confirm('Modifiche non salvate. Procedere comunque senza salvare?')) {
+                    e.preventDefault();
+                }
+            };
+            sLink.onclick = onClick;
+            aLink.onclick = onClick;
+            cLink.onclick = onClick;
+            bLink.onclick = onClick;
+        };
+        if (m) {
+            var tipo = m[1], pk = m[2];
+            var param = tipo === 'contratto' ? 'contratto_pk' : tipo + '_pk';
+            link.href = '/documenti/?' + param + '=' + pk;
+            if (tipo === 'contratto') {
+                showContrattoLinks(pk);
+            } else {
+                hideAll();
+            }
+        } else {
+            link.href = '/documenti/';
+            hideAll();
+        }
+        footer.style.display = 'block';
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error('Errore del server Django (Codice ' + res.status + ')');
+                const ct = res.headers.get('content-type') || '';
+                if (ct.includes('application/json')) {
+                    return res.json();
+                } else {
+                    return res.text().then(html => ({ html }));
+                }
+            })
+            .then(data => {
+                if (data.success || data.html) {
+                    container.innerHTML = data.html;
+                    window.apriCcnlOcchioContratto = function(pk) {
+                        window.apriCcnlOcchioPopup(pk, new Date().getFullYear());
+                    };
+                    (function initForm(attempt) {
+                        setTimeout(function() {
+                            if (document.querySelector('#dynamicForm')) {
+                                var dynForm = container.querySelector('#dynamicForm');
+                                if (dynForm && dynForm.dataset.parametriData) {
+                                    try { window._parametriData = JSON.parse(dynForm.dataset.parametriData); } catch(e) {}
+                                }
+                                if (window.updateRiepilogo) window.updateRiepilogo();
+                                if (window.updateRiepilogoGenerico) window.updateRiepilogoGenerico();
+                                if (window.updateRiepilogoProgetto) window.updateRiepilogoProgetto();
+                                if (window.calcolaBudgetDaAnnuale) window.calcolaBudgetDaAnnuale();
+                                if (window.aggiornaBeneficiarioCard) window.aggiornaBeneficiarioCard();
+                                if (window.aggiornaTipoDesc) window.aggiornaTipoDesc();
+                                if (window.aggiornaAnteprimaTesto) window.aggiornaAnteprimaTesto();
+                                if (window.aggiornaValoriOpzioni) window.aggiornaValoriOpzioni();
+                                if (window.calcTotale) window.calcTotale();
+                                if (window.toggleOggettoTesto) window.toggleOggettoTesto();
+                                if (window.initPreviewDrag) window.initPreviewDrag();
+                                if (window.initTinyMCE) window.initTinyMCE();
+                                if (window.initVariabili) window.initVariabili();
+                                if (window.initStepForm && currentAjaxUrl.indexOf('/nuovo-contratto/') !== -1) window.initStepForm(container);
+                                if (window.initDescrizioni) setTimeout(function() { window.initDescrizioni(dynForm); }, 100);
+                                if (window.aggiornaInfoScatti) setTimeout(function() { window.aggiornaInfoScatti(); }, 150);
+                                if (window.initNavContratti) setTimeout(function() { window.initNavContratti(); }, 50);
+                                if (window.popolaNavContrattoSelect) setTimeout(function() { window.popolaNavContrattoSelect(); }, 80);
+                                if (window.initNavEntity) setTimeout(function() { window.initNavEntity('datore'); window.initNavEntity('lavoratore'); window.initNavEntity('beneficiario'); }, 50);
+                                if (window.popolaNavEntitySelect) setTimeout(function() { window.popolaNavEntitySelect('datore'); window.popolaNavEntitySelect('lavoratore'); window.popolaNavEntitySelect('beneficiario'); }, 80);
+                                if (window.initNavEntity) setTimeout(function() { window.initNavEntity('progetto'); }, 50);
+                                if (window.popolaNavEntitySelect) setTimeout(function() { window.popolaNavEntitySelect('progetto'); }, 80);
+                                if (window.initProgettiDragDrop) setTimeout(function() { window.initProgettiDragDrop(); }, 250);
+                                if (window.verificaDataFineContratto) setTimeout(function() { window.verificaDataFineContratto(); }, 100);
+                                if (window.verificaDataFineProgetto) setTimeout(function() { window.verificaDataFineProgetto(); }, 100);
+                                // Converti checkbox visibilità operatori in toggle switch
+                                setTimeout(function() {
+                                    document.querySelectorAll('#visibilitaOperatorSection input[type="checkbox"], #visibilitaOperatorSectionContratto input[type="checkbox"]').forEach(function(cb) {
+                                        if (cb.parentNode.classList.contains('toggle-switch')) return;
+                                        var row = cb.closest('.d-flex') || cb.parentNode;
+                                        var labelText = row.querySelector('span') ? row.querySelector('span').textContent : '';
+                                        var div = document.createElement('div');
+                                        div.className = 'd-flex align-items-center justify-content-between';
+                                        div.style.cssText = 'padding:3px 4px;font-size:12px;color:#8A8F98;border-radius:6px;';
+                                        div.addEventListener('mouseenter',function(){this.style.background='rgba(94,106,210,0.06)';});
+                                        div.addEventListener('mouseleave',function(){this.style.background='';});
+                                        var nameSpan = document.createElement('span');
+                                        nameSpan.textContent = labelText;
+                                        var toggleLabel = document.createElement('label');
+                                        toggleLabel.className = 'toggle-switch toggle-purple';
+                                        toggleLabel.style.margin = '0';
+                                        toggleLabel.appendChild(cb);
+                                        toggleLabel.appendChild(document.createElement('span')).className = 'toggle-slider';
+                                        div.appendChild(nameSpan);
+                                        div.appendChild(toggleLabel);
+                                        row.parentNode.replaceChild(div, row);
+                                    });
+                                }, 50);
+                                if (window._stepAfterNav && window._stepAfterNav > 1) {
+                                    setTimeout(function() {
+                                        if (window.vaiAStep) window.vaiAStep(window._stepAfterNav);
+                                        window._stepAfterNav = null;
+                                    }, 350);
+                                }
+                            } else if (attempt < 10) {
+                                initForm(attempt + 1);
+                            }
+                        }, attempt === 1 ? 150 : 300);
+                    })(1);
+                }
+            })
+            .catch(error => {
+                container.innerHTML = `
+                    <div class="alert alert-danger mt-4" style="background-color: rgba(220,53,69,0.1); border-color: rgba(220,53,69,0.2); color:#ff6b6b;">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i><b>Ops! C'è un intoppo nel backend.</b><br><br><span style="font-size:13px;">${error.message}</span><br><br>
+                    </div>`;
+            });
+    }
+
+{% include "js/anagrafica-search.html" %}
+
+{% include "js/copia-contratto.html" %}
+
+{% include "js/duplica-elimina.html" %}
+
+    // ===== MULTI-STEP FORM NAVIGATION =====
+    window.vaiAStep = function(n) {
+        var form = document.querySelector('#dynamicForm');
+        if (!form) return;
+        var contents = form.querySelectorAll('.step-content');
+        for (var i = 0; i < contents.length; i++) {
+            contents[i].style.display = (parseInt(contents[i].dataset.step) === n) ? '' : 'none';
+        }
+        var dots = form.querySelectorAll('.step-dot');
+        dots.forEach(function(d) { d.classList.remove('active'); });
+        if (dots[n - 1]) dots[n - 1].classList.add('active');
+        for (var i = 0; i < dots.length; i++) {
+            var step = parseInt(dots[i].dataset.step);
+            var circle = dots[i].querySelector('span:first-child');
+            var label = dots[i].querySelector('span:last-child');
+            if (step === n) {
+                dots[i].style.background = 'rgba(94,106,210,0.08)';
+                dots[i].style.borderColor = 'rgba(94,106,210,0.15)';
+                if (circle) { circle.style.background = '#5E6AD2'; }
+                if (label) { label.style.color = '#EDEDED'; label.style.fontWeight = '700'; }
+            } else if (step < n) {
+                dots[i].style.background = 'rgba(52,211,153,0.08)';
+                dots[i].style.borderColor = 'rgba(52,211,153,0.15)';
+                if (circle) { circle.style.background = '#34d399'; }
+                if (label) { label.style.color = '#EDEDED'; label.style.fontWeight = '600'; }
+            } else {
+                dots[i].style.background = '#1C1C1F';
+                dots[i].style.borderColor = '#27282D';
+                if (circle) { circle.style.background = '#27282D'; }
+                if (label) { label.style.color = '#8A8F98'; label.style.fontWeight = '600'; }
+            }
+        }
+        if (window.aggiornaValoriOpzioni) {
+            setTimeout(function() { window.aggiornaValoriOpzioni(); }, 50);
+        }
+        if (n === 4 && window.caricaPrevisioneBustaStep4) {
+            setTimeout(function() { window.caricaPrevisioneBustaStep4(); }, 100);
+        }
+    };
+
+
+    document.addEventListener('submit', function(e) {
+        if (e.target && e.target.id === 'dynamicForm' && !e.target.closest('#progettoModal')) {
+            e.preventDefault();
+            formDirty = false;
+            const form = e.target;
+            const btn = document.getElementById('btnSalvaForm');
+            const btnOrig = btn ? btn.innerHTML : '';
+            const dbg = function(msg) {
+                var el = document.getElementById('save-debug');
+                if (!el && btn) { el = document.createElement('div'); el.id = 'save-debug'; btn.parentNode.appendChild(el); }
+                if (el) { el.textContent = msg; el.style.cssText = 'margin-top:8px;padding:6px 10px;border-radius:6px;font-size:11px;background:rgba(255,255,255,0.05);color:#ccc;'; }
+            };
+            dbg('Invio a ' + currentAjaxUrl);
+            // Sync TinyMCE content to textarea before form submission
+            if (window.tinymce) {
+                try {
+                    var editors = ['id_corpo_testo', 'id_oggetto_titolo'];
+                    editors.forEach(function(eid) {
+                        var ed = tinymce.get(eid);
+                        if (ed) {
+                            var ta = document.getElementById(eid);
+                            if (ta) ta.value = ed.getContent();
+                        }
+                    });
+                } catch(e) {
+                    dbg('ERRORE sync TinyMCE: ' + e.message);
+                }
+            }
+            const formData = new FormData(form);
+            if (btn) btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Salvataggio...';
+            var controller = new AbortController();
+            var timeoutId = setTimeout(function() { controller.abort(); }, 10000);
+            fetch(currentAjaxUrl, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' }, signal: controller.signal })
+                .then(function(res) { clearTimeout(timeoutId); if (!res.ok) throw new Error('Errore server ' + res.status); return res.json(); })
+                .then(function(data) {
+                    dbg('Risposta: success=' + data.success);
+                    if (data.success) {
+                        mostraToast('Dati salvati con successo!', true);
+                        if (data.redirect_url) {
+                            setTimeout(function() { window.location.href = data.redirect_url; }, 800);
+                        } else if (currentAjaxUrl.indexOf('contratto') !== -1) {
+                            setTimeout(function() { window.location.href = '/contratti/'; }, 800);
+                        } else {
+                            setTimeout(function() { window.location.reload(); }, 1200);
+                        }
+                    } else {
+                        mostraToast(data.errore || 'Errore: controlla i campi evidenziati', false);
+                        document.getElementById('offcanvas-form-container').innerHTML = data.html;
+                        setTimeout(function() {
+                            if (window.updateRiepilogo) window.updateRiepilogo();
+                            if (window.updateRiepilogoGenerico) window.updateRiepilogoGenerico();
+                            if (window.updateRiepilogoProgetto) window.updateRiepilogoProgetto();
+                            if (window.calcolaBudgetDaAnnuale) window.calcolaBudgetDaAnnuale();
+                            if (window.aggiornaBeneficiarioCard) window.aggiornaBeneficiarioCard();
+                            if (window.aggiornaTipoDesc) window.aggiornaTipoDesc();
+                            if (window.aggiornaAnteprimaTesto) window.aggiornaAnteprimaTesto();
+                            if (window.aggiornaValoriOpzioni) window.aggiornaValoriOpzioni();
+                            if (window.calcTotale) window.calcTotale();
+                            if (window.initTinyMCE) window.initTinyMCE();
+                            if (window.initStepForm && currentAjaxUrl.indexOf('/nuovo-contratto/') !== -1) window.initStepForm(document.getElementById('offcanvas-form-container'));
+                            if (window.initProgettiDragDrop) setTimeout(function() { window.initProgettiDragDrop(); }, 200);
+                            setTimeout(function() {
+                                document.querySelectorAll('#visibilitaOperatorSection input[type="checkbox"], #visibilitaOperatorSectionContratto input[type="checkbox"]').forEach(function(cb) {
+                                    if (cb.parentNode.classList.contains('toggle-switch')) return;
+                                    var row = cb.closest('.d-flex') || cb.parentNode;
+                                    var labelText = row.querySelector('span') ? row.querySelector('span').textContent : '';
+                                    var div = document.createElement('div');
+                                    div.className = 'd-flex align-items-center justify-content-between';
+                                    div.style.cssText = 'padding:3px 4px;font-size:12px;color:#8A8F98;border-radius:6px;';
+                                    div.addEventListener('mouseenter',function(){this.style.background='rgba(94,106,210,0.06)';});
+                                    div.addEventListener('mouseleave',function(){this.style.background='';});
+                                    var nameSpan = document.createElement('span');
+                                    nameSpan.textContent = labelText;
+                                    var toggleLabel = document.createElement('label');
+                                    toggleLabel.className = 'toggle-switch toggle-purple';
+                                    toggleLabel.style.margin = '0';
+                                    toggleLabel.appendChild(cb);
+                                    toggleLabel.appendChild(document.createElement('span')).className = 'toggle-slider';
+                                    div.appendChild(nameSpan);
+                                    div.appendChild(toggleLabel);
+                                    row.parentNode.replaceChild(div, row);
+                                });
+                            }, 50);
+                            var scroller = document.querySelector('#dynamicForm > div[style*="overflow-y: auto"]');
+                            if (scroller) scroller.scrollTop = 0;
+                        }, 150);
+                    }
+                })
+                .catch(function(err) {
+                    clearTimeout(timeoutId);
+                    if (btn) btn.innerHTML = btnOrig;
+                    var msg = err.name === 'AbortError' ? 'TIMEOUT: nessuna risposta dal server dopo 10s' : err.message;
+                    mostraToast(msg, false);
+                    dbg('ERRORE: ' + msg);
+                });
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === '/' && !event.target.closest('input,textarea,select')) {
+            event.preventDefault();
+            var overlay = document.getElementById('ricercaOverlay');
+            if (overlay && overlay.style.display !== 'block') apriRicercaGlobale();
+        }
+    });
+
+    // Bulk actions placeholder
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('input[name="contract_ids"]');
+        for (const cb of checkboxes) { cb.checked = source.checked; }
+    }
+    function bulkActionContracts() {
+        const form = document.getElementById('contractsBulkForm');
+        const selected = [];
+        const checkboxes = document.querySelectorAll('input[name="contract_ids"]:checked');
+        checkboxes.forEach(cb => selected.push(cb.value));
+        if (selected.length === 0) { mostraToast('Nessun contratto selezionato.', false); return false; }
+        mostraToast('Azioni di bulk su contratti: ' + selected.join(', '), false);
+        return false;
+    }
+    window.loadAjaxForm = loadAjaxForm;

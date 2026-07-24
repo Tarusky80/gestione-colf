@@ -100,8 +100,9 @@
 - ✅ **Fase 1 completata**: 18 nuovi partial files, ~1110 righe rimosse
   - Da `app_main.html` (2535→1717 righe, -32%): `anagrafica-search.html`, `copia-contratto.html`, `duplica-elimina.html`, `sync-toggles.html`, `scatti-info.html`, `codice-fiscale.html`, `riepilogo-generico.html`, `date-utils.html`, `progetti-budget.html`, `badge-richieste.html`
   - Da `app_documents.html` (1441→1149 righe, -20%): `anticipi-tfr.html`, `prospetto-tfr.html`, `storico-modifiche.html`, `ccnl-occhio.html`, `rigenera-cessazione.html`, `mail-datore.html`, `invio-busta.html`, `email-datore.html`
-- ⏳ **Fase 2**: rifattorizzare monkey-patch di `aggiornaValoriOpzioni()`, estrarre Editor/TinyMCE, Ricerca Globale, Progetti Drag&Drop
-- ⏳ **Fase 3**: estrarre `loadAjaxForm()`, `renderBusta()`, `initStepForm()` (blocchi core)
+- ✅ **Fase 2 completata**: monkey-patch `aggiornaValoriOpzioni()` sostituito con pattern hook listener (`_opzioniAggiornaHooks[]`); Editor/TinyMCE + Ricerca Globale estratti in partial separati
+- ✅ **Fase 3 completata**: `progetti-dragdrop.html` (178 righe) + `riepilogo-calcoli.html` (478 righe) estratti da `app_main.html` (1212→559 righe, -54%)
+- ✅ **Fase 4 completata**: `loadAjaxForm()`, `vaiAStep()`, submit handler, event listeners estratti in `load-ajax-form.html` (392 righe) — `app_main.html` ora 168 righe (da 2535 originali, -93%)
 
 ### 15. 🎨 Ridurre style=inline → classi CSS
 - ✅ Aggiunte nuove classi utility in `utils.css`: `.ml-auto`, `.fw-8`, `.fs-16/18/20/22`, `.empty-state`, `.error-state`, `.label-info`, `.label-info-12`, `.mt-2/4`
@@ -195,7 +196,7 @@
 ## Session Log — 2026-07-23
 - **✅ JS estratto da base.html in 2 file separati** (`templates/js/app_main.html` ~2535 righe, `templates/js/app_documents.html` ~1441 righe)
   - `base.html`: 4511→533 righe, 303KB→59KB (-80%)
-  - `app_main.html`: event delegation, keyboard shortcuts, ricerca globale, initForm AJAX, calcoli (conviventi/non conviventi/TFR/malattia/notturno/inverso/sostituzione), tabelle resize/drag, agenda, toggle cronologia
+  - `app_main.html`: event delegation, keyboard shortcuts, initForm AJAX, calcoli (conviventi/non conviventi/TFR/malattia/notturno/inverso/sostituzione), tabelle resize/drag, agenda, toggle cronologia
   - `app_documents.html`: PDF preview flottante, documenti template (trascina/ridimensiona/ricerca), TinyMCE init, form template composizione, email preview, ModelliDocumentale
   - Inclusione via `{% include %}` — supporta variabili Django (`{{ }}`, `{% url %}`)
 - 31/31 test OK
@@ -224,6 +225,23 @@
 - **✅ Quarto batch**: v3.py con nuovi pattern (colori, font-size, position: relative) - 61 style rimossi (totale ~2402)
   - ~~Clausola di chiusura~~: rendimento troppo calo, ~2402 rimasti ma pattern uno-off o in JS
   - **Chiuso Task 15** - 2142/4544 convertiti (~47%)
+
+## Session Log — 2026-07-24 (II)
+- **✅ Fase 2 completata** — rifattorizzato monkey-patch di `aggiornaValoriOpzioni()` in `app_documents.html` → pattern hook listener `_opzioniAggiornaHooks[]`
+- **✅ Editor/TinyMCE estratto** (325 righe) da `app_main.html` → `templates/js/editor-tinymce.html`
+- **✅ Ricerca Globale estratta** (186 righe) da `app_main.html` → `templates/js/ricerca-globale.html`
+- **✅ badge-richieste.html reso self-contained** (aggiunte `    });` di chiusura mancanti, rimossa la dipendenza dal `    });` in app_main.html)
+- **Pulizia** `    });` orfano rimosso da app_main.html
+- `manage.py check` — 0 errori
+- **Risultato**: `app_main.html` 1722→1212 righe, 143KB→67KB (-53%); `app_documents.html` 1149→1145 righe (patch sostituita)
+- **Commit**: prossimo
+
+## Session Log — 2026-07-24 (III)
+- **✅ Fase 3 completata**: `progetti-dragdrop.html` (179 righe) + `riepilogo-calcoli.html` (478 righe) estratti da `app_main.html` via Python script (unicode-safe)
+- **✅ Fase 4 completata**: `loadAjaxForm()`, `vaiAStep()`, submit handler, formDirty, event listeners estratti (392 righe) in `load-ajax-form.html`
+- **Risultato**: `app_main.html` 559→168 righe, 32KB→10KB (-70%); `manage.py check` 0 errori, 31/31 test OK
+- **Lezione**: per extract via `edit()` con unicode (`,—,€) usare Python script invece di match stringa (i caratteri reali vs escapes divergono)
+- **Commit**: prossimo
 
 ## Comandi utili
 ```powershell

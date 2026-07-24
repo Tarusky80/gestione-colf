@@ -1,0 +1,186 @@
+    // === RICERCA GLOBALE OVERLAY (Ctrl+K) ===
+    var _ricerca_indice = -1;
+    var _ricerca_items = [];
+    var _abortController = null;
+
+    function apriRicercaGlobale() {
+        document.getElementById('ricercaOverlay').style.display = 'block';
+        var inp = document.getElementById('ricercaInput');
+        inp.value = '';
+        inp.focus();
+        var html = '<div style="padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#5E6AD2;margin-top:0;">Azioni rapide</div>';
+        var azioni = [
+            { icona: 'bi-speedometer2', label: 'Dashboard', url: '/dashboard/' },
+            { icona: 'bi-person-plus', label: 'Nuovo Datore', url: '/datori/nuovo/' },
+            { icona: 'bi-people', label: 'Nuovo Lavoratore', url: '/lavoratori/nuovo/' },
+            { icona: 'bi-file-earmark-text', label: 'Nuovo Contratto', url: '/contratti/nuovo/' },
+            { icona: 'bi-calculator', label: 'Calcola Busta', url: '/calcoli/' }
+        ];
+        azioni.forEach(function(a, idx) {
+            html += '<div class="ricerca-item" data-indice="' + idx + '" onclick="window.location.href=\'' + a.url + '\';chiudiRicercaGlobale({target:document.getElementById(\'ricercaOverlay\'),currentTarget:document.getElementById(\'ricercaOverlay\')})" onmouseenter="selezionaRicercaItem(' + idx + ')" style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:background 0.1s;">' +
+                '<div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(94,106,210,0.1);border-radius:8px;"><i class="bi ' + a.icona + '" style="color:#5E6AD2;font-size:18px;"></i></div>' +
+                '<div style="flex:1;min-width:0;"><div class="value-busta">' + a.label + '</div></div></div>';
+            _ricerca_items.push({ url: a.url, label: a.label, sottotitolo: '' });
+        });
+        // Mostra cronologia se disponibile
+        var crono = caricaCronologia();
+        if (crono.length > 0) {
+            html += '<div style="padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#545;margin-top:6px;">Recenti</div>';
+            crono.forEach(function(c, idx) {
+                var offset = azioni.length + idx;
+                html += '<div class="ricerca-item" data-indice="' + offset + '" onclick="window.location.href=\'' + c.url + '\';chiudiRicercaGlobale({target:document.getElementById(\'ricercaOverlay\'),currentTarget:document.getElementById(\'ricercaOverlay\')})" onmouseenter="selezionaRicercaItem(' + offset + ')" style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:background 0.1s;">' +
+                    '<div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.03);border-radius:8px;"><i class="bi bi-clock-history" style="color:#8A8F98;font-size:18px;"></i></div>' +
+                    '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#EDEDED;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + c.label + '</div>' +
+                    '<div style="font-size:11px;color:#8A8F98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (c.query || '') + '</div></div></div>';
+            });
+            _ricerca_items = _ricerca_items.concat(crono);
+        }
+        document.getElementById('ricercaRisultati').innerHTML = html;
+        _ricerca_indice = -1;
+    }
+
+    function chiudiRicercaGlobale(e) {
+        if (e && e.target !== e.currentTarget) return;
+        document.getElementById('ricercaOverlay').style.display = 'none';
+        _ricerca_indice = -1;
+        _ricerca_items = [];
+        if (_abortController) { _abortController.abort(); _abortController = null; }
+    }
+
+    function salvaCronologia(item) {
+        var crono = JSON.parse(localStorage.getItem('ricerca_cronologia') || '[]');
+        // Evita duplicati
+        crono = crono.filter(function(c) { return c.url !== item.url; });
+        crono.unshift({ url: item.url, label: item.titolo, query: item.sottotitolo || '', data: Date.now() });
+        if (crono.length > 10) crono.pop();
+        localStorage.setItem('ricerca_cronologia', JSON.stringify(crono));
+    }
+
+    function caricaCronologia() {
+        return JSON.parse(localStorage.getItem('ricerca_cronologia') || '[]');
+    }
+
+    function eseguiRicerca(q) {
+        if (q.length < 3) {
+            document.getElementById('ricercaRisultati').innerHTML =
+                '<div class="text-center py-5" style="color:#545;"><i class="bi bi-search" style="font-size:28px;display:block;margin-bottom:8px;"></i>' +
+                '<div style="font-size:13px;">Digita almeno 3 caratteri per cercare</div></div>';
+            _ricerca_items = [];
+            return;
+        }
+        // Abort richiesta precedente
+        if (_abortController) _abortController.abort();
+        _abortController = new AbortController();
+
+        fetch('/ajax/search/?q=' + encodeURIComponent(q), { signal: _abortController.signal })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var container = document.getElementById('ricercaRisultati');
+                _ricerca_items = [];
+                _ricerca_indice = -1;
+                if (data.totale > 0) {
+                    var html = '';
+                    var keys = Object.keys(data.results);
+                    keys.forEach(function(categoria) {
+                        var isPrima = (html === '');
+                        html += '<div style="padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:#545;margin-top:' + (isPrima ? '0' : '6px') + ';">' + categoria + '</div>';
+                        data.results[categoria].forEach(function(item, idx) {
+                            var i = _ricerca_items.length;
+                            var colore = item.colore || '#5E6AD2';
+                            var iconaHtml = '<i class="bi ' + item.icona + '" style="color:' + colore + ';font-size:18px;"></i>';
+                            var salvaCronoJs = "salvaCronologia({url:'" + item.url + "',titolo:'" + (item.titolo || '').replace(/'/g, "\\'") + "',sottotitolo:'" + (item.sottotitolo || '').replace(/'/g, "\\'") + "'})";
+                            var azione = item.tipo_azione === 'modale'
+                                ? salvaCronoJs + ";loadAjaxForm('" + item.url + "','" + item.modale_titolo + "');chiudiRicercaGlobale({target:document.getElementById('ricercaOverlay'),currentTarget:document.getElementById('ricercaOverlay')})"
+                                : salvaCronoJs + ";window.location.href='" + item.url + "'";
+                            html += '<div class="ricerca-item" data-indice="' + i + '" onclick="' + azione + '" onmouseenter="selezionaRicercaItem(' + i + ')" style="display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:background 0.1s;">' +
+                                '<div style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,0.03);border-radius:8px;">' + iconaHtml + '</div>' +
+                                '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#EDEDED;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + item.titolo + '</div>' +
+                                '<div style="font-size:11px;color:#8A8F98;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + item.sottotitolo + '</div></div></div>';
+                            _ricerca_items.push(item);
+                        });
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="text-center py-5" style="color:#545;"><i class="bi bi-exclamation-circle" style="font-size:28px;display:block;margin-bottom:8px;"></i>' +
+                        '<div style="font-size:13px;">Nessun risultato per <strong style="color:#8A8F98;">"' + q + '"</strong></div></div>';
+                }
+            })
+            .catch(function(err) {
+                if (err.name === 'AbortError') return; // Ignora abort volontario
+            });
+    }
+
+    function selezionaRicercaItem(indice) {
+        _ricerca_indice = indice;
+        document.querySelectorAll('.ricerca-item').forEach(function(el) {
+            var i = parseInt(el.dataset.indice);
+            el.style.background = (i === indice) ? 'rgba(94,106,210,0.12)' : '';
+            if (i === indice) el.scrollIntoView({ block: 'nearest' });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var overlay = document.getElementById('ricercaOverlay');
+        var input = document.getElementById('ricercaInput');
+        if (!overlay || !input) return;
+
+        // Debounce input 150ms
+        var debounceTimer;
+        input.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            var q = this.value.trim();
+            debounceTimer = setTimeout(function() { eseguiRicerca(q); }, 150);
+        });
+
+        // Navigazione tastiera
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                var next = _ricerca_indice + 1;
+                if (next >= _ricerca_items.length) next = 0;
+                selezionaRicercaItem(next);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                var prev = _ricerca_indice - 1;
+                if (prev < 0) prev = _ricerca_items.length - 1;
+                selezionaRicercaItem(prev);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (_ricerca_indice >= 0 && _ricerca_items[_ricerca_indice]) {
+                    var item = _ricerca_items[_ricerca_indice];
+                    if (item.tipo_azione === 'modale') {
+                        loadAjaxForm(item.url, item.modale_titolo);
+                    } else {
+                        window.location.href = item.url;
+                    }
+                    chiudiRicercaGlobale({target: overlay, currentTarget: overlay});
+                }
+            } else if (e.key === 'Escape') {
+                chiudiRicercaGlobale({target: overlay, currentTarget: overlay});
+            } else if (e.key >= '1' && e.key <= '9' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                var idx = parseInt(e.key) - 1;
+                if (idx < _ricerca_items.length) {
+                    var item = _ricerca_items[idx];
+                    if (item.tipo_azione === 'modale') {
+                        loadAjaxForm(item.url, item.modale_titolo);
+                    } else {
+                        window.location.href = item.url;
+                    }
+                    chiudiRicercaGlobale({target: overlay, currentTarget: overlay});
+                }
+            }
+        });
+
+        // Ctrl+K o Ctrl+L globale (apri/chiudi ricerca)
+        document.addEventListener('keydown', function(e) {
+            if ((e.key === 'k' || e.key === 'K' || e.key === 'l' || e.key === 'L') && (e.ctrlKey || e.metaKey) && !e.target.closest('input,textarea,select')) {
+                e.preventDefault();
+                if (overlay.style.display === 'block') {
+                    chiudiRicercaGlobale({target: overlay, currentTarget: overlay});
+                } else {
+                    apriRicercaGlobale();
+                }
+            }
+        });
+    });

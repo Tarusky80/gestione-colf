@@ -1,0 +1,478 @@
+    // Populate description for parametri_minimi / ente_bilaterale
+    window.updateDescrizione = function updateDescrizione(e) {
+        var sel = e.target;
+        if (!sel.classList.contains('desc-select')) return;
+        var descId = sel.dataset.descId;
+        var descEl = document.getElementById(descId);
+        if (!descEl) return;
+        var opt = sel.options[sel.selectedIndex];
+        descEl.textContent = opt ? (opt.dataset.desc || '') : '';
+    }
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('desc-select')) updateDescrizione(e);
+    });
+
+    // Trigger aggiornaInfoScatti on relevant field changes
+    document.addEventListener('change', function(e) {
+        var name = e.target.name || '';
+        var id = e.target.id || '';
+        var triggerFields = ['data_assunzione', 'budget_di_partenza', 'parametri_minimi',
+            'paga_tfr', 'paga_13ma', 'paga_ferie', 'paga_festivi',
+            'ind_certificazione_qualita', 'ind_piu_persone_non_conv', 'ind_minori_non_conv',
+            'ind_piu_persone_qualita', 'ind_minori_qualita', 'ind_assistenza_piu_persone_ft',
+            'ind_assistenza_piu_persone_pt', 'ind_minori_6_anni_ft', 'ind_funzione_conviventi',
+            'ind_conviventi_ft_54h', 'ind_conviventi_pt_30h'];
+        if (triggerFields.indexOf(name) !== -1 || triggerFields.indexOf(id) !== -1) {
+            if (window.aggiornaInfoScatti) setTimeout(window.aggiornaInfoScatti, 50);
+        }
+    });
+
+    // Update riepilogo
+    window.updateRiepilogo = function updateRiepilogo() {
+        function txt(id, val) {
+            var el = document.getElementById(id);
+            if (el) el.textContent = val || '—';
+        }
+        function selText(name) {
+            var s = document.querySelector('select[name="' + name + '"]');
+            return s && s.options[s.selectedIndex] ? s.options[s.selectedIndex].text : '';
+        }
+        function selVal(name) {
+            var s = document.querySelector('select[name="' + name + '"]');
+            return s ? s.value : '';
+        }
+        txt('riepilogoDatore', selText('datore'));
+        txt('riepilogoLavoratore', selText('lavoratore'));
+        txt('riepilogoEnte', selText('ente_bilaterale'));
+        // CF datore/lavoratore (value IS the PK = CF)
+        txt('riepilogoDatoreCF', selVal('datore'));
+        txt('riepilogoLavoratoreCF', selVal('lavoratore'));
+        // beneficiario: from selected progetti
+        var benSet = new Set();
+        document.querySelectorAll('.progetto-checkbox:checked').forEach(function(cb) {
+            var b = cb.dataset.beneficiario;
+            if (b) benSet.add(b);
+        });
+        txt('riepilogoBeneficiario', benSet.size ? Array.from(benSet).join(', ') : '—');
+        // data assunzione formatted as GG/MM/AAAA
+        var da = document.querySelector('input[name="data_assunzione"]');
+        var daVal = '—';
+        if (da && da.value) {
+            var d = new Date(da.value + 'T00:00:00');
+            if (!isNaN(d)) daVal = d.toLocaleDateString('it-IT');
+        }
+        txt('riepilogoDataAss', daVal);
+        // codice rapporto inps
+        var cr = document.querySelector('input[name="codice_rapporto_inps"]');
+        txt('riepilogoCodice', cr && cr.value ? cr.value : '—');
+        // ore mav (hide if 0 or empty)
+        var om = document.querySelector('input[name="ore_mav_custom"]');
+        var omv = om ? om.value : '';
+        var omEl = document.getElementById('riepilogoOreMav');
+        var mavWrap = document.getElementById('riepilogoOreMavWrap');
+        if (omEl) {
+            if (omv && omv !== '0') { omEl.textContent = omv; if (mavWrap) mavWrap.style.display = 'inline'; }
+            else { if (mavWrap) mavWrap.style.display = 'none'; }
+        }
+        // tipo contratto
+        txt('riepilogoTipoContratto', selText('tipo_contratto'));
+        // convivente
+        var conv = document.getElementById('is_convivente') || document.querySelector('input[name="is_convivente"]');
+        var convEl = document.getElementById('riepilogoConvivente');
+        if (convEl) {
+            if (conv && conv.checked) {
+                convEl.textContent = 'Conv.';
+                convEl.style.display = 'inline';
+                convEl.style.background = 'rgba(94,106,210,0.15)';
+                convEl.style.color = '#5E6AD2';
+            } else {
+                convEl.textContent = 'Non Conv.';
+                convEl.style.display = 'inline';
+                convEl.style.background = 'rgba(138,143,152,0.1)';
+                convEl.style.color = '#8A8F98';
+            }
+        }
+        // data inizio TFR
+        var dit = document.querySelector('input[name="data_inizio_tfr"]');
+        var ditVal = '—';
+        if (dit && dit.value) {
+            var d2 = new Date(dit.value + 'T00:00:00');
+            if (!isNaN(d2)) ditVal = d2.toLocaleDateString('it-IT');
+        }
+        txt('riepilogoDataInizioTfr', ditVal);
+        // paghe abilitate
+        var tfrCb = document.querySelector('input[name="paga_tfr"]');
+        var t13Cb = document.querySelector('input[name="paga_13ma"]');
+        var ferieCb = document.querySelector('input[name="paga_ferie"]');
+        var festCb = document.querySelector('input[name="paga_festivi"]');
+        var parts = [];
+        if (tfrCb && tfrCb.checked) parts.push('TFR');
+        if (t13Cb && t13Cb.checked) parts.push('13ma');
+        if (ferieCb && ferieCb.checked) parts.push('Ferie');
+        if (festCb && festCb.checked) parts.push('Festivi');
+        txt('riepilogoPagheAbilitate', parts.length ? parts.join(' \u00B7 ') : '—');
+        // progetti
+        var progCbs = document.querySelectorAll('.progetto-checkbox:checked');
+        var budgetTot = 0;
+        progCbs.forEach(function(cb) {
+            budgetTot += parseFloat(cb.getAttribute('data-budget')) || 0;
+        });
+        txt('riepilogoProgetti', progCbs.length ? progCbs.length + ' prog. (\u20AC ' + budgetTot.toFixed(2) + ')' : '—');
+        // note
+        var note = document.querySelector('textarea[name="note_post_it"]');
+        txt('riepilogoNote', note && note.value ? note.value : '—');
+        // accordion: datore/lavoratore data from JSON
+        var form = document.getElementById('dynamicForm');
+        if (form) {
+            var ddStr = form.getAttribute('data-datori-data');
+            var ldStr = form.getAttribute('data-lavoratori-data');
+            if (ddStr) try {
+                var dd = JSON.parse(ddStr);
+                var datorePk = selVal('datore');
+                if (datorePk && dd[datorePk]) {
+                    var info = dd[datorePk];
+                    txt('riepilogoDatoreEmail', info.email || '—');
+                    txt('riepilogoDatoreTel', info.telefono || '—');
+                    txt('riepilogoDatoreIndirizzo', info.indirizzo || '—');
+                    txt('riepilogoDatoreComune', info.comune || '—');
+                    txt('riepilogoDatoreProv', info.provincia || '—');
+                    txt('riepilogoDatoreCap', info.cap || '—');
+                    txt('riepilogoDatoreDataNascita', info.data_nascita || '—');
+                    txt('riepilogoDatoreSesso', info.sesso || '—');
+                    txt('riepilogoDatoreComuneNascita', info.comune_nascita || '—');
+                    txt('riepilogoDatoreProvNascita', info.provincia_nascita || '—');
+                    txt('riepilogoDatorePatrono', info.patrono || '—');
+                } else {
+                    txt('riepilogoDatoreEmail', '—'); txt('riepilogoDatoreTel', '—');
+                    txt('riepilogoDatoreIndirizzo', '—'); txt('riepilogoDatoreComune', '—');
+                    txt('riepilogoDatoreProv', '—'); txt('riepilogoDatoreCap', '—');
+                    txt('riepilogoDatoreDataNascita', '—'); txt('riepilogoDatoreSesso', '—');
+                    txt('riepilogoDatoreComuneNascita', '—'); txt('riepilogoDatoreProvNascita', '—');
+                    txt('riepilogoDatorePatrono', '—');
+                }
+            } catch(e) {}
+            if (ldStr) try {
+                var ld = JSON.parse(ldStr);
+                var lavPk = selVal('lavoratore');
+                if (lavPk && ld[lavPk]) {
+                    var info2 = ld[lavPk];
+                    txt('riepilogoLavoratoreEmail', info2.email || '—');
+                    txt('riepilogoLavoratoreTel', info2.telefono || '—');
+                    txt('riepilogoLavoratoreIndirizzo', info2.indirizzo || '—');
+                    txt('riepilogoLavoratoreComune', info2.comune || '—');
+                    txt('riepilogoLavoratoreProv', info2.provincia || '—');
+                    txt('riepilogoLavoratoreCap', info2.cap || '—');
+                    txt('riepilogoLavoratoreDataNascita', info2.data_nascita || '—');
+                    txt('riepilogoLavoratoreSesso', info2.sesso || '—');
+                    txt('riepilogoLavoratoreComuneNascita', info2.comune_nascita || '—');
+                    txt('riepilogoLavoratoreProvNascita', info2.provincia_nascita || '—');
+                    txt('riepilogoLavoratorePatrono', info2.patrono || '—');
+                } else {
+                    txt('riepilogoLavoratoreEmail', '—'); txt('riepilogoLavoratoreTel', '—');
+                    txt('riepilogoLavoratoreIndirizzo', '—'); txt('riepilogoLavoratoreComune', '—');
+                    txt('riepilogoLavoratoreProv', '—'); txt('riepilogoLavoratoreCap', '—');
+                    txt('riepilogoLavoratoreDataNascita', '—'); txt('riepilogoLavoratoreSesso', '—');
+                    txt('riepilogoLavoratoreComuneNascita', '—'); txt('riepilogoLavoratoreProvNascita', '—');
+                    txt('riepilogoLavoratorePatrono', '—');
+                }
+            } catch(e) {}
+        }
+    }
+    document.addEventListener('change', function(e) {
+        if (e.target.matches('select[name="datore"], select[name="lavoratore"], select[name="ente_bilaterale"], select[name="tipo_contratto"], input[name="data_assunzione"], input[name="data_inizio_tfr"], input[name="codice_rapporto_inps"], input[name="ore_mav_custom"], input[name="is_convivente"], input[name="paga_tfr"], input[name="paga_13ma"], input[name="paga_ferie"], input[name="paga_festivi"], .progetto-checkbox, .toggle-switch input[type="checkbox"]')) {
+            updateRiepilogo();
+        }
+        if (e.target.matches('input[name="comune"]')) {
+            if (window.decodificaComuneAsync) {
+                window.decodificaComuneAsync(e.target.value, function(data) {
+                    var prov = document.getElementById('nc_provincia');
+                    var cap = document.getElementById('nc_cap');
+                    if (prov && !prov.value) prov.value = (data && data.found) ? data.sigla : '';
+                    if (cap && !cap.value) cap.value = (data && data.found) ? data.cap : '';
+                    if (window.updateRiepilogoGenerico) window.updateRiepilogoGenerico();
+                });
+            }
+        }
+        if (e.target.matches('input[name="indirizzo"], input[name="telefono"], input[name="email"]')) {
+            if (window.updateRiepilogoGenerico) window.updateRiepilogoGenerico();
+        }
+    });
+    document.addEventListener('input', function(e) {
+        if (e.target.matches('input[name="codice_fiscale"], input[name="nome"], input[name="cognome"], input[name="indirizzo"], input[name="provincia"], input[name="cap"], input[name="telefono"], input[name="email"]')) {
+            if (window.updateRiepilogoGenerico) window.updateRiepilogoGenerico();
+        }
+        if (e.target.matches('input[name="comune"]')) {
+            if (window.decodificaComuneAsync) {
+                window.decodificaComuneAsync(e.target.value, function(data) {
+                    var prov = document.getElementById('nc_provincia');
+                    var cap = document.getElementById('nc_cap');
+                    if (prov && !prov.value) prov.value = (data && data.found) ? data.sigla : '';
+                    if (cap && !cap.value) cap.value = (data && data.found) ? data.cap : '';
+                    if (window.updateRiepilogoGenerico) window.updateRiepilogoGenerico();
+                });
+            }
+        }
+        if (e.target.matches('textarea[name="note_post_it"]')) {
+            updateRiepilogo();
+        }
+    });
+
+    // Decode Italian Codice Fiscale (sync, solo data/sesso)
+{% include "js/codice-fiscale.html" %}
+
+    // Update riepilogo for generic forms (datori/lavoratori/beneficiari)
+{% include "js/riepilogo-generico.html" %}
+
+    // Apri Google Maps con indirizzo + comune + provincia + CAP
+{% include "js/date-utils.html" %}
+
+    // Ricalcolo automatico quando cambia data_fine
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.matches('[name="data_fine"]')) {
+            if (window.verificaDataFineContratto) window.verificaDataFineContratto();
+            if (window.verificaDataFineProgetto) window.verificaDataFineProgetto();
+        }
+    });
+
+    // --- Progetti Regionali: riepilogo + calcolo budget ---
+    window._aggiornamentoBudget = false;
+
+{% include "js/progetti-budget.html" %}
+
+    window.filterProgetti = function(input) {
+        var q = input.value.toLowerCase().trim();
+        if (window._progAvailRender) {
+            window._progAvailRender(q);
+        }
+    };
+
+
+
+    /* --- Color Picker helper --- */
+    window.aggiornaHexColore = function(el) {
+        var span = document.getElementById('coloreHex');
+        if (span) span.textContent = el.value;
+    };
+
+{% include "js/editor-tinymce.html" %}
+
+    window.calcTotale = function() {
+        var elD = document.getElementById('id_quota_datore');
+        var elL = document.getElementById('id_quota_lavoratore');
+        var elT = document.getElementById('id_totale');
+        if (!elD || !elL || !elT) return;
+        var d = parseFloat(elD.value.replace(',', '.')) || 0;
+        var l = parseFloat(elL.value.replace(',', '.')) || 0;
+        elT.value = (d + l).toFixed(4);
+    };
+
+    window.aggiornaTfrToggle = function() {
+        var sep = document.getElementById('tfr_separato');
+        var ant = document.getElementById('anticipo_70');
+        var h = document.getElementById('id_modalita_tfr');
+        if (!sep || !ant || !h) return;
+        ant.disabled = !sep.checked;
+        if (!sep.checked) {
+            ant.checked = false;
+            h.value = 'INCLUSO';
+        } else if (ant.checked) {
+            h.value = 'SEPARATO_70';
+        } else {
+            h.value = 'SEPARATO_100';
+        }
+        if (window.aggiornaValoriOpzioni) window.aggiornaValoriOpzioni();
+    };
+
+
+
+    window.aggiornaValoriOpzioni = function() {
+        try {
+        var form = document.getElementById('dynamicForm');
+        if (!form) return;
+        var mapStr = form.getAttribute('data-parametri-map');
+        var dataStr = form.getAttribute('data-parametri-data');
+        if (!mapStr || !dataStr) return;
+        var map, data;
+        try { map = JSON.parse(mapStr); data = JSON.parse(dataStr); } catch(e) { return; }
+        var sel = document.querySelector('select[name="parametri_minimi"]');
+        if (!sel) return;
+        var pk = sel.value;
+        var vals = data[pk];
+        if (!vals) return;
+        var somma = 0, items = [];
+        document.querySelectorAll('.toggle-value').forEach(function(el) {
+            var fname = el.getAttribute('data-field');
+            var checkbox = el.closest('.toggle-switch').querySelector('input[type="checkbox"]');
+            var valore = vals[fname] || 0;
+            el.textContent = '€ ' + valore.toFixed(4);
+            if (checkbox && checkbox.checked && valore > 0) {
+                somma += valore;
+                var label = el.closest('.toggle-switch').querySelector('.toggle-label');
+                items.push('<span class="c-green">&#10003;</span> ' + (label ? label.textContent.trim() : fname) + ' <span style="color:#8A8F98;">€ ' + valore.toFixed(4) + '</span>');
+            }
+        });
+        var summary = document.getElementById('opzioniSummary');
+        if (items.length > 0) {
+            summary.style.display = 'block';
+            document.getElementById('opzioniSummaryList').innerHTML = items.join('<br>');
+            document.getElementById('opzioniSummaryTotale').textContent = '€ ' + somma.toFixed(4);
+        } else {
+            summary.style.display = 'none';
+        }
+        var pr = document.getElementById('riepilogoParametri');
+        if (pr) { pr.textContent = vals.livello || '—'; pr.style.color = vals.livello_colore || '#EDEDED'; }
+        var pd = document.getElementById('riepilogoDescrizione');
+        if (pd) pd.textContent = vals.descrizione_corta || '';
+        var pb = document.getElementById('riepilogoPagaBase');
+        if (pb) pb.textContent = '€ ' + (vals.paga_base || 0).toFixed(4);
+        var pt = document.getElementById('riepilogoTotale');
+        if (pt) pt.textContent = '€ ' + ((vals.paga_base || 0) + somma).toFixed(4);
+        // Voci economiche orarie — INCLUSO / NON INCLUSO
+        var _r = function(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
+        function _setIncluso(id, fieldName) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            var cb = document.querySelector('input[name="' + fieldName + '"][type="checkbox"]');
+            if (cb && cb.checked) {
+                el.textContent = 'INCLUSO';
+                el.style.color = '#34d399';
+            } else {
+                el.textContent = 'NON INCLUSO';
+                el.style.color = '#f87171';
+            }
+        }
+        // TFR con 3 modalità
+        var tfrEl = document.getElementById('riepilogoPagaTfr');
+        if (tfrEl) {
+            var mtInput = document.getElementById('id_modalita_tfr');
+            var mt = mtInput ? mtInput.value : 'INCLUSO';
+            if (mt === 'INCLUSO') { tfrEl.textContent = 'INCLUSO'; tfrEl.style.color = '#34d399'; }
+            else if (mt === 'SEPARATO_70') { tfrEl.textContent = 'ANTICIPO 70%'; tfrEl.style.color = '#fbbf24'; }
+            else if (mt === 'SEPARATO_100') { tfrEl.textContent = 'ACCANTONATO'; tfrEl.style.color = '#f87171'; }
+        }
+        // Aggiungi TFR a somma in base alla modalità
+        var tfrRateo = vals.paga_tfr || 0;
+        if (tfrRateo > 0 && mtInput) {
+            var mtVal = mtInput.value;
+            var tfrIncluso = 0;
+            if (mtVal === 'INCLUSO') tfrIncluso = tfrRateo;
+            else if (mtVal === 'SEPARATO_70') tfrIncluso = tfrRateo * 0.7;
+            if (tfrIncluso > 0) {
+                somma += tfrIncluso;
+                items.push('<span class="c-green">&#10003;</span> TFR <span style="color:#8A8F98;">€ ' + tfrIncluso.toFixed(4) + '</span>');
+            }
+            document.getElementById('opzioniSummaryList').innerHTML = items.join('<br>');
+            document.getElementById('opzioniSummaryTotale').textContent = '€ ' + somma.toFixed(4);
+            var pt = document.getElementById('riepilogoTotale');
+            if (pt) pt.textContent = '€ ' + ((vals.paga_base || 0) + somma).toFixed(4);
+        }
+        var accCol = document.getElementById('riepilogoAccantonatoTfrCol');
+        var accEl = document.getElementById('riepilogoTfrAccumulato');
+        if (accCol && accEl) {
+            var mtVal2 = mtInput ? mtInput.value : 'INCLUSO';
+            var isSep = mtVal2 !== 'INCLUSO';
+            if (isSep) {
+                var _form = document.getElementById('dynamicForm');
+                var cumTfr = parseFloat(_form ? _form.getAttribute('data-tfr-accantonato') : '0') || 0;
+                accEl.textContent = '€ ' + cumTfr.toFixed(2);
+                accCol.style.display = '';
+            } else {
+                accCol.style.display = 'none';
+            }
+        }
+        _setIncluso('riepilogoPaga13ma', 'paga_13ma');
+        _setIncluso('riepilogoPagaFerie', 'paga_ferie');
+        _setIncluso('riepilogoPagaFestivi', 'paga_festivi');
+
+        var mmft = document.getElementById('val_minimo_mensile_ft');
+        if (mmft) mmft.textContent = (vals.minimo_mensile_ft || 0).toFixed(2);
+        var mmpt = document.getElementById('val_minimo_mensile_pt');
+        if (mmpt) mmpt.textContent = (vals.minimo_mensile_pt || 0).toFixed(2);
+        _r('riepilogoMinMensileFt', vals.minimo_mensile_ft ? '€ ' + Number(vals.minimo_mensile_ft).toFixed(2) : '—');
+        _r('riepilogoMinMensilePt', vals.minimo_mensile_pt ? '€ ' + Number(vals.minimo_mensile_pt).toFixed(2) : '—');
+
+        // Calcolo ore da budget / paga_oraria_totale
+        // Scatti anzianità
+        var scattoMensile = 0;
+        var calcBienni = 0;
+        var scattiCb = document.getElementById('scattiToggle');
+        if (scattiCb && scattiCb.checked) {
+            var dataAss = document.querySelector('input[name="data_assunzione"]');
+            if (dataAss && dataAss.value) {
+                var parts = dataAss.value.split('-');
+                if (parts.length === 3) {
+                    var d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    var oggi = new Date();
+                    var anni = oggi.getFullYear() - d.getFullYear();
+                    var m = oggi.getMonth() - d.getMonth();
+                    if (m < 0 || (m === 0 && oggi.getDate() < d.getDate())) anni--;
+                    var bienni = Math.min(Math.floor(anni / 2), 7);
+                    calcBienni = bienni;
+                    var valScatto = parseFloat(vals.valore_scatto) || 0;
+                    scattoMensile = bienni * valScatto;
+                    if (scattoMensile > 0) {
+                        items.push('<span style="color:#f59e0b;">&#9733;</span> Scatti anzianit\u00E0 (' + bienni + ' bienni) <span style="color:#8A8F98;">€ ' + scattoMensile.toFixed(4) + '</span>');
+                        somma += scattoMensile;
+                    }
+                }
+            }
+        }
+        // riepilogo scatti
+        var scattiAbilitati = scattiCb && scattiCb.checked;
+        var scattiVal = scattiAbilitati && scattoMensile > 0 ? scattoMensile.toFixed(4) : null;
+        _r('riepilogoScatti', scattiVal ? calcBienni + ' bienni x €' + Number(vals.valore_scatto||0).toFixed(4) + ' = €' + scattiVal : '—');
+
+        var budget = 0;
+        document.querySelectorAll('.progetto-checkbox:checked').forEach(function(cb) {
+            budget += parseFloat(cb.getAttribute('data-budget')) || 0;
+        });
+        var pagaTot = (vals.paga_base || 0) + somma;
+        var ore = (budget > 0 && pagaTot > 0) ? budget / pagaTot : 0;
+        var oreCeil = Math.ceil(ore);
+
+        var elOre = document.getElementById('riepilogoOre');
+        var elOreDet = document.getElementById('riepilogoOreDet');
+        var elOreCrono = document.getElementById('riepilogoOreCrono');
+        if (elOre) elOre.textContent = Math.ceil(ore);
+        if (elOreDet) elOreDet.textContent = ore.toFixed(4);
+        if (elOreCrono) {
+            var hh = Math.floor(ore);
+            var mm = Math.floor((ore - hh) * 60);
+            var ss = Math.floor(((ore - hh) * 60 - mm) * 60);
+            elOreCrono.textContent = hh + 'h ' + String(mm).padStart(2,'0') + 'm ' + String(ss).padStart(2,'0') + 's';
+        }
+
+        // Weekly values
+        var _oreSettPrecise = ore / 4.3333;
+        var _oreSettArrotondate = Math.ceil(_oreSettPrecise);
+        _r('riepilogoOreInps', oreCeil);
+        _r('riepilogoOreSettArrotondate', _oreSettArrotondate);
+        _r('riepilogoOreSettDet', _oreSettPrecise.toFixed(2));
+        _r('riepilogoOreSettInps', _oreSettArrotondate);
+        var _sH = Math.floor(_oreSettPrecise), _sM = Math.floor((_oreSettPrecise - _sH) * 60), _sS = Math.floor(((_oreSettPrecise - _sH) * 60 - _sM) * 60);
+        _r('riepilogoOreSettCrono', _sH + 'h ' + String(_sM).padStart(2,'0') + 'm ' + String(_sS).padStart(2,'0') + 's');
+        // Alert ore settimanali
+        var oreSett = oreCeil / 4.3333;
+        var soglia = Math.floor(parseFloat(form.getAttribute('data-soglia-ore'))) || 24;
+        var setOreSettLine = function(el) {
+            if (!el) return;
+            el.style.display = 'inline-block';
+            if (oreSett > soglia) {
+                el.textContent = '\u2B06 PI\u00D9 DI ' + soglia + ' ORE SETT.';
+                el.style.background = 'rgba(52,211,153,0.15)';
+                el.style.color = '#34d399';
+            } else {
+                el.textContent = '\u2B07 MENO DI ' + soglia + ' ORE SETT.';
+                el.style.background = 'rgba(248,113,113,0.15)';
+                el.style.color = '#f87171';
+            }
+        };
+        setOreSettLine(document.getElementById('riepilogoOreSett'));
+        setOreSettLine(document.getElementById('riepilogoOreSettLine'));
+        // Call hooks registered by other modules
+        var _hooks = window._opzioniAggiornaHooks || [];
+        for (var _hi = 0; _hi < _hooks.length; _hi++) {
+            try { _hooks[_hi](form); } catch(e) {}
+        }
+        } catch(e) { /* silent */ }
+    }

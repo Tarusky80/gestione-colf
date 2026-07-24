@@ -1,0 +1,325 @@
+    /* --- Testo Preimpostato Editor --- */
+    window.varCollapsed = true;
+    window.initVariabili = function() {
+        var c = document.getElementById('varContainer');
+        var caret = document.getElementById('varCaret');
+        if (!c || !caret) return;
+        c.style.display = 'none';
+        caret.style.transform = 'rotate(-90deg)';
+        window.varCollapsed = true;
+    };
+    window.toggleVariabili = function() {
+        var c = document.getElementById('varContainer');
+        var caret = document.getElementById('varCaret');
+        if (!c || !caret) return;
+        window.varCollapsed = !window.varCollapsed;
+        if (window.varCollapsed) {
+            c.style.display = 'none';
+            caret.style.transform = 'rotate(-90deg)';
+        } else {
+            c.style.display = '';
+            caret.style.transform = 'rotate(0deg)';
+        }
+    };
+
+    window.lastTargetTesto = 'id_corpo_testo';
+    window.inserisciVariabile = function(textareaId, varText) {
+        var targetId = window.lastTargetTesto || textareaId;
+        var editor = window.tinymce && tinymce.get(targetId);
+        if (editor) {
+            editor.insertContent(varText);
+            aggiornaAnteprimaTesto();
+            return;
+        }
+        var ta = document.getElementById(targetId);
+        if (!ta) { ta = document.getElementById(textareaId); targetId = textareaId; }
+        if (!ta) return;
+        var start = ta.selectionStart;
+        var end = ta.selectionEnd;
+        ta.value = ta.value.substring(0, start) + varText + ta.value.substring(end);
+        ta.selectionStart = ta.selectionEnd = start + varText.length;
+        ta.focus();
+        aggiornaAnteprimaTesto();
+    };
+    window.aggiornaAnteprimaTesto = function() {
+        var oggetto = document.getElementById('id_oggetto_titolo');
+        var corpo = document.getElementById('id_corpo_testo');
+        var note = document.getElementById('id_note_interne');
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (!corpo && !oggetto && !note) return;
+        var corpoVal = '';
+        var oggVal = '';
+        var noteVal = note ? note.value : '';
+        var editor = window.tinymce && tinymce.get('id_corpo_testo');
+        if (editor) corpoVal = editor.getContent();
+        else corpoVal = corpo ? corpo.value : '';
+        var editorOgg = window.tinymce && tinymce.get('id_oggetto_titolo');
+        if (editorOgg) oggVal = editorOgg.getContent();
+        else oggVal = oggetto ? oggetto.value : '';
+        var fd = new FormData();
+        fd.append('oggetto', oggVal);
+        fd.append('corpo', corpoVal);
+        fd.append('note', noteVal);
+        if (csrf) fd.append('csrfmiddlewaretoken', csrf.value);
+        fetch('/ajax/preview-testo/', { method:'POST', body:fd, headers:{'X-Requested-With':'XMLHttpRequest'} })
+            .then(function(r){ return r.json(); })
+            .then(function(data){
+                if (data.success) {
+                    var elOgg = document.getElementById('previewOggetto') || document.getElementById('anteprimaOggetto');
+                    var elCor = document.getElementById('previewCorpo') || document.getElementById('anteprimaCorpo');
+                    var elNote = document.getElementById('previewNote') || document.getElementById('anteprimaNote');
+                    if (elOgg) elOgg.innerHTML = data.oggetto || '';
+                    if (elCor) elCor.innerHTML = data.corpo || '';
+                    if (elNote) elNote.innerHTML = data.note || '';
+                }
+            })
+            .catch(function(){});
+    };
+
+{% verbatim %}
+    var VARS_MENU = [
+        {title:'Formattazione', vars:['{{CAMBIA_PAGINA}}','{{INIZIO_PAGINA}}','{{STOP_INIZIO_PAGINA}}','{{FINE_PAGINA}}','{{STOP_FINE_PAGINA}}','{{RIGA_VUOTA}}','{{LINEA}}','{{HR}}']},
+        {title:'Testata / Studio', vars:['{{LOGO_PROGRAMMA}}','{{LOGO_BUSTE_PAGA}}','{{NOME_STUDIO}}','{{DENOMINAZIONE_STUDIO}}','{{DATI_STUDIO}}','{{TELEFONO_STUDIO}}','{{EMAIL_STUDIO}}','{{IBAN_STUDIO}}','{{NOTE_FOOTER_MAIL}}','{{FIRMA_EMAIL}}']},
+        {title:'Datore / Lavoratore', vars:['{{NOME_DATORE}}','{{NOME_COGNOME_DATORE}}','{{CF_DATORE}}','{{INDIRIZZO_DATORE}}','{{PAESE_DATORE}}','{{MAIL_DATORE}}','{{TELEFONO_DATORE}}','{{NOME_LAVORATORE}}','{{NOME_COGNOME_LAVORATORE}}','{{CF_LAVORATORE}}','{{INDIRIZZO_LAVORATORE}}','{{PAESE_LAVORATORE}}']},
+        {title:'Contratto', vars:['{{TIPO_CONTRATTO}}','{{DATA_ASSUNZIONE}}','{{DATA_FINE}}','{{ORE_SETTIMANALI}}','{{ORE_MENSILI}}','{{ORE_INPS}}','{{CODICE_RAPPORTO_INPS}}','{{PARAMETRI_MINIMI}}','{{ENTE_BILATERALE}}','{{RETRIBUZIONE_TOTALE}}','{{CONTRIBUTI_MENSILI}}','{{CONTRIBUTI_TRIMESTRALI}}','{{CONTRIBUTI_ANNUALI}}']},
+        {title:'Beneficiario', vars:['{{NOME_BENEFICIARIO}}','{{NOME_COGNOME_BENEFICIARIO}}','{{CF_BENEFICIARIO}}','{{INDIRIZZO_BENEFICIARIO}}','{{COMUNE_BENEFICIARIO}}']},
+        {title:'Progetto', vars:['{{TIPO_PROGETTO}}','{{BUDGET_ANNUALE}}','{{BUDGET_MENSILE}}']},
+        {title:'CCNL / Retribuzione', vars:['{{LIVELLO_CCNL}}','{{PAGA_BASE}}','{{PAGA_ORARIA}}','{{APPLICA_SCATTI}}','{{PAGA_TFR}}','{{PAGA_13MA}}','{{PAGA_FESTIVI}}','{{PAGA_FERIE}}']},
+        {title:'Indennità', vars:['{{IND_CERTIF_QUALITA}}','{{IND_PIU_PERSONE_NC}}','{{IND_MINORI_NC}}','{{IND_PIU_PERSONE_QUAL}}','{{IND_MINORI_QUAL}}','{{IND_PIU_PERSONE_FT}}','{{IND_PIU_PERSONE_PT}}','{{IND_MINORI_FT}}']},
+        {title:'Notturno', vars:['{{NOTTURNO_ASSISTENZA}}','{{NOTTURNO_PRESENZA}}','{{NOTTURNO_BASE}}','{{NOTTURNO_20}}','{{NOTT_TFR}}','{{NOTT_13MA}}','{{NOTT_FESTIVI}}','{{NOTT_FERIE}}']},
+        {title:'Conviventi / Vitto', vars:['{{IND_FUNZIONE}}','{{CONVIVENTI_FT}}','{{CONVIVENTI_PT}}','{{IS_CONVIVENTE}}','{{CONVIVENZA}}','{{PAGA_PRANZO}}','{{PAGA_CENA}}','{{PAGA_ALLOGGIO}}']},
+        {title:'Ratei', vars:['{{RATEO_TFR}}','{{RATEO_13MA}}','{{RATEO_FESTIVI}}','{{RATEO_FERIE}}']},
+        {title:'Date', vars:['{{DATA_ODIERNA}}','{{MESE_CORRENTE}}','{{MESE_PRECEDENTE}}','{{MESE_SUCCESSIVO}}','{{ANNO_IN_CORSO}}']},
+        {title:'Includi da template', vars:['{{TOP_DOCUMENTO}}','{{FOOTER_DOCUMENTO}}']},
+        {title:'Altro', vars:['{{OPZIONI_ATTIVE}}','{{lista_allegati_multipli}}']},
+    ];
+
+    var PDF_EMOJI = [
+        {title:'Spunte / Croci', items:[
+            {text:'✅ OK',          code:'✅'},
+            {text:'☑ Sbarrato',    code:'☑'},
+            {text:'☐ Da fare',     code:'☐'},
+            {text:'❌ No',          code:'❌'},
+            {text:'☒ Vietato',     code:'☒'},
+        ]},
+        {title:'Simboli / Avvisi', items:[
+            {text:'⚠ Attenzione',  code:'⚠'},
+            {text:'ℹ Info',        code:'ℹ'},
+            {text:'❗ Importante',  code:'❗'},
+            {text:'❓ Dubbio',     code:'❓'},
+            {text:'★ Stella',      code:'★'},
+            {text:'♥ Cuore',       code:'♥'},
+        ]},
+        {title:'Frecce', items:[
+            {text:'→ Destra',      code:'→'},
+            {text:'← Sinistra',    code:'←'},
+            {text:'↑ Su',          code:'↑'},
+            {text:'↓ Giù',         code:'↓'},
+            {text:'➡ Grande',      code:'➡'},
+        ]},
+        {title:'Comunicazione', items:[
+            {text:'✉ Email',       code:'✉'},
+            {text:'📧 Messaggio',  code:'📧'},
+            {text:'☎ Telefono',   code:'☎'},
+            {text:'📞 Tel moderno',code:'📞'},
+            {text:'📱 Cellulare',  code:'📱'},
+        ]},
+        {title:'Documenti / Ufficio', items:[
+            {text:'📄 Documento',  code:'📄'},
+            {text:'📋 Appunti',    code:'📋'},
+            {text:'📌 Puntina',    code:'📌'},
+            {text:'✏ Matita',     code:'✏'},
+            {text:'🔒 Lucchetto',  code:'🔒'},
+            {text:'🔑 Chiave',     code:'🔑'},
+            {text:'🏠 Casa',       code:'🏠'},
+            {text:'💶 Euro',       code:'💶'},
+            {text:'💻 Computer',   code:'💻'},
+            {text:'🤤 Persona',    code:'🤤'},
+            {text:'👥 Persone',    code:'👥'},
+        ]},
+    ];
+
+    window.initTinyMCEEditor = function(selector, opts) {
+        opts = opts || {};
+        var ta = document.querySelector(selector);
+        if (!ta) return;
+        var id = ta.id || selector.replace('#', '');
+        var oldEditor = tinymce.get(id);
+        if (oldEditor) oldEditor.remove();
+        try {
+            tinymce.init({
+                selector: selector,
+                skin: 'oxide-dark',
+                content_css: 'dark',
+                height: opts.height || Math.max(ta.offsetHeight || 200, 200),
+                menubar: false,
+                plugins: 'lists link code table advlist hr',
+                toolbar: opts.toolbar || 'undo redo | fontsize forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright | bullist numlist outdent indent | table | link | vars pdfemoji | code removeformat',
+                fontsize_formats: '8pt 9pt 10pt 11pt 12pt 14pt 16pt 18pt 20pt 22pt 24pt 28pt 36pt',
+                setup: function(editor) {
+                    editor.on('change keyup', function() {
+                        var taEl = document.getElementById(id);
+                        if (taEl) taEl.value = editor.getContent();
+                        if (window.aggiornaAnteprimaTesto) window.aggiornaAnteprimaTesto();
+                    });
+                    editor.on('focus', function() {
+                        window.lastTargetTesto = id;
+                    });
+                    editor.ui.registry.addMenuButton('pdfemoji', {
+                        text: 'PDF Emoji',
+                        fetch: function(callback) {
+                            var items = [];
+                            PDF_EMOJI.forEach(function(g) {
+                                items.push({ type: 'separator' });
+                                items.push({ type: 'menuitem', text: g.title, disabled: true });
+                                g.items.forEach(function(e) {
+                                    items.push({ type: 'menuitem', text: e.text, onAction: function() { editor.insertContent(e.code); if (window.aggiornaAnteprimaTesto) window.aggiornaAnteprimaTesto(); } });
+                                });
+                            });
+                            items.shift();
+                            callback(items);
+                        }
+                    });
+                    editor.ui.registry.addMenuButton('vars', {
+                        text: '{{ Variabili }}',
+                        fetch: function(callback) {
+                            var items = [];
+                            VARS_MENU.forEach(function(g) {
+                                items.push({ type: 'separator' });
+                                items.push({ type: 'menuitem', text: g.title, disabled: true });
+                                g.vars.forEach(function(v) {
+                                    items.push({ type: 'menuitem', text: v, onAction: function() { editor.insertContent(v); if (window.aggiornaAnteprimaTesto) window.aggiornaAnteprimaTesto(); } });
+                                });
+                            });
+                            items.shift();
+                            callback(items);
+                        }
+                    });
+                },
+                content_style: [
+                    'body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; color: #e0e0e0; background: #0E0F11; line-height: 1.35; padding: 16px; font-weight: 400; }',
+                    'p { margin: 0; }',
+                    'strong, b { color: #ffffff; font-weight: 700; }',
+                    'ul, ol { margin: 4px 0 8px 0; padding-left: 24px; }',
+                    'li { margin-bottom: 2px; }',
+                    'table, td, th { background: transparent !important; border-color: #444; }',
+                ].join('\n'),
+            });
+        } catch(e) { mostraToast('Errore inizializzazione editor', false); }
+    };
+
+    window.initTinyMCE = function(attempt) {
+        attempt = attempt || 1;
+        if (typeof tinymce === 'undefined') {
+            if (attempt < 5) setTimeout(function() { initTinyMCE(attempt + 1); }, 200);
+            return;
+        }
+        initTinyMCEEditor('#id_corpo_testo');
+        if (document.getElementById('id_oggetto_titolo')) {
+            initTinyMCEEditor('#id_oggetto_titolo', { height: 150 });
+        }
+    };
+
+    window.toggleOggettoTesto = window.toggleOggettoTesto || function() {
+        var sel = document.getElementById('id_tipo');
+        var field = document.getElementById('oggettoField');
+        if (sel && field) {
+            var isMail = sel.value === 'MAIL';
+            field.style.display = isMail ? '' : 'none';
+            if (isMail) {
+                if (window.tinymce && !tinymce.get('id_oggetto_titolo') && document.getElementById('id_oggetto_titolo')) {
+                    if (window.initTinyMCEEditor) initTinyMCEEditor('#id_oggetto_titolo', { height: 150 });
+                }
+            } else {
+                if (window.tinymce) { var ed = tinymce.get('id_oggetto_titolo'); if (ed) ed.remove(); }
+            }
+        }
+        var s2 = document.getElementById('id_tipo');
+        if (s2 && !s2._testoToggleBound) {
+            s2.addEventListener('change', window.toggleOggettoTesto);
+            s2._testoToggleBound = true;
+        }
+    };
+
+    /* Editor testi: inserisci variabile nell'editor attivo */
+    window.editorInserisce = function(testo) {
+        if (window.inserisciVariabile) {
+            window.inserisciVariabile('id_corpo_testo', testo);
+        }
+    };
+
+    /* Editor testi: toggle preview flottante */
+    window.previewVisibile = false;
+    window.togglePreview = function() {
+        window.previewVisibile = !window.previewVisibile;
+        var pw = document.getElementById('previewFloating');
+        if (pw) {
+            pw.style.display = window.previewVisibile ? 'flex' : 'none';
+            pw.style.flexDirection = 'column';
+        }
+        var btn = document.getElementById('btnTogglePreview');
+        if (btn) btn.innerHTML = window.previewVisibile
+            ? '<i class="bi bi-eye-slash"></i> Nascondi'
+            : '<i class="bi bi-eye"></i> Anteprima';
+        if (btn) btn.style.fontWeight = '600';
+        if (window.previewVisibile && window.aggiornaAnteprimaTesto) aggiornaAnteprimaTesto();
+    };
+
+    /* Editor testi: genera PDF preview e apre in nuova tab */
+    window.downloadPreviewPdf = function() {
+        var tipoEl = document.getElementById('id_tipo');
+        var tipoVal = tipoEl ? tipoEl.value : '';
+        var csrf = document.querySelector('[name=csrfmiddlewaretoken]');
+        var corpoVal = '';
+        var oggVal = '';
+        var editor = window.tinymce && tinymce.get('id_corpo_testo');
+        if (editor) corpoVal = editor.getContent();
+        else { var ta = document.getElementById('id_corpo_testo'); if (ta) corpoVal = ta.value; }
+        var editorOgg = window.tinymce && tinymce.get('id_oggetto_titolo');
+        if (editorOgg) oggVal = editorOgg.getContent();
+        else { var taOgg = document.getElementById('id_oggetto_titolo'); if (taOgg) oggVal = taOgg.value; }
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/ajax/preview-testo-pdf/';
+        form.target = '_blank';
+        function addField(name, value) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = name; inp.value = value;
+            form.appendChild(inp);
+        }
+        if (csrf) addField('csrfmiddlewaretoken', csrf.value);
+        addField('tipo', tipoVal);
+        addField('oggetto', oggVal);
+        addField('corpo', corpoVal);
+        document.body.appendChild(form);
+        form.submit();
+        setTimeout(function() { document.body.removeChild(form); }, 100);
+    };
+
+    /* Editor testi: drag preview (solo header, evita accumulo handler) */
+    window._previewDragInited = false;
+    window.initPreviewDrag = function() {
+        if (window._previewDragInited) return;
+        var header = document.getElementById('previewHeader');
+        var win = document.getElementById('previewFloating');
+        if (!header || !win) return;
+        window._previewDragInited = true;
+        var _drag = false, _offX, _offY;
+        header.addEventListener('mousedown', function(e) {
+            if (e.target.closest('button')) return;
+            e.preventDefault();
+            _drag = true;
+            var rect = win.getBoundingClientRect();
+            _offX = e.clientX - rect.left;
+            _offY = e.clientY - rect.top;
+            win.style.right = 'auto';
+            win.style.bottom = 'auto';
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!_drag) return;
+            win.style.left = (e.clientX - _offX) + 'px';
+            win.style.top = (e.clientY - _offY) + 'px';
+        });
+        document.addEventListener('mouseup', function() { _drag = false; });
+    };
+{% endverbatim %}

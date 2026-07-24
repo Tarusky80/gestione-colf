@@ -1064,32 +1064,28 @@ content.innerHTML = '<div class="p-4 text-center c-red">Errore: ' + e.message + 
         // It will be updated by the patched aggiornaValoriOpzioni
     }
 
-    // Patch aggiornaValoriOpzioni to update badge progetti & riepilogo opzioni
-    var _baseAggiorna = window.aggiornaValoriOpzioni;
-    window.aggiornaValoriOpzioni = function() {
-        if (typeof _baseAggiorna === 'function') _baseAggiorna.apply(this, arguments);
-        var form = document.querySelector('#dynamicForm');
-        if (form) {
-            // Copy opzioni summary content into riepilogo header
-            var summary = form.querySelector('#opzioniSummary');
-            var riepilogoOpzioni = form.querySelector('#riepilogoOpzioni');
-            if (summary && riepilogoOpzioni) {
-                var summaryList = summary.querySelector('#opzioniSummaryList');
-                var summaryTotale = summary.querySelector('#opzioniSummaryTotale');
-                if (summaryList && summaryList.innerHTML.trim()) {
-                    riepilogoOpzioni.innerHTML = summaryList.innerHTML;
-                    if (summaryTotale) {
-                        riepilogoOpzioni.innerHTML += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:4px;font-size:12px;font-weight:700;color:#34d399;">Totale: ' + summaryTotale.textContent + '</div>';
-                    }
-                } else {
-                    riepilogoOpzioni.textContent = '—';
+    // Hook into aggiornaValoriOpzioni via listener pattern
+    window._opzioniAggiornaHooks = window._opzioniAggiornaHooks || [];
+    window._opzioniAggiornaHooks.push(function(form) {
+        if (!form) form = document.querySelector('#dynamicForm');
+        if (!form) return;
+        var summary = form.querySelector('#opzioniSummary');
+        var riepilogoOpzioni = form.querySelector('#riepilogoOpzioni');
+        if (summary && riepilogoOpzioni) {
+            var summaryList = summary.querySelector('#opzioniSummaryList');
+            var summaryTotale = summary.querySelector('#opzioniSummaryTotale');
+            if (summaryList && summaryList.innerHTML.trim()) {
+                riepilogoOpzioni.innerHTML = summaryList.innerHTML;
+                if (summaryTotale) {
+                    riepilogoOpzioni.innerHTML += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:4px;font-size:12px;font-weight:700;color:#34d399;">Totale: ' + summaryTotale.textContent + '</div>';
                 }
+            } else {
+                riepilogoOpzioni.textContent = '\u2014';
             }
-            // Ensure opzioni summary is visible when step 3 is shown
-            var step3Summary = form.querySelector('[data-step="3"] #opzioniSummary');
-            if (step3Summary) step3Summary.style.display = 'block';
         }
-    };
+        var step3Summary = form.querySelector('[data-step="3"] #opzioniSummary');
+        if (step3Summary) step3Summary.style.display = 'block';
+    });
 
     // ===== DEFAULT SELECTIONS =====
     function setDefaultSelections(form) {
