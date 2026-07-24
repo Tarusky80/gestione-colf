@@ -76,7 +76,7 @@
           {% for log in logs %}
           <tr style="border-bottom:1px solid #1E1F23;">
             <td class="td-pad" style="color:#EDEDED;white-space:nowrap;">{{ log.data_creazione|date:"d/m/Y H:i" }}</td>
-            <td class="td-pad" style="color:#EDEDED;">
+            <td  class="td-pad c-text">
               {% if log.contratto.datore %}{{ log.contratto.datore.nome_cognome }}{% endif %} → {% if log.contratto.lavoratore %}{{ log.contratto.lavoratore.nome_cognome }}{% endif %}
             </td>
             <td class="td-pad">

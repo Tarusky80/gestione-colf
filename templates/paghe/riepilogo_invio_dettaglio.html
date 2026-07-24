@@ -36,19 +36,19 @@
     <div class="col-md-3">
         <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
             <div class="small text-secondary mb-1">Creato da</div>
-            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.creato_da|default:"—" }}</div>
+            <div  class="fw-bold c-text">{{ riepilogo.creato_da|default:"—" }}</div>
         </div>
     </div>
     <div class="col-md-2">
         <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
             <div class="small text-secondary mb-1">Periodo</div>
-            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.get_mese_display }} {{ riepilogo.anno }}</div>
+            <div  class="fw-bold c-text">{{ riepilogo.get_mese_display }} {{ riepilogo.anno }}</div>
         </div>
     </div>
     <div class="col-md-2">
         <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
             <div class="small text-secondary mb-1">Totale</div>
-            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.totale_contratti }}</div>
+            <div  class="fw-bold c-text">{{ riepilogo.totale_contratti }}</div>
         </div>
     </div>
     <div class="col-md-2">
@@ -67,14 +67,14 @@
     <div class="col-md-1">
         <div class="p-3" style="background:#17181C;border-radius:8px;border:1px solid #27282D;">
             <div class="small text-secondary mb-1">Mail</div>
-            <div class="fw-bold" style="color:#EDEDED;">{{ riepilogo.modello_email.codice }}</div>
+            <div  class="fw-bold c-text">{{ riepilogo.modello_email.codice }}</div>
         </div>
     </div>
     {% endif %}
 </div>
 
 <div class="custom-table-container" style="background:#17181C;padding:20px;border-radius:8px;">
-    <h6 class="fw-bold mb-3" style="color:#EDEDED;">Dettaglio contratti</h6>
+    <h6  class="fw-bold mb-3 c-text">Dettaglio contratti</h6>
     <table class="table custom-table">
         <thead>
             <tr>
@@ -104,7 +104,7 @@
                 </td>
                 <td class="text-center">
                     {% if entry.documento_pk %}
-                    <i class="stampa-badge bi {% if entry.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ entry.documento_pk }}" title="{% if entry.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
+                    <i class="stampa-badge bi {% if entry.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ entry.documento_pk }}" title="{% if entry.stampato %}Stampato{% else %}Non stampato{% endif %}" class="fs-16"></i>
                     {% else %}
                     <span  class="text-muted fs-12">—</span>
                     {% endif %}

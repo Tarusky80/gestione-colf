@@ -446,7 +446,7 @@ function renderMalattia(d) {
   if (d.giorni_pagati > 0 && d.contributi_inps > 0) {
     html += '<div style="margin-top:10px;padding:10px 14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;font-size:10px;color:#8A8F98;line-height:1.5;">';
     html += '<div style="font-size:9px;font-weight:700;color:#f59e0b;margin-bottom:3px;"><i class="bi bi-calculator me-1"></i>Contributi INPS su malattia</div>';
-    html += '<span style="color:#EDEDED;">' + d.ore_pagate.toFixed(2) + ' h</span> retribuite \u00d7 aliquota contributiva = <span style="color:#f59e0b;font-weight:600;">\u20AC ' + d.contributi_inps.toFixed(2) + '</span>';
+    html += '<span class="c-text">' + d.ore_pagate.toFixed(2) + ' h</span> retribuite \u00d7 aliquota contributiva = <span style="color:#f59e0b;font-weight:600;">\u20AC ' + d.contributi_inps.toFixed(2) + '</span>';
     html += ' — I contributi INPS si pagano solo sulle ore effettivamente retribuite del periodo malattia.';
     html += '</div>';
   }

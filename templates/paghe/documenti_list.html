@@ -178,7 +178,7 @@
         </td>
         <td class="c-muted fs-12">{{ d.file_name|truncatechars:30 }}<br>{% if d.file_size > 1024 %}{{ d.file_size|filesizeformat }}{% else %}{{ d.file_size }} bytes{% endif %}</td>
         <td class="text-center">
-          <i class="stampa-badge bi {% if d.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ d.pk }}" title="{% if d.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
+          <i class="stampa-badge bi {% if d.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ d.pk }}" title="{% if d.stampato %}Stampato{% else %}Non stampato{% endif %}" class="fs-16"></i>
         </td>
         <td style="font-size:12px;white-space:nowrap;">{{ d.creato_il|date:"d/m/Y H:i" }}</td>
         <td>
@@ -339,7 +339,7 @@ function cercaContrattoCollega(q) {
       if (d.contratti && d.contratti.length) {
         d.contratti.forEach(function(c) {
           html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:6px;padding:8px 12px;margin-bottom:4px;cursor:pointer;" onclick="selezionaContrattoCollega(' + c.pk + ',\'' + c.datore.replace(/'/g,"\\'") + ' - ' + c.lavoratore.replace(/'/g,"\\'") + '\')">';
-          html += '<strong style="color:#EDEDED;">' + c.datore + ' &rarr; ' + c.lavoratore + '</strong>';
+          html += '<strong class="c-text">' + c.datore + ' &rarr; ' + c.lavoratore + '</strong>';
           html += '<br><small class="c-muted">#' + c.pk + ' ' + (c.codice_rapporto_inps || '') + '</small>';
           html += '</div>';
         });

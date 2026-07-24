@@ -175,7 +175,7 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                 </td>
                 <td  class="text-center nowrap">
                     {% if b.documento %}
-                    <i class="stampa-badge bi {% if b.documento.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ b.pk }}" title="{% if b.documento.stampato %}Stampato{% else %}Non stampato{% endif %}" style="font-size:16px;"></i>
+                    <i class="stampa-badge bi {% if b.documento.stampato %}bi-printer-fill text-warning{% else %}bi-printer text-muted{% endif %}" data-pk="{{ b.pk }}" title="{% if b.documento.stampato %}Stampato{% else %}Non stampato{% endif %}" class="fs-16"></i>
                     {% else %}
 <span class="text-muted fs-12">—</span>
                     {% endif %}
@@ -277,7 +277,7 @@ function generaPdfBusta(bustaPk, btn) {
             pdfCell.innerHTML = `<a href="#" onclick="event.preventDefault();apriNelPannello('${d.file_url}', ${d.documento_pk})" class="text-decoration-none" title="Apri PDF"><i class="bi bi-file-pdf" style="color:#ef4444;font-size:18px;"></i></a>`;
             
             const stampaCell = row.querySelector('td:nth-child(11)');
-            stampaCell.innerHTML = `<i class="stampa-badge bi bi-printer text-muted" data-pk="${bustaPk}" title="Non stampato" style="font-size:16px;"></i>`;
+            stampaCell.innerHTML = `<i class="stampa-badge bi bi-printer text-muted" data-pk="${bustaPk}" title="Non stampato" class="fs-16"></i>`;
         } else {
             mostraToast(d.errore || 'Errore generazione PDF', false);
         }

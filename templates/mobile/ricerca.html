@@ -23,7 +23,7 @@
                 <div class="m-list-title">{{ d.nome_cognome }}</div>
                 <div class="m-list-sub">{{ d.comune|default:"" }}{% if d.codice_fiscale %} · {{ d.codice_fiscale }}{% endif %}</div>
             </div>
-            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+            <span class="c-dim"><i class="bi bi-chevron-right"></i></span>
         </div>
     </a>
     {% endfor %}
@@ -39,7 +39,7 @@
                 <div class="m-list-title">{{ l.nome_cognome }}</div>
                 <div class="m-list-sub">{{ l.comune|default:"" }}{% if l.codice_fiscale %} · {{ l.codice_fiscale }}{% endif %}</div>
             </div>
-            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+            <span class="c-dim"><i class="bi bi-chevron-right"></i></span>
         </div>
     </a>
     {% endfor %}
@@ -55,7 +55,7 @@
                 <div class="m-list-title">{{ c.lavoratore.nome_cognome }} — {{ c.datore.nome_cognome }}</div>
                 <div class="m-list-sub">{{ c.parametri_minimi.descrizione_corta|default:"" }}</div>
             </div>
-            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+            <span class="c-dim"><i class="bi bi-chevron-right"></i></span>
         </div>
     </a>
     {% endfor %}
@@ -71,7 +71,7 @@
                 <div class="m-list-title">{{ b.nome_cognome }}</div>
                 <div class="m-list-sub">{{ b.comune|default:"" }}{% if b.codice_fiscale %} · {{ b.codice_fiscale }}{% endif %}</div>
             </div>
-            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+            <span class="c-dim"><i class="bi bi-chevron-right"></i></span>
         </div>
     </a>
     {% endfor %}
@@ -87,7 +87,7 @@
                 <div class="m-list-title">{{ p.beneficiario.nome_cognome }} — {{ p.tipo.nome|default:"?" }}</div>
                 <div class="m-list-sub">{{ p.data_inizio|date:"d/m/Y"|default:"" }}{% if p.data_fine %} → {{ p.data_fine|date:"d/m/Y" }}{% endif %}</div>
             </div>
-            <span style="color:var(--text-dim);"><i class="bi bi-chevron-right"></i></span>
+            <span class="c-dim"><i class="bi bi-chevron-right"></i></span>
         </div>
     </a>
     {% endfor %}

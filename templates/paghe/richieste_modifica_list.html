@@ -121,9 +121,9 @@ function apriDettaglioRichiesta(el) {
     var contrattoNome = tr.getAttribute('data-contratto');
 
     var html = '<div class="mb-10"><span class="c-gray">Tipo:</span> <span class="c-text fw-6">' + tipo + '</span></div>';
-    html += '<div class="mb-10"><span class="c-gray">Datore:</span> <span style="color:#EDEDED;">' + datoreNome + '</span></div>';
-    html += '<div class="mb-10"><span class="c-gray">Contratto:</span> <span style="color:#EDEDED;">' + contrattoNome + '</span></div>';
-    html += '<div class="mb-10"><span class="c-gray">Campo:</span> <span style="color:#EDEDED;">' + etichetta + '</span></div>';
+    html += '<div class="mb-10"><span class="c-gray">Datore:</span> <span class="c-text">' + datoreNome + '</span></div>';
+    html += '<div class="mb-10"><span class="c-gray">Contratto:</span> <span class="c-text">' + contrattoNome + '</span></div>';
+    html += '<div class="mb-10"><span class="c-gray">Campo:</span> <span class="c-text">' + etichetta + '</span></div>';
 
     if (attuale) {
         html += '<div style="margin-bottom:10px;padding:8px 10px;background:#09090B;border:1px solid #27282D;border-radius:8px;">';

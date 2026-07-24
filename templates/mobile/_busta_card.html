@@ -1,8 +1,8 @@
 <div class="m-swipe-wrap" data-busta="{{ b.pk }}">
     <div class="m-swipe-actions">
         {% if b.documento %}
-        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriPDF({{ b.documento.pk }})"><i class="bi bi-file-pdf" style="font-size:18px;"></i></button>
-        <button class="m-swipe-btn m-swipe-btn-warning" onclick="condividiPDF({{ b.documento.pk }}, '{{ b.contratto.lavoratore.nome_cognome|escapejs }}')"><i class="bi bi-share" style="font-size:18px;"></i></button>
+        <button class="m-swipe-btn m-swipe-btn-success" onclick="apriPDF({{ b.documento.pk }})"><i  class="bi bi-file-pdf fs-18"></i></button>
+        <button class="m-swipe-btn m-swipe-btn-warning" onclick="condividiPDF({{ b.documento.pk }}, '{{ b.contratto.lavoratore.nome_cognome|escapejs }}')"><i  class="bi bi-share fs-18"></i></button>
         {% endif %}
     </div>
     <div class="m-swipe-card m-card m-card-top-busta" href="#" onclick="apriDettaglioBusta(this, {{ b.pk }})">

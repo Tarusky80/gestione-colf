@@ -222,7 +222,9 @@
 - **✅ Secondo batch**: v3.py con spazio fisso + 50+ nuovi pattern su 31 file - 176 style rimossi
   - Nuove classi in utils.css: `.d-none-custom`, `.flex-fill-min`, `.flex-center-badge`, `.inline-flex-tag`, `.search-icon-floating`, `.btn-outline-accent/default`, `.btn-icon-md`, `.btn-tag-sm`, `.modal-header-dark`, `.rounded-*`, `.fs-*-*`, `.c-text/accent/green/red/amber/dim`, `.border-*-dim`, `.shadow-heavy`, `.label-uppercase-*`, `.mb-10`, `.w-40-p`, `.h-6`, `.overflow-hidden`, ecc. (~70 classi)
   - `manage.py check` — 0 errori, grep `\wclass="` — 0 match
-- **Rimangono ~2.463 style=inline** in ~80 file (~46% convertiti totali: 2081/4544)
+- **✅ Quarto batch**: v3.py con nuovi pattern (colori, font-size, position: relative) - 61 style rimossi (totale ~2402)
+  - ~~Clausola di chiusura~~: rendimento troppo calo, ~2402 rimasti ma pattern uno-off o in JS
+  - **Chiuso Task 15** - 2142/4544 convertiti (~47%)
 
 ## Comandi utili
 ```powershell
