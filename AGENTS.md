@@ -147,7 +147,14 @@
 - ✅ `aria-hidden="true"` su ~200 icone decorative (fix JS globale)
 - ✅ Elementi `<div onclick>` convertiti in `<button type="button">` o `role="button"` (~50 occorrenze in 19 file)
 
-### 19. 🌐 Internazionalizzazione (i18n)
+### 21. ☁️ Deploy su PythonAnywhere + Supabase
+- PythonAnywhere per ospitare Django online
+- Supabase PostgreSQL come database cloud
+- Switch configurabile DB locale (SQLite) / cloud (Supabase) via `config.json`
+- Media files e DocumentiArchiviati da gestire (Storage S3 o percorso assoluto)
+- Necessario: migrazioni testate su PostgreSQL, dipendenze psycopg2, configurazione ambiente
+
+### 22. 🌐 Internazionalizzazione (i18n)
 - Tutte le stringhe hardcoded in italiano
 - Aggiungere `{% trans %}` / `{% blocktranslate %}` per futura traduzione
 
