@@ -23,7 +23,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <div>
-        <h1 class="h3 fw-bold mb-1" style="color:#EDEDED;"><i class="bi bi-piggy-bank me-2" style="color:#fbbf24;"></i>BUSTA TFR</h1>
+        <h1 class="h3 fw-bold mb-1" style="color:#EDEDED;"><i class="bi bi-piggy-bank me-2 c-amber"></i>BUSTA TFR</h1>
         <p class="text-secondary small mb-0">Liquidazione trattamento di fine rapporto</p>
       </div>
       <div class="d-flex gap-2">
@@ -378,11 +378,11 @@ window.renderTfr = function(d) {
 
   html += '<hr style="width:60%;border-color:rgba(251,191,36,0.15);margin:8px 0;">';
 
-  html += '<div style="font-size:10px;color:#8A8F98;">Rateo mensile</div>';
+  html += '<div class="fs-10 c-muted">Rateo mensile</div>';
   html += '<div style="font-size:16px;font-weight:700;color:#EDEDED;margin-bottom:10px;">\u20AC ' + d.tfr_mensile.toFixed(4) + '</div>';
 
-  html += '<div style="font-size:10px;color:#8A8F98;">Periodo</div>';
-  html += '<div style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.data_inizio + ' â€“ ' + d.data_fine + '</div>';
+  html += '<div class="fs-10 c-muted">Periodo</div>';
+  html += '<div class="c-13-b">' + d.data_inizio + ' â€“ ' + d.data_fine + '</div>';
 
   html += '</div>';
 

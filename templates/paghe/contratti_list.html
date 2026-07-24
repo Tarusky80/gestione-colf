@@ -510,13 +510,13 @@ function apriDocumentiContratto(pk) {
         .then(function(d) {
             if (!body) return;
             if (d.documenti.length === 0) {
-                body.innerHTML = '<div class="text-center py-4" style="color:#8A8F98;"><i class="bi bi-inbox" style="font-size:32px;display:block;margin-bottom:8px;opacity:0.4;color:#5C5F66;"></i>Nessun documento associato a questo contratto.</div>';
+                body.innerHTML = '<div class="text-center py-4 c-muted"><i class="bi bi-inbox" style="font-size:32px;display:block;margin-bottom:8px;opacity:0.4;color:#5C5F66;"></i>Nessun documento associato a questo contratto.</div>';
                 return;
             }
             var html = '<div class="list-group">';
             d.documenti.forEach(function(doc) {
                 html += '<div class="list-group-item" style="background:#0E0F11;border:1px solid #27282D;border-radius:8px;margin-bottom:6px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">';
-                html += '<div><strong class="c-text">' + doc.tipo + '</strong><br><small style="color:#8A8F98;">' + doc.titolo + ' &middot; ' + doc.creato_il + '</small></div>';
+                html += '<div><strong class="c-text">' + doc.tipo + '</strong><br><small class="c-muted">' + doc.titolo + ' &middot; ' + doc.creato_il + '</small></div>';
                 html += '<div class="d-flex gap-1">';
 html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" target="_blank" class="btn btn-sm btn-ghost-info btn-doc-sm"><i class="bi bi-eye"></i></a>';
 html += '<a href="/ajax/vedi-documento/' + doc.pk + '/" download class="btn btn-sm btn-ghost-success btn-doc-sm"><i class="bi bi-download"></i></a>';

@@ -189,7 +189,7 @@
 ## Session Log — 2026-07-21 (II)
 - **Fix regressione d-none → style="display:none"**: ripristinato `style="display:none"` su 4 file (calcoli_inverso, calcoli_malattia, calcoli_notturno, stampe_invii) per elementi togglati via JS `style.display` (Bootstrap `d-none` usava `!important`, bloccava lo show)
 - **Select scuri uniformi**: regola globale `select, select.form-control, select.form-select { background: #09090B; color: #EDEDED; font-size: 13px; }` in `utils.css`, rimosso `!important` (specificità sufficiente vs Bootstrap)
-- **Style→classi rimasti**: ~3410 (1309 convertiti finora)
+- **Style→classi rimasti**: ~3410 (1309 convertiti finora; +541 = 1850 convertiti totali, ~2784 rimasti)
 - `manage.py check` OK, 31/31 test OK
 - **Commit**: `3e9c4b8` (fix d-none), `e9cb52a` (select scuri), `152426a` (font-size select, rimossi !important)
 
@@ -200,7 +200,7 @@
   - `app_documents.html`: PDF preview flottante, documenti template (trascina/ridimensiona/ricerca), TinyMCE init, form template composizione, email preview, ModelliDocumentale
   - Inclusione via `{% include %}` — supporta variabili Django (`{{ }}`, `{% url %}`)
 - 31/31 test OK
-- **Commit**: prossimo
+- **Commit**: `7411a81`
 
 ## Session Log — 2026-07-23 (II)
 - **✅ Grafici spostati su pagina /charts/ dedicata**:
@@ -210,6 +210,16 @@
   - Aggiunta route `/charts/` in `urls.py` (name: `charts_view`)
   - Fix `{% extends %}` primo tag in `charts.html`
   - Pulsante "Grafici" dalla sezione "Grafici e Report" in basso nella dashboard, ben visibile (`btn-ghost-primary`)
+- `manage.py check` — 0 errori
+
+## Session Log — 2026-07-24
+- **✅ style→classi CSS batch su 27 file**: ~541 style=inline rimossi tramite script Python (`convert_styles_v3.py`)
+  - Principali: `ajax_form_contratto` 281→144 (-49%), `calcoli_conviventi_ccnl` 158→58 (-63%), `calcoli_list` 156→58 (-63%), `calcoli_non_convivente` 157→59 (-62%)
+  - 20+ nuove classi utility in `utils.css`: `.h-4`, `.border-bottom-dim`, `.border-top-dark`, `.flex-wrap-gap`, `.mr-3/6`, `.c-accent-icon`, `.fs-11-c-muted`/`-block`, ecc.
+- **❌ Bug script**: sostituzione `style→class` senza classe preesistente perdeva lo spazio → `<divclass="...">` in ~23 file
+  - **Fix**: `base.html` ripristinato da backup, fix batch `fix_missing_space.py` applicato a tutti i file
+  - Lezione: la regex `\s*style=` consuma lo spazio prima di `style`, va sempre preposto uno spazio nella sostituzione ` class="..."`
+- **Rimangono ~2.784 style=inline** in ~80 file
 - `manage.py check` — 0 errori
 
 ## Comandi utili

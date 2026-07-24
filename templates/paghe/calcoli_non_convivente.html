@@ -32,7 +32,7 @@
         <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" id="btnCcnlOcchio" disabled>
             <i class="bi bi-eye me-1"></i> CCNL
         </button>
-        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary text-decoration-none">
             <i class="bi bi-journal-text me-1"></i> Archivio Buste
         </a>
         <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
@@ -46,7 +46,7 @@
         <button type="button" class="btn btn-sm btn-ghost-primary" onclick="downloadPdf()" id="btnPdf" disabled>
             <i class="bi bi-file-pdf me-1"></i> PDF
         </button>
-        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap" style="margin-right:4px;">
+        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap mr-4">
             <input type="checkbox" id="chkAllegaLul" class="c-checkbox"> Allega LUL
         </label>
         <button type="button" class="btn btn-sm btn-ghost-warning" onclick="stampaBustaCalcolo(this)" id="btnStampa" disabled>
@@ -59,7 +59,7 @@
 
 <div class="p-2 mb-3 controls-card" style="display:none;" id="controlsContainer">
     <div class="d-flex align-items-center flex-wrap gap-3 c-11-m">
-        <span class="c-9-up-fw" style="color:#5C5F66;">Vitto/Alloggio</span>
+        <span class="c-9-up-fw c-gray">Vitto/Alloggio</span>
         <span class="toggle-item">
             <span>Pranzo</span>
             <label class="toggle-switch conv-toggle-small">
@@ -89,7 +89,7 @@
 
         <span class="vr"></span>
 
-        <span class="c-9-up-fw" style="color:#5C5F66;">Indennità</span>
+        <span class="c-9-up-fw c-gray">Indennità</span>
         <span class="toggle-item">
             <span>Funzione</span>
             <label class="toggle-switch conv-toggle-small">
@@ -129,14 +129,14 @@
             </label>
         </span>
         <span class="toggle-item">
-            <span style="color:#f87171;">TFR Separato</span>
+            <span class="c-red">TFR Separato</span>
             <label class="toggle-switch conv-toggle-small">
                 <input type="checkbox" id="rateoTfrSeparato" onchange="selezionaContratto();aggiornaTfrCalcoli()">
                 <span class="toggle-slider" style="border-color:#f8717166;"></span>
             </label>
         </span>
         <span class="toggle-item">
-            <span style="color:#fbbf24;">Anticipo 70%</span>
+            <span class="c-amber">Anticipo 70%</span>
             <label class="toggle-switch conv-toggle-small">
                 <input type="checkbox" id="rateoAnticipo70" onchange="selezionaContratto()">
                 <span class="toggle-slider" style="border-color:#fbbf2466;"></span>
@@ -284,7 +284,7 @@ window.selezionaContratto = function() {
     .then(function(d) {
         document.getElementById('bustaLoading').style.display = 'none';
         if (d.errore) {
-            document.getElementById('bustaContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
+            document.getElementById('bustaContent').innerHTML = '<div class="p-4 text-center badge-status badge-status-error"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
             return;
         }
         renderBustaNonConvivente(d);
@@ -328,7 +328,7 @@ window.selezionaContratto = function() {
     })
     .catch(function(e) {
         document.getElementById('bustaLoading').style.display = 'none';
-        document.getElementById('bustaContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
+        document.getElementById('bustaContent').innerHTML = '<div class="p-4 text-center badge-status badge-status-error"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
     });
 };
 
@@ -344,25 +344,25 @@ function renderBustaNonConvivente(d) {
     var tipoLabel = 'Non Convivente';
     if (d.tipo_calcolo === 'SOSTITUZIONE') tipoLabel = 'Sostituzione (Art. 14 c.9)';
 
-    var html = '<div class="class="card-dark" style="overflow:hidden;"">';
+    var html = '<div class="class="card-dark overflow-hidden"">';
 
     // Header
-    html += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
-    html += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:4px;"><i class="bi bi-person me-1"></i>Busta Non Convivente \u2014 ' + d.mese_nome + ' ' + d.anno + ' <span style="display:inline-block;margin-left:6px;padding:1px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(168,85,247,0.15);color:#a855f7;">' + tipoLabel + '</span></div>';
+    html += '<div class="p-24 border-bottom-dark">';
+    html += '<div class="c-10-up mb-4"><i class="bi bi-person me-1"></i>Busta Non Convivente \u2014 ' + d.mese_nome + ' ' + d.anno + ' <span style="display:inline-block;margin-left:6px;padding:1px 8px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(168,85,247,0.15);color:#a855f7;">' + tipoLabel + '</span></div>';
     html += '<div class="row g-2 mt-2">';
-    html += '<div class="col-md-6"><span class="label-busta">Datore</span><span class="value-busta">' + esc(d.datore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.datore_indirizzo) + (d.datore_comune ? ' - ' + esc(d.datore_comune) : '') + '</span></div>';
-    html += '<div class="col-md-6"><span class="label-busta">Lavoratore</span><span class="value-busta">' + esc(d.lavoratore) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.lavoratore_indirizzo) + (d.lavoratore_comune ? ' - ' + esc(d.lavoratore_comune) : '') + '</span></div>';
+    html += '<div class="col-md-6"><span class="label-busta">Datore</span><span class="value-busta">' + esc(d.datore) + '</span><span class="fs-11 c-muted d-block">' + esc(d.datore_indirizzo) + (d.datore_comune ? ' - ' + esc(d.datore_comune) : '') + '</span></div>';
+    html += '<div class="col-md-6"><span class="label-busta">Lavoratore</span><span class="value-busta">' + esc(d.lavoratore) + '</span><span class="fs-11 c-muted d-block">' + esc(d.lavoratore_indirizzo) + (d.lavoratore_comune ? ' - ' + esc(d.lavoratore_comune) : '') + '</span></div>';
     html += '<div class="col-md-3"><span class="label-busta">Data inizio</span><span class="value-busta">' + esc(d.data_assunzione) + '</span></div>';
     html += '<div class="col-md-3"><span class="label-busta">Tipo contratto</span><span class="value-busta">' + esc(d.tipo_contratto) + '</span></div>';
     var _cH = Math.floor(d.ore_mensili), _cM = Math.floor((d.ore_mensili - _cH) * 60), _cS = Math.floor(((d.ore_mensili - _cH) * 60 - _cM) * 60);
     var _oreCrono = _cH + 'h ' + String(_cM).padStart(2,'0') + 'm ' + String(_cS).padStart(2,'0') + 's';
     var _sA = Math.ceil(d.ore_settimanali);
-    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:2px;">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + d.ore_inps + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI ARROTONDATE</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">(INPS: ' + d.ore_inps + ' h)</span></div><div><span style="font-size:12px;font-weight:500;color:#8A8F98;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI DECIMALI</span></div><div><span style="font-size:12px;font-weight:600;color:#06b6d4;">' + _oreCrono + '</span><span style="font-size:9px;color:#8A8F98;margin-left:3px;">MENSILI CRONOMETRO</span></div><div style="border-top:1px solid #27282D;margin:2px 0;"></div><div><span style="font-size:9px;color:#8A8F98;">Ore settimanali</span> <span style="font-size:13px;font-weight:600;color:#10b981;">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
+    html += '<div class="col-md-4"><span class="label-info mb-2">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span class="fs-13 fw-6 c-cyan">' + d.ore_inps + ' h</span><span class="fs-9 c-muted ml-3">MENSILI ARROTONDATE</span><span class="fs-9 c-muted ml-3">(INPS: ' + d.ore_inps + ' h)</span></div><div><span class="fs-12 fw-5 c-muted">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="fs-9 c-muted ml-3">MENSILI DECIMALI</span></div><div><span class="fs-12 fw-6 c-cyan">' + _oreCrono + '</span><span class="fs-9 c-muted ml-3">MENSILI CRONOMETRO</span></div><div class="border-top-dark my-1"></div><div><span class="fs-9 c-muted">Ore settimanali</span> <span class="fs-13 fw-6 c-green2">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
     html += '<div class="col-md-3"><span class="label-busta">Settimane mensili</span><span class="value-busta">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
-    html += '<div class="col-md-3"><span class="label-busta">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span class="fs-11 c-muted d-block">' + esc(d.descrizione_corta) + '</span></div>';
     html += '<div class="col-md-3"><span class="label-busta">Codice Rapporto</span><span class="value-busta-md">' + esc(d.codice_rapporto_inps) + '</span></div>';
-    html += '<div class="col-md-3"><span class="label-busta">Paga effettiva INPS</span><span class="value-busta-md">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
-    html += '<div class="col-md-3"><span class="label-busta">Paga applicata</span><span class="value-busta-md">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_applicata_mensile.toFixed(2) + '/mese)</span></span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Paga effettiva INPS</span><span class="value-busta-md">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span class="fs-11 c-muted fw-4">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
+    html += '<div class="col-md-3"><span class="label-busta">Paga applicata</span><span class="value-busta-md">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h <span class="fs-11 c-muted fw-4">(\u20AC' + d.paga_applicata_mensile.toFixed(2) + '/mese)</span></span></div>';
 
     // Progetti collegati
     if (d.progetti && d.progetti.length > 0) {
@@ -385,21 +385,21 @@ function renderBustaNonConvivente(d) {
     html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#34d399;font-weight:700;margin-bottom:8px;"><i class="bi bi-currency-euro me-1"></i>Retribuzione Lorda</div>';
 
     // Paga base
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">Paga base <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+    html += '<span class="c-12">Paga base <span class="c-11-m">(\u20AC' + d.paga_base.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.paga_base.totale.toFixed(2) + '</span></div>';
 
     // Indennità
     for (var i = 0; i < d.indennita.length; i++) {
         var ind = d.indennita[i];
-        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-        html += '<span style="font-size:12px;color:#EDEDED;">' + esc(ind.label) + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
+        html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+        html += '<span class="c-12">' + esc(ind.label) + ' <span class="c-11-m">(\u20AC' + ind.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h)</span></span>';
         html += '<span class="value-busta">\u20AC ' + ind.totale.toFixed(2) + '</span></div>';
     }
 
     // Scatti
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">Scatti anzianit\u00e0 <span style="color:#8A8F98;font-size:11px;">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+    html += '<span class="c-12">Scatti anzianit\u00e0 <span class="c-11-m">(' + esc(d.scatti_anzianita.dettaglio) + ')</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.scatti_anzianita.valore.toFixed(2) + '</span></div>';
 
     // Ratei pagati
@@ -407,8 +407,8 @@ function renderBustaNonConvivente(d) {
         var rp = d.ratei_pagati[i];
         var calcNote = rp.incluso ? 'Incluso nel lordo mensile' : (rp.totale > 0 ? 'Da corrispondere a fine rapporto' : '');
         var calcLabel = calcNote ? '<br><span style="font-size:10px;color:#8A8F98;font-style:italic;">' + calcNote + '</span>' : '';
-        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-        html += '<span style="font-size:12px;color:#EDEDED;">' + esc(rp.label) + (rp.incluso ? ' (*)' : '') + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h = \u20AC' + (rp.orario * d.ore_mensili).toFixed(2) + ')</span>' + calcLabel + '</span>';
+        html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+        html += '<span class="c-12">' + esc(rp.label) + (rp.incluso ? ' (*)' : '') + ' <span class="c-11-m">(\u20AC' + rp.orario.toFixed(4) + ' \u00d7 ' + d.ore_mensili + 'h = \u20AC' + (rp.orario * d.ore_mensili).toFixed(2) + ')</span>' + calcLabel + '</span>';
         html += '<span class="value-busta">\u20AC ' + rp.totale.toFixed(2) + '</span></div>';
     }
 
@@ -416,8 +416,8 @@ function renderBustaNonConvivente(d) {
     var totalIndennitaRatei = 0;
     for (var iri = 0; iri < d.indennita.length; iri++) totalIndennitaRatei += d.indennita[iri].totale;
     for (var irr = 0; irr < d.ratei_pagati.length; irr++) { if (d.ratei_pagati[irr].incluso) totalIndennitaRatei += d.ratei_pagati[irr].orario * d.ore_mensili; }
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:11px;color:#8A8F98;font-style:italic;">Indennit\u00e0 e Ratei pagati</span>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+    html += '<span class="fs-11 c-muted">Indennit\u00e0 e Ratei pagati</span>';
     html += '<span class="value-busta-md">\u20AC ' + totalIndennitaRatei.toFixed(2) + '</span></div>';
 
     // Totale lordo
@@ -432,20 +432,20 @@ function renderBustaNonConvivente(d) {
 
     html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f59e0b;font-weight:700;margin-bottom:8px;"><i class="bi bi-shield me-1"></i>Contributi</div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">INPS <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h \u2014 ' + d.contributi.inps.fascia + ' soglia)</span></span>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+    html += '<span class="c-12">INPS <span class="c-11-m">(\u20AC' + d.contributi.inps.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h \u2014 ' + d.contributi.inps.fascia + ' soglia)</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.contributi.inps.totale.toFixed(2) + '</span></div>';
 
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span style="color:#8A8F98;font-size:11px;">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+    html += '<span class="c-12">' + esc(d.contributi.cassa.nome || 'Cassa/Ente') + ' <span class="c-11-m">(\u20AC' + d.contributi.cassa.orario.toFixed(4) + ' \u00d7 ' + d.ore_inps + 'h)</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(245,158,11,0.3);">';
-    html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">TOTALE CONTRIBUTI</span>';
+    html += '<span class="fs-13 fw-7 c-amber">TOTALE CONTRIBUTI</span>';
     html += '<span style="font-size:15px;font-weight:800;color:#f59e0b;">\u20AC ' + d.contributi.totale.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-1" style="margin-top:4px;">';
-    html += '<span style="font-size:11px;color:#8A8F98;">Stima contributi trimestrali</span>';
+    html += '<span class="fs-11 c-muted">Stima contributi trimestrali</span>';
     html += '<span class="value-busta">\u20AC ' + d.contributi.trimestrale_stima.toFixed(2) + '</span></div>';
 
     // Trattenute
@@ -454,24 +454,24 @@ function renderBustaNonConvivente(d) {
     // Convivenza / Vitto e alloggio
     var convLabel = (d.tipo_calcolo === 'SOSTITUZIONE') ? 'Vitto e alloggio forfettario' : 'Convivenza';
     var convDett = (d.trattenute.convivenza.dettaglio && d.trattenute.convivenza.dettaglio.length > 0) ? d.trattenute.convivenza.dettaglio.join(', ') : '';
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">' + convLabel + ' <span style="color:#8A8F98;font-size:11px;">(' + esc(convDett) + ')</span></span>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+    html += '<span class="c-12">' + convLabel + ' <span class="c-11-m">(' + esc(convDett) + ')</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.trattenute.convivenza.totale.toFixed(2) + '</span></div>';
 
     var accNomi = [];
     for (var ri = 0; ri < d.ratei_pagati.length; ri++) { if (!d.ratei_pagati[ri].incluso && d.ratei_pagati[ri].totale > 0) accNomi.push(d.ratei_pagati[ri].label); }
     var accNota = accNomi.length > 0 ? '(' + accNomi.join(', ') + ' non pagati)' : '';
-    html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-    html += '<span style="font-size:12px;color:#EDEDED;">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span>';
+    html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+    html += '<span class="c-12">Ratei accantonati <span class="fs-11 c-muted">' + esc(accNota) + '</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
     var totInclusi = 0, nomiInclusi = [];
     for (var ri = 0; ri < d.ratei_pagati.length; ri++) {
         if (d.ratei_pagati[ri].incluso) { totInclusi += d.ratei_pagati[ri].orario * d.ore_mensili; nomiInclusi.push(d.ratei_pagati[ri].label); }
     }
     if (totInclusi > 0) {
-        html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-bottom:1px solid rgba(255,255,255,0.04);">';
-        html += '<span style="font-size:12px;color:#8A8F98;font-style:italic;">di cui ratei gi\u00e0 inclusi nel lordo <span style="font-size:11px;">(' + nomiInclusi.join(', ') + ')</span></span>';
-        html += '<span style="font-size:12px;font-weight:600;color:#8A8F98;">\u20AC ' + totInclusi.toFixed(2) + '</span></div>';
+        html += '<div class="d-flex justify-content-between align-items-center py-1 border-bottom-dim">';
+        html += '<span style="font-size:12px;color:#8A8F98;font-style:italic;">di cui ratei gi\u00e0 inclusi nel lordo <span class="fs-11">(' + nomiInclusi.join(', ') + ')</span></span>';
+        html += '<span class="fs-12 fw-6 c-muted">\u20AC ' + totInclusi.toFixed(2) + '</span></div>';
     }
 
     if (d.trattenute.totale > 0) {
@@ -484,7 +484,7 @@ function renderBustaNonConvivente(d) {
     html += '<div style="margin-top:20px;padding:16px 0;">';
 
     html += '<div class="d-flex justify-content-between align-items-center py-1">';
-    html += '<span style="font-size:13px;color:#EDEDED;">Budget mensile</span>';
+    html += '<span class="fs-13 c-text">Budget mensile</span>';
     html += '<span style="font-size:14px;font-weight:600;color:#EDEDED;">\u20AC ' + d.budget_mensile.toFixed(2) + '</span></div>';
 
     var budget = d.budget_mensile || 1;
@@ -503,7 +503,7 @@ function renderBustaNonConvivente(d) {
     if (d.modalita_tfr && d.modalita_tfr !== 'INCLUSO') {
         html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-top:1px solid rgba(245,158,11,0.3);margin-top:2px;">';
         html += '<span style="font-size:11px;color:#f59e0b;font-weight:600;">TFR accumulato</span>';
-        html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">\u20AC ' + Number(d.tfr_accantonato_cumulativo || 0).toFixed(2) + '</span></div>';
+        html += '<span class="fs-13 fw-7 c-amber">\u20AC ' + Number(d.tfr_accantonato_cumulativo || 0).toFixed(2) + '</span></div>';
     }
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:1.5px solid #2c5282;margin-top:4px;padding-top:8px;">';
     html += '<span style="font-size:16px;font-weight:800;color:#2c5282;">NETTO IN BUSTA</span>';
@@ -516,15 +516,15 @@ function renderBustaNonConvivente(d) {
 
     if (d.note_datore) {
         html += '<div style="margin-bottom:10px;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;font-weight:700;display:block;">NOTE DATORE</span>';
-        html += '<div style="height:4px;"></div>';
-        html += '<span style="font-size:12px;color:#8A8F98;">' + esc(d.note_datore) + '</span></div>';
+        html += '<div class="h-4"></div>';
+        html += '<span class="fs-12 c-muted">' + esc(d.note_datore) + '</span></div>';
         html += '<div style="margin-top:10px;padding-top:0;border-top:1px solid #27282D;"></div>';
     }
 
     html += '<div style="margin-top:14px;font-size:11px;color:#8A8F98;line-height:1.6;">';
-    html += 'Firma del collaboratore familiare <span style="color:#EDEDED;font-weight:600;">' + esc(d.lavoratore) + '</span> per ricevuta e conferma delle ore lavorate e retribuite e quietanza dell\'importo indicato.';
+    html += 'Firma del collaboratore familiare <span class="c-text fw-6">' + esc(d.lavoratore) + '</span> per ricevuta e conferma delle ore lavorate e retribuite e quietanza dell\'importo indicato.';
     html += '<div style="margin-top:28px;font-size:11px;color:#8A8F98;line-height:1.6;">';
-    html += 'Il collaboratore familiare <span style="color:#EDEDED;font-weight:600;">' + esc(d.lavoratore) + '</span> <span style="text-decoration:none;border-bottom:1px solid #8A8F98;display:inline-block;width:360px;">&nbsp;</span>';
+    html += 'Il collaboratore familiare <span class="c-text fw-6">' + esc(d.lavoratore) + '</span> <span style="text-decoration:none;border-bottom:1px solid #8A8F98;display:inline-block;width:360px;">&nbsp;</span>';
     html += '</div></div>';
 
     html += '<div style="margin-top:8px;margin-bottom:4px;border-top:1px solid #27282D;"></div>';
@@ -535,26 +535,26 @@ function renderBustaNonConvivente(d) {
     if (d.email_studio) studioParts.push('Mail: ' + esc(d.email_studio));
     if (studioParts.length > 0) {
         html += '<div style="margin-top:14px;padding-top:10px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;">';
-        html += '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">DATI STUDIO</span>';
-        html += '<div style="height:4px;"></div>';
+        html += '<span class="c-9-up-fw">DATI STUDIO</span>';
+        html += '<div class="h-4"></div>';
         if (d.logo_buste_paga_url) {
             html += '<img src="' + esc(d.logo_buste_paga_url) + '" style="max-height:50px;max-width:180px;display:block;margin-bottom:4px;" alt="Logo studio">';
         }
-        html += '<span style="font-size:10px;color:#8A8F98;">' + studioParts.join(' | ') + '</span>';
+        html += '<span class="fs-10 c-muted">' + studioParts.join(' | ') + '</span>';
         html += '</div>';
     }
     if (d.alert_contributi_studio) {
-        html += '<div style="margin-top:6px;padding-top:6px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;">';
-        html += '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">SCADENZE</span>';
-        html += '<div style="height:4px;"></div>';
-        html += '<span style="font-size:10px;color:#8A8F98;">' + d.alert_contributi_studio + '</span>';
+        html += '<div class="mt-6 pt-6 border-top-dark fs-10 c-muted">';
+        html += '<span class="c-9-up-fw">SCADENZE</span>';
+        html += '<div class="h-4"></div>';
+        html += '<span class="fs-10 c-muted">' + d.alert_contributi_studio + '</span>';
         html += '</div>';
     }
     if (d.note_avvertenze) {
-        html += '<div style="margin-top:6px;padding-top:6px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;">';
-        html += '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">NOTE AGGIUNTIVE / AVVERTENZE</span>';
-        html += '<div style="height:4px;"></div>';
-        html += '<span style="font-size:10px;color:#8A8F98;">' + d.note_avvertenze + '</span>';
+        html += '<div class="mt-6 pt-6 border-top-dark fs-10 c-muted">';
+        html += '<span class="c-9-up-fw">NOTE AGGIUNTIVE / AVVERTENZE</span>';
+        html += '<div class="h-4"></div>';
+        html += '<span class="fs-10 c-muted">' + d.note_avvertenze + '</span>';
         html += '</div>';
     }
 
@@ -570,20 +570,20 @@ function renderBustaNonConvivente(d) {
         html += '<div style="padding:16px 24px;">';
         html += '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #2c5282;padding-bottom:6px;margin-bottom:12px;">';
         html += '<span style="font-size:15px;font-weight:800;color:#2c5282;">Dettaglio Progetti</span>';
-        html += '<span style="font-size:11px;color:#8A8F98;">' + esc(d.mese_nome) + ' ' + d.anno + '</span>';
+        html += '<span class="fs-11 c-muted">' + esc(d.mese_nome) + ' ' + d.anno + '</span>';
         html += '</div>';
 
         // Tabella
         html += '<div style="display:table;width:100%;">';
         // Header
         html += '<div style="display:table-row;background:rgba(255,255,255,0.04);font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#8A8F98;font-weight:700;">';
-        html += '<div style="display:table-cell;padding:6px 4px;">Progetto</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">Lordo Progetto</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">Unit\u00e0 (Paga/h)</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:center;">Ore</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">Contrib. Totali</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">Ratei ed Indennit\u00e0</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">Netto</div>';
+        html += '<div class="cell-label">Progetto</div>';
+        html += '<div class="cell-label">Lordo Progetto</div>';
+        html += '<div class="cell-label">Unit\u00e0 (Paga/h)</div>';
+        html += '<div class="cell-label text-center">Ore</div>';
+        html += '<div class="cell-label">Contrib. Totali</div>';
+        html += '<div class="cell-label">Ratei ed Indennit\u00e0</div>';
+        html += '<div class="cell-label">Netto</div>';
         html += '</div>';
 
         var pd = d.progetti_data;
@@ -591,11 +591,11 @@ function renderBustaNonConvivente(d) {
             var rr = pd.righe[ri];
             html += '<div style="display:table-row;border-bottom:1px solid rgba(255,255,255,0.04);">';
             html += '<div style="display:table-cell;padding:5px 4px;font-size:11px;color:#8A8F98;">' + esc(rr.nome) + '</div>';
-            html += '<div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.lordo_progetto.toFixed(2) + '</div>';
-            html += '<div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.paga_oraria.toFixed(4) + '</div>';
+            html += '<div class="cell-label c-text fs-11">\u20AC ' + rr.lordo_progetto.toFixed(2) + '</div>';
+            html += '<div class="cell-label c-text fs-11">\u20AC ' + rr.paga_oraria.toFixed(4) + '</div>';
             html += '<div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:center;">' + rr.ore.toFixed(2) + '</div>';
-            html += '<div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.contrib.toFixed(2) + '</div>';
-            html += '<div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;">\u20AC ' + rr.ratei_ind.toFixed(2) + '</div>';
+            html += '<div class="cell-label c-text fs-11">\u20AC ' + rr.contrib.toFixed(2) + '</div>';
+            html += '<div class="cell-label c-text fs-11">\u20AC ' + rr.ratei_ind.toFixed(2) + '</div>';
             html += '<div style="display:table-cell;padding:5px 4px;font-size:11px;color:#EDEDED;text-align:right;font-weight:700;">\u20AC ' + rr.netto.toFixed(2) + '</div>';
             html += '</div>';
         }
@@ -603,19 +603,19 @@ function renderBustaNonConvivente(d) {
         // Totali
         var t = pd.totali;
         html += '<div style="display:table-row;border-top:2px solid #2c5282;font-size:12px;font-weight:700;color:#2c5282;">';
-        html += '<div style="display:table-cell;padding:6px 4px;">TOTALE</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">\u20AC ' + t.lordo_progetto.toFixed(2) + '</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;"></div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:center;">' + t.ore.toFixed(2) + '</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">\u20AC ' + t.contrib.toFixed(2) + '</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">\u20AC ' + t.ratei_ind.toFixed(2) + '</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;"></div>';
+        html += '<div class="cell-label">TOTALE</div>';
+        html += '<div class="cell-label">\u20AC ' + t.lordo_progetto.toFixed(2) + '</div>';
+        html += '<div class="cell-label"></div>';
+        html += '<div class="cell-label text-center">' + t.ore.toFixed(2) + '</div>';
+        html += '<div class="cell-label">\u20AC ' + t.contrib.toFixed(2) + '</div>';
+        html += '<div class="cell-label">\u20AC ' + t.ratei_ind.toFixed(2) + '</div>';
+        html += '<div class="cell-label"></div>';
         html += '</div>';
 
         // Netto
         html += '<div style="display:table-row;font-size:14px;font-weight:800;color:#2c5282;">';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;" colspan="6">NETTO</div>';
-        html += '<div style="display:table-cell;padding:6px 4px;text-align:right;">\u20AC ' + t.netto.toFixed(2) + '</div>';
+        html += '<div class="cell-label" colspan="6">NETTO</div>';
+        html += '<div class="cell-label">\u20AC ' + t.netto.toFixed(2) + '</div>';
         html += '</div>';
 
         // Rigo riepilogativo compatto

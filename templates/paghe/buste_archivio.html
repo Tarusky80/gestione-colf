@@ -31,7 +31,7 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
     <div>
-        <h1 class="h3 fw-bold mb-1"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Archivio Buste Paga
+        <h1 class="h3 fw-bold mb-1"><i class="bi bi-journal-text me-2 c-accent"></i>Archivio Buste Paga
         <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button></h1>
         <p class="text-secondary small mb-0">{{ buste|length }} buste trovate</p>
     </div>
@@ -198,12 +198,12 @@ document.getElementById('btnExportBuste').addEventListener('click', function(e) 
                         <a href="{% url 'calcoli_tfr' %}?contratto={{ b.contratto.pk }}&mese={{ b.mese }}&anno={{ b.anno }}" class="btn btn-ghost btn-sm px-2" title="Vedi busta"><i class="bi bi-eye c-info"></i></a>
                         {% endif %}
                         <div class="btn-group btn-group-sm">
-                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg" style="color:#10b981;"></i></button>
-                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive" style="color:#5E6AD2;"></i></button>
+                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'APPROVATA')" title="Approva"><i class="bi bi-check-lg c-green2"></i></button>
+                            <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'ARCHIVIATA')" title="Archivia"><i class="bi bi-archive c-accent"></i></button>
                             <button type="button" class="btn btn-ghost btn-sm px-2" onclick="cambiaStato({{ b.pk }}, 'BOZZA')" title="Riporta a bozza"><i class="bi bi-arrow-counterclockwise c-amber"></i></button>
                             <button type="button" class="btn btn-ghost btn-sm px-2" onclick="eliminaBusta({{ b.pk }})" title="Elimina"><i class="bi bi-trash" style="color:#ef4444;"></i></button>
                         </div>
-                        <button type="button" class="btn btn-sm px-2 btn-ghost-primary" onclick="apriCcnlOcchioBusta({{ b.contratto.pk }}, {{ b.anno }})" title="Vedi parametri CCNL" style="font-size:11px;"><i class="bi bi-eye me-1"></i>CCNL</button>
+                        <button type="button" class="btn btn-sm px-2 btn-ghost-primary" onclick="apriCcnlOcchioBusta({{ b.contratto.pk }}, {{ b.anno }})" title="Vedi parametri CCNL"class="fs-11"><i class="bi bi-eye me-1"></i>CCNL</button>
                         <button type="button" class="btn btn-sm px-2 btn-ghost-success" onclick="window.open('{% url 'download_ricevuta_pdf' b.pk %}')" title="Ricevuta pagamento"><i class="bi bi-receipt me-1"></i>RICEVUTA</button>
                         {% if b.documento %}
                         <button type="button" class="btn btn-ghost-warning btn-sm px-2" onclick="stampaBusta({{ b.pk }}, this)" title="Stampa busta alla stampante" data-label="STAMPA BUSTA"><i class="bi bi-printer me-1"></i>STAMPA BUSTA</button>
@@ -337,7 +337,7 @@ function apriCcnlOcchioBusta(pk, anno) {
         <div class="help-section">
           <div class="help-section-title"><i class="bi bi-list-check c-accent me-2"></i>Azioni per riga</div>
           <p><b>VEDI</b> <i class="bi bi-eye c-accent"></i> — apre la pagina di calcolo corrispondente ricaricando i dati del contratto e del periodo.</p>
-          <p><b>APPROVA</b> <i class="bi bi-check-lg" style="color:#10b981;"></i> — cambia lo stato in "Approvata".</p>
+          <p><b>APPROVA</b> <i class="bi bi-check-lg c-green2"></i> — cambia lo stato in "Approvata".</p>
           <p><b>ARCHIVIA</b> <i class="bi bi-archive c-accent"></i> — imposta lo stato "Archiviata".</p>
           <p><b>BOZZA</b> <i class="bi bi-arrow-counterclockwise c-amber"></i> — riporta la busta a stato "Bozza".</p>
           <p><b>ELIMINA</b> <i class="bi bi-trash" style="color:#ef4444;"></i> — elimina definitivamente la busta paga.</p>

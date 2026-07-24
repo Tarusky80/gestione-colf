@@ -32,7 +32,7 @@
       <span><i class="bi bi-person-badge me-1"></i>{{ contratto.lavoratore.nome_cognome }}</span>
       <span><i class="bi bi-building me-1"></i>{{ contratto.datore.nome_cognome }}</span>
       <span style="margin-left:auto;">
-        <span style="color:#34d399;">●</span> abilitato
+        <span class="c-green">●</span> abilitato
         <span style="color:#f87171;margin-left:6px;">●</span> disabilitato
         <span style="color:#5C5F66;margin-left:6px;">●</span> clicca per simulare
       </span>
@@ -119,7 +119,7 @@
       <div style="display:flex;align-items:center;gap:16px;font-size:12px;flex-wrap:wrap;">
         <div>
           <span class="label-info">Paga Base</span>
-          <div class="ccnl-sum-pagabase" style="color:#EDEDED;font-weight:600;">€ {{ paga_base|floatformat:4 }}</div>
+          <div class="ccnl-sum-pagabase c-text fw-6">€ {{ paga_base|floatformat:4 }}</div>
         </div>
         <div class="c-gray fs-16">+</div>
         <div>
@@ -139,7 +139,7 @@
       </div>
       {% if livello_contratto and livello_contratto.pk != parametri.livello_id %}
       <div style="padding:6px 12px;border-radius:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);font-size:11px;white-space:nowrap;">
-        <span style="color:#f59e0b;">± differenza da Liv. {{ livello_contratto.codice }}</span>
+        <span class="c-amber">± differenza da Liv. {{ livello_contratto.codice }}</span>
       </div>
       {% endif %}
     </div>

@@ -132,14 +132,14 @@
         <button type="button" class="btn btn-sm btn-ghost-primary" onclick="apriCcnlOcchio()" id="btnCcnlOcchio" disabled>
             <i class="bi bi-eye me-1"></i> CCNL
         </button>
-        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary text-decoration-none">
             <i class="bi bi-journal-text me-1"></i> Archivio Buste
         </a>
         <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         <button type="button" class="btn btn-sm btn-ghost-primary" onclick="downloadPdf()" id="btnPdf" disabled>
             <i class="bi bi-file-pdf me-1"></i> PDF
         </button>
-        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap" style="margin-right:4px;">
+        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap mr-4">
             <input type="checkbox" id="chkAllegaLul" class="c-checkbox"> Allega LUL
         </label>
         <button type="button" class="btn btn-sm btn-ghost-warning" onclick="stampaBustaCalcolo(this)" id="btnStampa" disabled>
@@ -518,7 +518,7 @@ window.calcolaInverso = function() {
     .then(function(d) {
         document.getElementById('resultLoading').style.display = 'none';
         if (d.errore) {
-            document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
+            document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center badge-status badge-status-error"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
             return;
         }
         renderRisultato(d);
@@ -532,7 +532,7 @@ window.calcolaInverso = function() {
     })
     .catch(function(e) {
         document.getElementById('resultLoading').style.display = 'none';
-        document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
+        document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center badge-status badge-status-error"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
     });
 };
 
@@ -583,7 +583,7 @@ function aggiornaConvRiepilogo(d) {
 }
 
 function renderRisultato(d) {
-    var html = '<div class="class="card-dark" style="overflow:hidden;"">';
+    var html = '<div class="class="card-dark overflow-hidden"">';
 
     var inputLabel = '';
     var inputValore = '';
@@ -601,22 +601,22 @@ function renderRisultato(d) {
     for (var si = 0; si < d.num_sabati; si++) sabatiStr += '\u2713';
 
     // Header info
-    html += '<div style="padding:20px 24px;border-bottom:1px solid #27282D;">';
-    html += '<div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#8A8F98;margin-bottom:4px;"><i class="bi bi-arrow-left-right me-1"></i>Calcolo Inverso \u2014 ' + d.mese_nome + ' ' + d.anno + '</div>';
+    html += '<div class="p-24 border-bottom-dark">';
+    html += '<div class="c-10-up mb-4"><i class="bi bi-arrow-left-right me-1"></i>Calcolo Inverso \u2014 ' + d.mese_nome + ' ' + d.anno + '</div>';
     html += '<div class="row g-2 mt-2">';
     html += '<div class="col-md-6"><span class="label-info">Datore</span><span class="value-busta">' + esc(d.datore) + '</span></div>';
     html += '<div class="col-md-6"><span class="label-info">Lavoratore</span><span class="value-busta">' + esc(d.lavoratore) + '</span></div>';
     var _cH = Math.floor(d.ore_mensili), _cM = Math.floor((d.ore_mensili - _cH) * 60), _cS = Math.floor(((d.ore_mensili - _cH) * 60 - _cM) * 60);
     var _oreCrono = _cH + 'h ' + String(_cM).padStart(2,'0') + 'm ' + String(_cS).padStart(2,'0') + 's';
     var _sA = Math.ceil(d.ore_settimanali);
-    html += '<div class="col-md-4"><span style="font-size:10px;color:#8A8F98;display:block;margin-bottom:2px;">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + d.ore_inps + ' h</span><span class="label-ml">MENSILI ARROTONDATE</span><span class="label-ml">(INPS: ' + d.ore_inps + ' h)</span></div><div><span style="font-size:12px;font-weight:500;color:#8A8F98;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="label-ml">MENSILI DECIMALI</span></div><div><span style="font-size:12px;font-weight:600;color:#06b6d4;">' + _oreCrono + '</span><span class="label-ml">MENSILI CRONOMETRO</span></div><div style="border-top:1px solid #27282D;margin:2px 0;"></div><div><span style="font-size:9px;color:#8A8F98;">Ore settimanali</span> <span style="font-size:13px;font-weight:600;color:#10b981;">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
+    html += '<div class="col-md-4"><span class="label-info mb-2">Ore</span><div style="display:flex;flex-direction:column;gap:2px;"><div><span class="fs-13 fw-6 c-cyan">' + d.ore_inps + ' h</span><span class="label-ml">MENSILI ARROTONDATE</span><span class="label-ml">(INPS: ' + d.ore_inps + ' h)</span></div><div><span class="fs-12 fw-5 c-muted">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span class="label-ml">MENSILI DECIMALI</span></div><div><span class="fs-12 fw-6 c-cyan">' + _oreCrono + '</span><span class="label-ml">MENSILI CRONOMETRO</span></div><div class="border-top-dark my-1"></div><div><span class="fs-9 c-muted">Ore settimanali</span> <span class="fs-13 fw-6 c-green2">' + _sA + ' h</span> <span style="padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;background:' + sogliaBadgeBg + ';color:' + sogliaBadgeColor + ';">' + sogliaLabel + '</span></div></div></div>';
     html += '<div class="col-md-3"><span class="label-info">Settimane mensili</span><span class="value-busta">' + d.settimane_mensili + ' (' + sabatiStr + ')</span></div>';
-    html += '<div class="col-md-3"><span class="label-info">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span style="font-size:11px;color:#8A8F98;display:block;">' + esc(d.descrizione_corta) + '</span></div>';
+    html += '<div class="col-md-3"><span class="label-info">Livello</span><span style="font-size:13px;font-weight:600;color:' + esc(d.livello_colore) + ';">' + esc(d.livello_codice) + '</span><span class="fs-11 c-muted d-block">' + esc(d.descrizione_corta) + '</span></div>';
     html += '<div class="col-md-3"><span class="label-info">Paga oraria</span><span class="value-busta">\u20AC' + d.paga_applicata_oraria.toFixed(4) + '/h</span></div>';
-    html += '<div class="col-md-3"><span class="label-info">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span style="font-size:11px;color:#8A8F98;font-weight:400;">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
+    html += '<div class="col-md-3"><span class="label-info">Paga effettiva INPS</span><span style="font-size:12px;font-weight:600;color:#EDEDED;">\u20AC' + d.paga_effettiva_inps_oraria.toFixed(4) + '/h <span class="fs-11 c-muted fw-4">(\u20AC' + d.paga_effettiva_inps_mensile.toFixed(2) + '/mese)</span></span></div>';
     html += '<div class="col-md-3"><span class="label-info">Tipo contratto</span><span class="value-busta">' + esc(d.tipo_contratto) + '</span></div>';
     html += '<div class="col-md-4"><span class="label-info">Tipo calcolo</span><span style="font-size:13px;font-weight:600;color:#5E6AD2;">' + inputLabel + '</span></div>';
-    html += '<div class="col-md-4"><span class="label-info">Valore inserito</span><span style="font-size:13px;font-weight:600;color:#f59e0b;">' + inputValore + '</span></div>';
+    html += '<div class="col-md-4"><span class="label-info">Valore inserito</span><span class="fs-13 fw-6 c-amber">' + inputValore + '</span></div>';
     html += '<div class="col-md-4"><span class="label-info">Codice rapporto INPS</span><span class="value-busta">' + esc(d.codice_rapporto_inps) + '</span></div>';
     html += '</div></div>';
 
@@ -667,7 +667,7 @@ html += '<div class="d-flex justify-content-between align-items-center py-1 cell
     html += '<span class="value-busta">\u20AC ' + d.contributi.cassa.totale.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(245,158,11,0.3);">';
-    html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">TOTALE CONTRIBUTI</span>';
+    html += '<span class="fs-13 fw-7 c-amber">TOTALE CONTRIBUTI</span>';
     html += '<span style="font-size:15px;font-weight:800;color:#f59e0b;">\u20AC ' + d.contributi.totale.toFixed(2) + '</span></div>';
 
     html += '<div style="margin-top:24px;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#f87171;font-weight:700;margin-bottom:8px;"><i class="bi bi-dash-circle me-1"></i>Trattenute</div>';
@@ -682,7 +682,7 @@ html += '<div class="d-flex justify-content-between align-items-center py-1 cell
     for (var ri = 0; ri < d.ratei_pagati.length; ri++) { if (!d.ratei_pagati[ri].incluso && d.ratei_pagati[ri].totale > 0) accNomi.push(d.ratei_pagati[ri].label); }
     var accNota = accNomi.length > 0 ? '(' + accNomi.join(', ') + ' non pagati)' : '';
 html += '<div class="d-flex justify-content-between align-items-center py-1 cell-border-bottom">';
-    html += '<span class="value-busta-sm">Ratei accantonati <span style="font-size:11px;color:#8A8F98;">' + esc(accNota) + '</span></span>';
+    html += '<span class="value-busta-sm">Ratei accantonati <span class="fs-11 c-muted">' + esc(accNota) + '</span></span>';
     html += '<span class="value-busta">\u20AC ' + d.trattenute.ratei_accantonati.toFixed(2) + '</span></div>';
 
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:2px solid rgba(248,113,113,0.3);">';
@@ -694,7 +694,7 @@ html += '<div class="d-flex justify-content-between align-items-center py-1 cell
     if (d.modalita_tfr && d.modalita_tfr !== 'INCLUSO') {
         html += '<div class="d-flex justify-content-between align-items-center py-1" style="border-top:1px solid rgba(245,158,11,0.3);">';
         html += '<span style="font-size:11px;color:#f59e0b;font-weight:600;">TFR accumulato</span>';
-        html += '<span style="font-size:13px;font-weight:700;color:#f59e0b;">\u20AC ' + Number(d.tfr_accantonato_cumulativo || 0).toFixed(2) + '</span></div>';
+        html += '<span class="fs-13 fw-7 c-amber">\u20AC ' + Number(d.tfr_accantonato_cumulativo || 0).toFixed(2) + '</span></div>';
     }
     html += '<div class="d-flex justify-content-between align-items-center py-2" style="border-top:1.5px solid #2c5282;padding-top:8px;">';
     html += '<span style="font-size:16px;font-weight:800;color:#2c5282;">NETTO IN BUSTA</span>';
@@ -714,8 +714,8 @@ html += '<div class="d-flex justify-content-between align-items-center py-1 cell
 
     // Footer note
     html += '<div style="padding:16px 24px;border-top:1px solid #27282D;font-size:10px;color:#8A8F98;line-height:1.5;">';
-    html += '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.04em;color:#5C5F66;font-weight:700;display:block;">DATI STUDIO</span>';
-    if (d.dati_studio) { html += '<div style="height:4px;"></div><span style="font-size:10px;color:#8A8F98;">' + esc(d.dati_studio) + '</span>'; }
+    html += '<span class="c-9-up-fw">DATI STUDIO</span>';
+    if (d.dati_studio) { html += '<div class="h-4"></div><span class="fs-10 c-muted">' + esc(d.dati_studio) + '</span>'; }
     if (d.logo_buste_paga_url) {
         html += '<img src="' + esc(d.logo_buste_paga_url) + '" style="max-height:50px;max-width:180px;display:block;margin-bottom:4px;" alt="Logo studio">';
     }

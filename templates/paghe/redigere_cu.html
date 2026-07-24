@@ -81,7 +81,7 @@
     <div class="d-flex align-items-start gap-3">
       <div class="flex-grow-1">
         <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-file-earmark-text me-2 c-accent"></i>Certificazione Unica — Lavoro Domestico</h4>
-        <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Genera, salva e invia la Certificazione Unica annuale.</p>
+        <p class="c-muted fs-12 mb-0">Genera, salva e invia la Certificazione Unica annuale.</p>
       </div>
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </div>
@@ -190,7 +190,7 @@
 <div class="p-4 card-simple mb-20">
       <h5 style="color:#EDEDED;font-size:14px;margin-bottom:16px;"><i class="bi bi-file-earmark-text me-2 c-accent"></i>RIEPILOGO ANNUALE</h5>
 
-      <div id="riepilogoBody" style="font-size:13px;color:#EDEDED;"></div>
+      <div id="riepilogoBody"class="fs-13 c-text"></div>
 
       <hr style="border-color:#27282D;margin:16px 0;">
 
@@ -210,7 +210,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content modal-linear">
             <div class="modal-header border-0 pb-0">
-<h5 class="modal-title fw-bold c-text"><i class="bi bi-search-check me-2" style="color:#f59e0b;"></i>Confronto Dettaglio</h5>
+<h5 class="modal-title fw-bold c-text"><i class="bi bi-search-check me-2 c-amber"></i>Confronto Dettaglio</h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
             </div>
             <div class="modal-body" id="modaleVerificaCuBody"></div>
@@ -247,7 +247,7 @@
     </div>
     <div id="storicoInviiCuSection" style="display:none;margin-top:8px;background:#17181C;border:1px solid #27282D;border-radius:10px;padding:12px;">
       <div style="font-size:11px;font-weight:600;color:#8A8F98;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Storico invii email</div>
-      <div id="storicoInviiCuList" style="font-size:12px;color:#8A8F98;">Caricamento...</div>
+      <div id="storicoInviiCuList"class="fs-12 c-muted">Caricamento...</div>
     </div>
   </div>
 
@@ -384,9 +384,9 @@
         <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
           <div class="d-flex gap-3 flex-wrap">
             <div><span class="c-11-m">Lordo</span> <b class="c-text" id="saTotLordo">\u20ac 0,00</b></div>
-            <div><span class="c-11-m">INPS</span> <b id="saTotInps" style="color:#f87171;">\u20ac 0,00</b></div>
-            <div><span class="c-11-m">Cassa</span> <b id="saTotCassa" style="color:#fbbf24;">\u20ac 0,00</b></div>
-            <div><span class="c-11-m">Netto</span> <b id="saTotNetto" style="color:#34d399;">\u20ac 0,00</b></div>
+            <div><span class="c-11-m">INPS</span> <b id="saTotInps"class="c-red">\u20ac 0,00</b></div>
+            <div><span class="c-11-m">Cassa</span> <b id="saTotCassa"class="c-amber">\u20ac 0,00</b></div>
+            <div><span class="c-11-m">Netto</span> <b id="saTotNetto"class="c-green">\u20ac 0,00</b></div>
             <div><span class="c-11-m">TFR</span> <b id="saTotTfr" style="color:#60a5fa;">\u20ac 0,00</b></div>
           </div>
         </div>

@@ -65,7 +65,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
       <span><i class="bi bi-person-badge me-1"></i>{{ contratto.lavoratore.nome_cognome }}</span>
       <span><i class="bi bi-building me-1"></i>{{ contratto.datore.nome_cognome }}</span>
       <span style="margin-left:auto;">
-        <span style="color:#34d399;">●</span> abilitato
+        <span class="c-green">●</span> abilitato
         <span style="color:#f87171;margin-left:6px;">●</span> disabilitato
         <span style="color:#5C5F66;margin-left:6px;">●</span> clicca per simulare
       </span>
@@ -135,7 +135,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             <div class="label-sezione">Retribuzione Lorda</div>
             <div class="busta-riga">
               <span class="c-muted">Paga base</span>
-              <span class="busta-pagabase-val" style="color:#EDEDED;font-weight:600;">€ {{ b.paga_base.totale|floatformat:2 }}</span>
+              <span class="busta-pagabase-val c-text fw-6">€ {{ b.paga_base.totale|floatformat:2 }}</span>
             </div>
             <div class="busta-riga">
               <span class="c-muted">Indennità</span>
@@ -151,7 +151,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             </div>
             <div class="totale-row">
               <span class="c-white">TOTALE LORDO</span>
-              <span class="busta-totale-lordo-val" style="color:#34d399;">€ {{ b.totale_lordo|floatformat:2 }}</span>
+              <span class="busta-totale-lordo-val c-green">€ {{ b.totale_lordo|floatformat:2 }}</span>
             </div>
           </div>
 
@@ -168,7 +168,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             </div>
             <div class="totale-row">
               <span class="c-white">Totale contributi</span>
-              <span class="busta-totale-contributi-val" style="color:#f87171;">€ {{ b.contributi.totale|floatformat:2 }}</span>
+              <span class="busta-totale-contributi-val c-red">€ {{ b.contributi.totale|floatformat:2 }}</span>
             </div>
           </div>
 
@@ -202,7 +202,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
             </div>
             <div class="totale-row">
               <span class="c-white">Totale trattenute</span>
-              <span class="busta-totale-trattenute-val" style="color:#f87171;">€ {{ b.trattenute.totale|floatformat:2 }}</span>
+              <span class="busta-totale-trattenute-val c-red">€ {{ b.trattenute.totale|floatformat:2 }}</span>
             </div>
           </div>
 
@@ -210,7 +210,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
           <div class="busta-sezione">
             <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;">
               <span class="c-white">NETTO IN BUSTA</span>
-              <span class="busta-netto-val" style="color:#5E6AD2;">€ {{ b.netto|floatformat:2 }}</span>
+              <span class="busta-netto-val c-accent">€ {{ b.netto|floatformat:2 }}</span>
             </div>
             <div class="busta-riga" style="margin-top:4px;">
               <span class="c-muted">TFR accumulato</span>
@@ -272,7 +272,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
       <div style="display:flex;align-items:center;gap:16px;font-size:12px;flex-wrap:wrap;">
         <div>
           <span class="label-info">Paga Base</span>
-          <div class="ccnl-sum-pagabase" data-pagabase="{{ paga_base|stringformat:'.4f' }}" data-retribsost="{{ retrib_sost_value|stringformat:'.4f' }}" data-retribsost-attiva="{{ retrib_sost_attiva|yesno:'true,false' }}" style="color:#EDEDED;font-weight:600;">€ {{ paga_base_effettiva|floatformat:4 }}</div>
+          <div class="ccnl-sum-pagabase" data-pagabase="{{ paga_base|stringformat:'.4f' }}" data-retribsost="{{ retrib_sost_value|stringformat:'.4f' }}" data-retribsost-attiva="{{ retrib_sost_attiva|yesno:'true,false' }}"class="c-text fw-6">€ {{ paga_base_effettiva|floatformat:4 }}</div>
         </div>
         <div class="c-gray fs-16">+</div>
         <div>
@@ -295,7 +295,7 @@ body { background:#0E0F11; color:#EDEDED; font-family:'Roboto','Inter',sans-seri
       </button>
       {% if livello_contratto %}
       <div id="livello-diff-badge" style="padding:6px 12px;border-radius:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);font-size:11px;white-space:nowrap;{% if livello_contratto.pk|default:'' == parametri.livello_id %}display:none;{% endif %}">
-        <span style="color:#f59e0b;">± differenza da Liv. {{ livello_contratto.codice }}</span>
+        <span class="c-amber">± differenza da Liv. {{ livello_contratto.codice }}</span>
       </div>
       {% endif %}
     </div>

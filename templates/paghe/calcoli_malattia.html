@@ -36,13 +36,13 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
             <i class="bi bi-save me-1"></i> SALVA BUSTA
         </button>
         <a href="{% url 'calcoli_sostituzione' %}?contratto={{ contratto_pk|default:'' }}&mese={{ mese }}&anno={{ anno }}" class="btn btn-sm btn-ghost-success"><i class="bi bi-arrow-repeat me-1"></i> Sostituzione</a>
-        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
+        <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary text-decoration-none">
             <i class="bi bi-journal-text me-1"></i> Archivio Buste
         </a>
         <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
         <button type="button" class="btn btn-sm btn-ghost" onclick="resetForm()" style="padding:8px 12px;"><i class="bi bi-arrow-counterclockwise me-1"></i> Reset</button>
         <button type="button" class="btn btn-sm btn-ghost-primary" onclick="downloadPdf()" id="btnPdf" disabled><i class="bi bi-file-pdf me-1"></i> PDF</button>
-        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap" style="margin-right:4px;">
+        <label class="c-muted fs-10 d-inline-flex align-items-center gap-1 cursor-pointer nowrap mr-4">
             <input type="checkbox" id="chkAllegaLul" class="c-checkbox"> Allega LUL
         </label>
         <button type="button" class="btn btn-sm btn-ghost-warning" onclick="stampaBustaCalcolo(this)" id="btnStampa" disabled><i class="bi bi-printer me-1"></i> STAMPA</button>
@@ -103,7 +103,7 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
   <div class="row g-3 align-items-center b-light" style="margin-top:6px;padding-top:10px;">
     <div class="col-12">
       <div class="d-flex align-items-center flex-wrap gap-4 c-11-m">
-        <span class="c-9-up-fw" style="color:#5C5F66;">Opzioni Malattia</span>
+        <span class="c-9-up-fw c-gray">Opzioni Malattia</span>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="ricadutaToggle" onchange="calcola()"><span class="toggle-slider"></span></label>
           <span class="c-12-b">Ricaduta stessa malattia</span>
@@ -111,8 +111,8 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
         </span>
         <span class="toggle-item">
           <label class="toggle-switch"><input type="checkbox" id="ricoveratoToggle" onchange="calcola()"><span class="toggle-slider"></span></label>
-          <span style="color:#EDEDED;font-weight:600;">Ricoverato/assente da casa</span>
-          <span style="font-size:9px;">indennità sostitutiva vitto/alloggio</span>
+          <span class="c-text fw-6">Ricoverato/assente da casa</span>
+          <span class="fs-9">indennità sostitutiva vitto/alloggio</span>
         </span>
       </div>
     </div>
@@ -270,7 +270,7 @@ window.calcola = function() {
   .then(function(d) {
     document.getElementById('resultLoading').style.display = 'none';
     if (d.errore) {
-      document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
+      document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center badge-status badge-status-error"><i class="bi bi-exclamation-triangle me-2"></i>' + d.errore + '</div>';
       return;
     }
     renderMalattia(d);
@@ -282,7 +282,7 @@ window.calcola = function() {
   })
   .catch(function(e) {
     document.getElementById('resultLoading').style.display = 'none';
-    document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center" style="color:#f87171;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:14px;"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
+    document.getElementById('resultContent').innerHTML = '<div class="p-4 text-center badge-status badge-status-error"><i class="bi bi-exclamation-triangle me-2"></i>Errore: ' + e.message + '</div>';
   });
 };
 
@@ -303,7 +303,7 @@ function renderMalattia(d) {
   }
   var rgb = lc.match(/^#[0-9a-f]{6}$/i) ? hexToRgb(lc) : '94,106,210';
 
-  var html = '<div class="class="card-dark" style="overflow:hidden;"">';
+  var html = '<div class="class="card-dark overflow-hidden"">';
 
   // Header contratto
   html += '<div style="padding:16px 24px;border-bottom:1px solid #27282D;">';
@@ -315,7 +315,7 @@ function renderMalattia(d) {
   html += '<div class="col-md-2"><span class="label-info">Tipo</span><span style="font-size:13px;font-weight:600;color:#8A8F98;">' + esc(d.tipo_contratto) + '</span></div>';
   html += '<div class="col-md-3 mt-2"><span class="label-info">Anzianit\u00e0</span><span class="value-busta">' + d.anzianita_mesi + ' mesi</span></div>';
   html += '<div class="col-md-3 mt-2"><span class="label-info">Paga base oraria</span><span class="value-busta">\u20AC ' + d.paga_base_oraria.toFixed(4) + '/h</span></div>';
-  html += '<div class="col-md-3 mt-2"><span class="label-info">Ore mensili</span><span style="font-size:13px;font-weight:600;color:#06b6d4;">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + (Number(d.ore_mensili)/26).toFixed(2) + ' h/gg)</span></div>';
+  html += '<div class="col-md-3 mt-2"><span class="label-info">Ore mensili</span><span class="fs-13 fw-6 c-cyan">' + Number(d.ore_mensili).toFixed(2) + ' h</span><span style="font-size:10px;color:#8A8F98;margin-left:4px;">(' + (Number(d.ore_mensili)/26).toFixed(2) + ' h/gg)</span></div>';
   html += '<div class="col-md-3 mt-2"><span class="label-info">' + esc(d.label_paga) + '</span><span style="font-size:13px;font-weight:600;color:#' + (d.sostituzione ? 'f59e0b' : 'EDEDED') + ';">\u20AC ' + d.paga_oraria.toFixed(4) + '/h</span></div>';
   html += '</div></div>';
 
@@ -332,7 +332,7 @@ function renderMalattia(d) {
     var f = fasce[fi];
     html += '<div style="padding:8px 12px;border-radius:8px;border:1px solid ' + (f.attivo ? '#34d399' : '#27282D') + ';background:' + (f.attivo ? 'rgba(52,211,153,0.06)' : 'transparent') + ';">';
     html += '<div style="font-size:10px;font-weight:600;color:' + (f.attivo ? '#34d399' : '#5C5F66') + ';">' + f.label + '</div>';
-    html += '<div style="font-size:11px;color:#8A8F98;">Max ' + f.giorni + ' gg | Conserv. ' + f.conservazione + ' gg</div>';
+    html += '<div class="fs-11 c-muted">Max ' + f.giorni + ' gg | Conserv. ' + f.conservazione + ' gg</div>';
     if (f.attivo) html += '<div style="font-size:9px;color:#34d399;margin-top:2px;"><i class="bi bi-check-circle"></i> FASCIA CORRENTE</div>';
     html += '</div>';
   }
@@ -361,7 +361,7 @@ function renderMalattia(d) {
   html += '<div style="font-size:10px;color:#8A8F98;margin-bottom:8px;">';
   html += 'Retribuzione giornaliera: \u20AC' + d.retribuzione_giornaliera.toFixed(4) + ' = \u20AC' + d.paga_oraria.toFixed(4) + '/h \u00d7 ' + d.ore_giornaliere.toFixed(2) + ' h/gg';
   if (d.sostituzione) {
-    html += ' | <span style="color:#f59e0b;">Sostituzione attiva: \u20AC' + d.retribuzione_sostituzione.toFixed(4) + '/h</span>';
+    html += ' | <span class="c-amber">Sostituzione attiva: \u20AC' + d.retribuzione_sostituzione.toFixed(4) + '/h</span>';
   }
   html += '</div>';
 
@@ -378,7 +378,7 @@ function renderMalattia(d) {
     }
   }
   if (d.indennita_va > 0) {
-    html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#f59e0b;">Indennit\u00e0 sostitutiva vitto/alloggio <span style="font-size:10px;">(\u20AC' + d.vitto_alloggio_gg.toFixed(2) + '/gg)</span></td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_pagati + ' gg</td><td style="text-align:right;font-weight:600;color:#f59e0b;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.indennita_va.toFixed(2) + '</td></tr>';
+    html += '<tr><td style="border-bottom:1px solid rgba(255,255,255,0.04);color:#f59e0b;">Indennit\u00e0 sostitutiva vitto/alloggio <span class="fs-10">(\u20AC' + d.vitto_alloggio_gg.toFixed(2) + '/gg)</span></td><td style="text-align:right;color:#EDEDED;border-bottom:1px solid rgba(255,255,255,0.04);">' + d.giorni_pagati + ' gg</td><td style="text-align:right;font-weight:600;color:#f59e0b;border-bottom:1px solid rgba(255,255,255,0.04);">\u20AC ' + d.indennita_va.toFixed(2) + '</td></tr>';
   }
   html += '<tr class="totale-row"><td style="padding-top:10px;border-top:2px solid rgba(52,211,153,0.3);font-size:14px;color:#34d399;">TOTALE MALATTIA</td><td style="border-top:2px solid rgba(52,211,153,0.3);text-align:right;color:#EDEDED;">' + d.giorni_pagati + '/' + d.giorni_malattia + ' gg</td><td style="text-align:right;padding-top:10px;border-top:2px solid rgba(52,211,153,0.3);font-size:16px;font-weight:800;color:#34d399;">\u20AC ' + d.importo_totale.toFixed(2) + '</td></tr>';
   html += '</table>';
@@ -477,11 +477,11 @@ function renderMalattia(d) {
   html += 'a) anzianit\u00e0 fino a 6 mesi: 10 giorni di calendario; b) da pi\u00f9 di 6 mesi a 2 anni: 45 giorni; c) oltre 2 anni: 180 giorni. I periodi si calcolano nell\'anno solare (365 giorni dall\'evento).</div>';
   html += '<div class="mb-1"><strong class="c-text">3. Preavviso e periodo di prova:</strong> In caso di malattia durante il periodo di prova o durante il preavviso, si sospende la decorrenza degli stessi.</div>';
   html += '<div style="margin-bottom:0;"><strong class="c-text">4. Retribuzione malattia (' + d.max_giorni + ' giorni massimi nell\'anno):</strong> ';
-  html += 'Fino al 3\u00ba giorno consecutivo: <strong style="color:#fbbf24;">50%</strong> della retribuzione globale di fatto. ';
-  html += 'Dal 4\u00ba giorno in poi: <strong style="color:#34d399;">100%</strong>. ';
+  html += 'Fino al 3\u00ba giorno consecutivo: <strong class="c-amber">50%</strong> della retribuzione globale di fatto. ';
+  html += 'Dal 4\u00ba giorno in poi: <strong class="c-green">100%</strong>. ';
   html += 'Il conteggio si basa su tutti i giorni del certificato (comprese domeniche e non lavorativi). ';
   html += 'Ogni nuovo certificato riparte con i primi 3 giorni al 50%.';
-  html += ' <strong style="color:#5E6AD2;">Nota:</strong> La malattia \u00e8 interamente a carico del datore di lavoro (nessun rimborso INPS).</div>';
+  html += ' <strong class="c-accent">Nota:</strong> La malattia \u00e8 interamente a carico del datore di lavoro (nessun rimborso INPS).</div>';
   html += '</div>';
 
   html += '</div></div>';

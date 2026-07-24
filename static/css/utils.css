@@ -146,6 +146,28 @@
 /* --- MISC --- */
 .cursor-pointer { cursor: pointer; }
 .nowrap         { white-space: nowrap; }
+.h-4            { height: 4px; }
+.ws-nowrap      { white-space: nowrap; }
+.text-decoration-none { text-decoration: none; }
+.border-bottom-dim    { border-bottom: 1px solid rgba(255,255,255,0.04); }
+.border-top-dark      { border-top: 1px solid #27282D; }
+.border-default       { border: 1px solid #27282D; }
+.bg-dark-card         { background: #17181C; }
+.bg-input-dark        { background: #09090B; border: 1px solid #27282D; border-radius: 8px; }
+.flex-wrap-gap        { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.flex-center-gap      { display: flex; align-items: center; gap: 6px; }
+.flex-col-gap         { display: flex; flex-direction: column; gap: 2px; }
+.mr-3                 { margin-right: 3px; }
+.mr-6                 { margin-right: 6px; }
+.pt-12                { padding-top: 12px; }
+.mt-14                { margin-top: 14px; }
+.c-accent-icon        { color: #5E6AD2; }
+.c-amber-text         { color: #f59e0b; }
+.c-teal-text          { color: #06b6d4; }
+.c-green2-text        { color: #10b981; }
+.c-red-text           { color: #f87171; }
+.fs-11-c-muted        { font-size: 11px; color: #8A8F98; }
+.fs-11-c-muted-block  { font-size: 11px; color: #8A8F98; display: block; }
 
 /* --- CHECKBOX --- */
 .c-checkbox { accent-color: #5E6AD2; width: 16px; height: 16px; }

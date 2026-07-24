@@ -104,7 +104,7 @@
             <button type="button" onclick="resetTutto()" title="Reset" class="btn btn-sm btn-ghost px-10"><i class="bi bi-arrow-counterclockwise"></i></button>
             <a href="{% url 'calcoli_malattia' %}?contratto={{ contratto_pk|default:'' }}&mese={{ mese_corrente }}&anno={{ anno_corrente }}" class="btn btn-sm btn-ghost-danger" style="padding:6px 14px;font-size:12px;"><i class="bi bi-heart-pulse me-1"></i> Malattia</a>
             <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
-            <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary" style="text-decoration:none;">
+            <a href="{% url 'buste_archivio' %}" class="btn btn-sm btn-ghost-primary text-decoration-none">
                 <i class="bi bi-journal-text me-1"></i> Archivio Buste
             </a>
         </div>
@@ -138,7 +138,7 @@
                     <div id="assenteInfo" style="font-size:12px;color:#8A8F98;margin-top:2px;"></div>
                 </div>
                 <div class="badge-count" style="padding:4px 14px;text-align:center;">
-                    <div class="c-9-up" style="color:#f59e0b;">Budget</div>
+                    <div class="c-9-up c-amber">Budget</div>
                     <div id="assenteBudget" style="font-size:16px;font-weight:700;color:#f59e0b;">€ 0</div>
                 </div>
             </div>
@@ -173,7 +173,7 @@
                     <div class="col-md-4">
                         <div class="budget-card subtle">
                             <div class="label">Costo Malattia</div>
-                            <div class="amount" id="costoMalattiaDisplay" style="color:#f87171;">€ 0</div>
+                            <div class="amount" id="costoMalattiaDisplay"class="c-red">€ 0</div>
                             <div style="font-size:10px;color:#666;margin-top:2px;" id="costoDetail"></div>
                         </div>
                     </div>
@@ -217,7 +217,7 @@
                     <i class="bi bi-person-plus me-1"></i>Nuovo sostituto
                 </button>
                 <span id="sostitutoSelezionato" style="font-size:13px;color:#8A8F98;display:none;">
-                    <i class="bi bi-check-circle-fill me-1" style="color:#10b981;"></i>
+                    <i class="bi bi-check-circle-fill me-1 c-green2"></i>
                     <span id="sostitutoNome"></span>
                     <button type="button" class="btn btn-link btn-sm text-danger p-0 ms-2" onclick="deselezionaSostituto()" style="text-decoration:none;font-size:12px;"><i class="bi bi-x-circle"></i></button>
                 </span>
@@ -254,7 +254,7 @@
     </div>
     <div id="bustaSostitutoEmpty" style="text-align:center;padding:60px 20px;color:#555;">
         <i class="bi bi-file-earmark-text" style="font-size:32px;display:block;margin-bottom:12px;"></i>
-        <div style="font-size:14px;">Completa i passaggi per calcolare la busta del sostituto</div>
+        <div class="fs-14">Completa i passaggi per calcolare la busta del sostituto</div>
     </div>
 
     <!-- MODALE: Cerca sostituto esistente -->
@@ -548,7 +548,7 @@ function cercaSostituti(q) {
                 if (r.pk == assentePk) continue; // exclude the sick worker
                 html += '<div class="d-flex align-items-center justify-content-between p-2" style="border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;border-radius:6px;" onmouseover="this.style.background=\'rgba(255,255,255,0.05)\'" onmouseout="this.style.background=\'transparent\'" onclick="selezionaSostituto(' + r.pk + ', \'' + r.lavoratore.replace(/'/g, "\\'") + ' — ' + r.datore.replace(/'/g, "\\'") + '\')">';
                 html += '<div><div style="font-weight:600;font-size:13px;color:#EDEDED;">' + r.lavoratore + '</div>';
-                html += '<div style="font-size:11px;color:#8A8F98;">' + r.datore + ' — ' + r.tipo_contratto + (r.codice_inps ? ' — INPS: ' + r.codice_inps : '') + '</div></div>';
+                html += '<div class="fs-11 c-muted">' + r.datore + ' — ' + r.tipo_contratto + (r.codice_inps ? ' — INPS: ' + r.codice_inps : '') + '</div></div>';
                 html += '<i class="bi bi-plus-circle" style="color:#10b981;font-size:18px;"></i>';
                 html += '</div>';
             }
@@ -657,10 +657,10 @@ function renderBustaSostituto(d) {
     h += '<div class="d-flex justify-content-between align-items-center mb-3">';
     h += '<div><span class="c-10-up">' + d.mese_nome + ' ' + d.anno + '</span>';
     h += '<div style="font-size:16px;font-weight:800;color:#EDEDED;margin-top:2px;">Busta Sostituto</div></div>';
-    h += '<div style="text-align:right;"><span style="font-size:10px;text-transform:uppercase;color:#8A8F98;">' + (d.tipo_calcolo || '') + '</span>';
-    h += '<div style="font-size:13px;font-weight:600;color:#EDEDED;">' + d.lavoratore + '</div></div></div>';
+    h += '<div class="text-right"><span style="font-size:10px;text-transform:uppercase;color:#8A8F98;">' + (d.tipo_calcolo || '') + '</span>';
+    h += '<div class="c-13-b">' + d.lavoratore + '</div></div></div>';
     // Info row
-    h += '<div class="row g-2 mb-3" style="font-size:11px;color:#8A8F98;">';
+    h += '<div class="row g-2 mb-3 fs-11 c-muted">';
     h += '<div class="col-md-4"><b>Datore:</b> ' + (d.datore || '') + '</div>';
     h += '<div class="col-md-4"><b>Ore:</b> ' + (d.ore_mensili || 0) + ' h/mese (INPS: ' + (d.ore_inps || 0) + ' h)</div>';
     h += '<div class="col-md-4"><b>Budget applicato:</b> € ' + (d.budget_mensile || 0).toFixed(2) + '</div></div>';

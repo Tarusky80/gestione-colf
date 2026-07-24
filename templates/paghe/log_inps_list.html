@@ -13,11 +13,11 @@
 <style>.td-pad{padding:8px 14px}</style>
 <div class="container-fluid p-4">
 
-  <div class="p-4 card-simple" style="margin-bottom:20px;">
+  <div class="p-4 card-simple mb-20">
     <div class="d-flex align-items-start gap-3">
       <div class="flex-grow-1">
-        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-journal-text me-2" style="color:#5E6AD2;"></i>Cronologia operazioni INPS</h4>
-        <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Registro delle operazioni effettuate sulle procedure INPS.</p>
+        <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-journal-text me-2 c-accent"></i>Cronologia operazioni INPS</h4>
+        <p class="c-muted fs-12 mb-0">Registro delle operazioni effettuate sulle procedure INPS.</p>
       </div>
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </div>
@@ -94,7 +94,7 @@
               </span>
             </td>
             <td class="td-pad" style="color:#8A8F98;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ log.dettaglio|default:"—" }}</td>
-            <td class="td-pad" style="color:#8A8F98;">{{ log.utente|default:"—" }}</td>
+            <td class="td-pad c-muted">{{ log.utente|default:"—" }}</td>
             <td class="td-pad" style="text-align:center;white-space:nowrap;">
               <button type="button" class="btn btn-ghost-primary" onclick="mostraDettaglioLog({{ log.pk }})" title="Visualizza dettaglio" style="padding:2px 6px;font-size:14px;"><i class="bi bi-eye"></i></button>
               <button type="button" class="btn btn-ghost-danger" onclick="confermaEliminaLog({{ log.pk }})" title="Elimina" style="padding:2px 6px;font-size:14px;"><i class="bi bi-trash"></i></button>
@@ -178,7 +178,7 @@
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content card-simple">
       <div class="modal-header border-0 pb-0">
-        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-exclamation-triangle me-2" style="color:#f87171;"></i>Conferma eliminazione</h5>
+        <h5 class="modal-title" style="font-size:15px;font-weight:700;color:#EDEDED;"><i class="bi bi-exclamation-triangle me-2 c-red"></i>Conferma eliminazione</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
       </div>
       <div class="modal-body" style="padding:18px;font-size:13px;color:#8A8F98;">

@@ -53,7 +53,7 @@
         <a href="?mese={{ next_mese }}&anno={{ next_anno }}" class="btn btn-sm btn-ghost btn-nav-month">
             <i class="bi bi-chevron-right"></i>
         </a>
-        <a href="?mese={{ oggi.month }}&anno={{ oggi.year }}" class="btn btn-sm btn-ghost btn-nav-month" style="font-size:11px;">Oggi</a>
+        <a href="?mese={{ oggi.month }}&anno={{ oggi.year }}" class="btn btn-sm btn-ghost btn-nav-month fs-11">Oggi</a>
     </div>
     <div class="d-flex align-items-center gap-2">
         <a href="{% url 'agenda_pdf' %}?mese={{ mese }}&anno={{ anno }}" target="_blank" class="btn btn-sm btn-ghost" style="padding:8px 14px;font-size:11px;">
@@ -132,7 +132,7 @@
              ondragover="event.preventDefault();this.classList.add('cal-drop-hover')"
              ondragleave="this.classList.remove('cal-drop-hover')"
              ondrop="onDropGiorno(event, '{{ giorno.data|date:'Y-m-d' }}')">
-            <div class="cal-numero{% if giorno.oggi %} oggi{% endif %}">{% if giorno.festivo and not giorno.oggi %}<span style="color:#f87171;">{% endif %}{{ giorno.numero }}{% if giorno.festivo and not giorno.oggi %}</span>{% endif %}</div>
+            <div class="cal-numero{% if giorno.oggi %} oggi{% endif %}">{% if giorno.festivo and not giorno.oggi %}<span class="c-red">{% endif %}{{ giorno.numero }}{% if giorno.festivo and not giorno.oggi %}</span>{% endif %}</div>
             {% if giorno.festivo %}<div class="cal-festivo" title="{{ giorno.nome_festivo }}">{{ giorno.nome_festivo }}</div>{% endif %}
             {% if giorno.appuntamenti %}
             <div class="cal-dots">
@@ -151,13 +151,13 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <span style="font-size:13px;font-weight:600;color:#EDEDED;" id="agenda-counter">
+        <span class="c-13-b" id="agenda-counter">
             {% if appuntamenti %}
                 {{ appuntamenti|length }} eventi
                 <span class="fs-11 c-muted fw-4" style="margin-left:6px;">
                 {% if conteggio_per_tipo.SCADENZA %}<span class="c-amber">{{ conteggio_per_tipo.SCADENZA }} scad.</span>{% endif %}
                 {% if conteggio_per_tipo.APPUNTAMENTO %}{% if conteggio_per_tipo.SCADENZA %} · {% endif %}<span class="c-light">{{ conteggio_per_tipo.APPUNTAMENTO }} app.</span>{% endif %}
-                {% if conteggio_per_tipo.PROMEMORIA %}{% if conteggio_per_tipo.SCADENZA or conteggio_per_tipo.APPUNTAMENTO %} · {% endif %}<span style="color:#34d399;">{{ conteggio_per_tipo.PROMEMORIA }} prom.</span>{% endif %}
+                {% if conteggio_per_tipo.PROMEMORIA %}{% if conteggio_per_tipo.SCADENZA or conteggio_per_tipo.APPUNTAMENTO %} · {% endif %}<span class="c-green">{{ conteggio_per_tipo.PROMEMORIA }} prom.</span>{% endif %}
                 </span>
             {% else %}
                 Nessun evento
@@ -178,7 +178,7 @@
     {% if app.colore %}<div class="colore-bar" style="background:{{ app.colore }};"></div>{% endif %}
     <div style="flex-shrink:0;width:40px;text-align:center;">
         <div style="font-size:18px;font-weight:700;color:{% if app.completato %}#3A3B40{% else %}#EDEDED{% endif %};">{{ app.data|date:"d" }}</div>
-        {% if app.ora %}<div class="c-light fw-6" style="font-size:9px;">{{ app.ora|time:"H:i" }}</div>{% endif %}
+        {% if app.ora %}<div class="c-light fw-6 fs-9">{{ app.ora|time:"H:i" }}</div>{% endif %}
         <div class="c-9-up">{{ app.data|date:"D" }}</div>
     </div>
     <div style="flex-shrink:0;">

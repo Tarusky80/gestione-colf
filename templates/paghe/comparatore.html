@@ -74,8 +74,8 @@
                 <tr><td class="c-muted">Contributi INPS</td><td class="fw-bold text-end">€ {{ current.contributi.inps.totale|floatformat:2 }}</td></tr>
                 <tr><td class="c-muted">Contributi Cassa</td><td class="fw-bold text-end">€ {{ current.contributi.cassa.totale|floatformat:2 }}</td></tr>
                 <tr><td class="c-muted">Totale contributi</td><td class="fw-bold text-end">€ {{ current.contributi.totale|floatformat:2 }}</td></tr>
-                <tr><td class="c-muted">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ current.netto|floatformat:2 }}</td></tr>
-                <tr><td class="c-muted">Stima trimestrale contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ current.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Netto</td><td class="fw-bold text-end c-green">€ {{ current.netto|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Stima trimestrale contributi</td><td class="fw-bold text-end c-amber">€ {{ current.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
             </table>
             {% else %}
             <div class="text-secondary small py-3 text-center">Errore nel calcolo: {{ current.errore|default:"parametri mancanti" }}</div>
@@ -121,8 +121,8 @@
                 <tr><td class="c-muted">Paga oraria lorda</td><td class="fw-bold text-end">€ {{ alternative.paga_oraria_lorda|floatformat:4 }}</td></tr>
                 <tr><td class="c-muted">Totale lordo</td><td class="fw-bold text-end">€ {{ alternative.totale_lordo|floatformat:2 }}</td></tr>
                 <tr><td class="c-muted">Totale contributi</td><td class="fw-bold text-end">€ {{ alternative.contributi.totale|floatformat:2 }}</td></tr>
-                <tr><td class="c-muted">Netto</td><td class="fw-bold text-end" style="color:#34d399;">€ {{ alternative.netto|floatformat:2 }}</td></tr>
-                <tr><td class="c-muted">Stima trim. contributi</td><td class="fw-bold text-end" style="color:#f59e0b;">€ {{ alternative.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Netto</td><td class="fw-bold text-end c-green">€ {{ alternative.netto|floatformat:2 }}</td></tr>
+                <tr><td class="c-muted">Stima trim. contributi</td><td class="fw-bold text-end c-amber">€ {{ alternative.contributi.trimestrale_stima|floatformat:2 }}</td></tr>
             </table>
 
             <div style="background: rgba(94,106,210,0.08); border-radius: 10px; padding: 12px; margin-top: 10px;">

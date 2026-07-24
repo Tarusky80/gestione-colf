@@ -68,11 +68,11 @@
   <div class="container-fluid p-4">
 
     <!-- BOX 1: HEADER -->
-<divcard-dark" style="margin-bottom:20px;"" class="p-4 class=">
+<divcard-dark"class="mb-20"" class="p-4 class=">
       <div class="d-flex align-items-start gap-3">
         <div class="flex-grow-1">
           <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2 c-green2"></i>Crea PAGOPA Manuale</h4>
-          <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto e un trimestre, copia i dati manualmente sul sito INPS e carica il PDF ottenuto.</p>
+          <p class="c-muted fs-12 mb-0">Seleziona un contratto e un trimestre, copia i dati manualmente sul sito INPS e carica il PDF ottenuto.</p>
         </div>
         <div class="d-flex gap-2 align-items-center flex-shrink-0">
           <button type="button" id="openPopupBtn" class="btn btn-ghost-success" style="padding:5px 16px;font-size:12px;white-space:nowrap;">
@@ -95,7 +95,7 @@
           <h5 class="h5-sezione"><i class="bi bi-search me-2 c-green2"></i>SELEZIONE CONTRATTO</h5>
           <div class="row g-3">
             <div class="col-12">
-              <label class="label-pm" style="margin-bottom:6px;">Contratto</label>
+              <label class="label-pm mb-6">Contratto</label>
               <div class="d-flex gap-2 align-items-center">
                 <button type="button" class="nav-arrow btn" onclick="navigaContratto(-1)" id="btnPrevContratto"><i class="bi bi-chevron-left"></i></button>
                 <select id="contrattoSelect" class="form-select" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:15px;font-weight:700;border-radius:8px;flex:1;">
@@ -109,11 +109,11 @@
               </div>
             </div>
             <div class="col-md-4">
-              <label class="label-pm" style="margin-bottom:6px;">Anno</label>
+              <label class="label-pm mb-6">Anno</label>
               <input type="number" id="annoInput" class="form-control" min="2020" max="2035" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;" value="{{ 'now'|date:'Y' }}">
             </div>
             <div class="col-12">
-              <label class="label-pm" style="margin-bottom:8px;">Trimestre</label>
+              <label class="label-pm mb-8">Trimestre</label>
               <div class="d-flex gap-3 flex-wrap" id="trimestreRadioGroup">
                 <label class="radio-card" data-trimestre="Q1">
                   <input type="radio" name="trimestre" value="Q1">
@@ -235,17 +235,17 @@
           </div>
           <div style="margin-top:16px;padding-top:16px;border-top:1px solid #27282D;">
             <div class="d-flex gap-2 align-items-center flex-wrap">
-              <label style="font-size:11px;color:#f59e0b;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-pencil me-1" style="color:#f59e0b;"></i>MODIFICA ORE PAGOPA</label>
+              <label style="font-size:11px;color:#f59e0b;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;"><i class="bi bi-pencil me-1 c-amber"></i>MODIFICA ORE PAGOPA</label>
               <label class="toggle-ore">
                 <input type="checkbox" id="toggleOreAuto" onchange="localStorage.setItem('pagopa_ore_auto',this.checked?'1':'0');caricaDatiPagopa()">
                 <span class="slider"></span>
                 <span style="font-size:10px;color:#8A8F98;white-space:nowrap;">Auto</span>
               </label>
               <input type="number" id="orePagopaInput" value="" placeholder="Lascia vuoto per ore calcolate" class="form-control" style="background:#09090B;border:1px solid #27282D;color:#EDEDED;font-size:12px;border-radius:6px;padding:6px 10px;max-width:150px;">
-              <span style="font-size:10px;color:#8A8F98;">ore trim.</span>
+              <span class="fs-10 c-muted">ore trim.</span>
               <button type="button" class="btn btn-ghost-warning" onclick="caricaOreModificate()" style="padding:5px 14px;font-size:11px;"><i class="bi bi-upload me-1"></i> CARICA ORE</button>
               <button type="button" class="btn btn-ghost" onclick="resettaOrePagopa()" style="padding:5px 14px;font-size:11px;"><i class="bi bi-arrow-counterclockwise me-1"></i> Ripristina</button>
-              <span id="orePagopaStatus" style="font-size:10px;color:#8A8F98;"></span>
+              <span id="orePagopaStatus"class="fs-10 c-muted"></span>
             </div>
           </div>
         </div>

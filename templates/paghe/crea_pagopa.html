@@ -77,11 +77,11 @@ function inviaEmailPagopa() {
 
 <div class="container-fluid p-4">
 
-  <div class="p-4 card-simple" style="margin-bottom:20px;">
+  <div class="p-4 card-simple mb-20">
     <div class="d-flex align-items-start gap-3">
       <div class="flex-grow-1">
         <h4 style="color:#EDEDED;margin-bottom:4px;"><i class="bi bi-credit-card-2-front me-2 c-accent"></i>Crea PAGOPA — Avviso di Pagamento INPS</h4>
-        <p style="color:#8A8F98;font-size:12px;margin-bottom:0;">Seleziona un contratto attivo e il trimestre per generare il riepilogo contributivo o avviare l'automazione sul sito INPS.</p>
+        <p class="c-muted fs-12 mb-0">Seleziona un contratto attivo e il trimestre per generare il riepilogo contributivo o avviare l'automazione sul sito INPS.</p>
       </div>
       <button type="button" class="btn btn-sm btn-help" title="Aiuto" data-bs-toggle="modal" data-bs-target="#helpModal"><i class="bi bi-question-lg"></i></button>
     </div>
@@ -96,7 +96,7 @@ function inviaEmailPagopa() {
         <h5 class="h5-sezione"><i class="bi bi-search me-2 c-accent"></i>SELEZIONE CONTRATTO</h5>
         <div class="row g-3">
           <div class="col-12">
-            <label class="label-form-up" style="margin-bottom:6px;">Contratto</label>
+            <label class="label-form-up mb-6">Contratto</label>
             <div class="d-flex gap-2 align-items-center">
               <button type="button" class="btn btn-ghost" onclick="navigaContratto(-1)" id="btnPrevContratto" style="padding:8px 14px;font-size:16px;line-height:1;">
                 <i class="bi bi-chevron-left"></i>
@@ -114,11 +114,11 @@ function inviaEmailPagopa() {
             </div>
           </div>
           <div class="col-md-4">
-            <label class="label-form-up" style="margin-bottom:6px;">Anno</label>
+            <label class="label-form-up mb-6">Anno</label>
             <input type="number" id="selAnno" class="form-control" min="2020" max="2035" style="background:#1E1F23;border:1px solid #27282D;color:#EDEDED;font-size:14px;font-weight:600;border-radius:8px;">
           </div>
           <div class="col-12">
-            <label class="label-form-up" style="margin-bottom:8px;">Trimestre</label>
+            <label class="label-form-up mb-8">Trimestre</label>
             <div class="d-flex gap-3 flex-wrap" id="trimestreRadioGroup">
               <label class="radio-card" data-trimestre="Q1">
                 <input type="radio" name="trimestre" value="Q1">
@@ -154,7 +154,7 @@ function inviaEmailPagopa() {
     <div class="col-md-6">
 <divcard-dark h-100"" class="p-4 class=">
         <div class="d-flex align-items-start gap-3 mb-3">
-          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:0;"><i class="bi bi-robot me-2" style="color:#10b981;"></i>AUTOMAZIONE INPS</h5>
+          <h5 style="color:#EDEDED;font-size:14px;margin-bottom:0;"><i class="bi bi-robot me-2 c-green2"></i>AUTOMAZIONE INPS</h5>
           <span id="ctrlInvioBadge" style="display:none;margin-left:auto;color:#f87171;font-size:11px;font-weight:700;background:rgba(248,113,113,0.12);padding:6px 12px;border-radius:8px;border:1px solid rgba(248,113,113,0.25);white-space:nowrap;">
             <i class="bi bi-info-circle me-1"></i> Premi <kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 4px;font-size:10px;">Ctrl</kbd>+<kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 4px;font-size:10px;">Invio</kbd> per proseguire
           </span>
@@ -193,7 +193,7 @@ function inviaEmailPagopa() {
           <div style="font-size:11px;color:#f59e0b;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;">
             <i class="bi bi-shield-lock me-1"></i> RISOLVI CAPTGRAPH
           </div>
-          <div style="margin-bottom:12px;">
+          <div class="mb-12">
             <img id="captchaImage" alt="Codice captcha" style="border:1px solid #3B3C42;border-radius:8px;max-width:100%;background:#fff;" />
           </div>
           <div class="d-flex gap-2 align-items-center flex-wrap">
@@ -207,7 +207,7 @@ function inviaEmailPagopa() {
         <div id="automationContainer" class="d-none">
           <div class="p-3" style="background:#0D0E10;border:1px solid #27282D;border-radius:10px;">
             <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-              <h6 style="color:#EDEDED;font-size:12px;margin-bottom:0;"><i class="bi bi-terminal me-2" style="color:#10b981;"></i>CONSOLE AUTOMAZIONE</h6>
+              <h6 class="c-text fs-12 mb-0"><i class="bi bi-terminal me-2 c-green2"></i>CONSOLE AUTOMAZIONE</h6>
               <button type="button" class="btn btn-sm btn-ghost" onclick="pulisciConsole()" style="padding:6px 14px;font-size:11px;margin-left:auto;">
                 <i class="bi bi-eraser me-1"></i> Pulisci
               </button>
@@ -226,7 +226,7 @@ function inviaEmailPagopa() {
                   1. Inserisci manualmente il CAPTCHA nella pagina INPS.<br>
                   2. Premi <kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Ctrl</kbd>+<kbd style="background:#3B1C1C;color:#f87171;border:1px solid #7F2D2D;border-radius:3px;padding:1px 6px;font-size:10px;">Invio</kbd> nella finestra Chrome per proseguire.
                 </p>
-                <div style="margin-top:8px;">
+                <div class="mt-8">
                   <span class="c-11-m"><i class="bi bi-arrow-repeat me-1"></i> L&rsquo;automazione procede automaticamente dopo ogni step.</span>
                 </div>
               </div>
@@ -244,7 +244,7 @@ function inviaEmailPagopa() {
       <div id="riepilogoContainer" class="d-none">
 <div class="p-4 card-simple">
           <h5 class="h5-sezione"><i class="bi bi-file-text me-2 c-accent"></i>RIEPILOGO CONTRATTUALE</h5>
-          <div class="row g-3" id="riepilogoBody" style="font-size:13px;color:#EDEDED;"></div>
+          <div class="row g-3" id="riepilogoBody"class="fs-13 c-text"></div>
         </div>
       </div>
     </div>
@@ -277,7 +277,7 @@ function inviaEmailPagopa() {
     <div class="col-md-6">
       <div id="modificaOreContainer" class="d-none">
         <div class="p-4" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:14px;height:100%;">
-          <h5 style="color:#f59e0b;font-size:14px;margin-bottom:16px;"><i class="bi bi-pencil me-2" style="color:#f59e0b;"></i>MODIFICA ORE PAGOPA</h5>
+          <h5 style="color:#f59e0b;font-size:14px;margin-bottom:16px;"><i class="bi bi-pencil me-2 c-amber"></i>MODIFICA ORE PAGOPA</h5>
           <div class="d-flex gap-2 align-items-center flex-wrap">
             <label class="toggle-ore">
               <input type="checkbox" id="toggleOreAuto" onchange="localStorage.setItem('pagopa_ore_auto', this.checked?'1':'0');caricaDatiPagopa()">
@@ -339,7 +339,7 @@ function apriPdfPagopa() {
                             <div style="font-size:48px;margin-bottom:16px;">ðŸ“„</div>\
                             <h2 style="color:#f87171;font-size:18px;margin-bottom:8px;">PDF PagoPA non trovato</h2>\
                             <p style="color:#8A8F98;font-size:14px;max-width:320px;line-height:1.5;">\
-                                Completa prima l\'automazione con <b style="color:#34d399;">Avvia INPS</b><br>\
+                                Completa prima l\'automazione con <b class="c-green">Avvia INPS</b><br>\
                                 per generare il bollettino PagoPA.<br>\
                                 Poi riprova ad aprire il PDF.\
                             </p>\
@@ -514,7 +514,7 @@ function aggiornaColoriTrimestri(d) {
 function renderRiepilogo(d) {
     var html = '';
 
-    html += '<div class="col-md-6" style="margin-bottom:16px;"><div class="pm-mcrd" style="padding:0;">';
+    html += '<div class="col-md-6 mb-16"><div class="pm-mcrd" style="padding:0;">';
     html += '<div class="row g-0"><div class="col-6" style="border-right:1px solid #27282D;padding:10px 14px;">';
     html += '<div style="font-size:11px;font-weight:700;color:#10b981;border-bottom:1px solid #27282D;padding-bottom:6px;margin-bottom:6px;">DATORE DI LAVORO</div>';
     html += '<div class="pm-row"><span class="pm-label">Nome</span><span class="pm-val" id="r_d_nome">' + escapeHtml(d.nome_datore) + '</span><button type="button" class="pm-cb" data-copy="r_d_nome">COPIA</button></div>';
@@ -532,7 +532,7 @@ function renderRiepilogo(d) {
     html += '<div class="pm-row"><span class="pm-label">Assunzione</span><span class="pm-val" id="r_l_data_assunzione">' + escapeHtml(d.data_assunzione || '—') + '</span><button type="button" class="pm-cb" data-copy="r_l_data_assunzione">COPIA</button></div>';
     html += '</div></div></div></div>';
 
-    html += '<div class="col-12" style="margin-bottom:16px;"><div class="p-4 card-simple">';
+    html += '<div class="col-12 mb-16"><div class="p-4 card-simple">';
     html += '<div class="row g-3">';
 
     html += '<div class="col-md-6"><div class="pm-mcrd">';

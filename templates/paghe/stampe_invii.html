@@ -298,7 +298,7 @@
     <div class="d-flex justify-content-between align-items-center mt-3">
         <span id="compCount" class="small text-secondary">0 elementi</span>
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-sm btn-ghost" onclick="mostraModaleSalva()" id="btnSalvaComp" disabled style="font-size:11px;"><i class="bi bi-save me-1"></i> Salva come modello</button>
+            <button type="button" class="btn btn-sm btn-ghost" onclick="mostraModaleSalva()" id="btnSalvaComp" disabled class="fs-11"><i class="bi bi-save me-1"></i> Salva come modello</button>
         </div>
     </div>
 </div>
@@ -1116,7 +1116,7 @@ function avviaAzione(azione) {
 
 function elaboraRisultato(d, azione) {
     var html = '<div class="text-center mb-3">';
-    html += '<div class="display-6 fw-bold" style="color:#10b981;">' + d.totale_ok + '</div>';
+    html += '<div class="display-6 fw-bold c-green2">' + d.totale_ok + '</div>';
     html += '<div class="small text-secondary">Documenti generati</div>';
     if (d.totale_errori > 0) {
 html += '<div class="display-6 fw-bold mt-2 c-red2">' + d.totale_errori + '</div>';
@@ -1132,9 +1132,9 @@ html += '<div class="display-6 fw-bold mt-2 c-red2">' + d.totale_errori + '</div
     if (d.dettaglio) {
         html += '<hr><div class="small" style="max-height:250px;overflow-y:auto;">';
         d.dettaglio.forEach(function(e) {
-var icon = e.errore ? '<i class="bi bi-x-circle c-red2"></i>' : '<i class="bi bi-check-circle" style="color:#10b981;"></i>';
+var icon = e.errore ? '<i class="bi bi-x-circle c-red2"></i>' : '<i class="bi bi-check-circle c-green2"></i>';
             var periodo = e.periodo ? ' (' + e.periodo + ')' : '';
-            var tipoInfo = e.tipo ? ' <span class="text-secondary" style="font-size:9px;">[' + e.tipo + ']</span>' : '';
+            var tipoInfo = e.tipo ? ' <span class="text-secondary fs-9">[' + e.tipo + ']</span>' : '';
             html += '<div class="d-flex align-items-center gap-2 py-1">' + icon + ' <span>' + e.datore + ' &rarr; ' + e.lavoratore + periodo + tipoInfo;
             if (e.documento_pk) {
                 html += ' <a href="#" onclick="event.preventDefault();apriNelPannello(\'/ajax/vedi-documento/' + e.documento_pk + '/\')" class="ms-2" style="color:#dc2626;text-decoration:none;font-weight:600;font-size:12px;" title="Visualizza PDF"><i class="bi bi-eye" style="font-size:18px; vertical-align:middle; margin-right:5px;"></i>VISUALIZZA</a>';
